@@ -1,0 +1,105 @@
+connectors:
+  - name: reddit
+    module: connectors.reddit
+    class_name: RedditConnector
+    execution: ecs
+    run_args: "--subreddit all"
+    schedule: "@hourly"
+    kwargs:
+      subreddit: all
+  - name: twitter
+    module: connectors.twitter
+    class_name: XConnector
+    execution: ecs
+    run_args: "--query #trending"
+    schedule: "@hourly"
+    kwargs:
+      query: "#trending"
+  - name: hackernews
+    module: connectors.hackernews
+    class_name: HackerNewsConnector
+    execution: ecs
+    run_args: ""
+    schedule: "@hourly"
+    kwargs: {}
+  - name: tiktok
+    module: connectors.tiktok
+    class_name: TikTokConnector
+    execution: ecs
+    run_args: ""
+    schedule: "@daily"
+    kwargs: {}
+  - name: threads
+    module: connectors.threads
+    class_name: ThreadsConnector
+    execution: ecs
+    run_args: ""
+    schedule: "@daily"
+    kwargs: {}
+  - name: airtable
+    module: connectors.airtable
+    class_name: AirtableConnector
+    execution: ecs
+    run_args: ""
+    schedule: "@daily"
+    kwargs:
+      base_id: "appExampleBaseId"
+      table_name: "Table 1"
+  - name: github
+    module: connectors.github
+    class_name: GitHubConnector
+    execution: ecs
+    run_args: "--repo torvalds/linux"
+    schedule: "@hourly"
+    kwargs:
+      repo: "torvalds/linux"
+  - name: google_trends
+    module: connectors.google_trends
+    class_name: GoogleTrendsConnector
+    execution: ecs
+    run_args: "--kw-list trending --geo US"
+    schedule: "@hourly"
+    kwargs:
+      kw_list: ["trending"]
+      geo: "US"
+  - name: youtube
+    module: connectors.youtube
+    class_name: YouTubeConnector
+    execution: ecs
+    run_args: "--query product"
+    schedule: "@hourly"
+    kwargs:
+      query: "product"
+  - name: instagram
+    module: connectors.instagram
+    class_name: InstagramConnector
+    execution: ecs
+    run_args: "--username instagram"
+    schedule: "@daily"
+    kwargs:
+      username: "instagram"
+  - name: edgar
+    module: connectors.edgar
+    class_name: EdgarConnector
+    execution: ecs
+    run_args: "--cik 0000320193"
+    schedule: "@daily"
+    kwargs:
+      cik: "0000320193"
+  - name: news_rss
+    module: connectors.news_rss
+    class_name: NewsRSSConnector
+    execution: ecs
+    run_args: "--feed-url https://news.google.com/rss"
+    schedule: "@hourly"
+    kwargs:
+      feed_url: "https://news.google.com/rss"
+  - name: stack_overflow
+    module: connectors.stack_overflow
+    class_name: StackOverflowConnector
+    execution: ecs
+    run_args: "--tags python --site stackoverflow"
+    schedule: "@daily"
+    kwargs:
+      tags: ["python"]
+      site: "stackoverflow"

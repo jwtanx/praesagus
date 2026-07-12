@@ -1,0 +1,15 @@
+pydantic>=1.10
+boto3
+fastapi
+uvicorn[standard]
+prometheus-client
+praw
+pyarrow
+requests
+pytest
+moto
+pytest-mock
+beautifulsoup4
+pyyaml
+pytrends
+httpx

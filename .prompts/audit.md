@@ -1,0 +1,1 @@
+Here is the core structure and schema I have scaffolded using a lightweight model. Audit this architecture for security vulnerabilities, scalability bottlenecks, and anti-patterns. Do not rewrite everything—just point out critical flaws or structural fixes needed to align it with enterprise best practices.

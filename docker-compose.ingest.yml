@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  localstack:
+    image: localstack/localstack:1.4
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    environment:
+      - SERVICES=s3,dynamodb
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - ./localstack:/var/lib/localstack
+
+  bootstrap:
+    build: .
+    command: python scripts/bootstrap_localstack.py
+    environment:
+      - PRAESAGUS_S3_ENDPOINT=http://localstack:4566
+      - PRAESAGUS_DDB_ENDPOINT=http://localstack:4566
+      - PRAESAGUS_S3_BUCKET=praesagus-raw-data-local
+      - PRAESAGUS_FEATURE_TABLE=praesagus-feature-store-local
+    depends_on:
+      - localstack
+
+  worker:
+    build: .
+    command: python -m connectors.multi_runner --s3-bucket praesagus-raw-data-local
+    environment:
+      - PRAESAGUS_S3_ENDPOINT=http://localstack:4566
+      - PRAESAGUS_DDB_ENDPOINT=http://localstack:4566
+      - PRAESAGUS_S3_BUCKET=praesagus-raw-data-local
+      - PRAESAGUS_BRONZE_BUCKET=praesagus-bronze-data-local
+      - PRAESAGUS_SILVER_BUCKET=praesagus-silver-data-local
+      - PRAESAGUS_FEATURE_TABLE=praesagus-feature-store-local
+      - REDDIT_CLIENT_ID=
+      - REDDIT_CLIENT_SECRET=
+      - TWITTER_BEARER_TOKEN=
+    depends_on:
+      - bootstrap
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./ops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command: --config.file=/etc/prometheus/prometheus.yml
+    depends_on:
+      - localstack
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+
+  airflow-init:
+    image: apache/airflow:2.10.3
+    entrypoint: ["bash", "-lc"]
+    command: "airflow db init && airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin"
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - AIRFLOW__CORE__LOG_FOLDER=/opt/airflow/logs
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////tmp/airflow/airflow.db
+      - AIRFLOW_UID=50000
+    volumes:
+      - ./ingest/dags:/opt/airflow/dags
+      - ./ingest/config:/opt/airflow/config
+      - ./airflow/logs:/opt/airflow/logs
+    depends_on:
+      - localstack
+
+  airflow-webserver:
+    image: apache/airflow:2.10.3
+    command: webserver
+    ports:
+      - "8080:8080"
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - AIRFLOW__CORE__LOG_FOLDER=/opt/airflow/logs
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////tmp/airflow/airflow.db
+      - AIRFLOW_UID=50000
+    volumes:
+      - ./ingest/dags:/opt/airflow/dags
+      - ./ingest/config:/opt/airflow/config
+      - ./airflow/logs:/opt/airflow/logs
+    depends_on:
+      - airflow-init
+
+  airflow-scheduler:
+    image: apache/airflow:2.10.3
+    command: scheduler
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - AIRFLOW__CORE__LOG_FOLDER=/opt/airflow/logs
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////tmp/airflow/airflow.db
+      - AIRFLOW_UID=50000
+    volumes:
+      - ./ingest/dags:/opt/airflow/dags
+      - ./ingest/config:/opt/airflow/config
+      - ./airflow/logs:/opt/airflow/logs
+    depends_on:
+      - airflow-init

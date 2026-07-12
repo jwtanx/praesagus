@@ -1,0 +1,11 @@
+{
+  "trends": [
+    {
+      "entity": "example_product",
+      "score": 0.85,
+      "evidence": [
+        {"source": "reddit", "s3_uri": "s3://praesagus/raw/reddit/test1.json", "ts": "2026-07-12T00:00:00Z"}
+      ]
+    }
+  ]
+}

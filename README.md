@@ -1,3 +1,29 @@
+# Praesagus
+
+Starter repo for the Praesagus market intelligence platform.
+
+Quickstart (local test of Reddit connector) — using Poetry:
+
+```bash
+# Install Poetry: https://python-poetry.org/docs/#installation
+poetry install
+poetry run python -m connectors.examples.reddit_connector
+
+# Run tests
+poetry run pytest -q
+```
+
+If you prefer pip, a `requirements.txt` file is included for compatibility, but Poetry is the recommended workflow.
+
+Local development with Docker Compose (localstack):
+
+```bash
+# Build and start containers
+docker-compose up --build
+
+# API will be available at http://localhost:8000
+# Bootstrap runs once to create S3 bucket and DynamoDB table in localstack.
+```
 # praesagus
 
 A quantitative market analysis engine designed to spot institutional trading signals and predict macro trend reversals.
@@ -31,6 +57,56 @@ Symlink the skill into your personal Cursor skills folder so it is available acr
 ```bash
 ln -s "$(pwd)/skills/elite-ipo-equity-research" ~/.cursor/skills/elite-ipo-equity-research
 ```
+
+## First-time setup
+
+1. Install dependencies:
+
+```bash
+poetry install
+```
+
+2. Create local stack services and bootstrap the development environment:
+
+```bash
+docker-compose up --build
+```
+
+3. Verify local containers:
+
+- Backend API: `http://localhost:8000`
+- Airflow webserver: `http://localhost:8080`
+- Prometheus: `http://localhost:9090`
+- Grafana: `http://localhost:3000`
+
+4. Seed local resources if needed:
+
+```bash
+poetry run python scripts/bootstrap_localstack.py
+```
+
+## Going live
+
+For production deployment, use Terraform to provision the core infrastructure and ECS resources. Ensure the following services are configured:
+
+- S3 buckets for raw, bronze, and silver data
+- DynamoDB feature store for aggregated signals and low-latency lookups
+- ECS/Fargate task definitions for connector execution
+- Airflow/MWAA or scheduler for orchestration
+- Secrets Manager for connector credentials
+- SQS DLQ for ingestion retries and failure handling
+
+Set production environment variables and secrets in AWS Secrets Manager rather than hardcoding credentials in repo files.
+
+## Data architecture
+
+Raw records are persisted in the data lake on S3. Normalized and partitioned Bronze parquet files are also written to S3, and the aggregated model or feature store entries are stored in DynamoDB for fast online access. This means:
+
+- Raw data is available for replay and lineage in S3
+- Bronze/Silver transforms are used for quality, enrichment, and schema normalization
+- DynamoDB holds the feature-store or aggregated signal metadata for dashboard/API use
+
+We do not currently have a dbt project in this repo; daily transformations are handled via Airflow / Python ETL templates such as `pipeline/raw_to_bronze.py` and `pipeline/compute_features.py`.
 
 ## Usage
 
