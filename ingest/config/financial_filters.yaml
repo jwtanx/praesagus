@@ -1,0 +1,103 @@
+# User-configurable filters for the financial dashboard.
+# Operators: eq, neq, in, contains, gte, lte, between, exists
+
+filings:
+  - field: form_type
+    operator: in
+    value: ["10-Q", "10-K", "8-K"]
+  # Example: only show filings with revenue above $1B
+  # - field: revenue
+  #   operator: gte
+  #   value: 1000000000
+
+insider_trades:
+  - field: transaction_value
+    operator: gte
+    value: 50000
+  # Example: only officer/director trades
+  # - field: is_officer
+  #   operator: eq
+  #   value: true
+
+news:
+  - field: signal
+    operator: in
+    value: ["buy", "short", "watch"]
+  # Example: only high-confidence signals
+  # - field: signal_strength
+  #   operator: gte
+  #   value: 0.5
+
+calendar:
+  - field: impact
+    operator: in
+    value: ["high", "medium"]
+  # Example: only earnings-related events
+  # - field: event_type
+  #   operator: in
+  #   value: ["earnings", "sec_filing"]
+
+# Columns visible on dashboard (empty = show all)
+visible_fields:
+  filings:
+    - ticker
+    - company_name
+    - form_type
+    - filing_date
+    - acceptance_datetime
+    - report_date
+    - revenue
+    - net_income
+    - eps_diluted
+    - gross_margin
+    - operating_margin
+    - debt_to_equity
+    - filing_url
+  insider_trades:
+    - ticker
+    - issuer_name
+    - reporting_owner_name
+    - officer_title
+    - transaction_date
+    - acceptance_datetime
+    - transaction_code_label
+    - shares
+    - price_per_share
+    - transaction_value
+    - acquired_disposed
+    - signal
+    - latency_seconds
+    - form_url
+  news:
+    - ticker
+    - title
+    - source_name
+    - published_at
+    - first_seen_at
+    - latency_ms
+    - signal
+    - signal_strength
+    - keywords_matched
+    - link
+  calendar:
+    - ticker
+    - company_name
+    - event_type
+    - title
+    - event_date
+    - event_time
+    - form_type
+    - estimated
+    - impact
+
+sort:
+  filings: filing_date
+  insider_trades: acceptance_datetime
+  news: published_at
+  calendar: event_date
+
+sort_order:
+  filings: desc
+  insider_trades: desc
+  news: desc
+  calendar: asc

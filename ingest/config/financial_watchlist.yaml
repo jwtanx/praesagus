@@ -1,0 +1,54 @@
+# Companies to track for SEC filings, insider trades, news, and calendar.
+# CIK is optional — tickers are resolved via SEC company_tickers.json.
+
+watchlist:
+  - ticker: AAPL
+    company_name: Apple Inc.
+    cik: "0000320193"
+    sector: Technology
+    priority: high
+  - ticker: MSFT
+    company_name: Microsoft Corporation
+    cik: "0000789019"
+    sector: Technology
+    priority: high
+  - ticker: NVDA
+    company_name: NVIDIA Corporation
+    cik: "0001045810"
+    sector: Technology
+    priority: high
+  - ticker: TSLA
+    company_name: Tesla Inc.
+    cik: "0001318605"
+    sector: Consumer Discretionary
+    priority: high
+  - ticker: AMZN
+    company_name: Amazon.com Inc.
+    cik: "0001018724"
+    sector: Consumer Discretionary
+    priority: medium
+  - ticker: META
+    company_name: Meta Platforms Inc.
+    cik: "0001326801"
+    sector: Technology
+    priority: medium
+  - ticker: GOOGL
+    company_name: Alphabet Inc.
+    cik: "0001652044"
+    sector: Technology
+    priority: medium
+  - ticker: JPM
+    company_name: JPMorgan Chase & Co.
+    cik: "0000019617"
+    sector: Financials
+    priority: medium
+
+settings:
+  sec_user_agent: "Praesagus FinancialBot contact@praesagus.example"
+  insider_poll_interval_seconds: 30
+  news_poll_interval_seconds: 60
+  min_insider_transaction_value: 100000
+  default_form_types:
+    - "10-Q"
+    - "10-K"
+    - "8-K"

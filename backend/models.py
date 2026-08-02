@@ -83,3 +83,26 @@ class ResearchResponse(BaseModel):
     prompt: str
     result: str
     created_at: str
+
+
+class FinancialSummaryResponse(BaseModel):
+    latest_filings: List[Dict[str, Any]] = Field(default_factory=list)
+    latest_insider_trades: List[Dict[str, Any]] = Field(default_factory=list)
+    latest_news: List[Dict[str, Any]] = Field(default_factory=list)
+    upcoming_events: List[Dict[str, Any]] = Field(default_factory=list)
+    counts: Dict[str, Any] = Field(default_factory=dict)
+    watchlist: List[str] = Field(default_factory=list)
+
+
+class FinancialListResponse(BaseModel):
+    records: List[Dict[str, Any]] = Field(default_factory=list)
+    count: int = 0
+
+
+class FinancialFilterMetadataResponse(BaseModel):
+    available_fields: Dict[str, List[str]] = Field(default_factory=dict)
+    visible_fields: Dict[str, List[str]] = Field(default_factory=dict)
+    active_filters: Dict[str, List[Dict[str, Any]]] = Field(default_factory=dict)
+    sort: Dict[str, str] = Field(default_factory=dict)
+    sort_order: Dict[str, str] = Field(default_factory=dict)
+    watchlist_tickers: List[str] = Field(default_factory=list)

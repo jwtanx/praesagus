@@ -9,7 +9,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
 
-from backend.models import DashboardResponse, ResearchRequest, ResearchResponse, TrendDetailResponse, TrendsResponse
+from backend.models import (
+    DashboardResponse,
+    FinancialFilterMetadataResponse,
+    FinancialListResponse,
+    FinancialSummaryResponse,
+    ResearchRequest,
+    ResearchResponse,
+    TrendDetailResponse,
+    TrendsResponse,
+)
 from backend.services import (
     build_dashboard_summary,
     build_pipeline_statuses,
@@ -21,6 +30,14 @@ from backend.services import (
     get_trends as fetch_trends,
     load_skill_catalog,
     load_platform_config,
+)
+from backend.financial_services import (
+    build_financial_summary,
+    get_calendar,
+    get_filings,
+    get_filter_metadata,
+    get_insider_trades,
+    get_news,
 )
 
 app = FastAPI(title="Praesagus API")
@@ -142,6 +159,66 @@ def get_settings(api_key: Optional[str] = Depends(get_api_key)):
             }
         )
     )
+
+
+@app.get("/api/v1/financial/summary", response_model=FinancialSummaryResponse)
+def get_financial_summary(api_key: Optional[str] = Depends(get_api_key)):
+    REQUESTS.inc()
+    return JSONResponse(content=jsonable_encoder(build_financial_summary()))
+
+
+@app.get("/api/v1/financial/filings", response_model=FinancialListResponse)
+def get_financial_filings(
+    limit: int = Query(50, ge=1, le=500),
+    ticker: Optional[str] = Query(None),
+    form_type: Optional[str] = Query(None),
+    api_key: Optional[str] = Depends(get_api_key),
+):
+    REQUESTS.inc()
+    records = get_filings(limit=limit, ticker=ticker, form_type=form_type)
+    return JSONResponse(content=jsonable_encoder({"records": records, "count": len(records)}))
+
+
+@app.get("/api/v1/financial/insider-trades", response_model=FinancialListResponse)
+def get_financial_insider_trades(
+    limit: int = Query(50, ge=1, le=500),
+    ticker: Optional[str] = Query(None),
+    signal: Optional[str] = Query(None),
+    api_key: Optional[str] = Depends(get_api_key),
+):
+    REQUESTS.inc()
+    records = get_insider_trades(limit=limit, ticker=ticker, signal=signal)
+    return JSONResponse(content=jsonable_encoder({"records": records, "count": len(records)}))
+
+
+@app.get("/api/v1/financial/news", response_model=FinancialListResponse)
+def get_financial_news(
+    limit: int = Query(50, ge=1, le=500),
+    ticker: Optional[str] = Query(None),
+    signal: Optional[str] = Query(None),
+    api_key: Optional[str] = Depends(get_api_key),
+):
+    REQUESTS.inc()
+    records = get_news(limit=limit, ticker=ticker, signal=signal)
+    return JSONResponse(content=jsonable_encoder({"records": records, "count": len(records)}))
+
+
+@app.get("/api/v1/financial/calendar", response_model=FinancialListResponse)
+def get_financial_calendar(
+    limit: int = Query(100, ge=1, le=500),
+    ticker: Optional[str] = Query(None),
+    event_type: Optional[str] = Query(None),
+    api_key: Optional[str] = Depends(get_api_key),
+):
+    REQUESTS.inc()
+    records = get_calendar(limit=limit, ticker=ticker, event_type=event_type)
+    return JSONResponse(content=jsonable_encoder({"records": records, "count": len(records)}))
+
+
+@app.get("/api/v1/financial/filters", response_model=FinancialFilterMetadataResponse)
+def get_financial_filters(api_key: Optional[str] = Depends(get_api_key)):
+    REQUESTS.inc()
+    return JSONResponse(content=jsonable_encoder(get_filter_metadata()))
 
 
 @app.get("/metrics")
