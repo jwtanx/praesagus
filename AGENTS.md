@@ -12,6 +12,10 @@ Praesagus is built as a modular, event-driven market intelligence platform with 
   - `scripts/cli_tools.py` — unified CLI navigation for standalone tools.
   - `scripts/run_sec_filings.py`, `scripts/run_insider_monitor.py`, `scripts/run_company_news.py` — specialized ingestion/monitoring helpers.
 
+- **Run commands** for the SEC QR report:
+  - `make sec-qr-report`
+  - `python scripts/sec_qr_report.py --companies AAPL:0000320193 MSFT:0000789019 --forms 10-Q 8-K --out /tmp/sec_reports --interval 300 --summarize --use-serpapi`
+
 - **Connector ecosystem** with a shared SDK pattern and config-driven runner.
   - `connectors/multi_runner.py` reads `ingest/config/platform_connectors.yaml` and executes connectors dynamically.
   - Specific connectors exist for social/news sources and regulatory sources, including `connectors/sec_filings.py` and `connectors/sec_form4_insider.py`.

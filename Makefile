@@ -29,6 +29,10 @@ ingestion-up:
 ingestion-down:
 	docker compose -f docker-compose.ingest.yml down
 
+sec-qr-report:
+	@echo "Running SEC QR report. Set SERPAPI_KEY in the environment to enable Google AI overview fallback."
+	python scripts/sec_qr_report.py --companies AAPL:0000320193 MSFT:0000789019 --forms 10-Q 8-K --out /tmp/sec_reports --interval 300 --summarize --use-serpapi
+
 clean:
 	rm -rf frontend/node_modules frontend/dist
 	@echo "Cleaned frontend build artifacts."

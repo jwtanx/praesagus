@@ -9,6 +9,7 @@ SEC QR (Quarterly) report poller and downloader.
 
 Usage examples:
   python scripts/sec_qr_report.py --companies AAPL:0000320193 MSFT:0000789019 --forms 10-Q 8-K --out /tmp/reports --interval 300 --email
+  make sec-qr-report
 
 Requirements: requests, feedparser, beautifulsoup4
 """
@@ -21,6 +22,18 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 from urllib.parse import urljoin, urlparse
+
+# Optional local summarization/RAG imports
+try:
+    from sumy.parsers.plaintext import PlaintextParser
+    from sumy.nlp.tokenizers import Tokenizer
+    from sumy.summarizers.lex_rank import LexRankSummarizer
+    from sentence_transformers import SentenceTransformer
+    import numpy as np
+    from sklearn.metrics.pairwise import cosine_similarity
+    _HAS_RAG = True
+except Exception:
+    _HAS_RAG = False
 
 import feedparser
 import requests
@@ -48,6 +61,69 @@ def load_state(name: str) -> Dict[str, str]:
 def save_state(name: str, data: Dict[str, str]):
     path = STATE_DIR / f"{name}.json"
     path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+
+
+def serpapi_fetch_overview(url_or_query: str):
+    """Fetch Google AI Overview via SerpApi. Returns overview text or None."""
+    api_key = os.getenv("SERPAPI_KEY")
+    if not api_key:
+        raise ValueError("SERPAPI_KEY not set")
+    base = "https://serpapi.com/search.json"
+    params = {"engine": "google", "q": url_or_query, "api_key": api_key}
+    resp = requests.get(base, params=params, timeout=15)
+    resp.raise_for_status()
+    j = resp.json()
+    if j.get("page_token"):
+        follow = {"engine": "google_ai_overview", "page_token": j.get("page_token"), "api_key": api_key}
+        r2 = requests.get(base, params=follow, timeout=15)
+        r2.raise_for_status()
+        return r2.json().get("overview_text") or r2.json()
+    return j.get("ai_overview") or j
+
+
+def chunk_text(text: str, chunk_size: int = 4000, overlap: int = 200) -> List[str]:
+    if not text:
+        return []
+    chunks = []
+    start = 0
+    length = len(text)
+    while start < length:
+        end = min(start + chunk_size, length)
+        chunks.append(text[start:end])
+        start = max(end - overlap, end)
+    return chunks
+
+
+def local_summarize_and_rag(text: str, top_k: int = 3) -> str:
+    """Perform chunking, build embeddings, retrieve top-k, and summarize with LexRank."""
+    chunks = chunk_text(text, chunk_size=3000, overlap=200)
+    if not chunks:
+        return ""
+    # summarize each chunk with lexrank
+    summaries = []
+    try:
+        summarizer = LexRankSummarizer()
+        for c in chunks:
+            parser = PlaintextParser.from_string(c, Tokenizer("english"))
+            sents = summarizer(parser.document, sentences_count=2)
+            summaries.append(" ".join(str(s) for s in sents))
+    except Exception:
+        summaries = [c[:400] for c in chunks]
+
+    # embeddings + retrieval to pick top-k summaries
+    try:
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+        emb_chunks = model.encode(summaries, convert_to_numpy=True)
+        query_emb = model.encode(["summarize performance"], convert_to_numpy=True)[0]
+        sims = cosine_similarity([query_emb], emb_chunks)[0]
+        idx = np.argsort(sims)[-top_k:][::-1]
+        selected = "\n\n".join(summaries[i] for i in idx)
+        # final summarization pass
+        final_parser = PlaintextParser.from_string(selected, Tokenizer("english"))
+        final_sents = LexRankSummarizer()(final_parser.document, sentences_count=3)
+        return " ".join(str(s) for s in final_sents)
+    except Exception:
+        return " ".join(summaries)
 
 
 def fetch_feed_entries(cik: str) -> List[Dict]:
@@ -247,6 +323,9 @@ def main():
     parser.add_argument("--out", default="/tmp/sec_reports", help="Output directory for JSON reports")
     parser.add_argument("--interval", type=int, default=0, help="Polling interval in seconds (0 = run once)")
     parser.add_argument("--email", action="store_true", help="Send email for new reports using SMTP env vars")
+    parser.add_argument("--summarize", action="store_true", help="Run local extractive summarization and RAG on filing text")
+    parser.add_argument("--use-serpapi", action="store_true", help="Optional: fetch Google AI Overview via SerpApi as fallback (requires SERPAPI_KEY)")
+    parser.add_argument("--serpapi-call-limit", type=int, default=5, help="Max SerpApi calls per run when enabled")
     args = parser.parse_args()
 
     companies = []
@@ -264,6 +343,41 @@ def main():
         for ticker, cik in companies:
             try:
                 new = build_report_for_company(cik, ticker, args.forms, out_dir)
+                # optional summarization and RAG
+                if args.summarize:
+                    for r in new:
+                        text = r.get("snippet") or ""
+                        # if snippet is short, attempt to fetch primary_url and include
+                        if r.get("primary_url") and len(text) < 1000:
+                            try:
+                                if is_sec_url(r.get("primary_url")):
+                                    resp = requests.get(r.get("primary_url"), headers={"User-Agent": USER_AGENT}, timeout=30)
+                                    resp.raise_for_status()
+                                    text = BeautifulSoup(resp.text, "html.parser").get_text(" ", strip=True)
+                            except Exception:
+                                pass
+                        summary = None
+                        overview = None
+                        if _HAS_RAG and text:
+                            summary = local_summarize_and_rag(text)
+                        else:
+                            # fallback simple truncation
+                            summary = (text[:1000] + "...") if text else None
+                        r["summary"] = summary
+                        # optionally use SerpApi as a final fallback
+                        if args.use_serpapi and os.getenv("SERPAPI_KEY"):
+                            serpapi_cache = load_state("serpapi_cache")
+                            key = r.get("accession") or r.get("primary_url") or r.get("filing_page")
+                            if key and not serpapi_cache.get(key) and args.serpapi_call_limit > 0:
+                                try:
+                                    overview = serpapi_fetch_overview(r.get("primary_url") or r.get("filing_page"))
+                                    serpapi_cache[key] = overview
+                                    save_state("serpapi_cache", serpapi_cache)
+                                except Exception:
+                                    overview = None
+                            else:
+                                overview = serpapi_cache.get(key)
+                        r["ai_overview"] = overview
                 aggregated.extend(new)
             except Exception as ex:
                 print("Error for", ticker, ex)
