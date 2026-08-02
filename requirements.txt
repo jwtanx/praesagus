@@ -14,3 +14,7 @@ feedparser
 pyyaml
 pytrends
 httpx
+sumy
+sentence-transformers
+scikit-learn
+numpy
