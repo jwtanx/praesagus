@@ -117,3 +117,16 @@ Use the elite-ipo-equity-research skill to analyze [Company A], [Company B]
 ```
 
 Replace the analysis targets placeholder in the skill with your company list, or provide them in your prompt.
+
+## Standalone tools
+
+The following scripts can run without starting the backend:
+
+- `python scripts/cli_tools.py` — list and launch standalone ingestion and monitoring tools.
+- `python scripts/sec_qr_report.py --companies AAPL:0000320193 --forms 10-Q 10-K --out /tmp/reports --interval 0` — fetch latest SEC filings for specified companies and write JSON reports.
+- `python scripts/run_sec_filings.py --watchlist ingest/config/financial_watchlist.yaml` — fetch filings for watchlist tickers.
+- `python scripts/run_insider_monitor.py --watch-all --poll-interval 30` — monitor Form 4 filings in near real-time.
+- `python scripts/run_company_news.py --watchlist ingest/config/financial_watchlist.yaml` — poll earliest company news for watchlist tickers.
+- `python scripts/realtime_qr_watcher.py --poll-interval 60 --lookback-minutes 60` — continuously watch SEC current filings for the latest QR filings and log ticker/signal events.
+
+Use `--help` on any script for full options.

@@ -10,6 +10,7 @@ pytest
 moto
 pytest-mock
 beautifulsoup4
+feedparser
 pyyaml
 pytrends
 httpx
