@@ -20,10 +20,12 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
+from urllib.parse import urljoin, urlparse
 
 import feedparser
 import requests
 from bs4 import BeautifulSoup
+from connectors.financial.sec_client import SecEdgarClient
 
 STATE_DIR = Path(".state")
 STATE_DIR.mkdir(exist_ok=True)
@@ -68,15 +70,21 @@ def extract_filing_info(entry) -> Dict:
     link = entry.get("link", None)
     # attempt to derive accession from link
     accession = None
-    if link:
-        # link example: https://www.sec.gov/Archives/edgar/data/320193/000032019323000010/0000320193-23-000010-index.htm
+    if link and is_sec_url(link):
         accession = link.rstrip("/").split("/")[-2] if "/Archives/edgar/data/" in link else link
     return {"title": title, "published": published, "link": link, "accession": accession}
+
+
+def is_sec_url(url: str) -> bool:
+    parsed = urlparse(url)
+    return parsed.scheme in {"https"} and parsed.hostname is not None and parsed.hostname.endswith("sec.gov")
 
 
 def download_primary_document(filing_page_url: str) -> Dict[str, Optional[str]]:
     # Fetch filing page and parse document links. Prefer primary document (htm/html/xbrl)
     headers = {"User-Agent": USER_AGENT}
+    if not is_sec_url(filing_page_url):
+        raise ValueError(f"Refusing to fetch non-SEC URL: {filing_page_url}")
     resp = requests.get(filing_page_url, headers=headers, timeout=30)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -93,7 +101,9 @@ def download_primary_document(filing_page_url: str) -> Dict[str, Optional[str]]:
             if not doc_name_tag:
                 continue
             doc_href = doc_name_tag.get("href")
-            doc_url = f"https://www.sec.gov{doc_href}" if doc_href.startswith("/") else doc_href
+            doc_url = urljoin("https://www.sec.gov", doc_href)
+            if not is_sec_url(doc_url):
+                continue
             docs.append({"name": cols[2].get_text(strip=True), "type": doc_type, "url": doc_url})
     # try to get main document text for snippet: pick first html/htm doc
     snippet = None
@@ -104,6 +114,8 @@ def download_primary_document(filing_page_url: str) -> Dict[str, Optional[str]]:
             break
     if primary_url:
         try:
+            if not is_sec_url(primary_url):
+                raise ValueError(f"Refusing to fetch non-SEC URL: {primary_url}")
             r2 = requests.get(primary_url, headers=headers, timeout=30)
             r2.raise_for_status()
             text = BeautifulSoup(r2.text, "html.parser").get_text(" ", strip=True)
@@ -132,6 +144,57 @@ def build_report_for_company(cik: str, ticker: str, forms: List[str], out_dir: P
             details = download_primary_document(info["link"]) if info.get("link") else {}
         except Exception as ex:
             details = {"error": str(ex)}
+        client = SecEdgarClient(user_agent=USER_AGENT)
+        # attempt to extract authoritative XBRL metrics and compute simple performance deltas
+        metrics_summary = {}
+        try:
+            facts = client.get_company_facts(cik)
+            us_gaap = facts.get("facts", {}).get("us-gaap", {})
+
+            def latest_and_prev_for_tags(tags: List[str]):
+                for tag in tags:
+                    if tag not in us_gaap:
+                        continue
+                    units = us_gaap[tag].get("units", {})
+                    unit_key = next(iter(units.keys()), None)
+                    if not unit_key:
+                        continue
+                    entries_list = units[unit_key]
+                    if not entries_list:
+                        continue
+                    # sort by end/instant, pick latest and previous
+                    sorted_entries = sorted(entries_list, key=lambda e: e.get("end") or e.get("instant"))
+                    latest = sorted_entries[-1].get("val") if len(sorted_entries) >= 1 else None
+                    prev = sorted_entries[-2].get("val") if len(sorted_entries) >= 2 else None
+                    return (float(latest) if latest is not None else None, float(prev) if prev is not None else None)
+                return (None, None)
+
+            revenue_tags = ["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax", "SalesRevenueNet"]
+            net_income_tags = ["NetIncomeLoss", "ProfitLoss"]
+            eps_tags = ["EarningsPerShareBasic", "EarningsPerShareDiluted"]
+
+            rev_latest, rev_prev = latest_and_prev_for_tags(revenue_tags)
+            ni_latest, ni_prev = latest_and_prev_for_tags(net_income_tags)
+            eps_latest, eps_prev = latest_and_prev_for_tags(eps_tags)
+
+            def pct_change(latest, prev):
+                if latest is None or prev is None or prev == 0:
+                    return None
+                return (latest - prev) / abs(prev) * 100.0
+
+            metrics_summary = {
+                "revenue_latest": rev_latest,
+                "revenue_prev": rev_prev,
+                "revenue_pct_change": pct_change(rev_latest, rev_prev),
+                "net_income_latest": ni_latest,
+                "net_income_prev": ni_prev,
+                "net_income_pct_change": pct_change(ni_latest, ni_prev),
+                "eps_latest": eps_latest,
+                "eps_prev": eps_prev,
+                "eps_pct_change": pct_change(eps_latest, eps_prev),
+            }
+        except Exception:
+            metrics_summary = {}
         report = {
             "ticker": ticker,
             "cik": cik,
@@ -142,6 +205,7 @@ def build_report_for_company(cik: str, ticker: str, forms: List[str], out_dir: P
             "primary_url": details.get("primary_url"),
             "snippet": details.get("snippet"),
             "docs": details.get("docs"),
+            "metrics_summary": metrics_summary,
             "generated_at": datetime.utcnow().isoformat() + "Z",
         }
         new_reports.append(report)
