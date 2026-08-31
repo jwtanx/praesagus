@@ -22,7 +22,9 @@ class NewsRSSConnector:
         feed = feedparser.parse(self.feed_url)
         for entry in feed.entries:
             if hasattr(entry, "published_parsed"):
-                yield RawRecord(payload=entry)
+                published = datetime(*entry.published_parsed[:6])
+                if start <= published <= end:
+                    yield RawRecord(payload=entry)
 
     def normalize(self, raw: RawRecord) -> NormalizedRecord:
         p = raw.payload

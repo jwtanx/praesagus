@@ -41,10 +41,12 @@ from backend.financial_services import (
 )
 
 app = FastAPI(title="Praesagus API")
+raw_origins = os.getenv("PRAESAGUS_CORS_ORIGINS", "http://localhost:5173")
+configured_origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=configured_origins,
+    allow_credentials="*" not in configured_origins and bool(os.getenv("PRAESAGUS_CORS_ORIGINS")),
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -61,6 +63,11 @@ def get_api_key(x_api_key: Optional[str] = Header(None), authorization: Optional
     if token != secret:
         raise HTTPException(status_code=401, detail="Invalid API key")
     return token
+
+
+@app.get("/health")
+def health() -> Dict[str, str]:
+    return {"status": "ok"}
 
 
 @app.get("/api/v1/trends", response_model=TrendsResponse)
@@ -135,6 +142,8 @@ def get_skill_detail_endpoint(skill_id: str, api_key: Optional[str] = Depends(ge
 @app.post("/api/v1/research")
 def post_research(request: ResearchRequest, api_key: Optional[str] = Depends(get_api_key)):
     REQUESTS.inc()
+    if not get_skill_detail(request.skill_id):
+        raise HTTPException(status_code=404, detail=f"Skill not found: {request.skill_id}")
     response = ResearchResponse(
         request_id=str(uuid.uuid4()),
         status="queued",
@@ -156,6 +165,7 @@ def get_settings(api_key: Optional[str] = Depends(get_api_key)):
                 "s3_bucket": os.getenv("PRAESAGUS_S3_BUCKET", "praesagus-raw-data-local"),
                 "platform_count": len(load_platform_config()),
                 "auth_enabled": bool(os.getenv("PRAESAGUS_API_KEY")),
+                "api_base_url": os.getenv("PRAESAGUS_PUBLIC_API_BASE_URL", "http://localhost:8000"),
             }
         )
     )

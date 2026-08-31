@@ -27,6 +27,9 @@ class GoogleTrendsConnector:
         if df is None:
             return
         for index, row in df.iterrows():
+            date = index.to_pydatetime().replace(tzinfo=None) if hasattr(index, "to_pydatetime") else index
+            if date < start or date > end:
+                continue
             payload = {"date": index.strftime("%Y-%m-%d"), "data": row.to_dict()}
             yield RawRecord(payload=payload)
 

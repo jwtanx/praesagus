@@ -1,21 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { fetchDashboard, fetchSkills, postResearch } from '../services/api';
 
-const SKILLS = [
-  { id: 'elite-ipo', label: 'Elite IPO & Equity Research' },
-  { id: 'market-analysis', label: 'Market Analysis' },
-  { id: 'future-prediction', label: 'Future Prediction' },
-  { id: 'hidden-gem-finder', label: 'Hidden Gem Finder' },
-  { id: 'ai-investment-thesis', label: 'AI Investment Thesis' },
-  { id: 'geopolitics-risk', label: 'Geopolitics & Risk' },
-  { id: 'commodity-insights', label: 'Commodity Insights' },
-  { id: 'retail-consumer-growth', label: 'Retail & Consumer Growth' },
-  { id: 'portfolio-resilience', label: 'Portfolio Resilience' },
-  { id: 'capital-markets-strategy', label: 'Capital Markets Strategy' },
-];
+const DEFAULT_SKILL_ID = 'elite-ipo-equity-research';
 
 export default function Dashboard() {
-  const [selectedSkills, setSelectedSkills] = useState<string[]>(['elite-ipo']);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [prompt, setPrompt] = useState('Analyze the top company opportunities in Malaysian IPOs for the next 12 months.');
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; text: string }[]>([
     { role: 'assistant', text: 'Welcome to Praesagus. Select skills and ask your research question.' },
@@ -31,6 +20,7 @@ export default function Dashboard() {
       .then(([dashboardResult, skillsResult]) => {
         setSummary(dashboardResult.summary);
         setSkills(skillsResult.skills);
+        setSelectedSkills((current) => current.length ? current : skillsResult.skills.length ? [skillsResult.skills.find((skill) => skill.id === DEFAULT_SKILL_ID)?.id ?? skillsResult.skills[0].id] : []);
         setError(null);
       })
       .catch((err) => setError(err.message))
@@ -136,7 +126,7 @@ export default function Dashboard() {
       <section className="skill-panel">
         <h3>Select analysis skills</h3>
         <div className="skill-grid">
-          {SKILLS.map((skill) => (
+          {skills.map((skill) => (
             <button
               key={skill.id}
               type="button"
@@ -170,7 +160,7 @@ export default function Dashboard() {
               onChange={(event) => setPrompt(event.target.value)}
               placeholder="Enter your research prompt here..."
             />
-            <button onClick={sendMessage} className="send-button">
+            <button onClick={sendMessage} className="send-button" disabled={!selectedSkills.length || !prompt.trim()}>
               Send
             </button>
           </div>

@@ -117,6 +117,62 @@ a {
   margin-top: 16px;
 }
 
+.financial-stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.financial-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.financial-filters input,
+.financial-filters select,
+.financial-filters button {
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #eff5ff;
+}
+
+.financial-filters button { background: #3c82ff; cursor: pointer; }
+
+.financial-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.financial-card {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.financial-card h3 { margin-top: 0; }
+
+.financial-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.financial-row:last-child { border-bottom: 0; }
+.financial-row span { color: #9cb2ca; font-size: 0.9rem; }
+.signal-buy { color: #76d39a !important; }
+.signal-short { color: #ff8c8c !important; }
+.signal-watch { color: #ffd166 !important; }
+
 .stat-card,
 .trend-card,
 .platform-card,
@@ -229,6 +285,22 @@ a {
 
 .send-button:hover {
   background: #2f72e4;
+}
+
+.send-button:disabled,
+.financial-filters button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+@media (max-width: 900px) {
+  .layout-shell { grid-template-columns: 1fr; }
+  .sidebar { padding: 20px; border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+  .nav-menu { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .financial-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .content-area { padding: 20px; }
+  .nav-menu, .financial-grid, .financial-stats { grid-template-columns: 1fr; }
+  .financial-filters { flex-direction: column; }
 }
 
 div.status-badge {

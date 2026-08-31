@@ -79,6 +79,14 @@ class CompanyNewsConnector:
         cursor: Optional[str] = None,
     ) -> Iterator[RawRecord]:
         seen_links = set()
+
+        def in_window(item: dict) -> bool:
+            try:
+                published = datetime.fromisoformat(item["published_at"].replace("Z", "+00:00")).replace(tzinfo=None)
+            except (KeyError, TypeError, ValueError):
+                return False
+            return start <= published <= end
+
         for ticker in self.tickers:
             queries = [f"{ticker} stock", f"{ticker} earnings", f"{ticker} SEC"]
             for query in queries:
@@ -87,8 +95,7 @@ class CompanyNewsConnector:
                     if item["link"] in seen_links:
                         continue
                     seen_links.add(item["link"])
-                    pub_dt = datetime.fromisoformat(item["published_at"].replace("Z", "+00:00")).replace(tzinfo=None)
-                    if pub_dt < start or pub_dt > end:
+                    if not in_window(item):
                         continue
                     yield RawRecord(payload=item)
 
@@ -99,7 +106,8 @@ class CompanyNewsConnector:
                 if item["link"] in seen_links:
                     continue
                 seen_links.add(item["link"])
-                yield RawRecord(payload=item)
+                if in_window(item):
+                    yield RawRecord(payload=item)
 
         if self.include_sec_8k:
             sec_url = (
@@ -110,7 +118,8 @@ class CompanyNewsConnector:
                 if item["link"] in seen_links:
                     continue
                 seen_links.add(item["link"])
-                yield RawRecord(payload=item)
+                if in_window(item):
+                    yield RawRecord(payload=item)
 
     def normalize(self, raw: RawRecord) -> NormalizedRecord:
         p = raw.payload

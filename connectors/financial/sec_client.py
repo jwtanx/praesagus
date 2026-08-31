@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 import time
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 from urllib.parse import urljoin
 
@@ -75,6 +75,7 @@ class SecEdgarClient:
             }
         )
         self._ticker_map: Optional[Dict[str, Dict[str, str]]] = None
+        self._facts_cache: Dict[str, Dict[str, Any]] = {}
 
     def _rate_limit(self) -> None:
         elapsed = time.monotonic() - self._last_request_at
@@ -132,8 +133,12 @@ class SecEdgarClient:
 
     def get_company_facts(self, cik: str) -> Dict[str, Any]:
         cik = self.normalize_cik(cik)
+        if cik in self._facts_cache:
+            return self._facts_cache[cik]
         url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
-        return self._get(url).json()
+        facts = self._get(url).json()
+        self._facts_cache[cik] = facts
+        return facts
 
     def iter_filings(
         self,
@@ -149,33 +154,39 @@ class SecEdgarClient:
         for idx, form in enumerate(forms):
             if form_types_set and form.upper() not in form_types_set:
                 continue
-            accession = recent["accessionNumber"][idx]
+            def row(name: str, default: Any = "") -> Any:
+                values = recent.get(name, []) or []
+                return values[idx] if idx < len(values) else default
+
+            accession = row("accessionNumber")
+            if not accession:
+                continue
             accession_no_dashes = accession.replace("-", "")
-            primary_doc = recent["primaryDocument"][idx]
+            primary_doc = row("primaryDocument")
+            if not primary_doc:
+                continue
             filing_url = (
                 f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession_no_dashes}/{primary_doc}"
             )
             yield {
                 "form_type": form,
-                "filing_date": recent["filingDate"][idx],
-                "acceptance_datetime": recent.get("acceptanceDateTime", [""])[idx],
-                "report_date": recent.get("reportDate", [""])[idx] or None,
+                "filing_date": row("filingDate"),
+                "acceptance_datetime": row("acceptanceDateTime"),
+                "report_date": row("reportDate") or None,
                 "accession_number": accession,
                 "primary_document": primary_doc,
                 "filing_url": filing_url,
-                "description": recent.get("primaryDocDescription", [""])[idx] or None,
+                "description": row("primaryDocDescription") or None,
                 "is_amendment": form.endswith("/A"),
             }
             count += 1
             if count >= limit:
                 break
 
-    def extract_metrics(self, cik: str) -> FinancialMetrics:
+    def extract_metrics(self, cik: str, as_of: Optional[str] = None) -> FinancialMetrics:
         facts = self.get_company_facts(cik)
         us_gaap = facts.get("facts", {}).get("us-gaap", {})
         metrics = FinancialMetrics()
-        raw_values: Dict[str, Any] = {}
-
         for field_name, tags in XBRL_METRIC_MAP.items():
             for tag in tags:
                 if tag not in us_gaap:
@@ -187,9 +198,20 @@ class SecEdgarClient:
                 entries = units[unit_key]
                 if not entries:
                     continue
-                latest = max(entries, key=lambda e: e.get("end", e.get("instant", "")))
+                eligible = [
+                    entry for entry in entries
+                    if not as_of or (
+                        (entry.get("filed") or "") <= as_of
+                        and (entry.get("end") or entry.get("instant") or "") <= as_of
+                    )
+                ]
+                if not eligible:
+                    continue
+                latest = max(
+                    eligible,
+                    key=lambda e: (e.get("end", e.get("instant", "")), e.get("filed", "")),
+                )
                 value = latest.get("val")
-                raw_values[field_name] = value
                 setattr(metrics, field_name, float(value) if value is not None else None)
                 if not metrics.period_end:
                     metrics.period_end = latest.get("end") or latest.get("instant")
@@ -198,15 +220,15 @@ class SecEdgarClient:
                     metrics.unit = unit_key
                 break
 
-        if metrics.revenue and metrics.gross_profit:
+        if metrics.revenue is not None and metrics.revenue != 0 and metrics.gross_profit is not None:
             metrics.gross_margin = round(metrics.gross_profit / metrics.revenue, 4)
-        if metrics.revenue and metrics.operating_income:
+        if metrics.revenue is not None and metrics.revenue != 0 and metrics.operating_income is not None:
             metrics.operating_margin = round(metrics.operating_income / metrics.revenue, 4)
-        if metrics.revenue and metrics.net_income:
+        if metrics.revenue is not None and metrics.revenue != 0 and metrics.net_income is not None:
             metrics.net_margin = round(metrics.net_income / metrics.revenue, 4)
-        if metrics.stockholders_equity and metrics.net_income:
+        if metrics.stockholders_equity is not None and metrics.stockholders_equity != 0 and metrics.net_income is not None:
             metrics.roe = round(metrics.net_income / metrics.stockholders_equity, 4)
-        if metrics.total_assets and metrics.net_income:
+        if metrics.total_assets is not None and metrics.total_assets != 0 and metrics.net_income is not None:
             metrics.roa = round(metrics.net_income / metrics.total_assets, 4)
         if metrics.total_liabilities and metrics.stockholders_equity and metrics.stockholders_equity != 0:
             metrics.debt_to_equity = round(metrics.total_liabilities / metrics.stockholders_equity, 4)
@@ -360,8 +382,8 @@ class SecEdgarClient:
             return None
         try:
             filed_at = datetime.fromisoformat(acceptance_datetime.replace("Z", "+00:00"))
-            if filed_at.tzinfo:
-                filed_at = filed_at.replace(tzinfo=None)
-            return max(0.0, (datetime.utcnow() - filed_at).total_seconds())
+            if filed_at.tzinfo is None:
+                filed_at = filed_at.replace(tzinfo=timezone.utc)
+            return max(0.0, (datetime.now(timezone.utc) - filed_at).total_seconds())
         except ValueError:
             return None

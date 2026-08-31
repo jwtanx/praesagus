@@ -66,8 +66,8 @@ BEARISH_KEYWORDS = [
     "default",
 ]
 
-INSIDER_BUY_CODES = {"P", "A", "M", "C", "X"}
-INSIDER_SELL_CODES = {"S", "D", "F", "G", "U"}
+INSIDER_BUY_CODES = {"P"}
+INSIDER_SELL_CODES = {"S"}
 
 
 def classify_news_signal(title: str, summary: str = "") -> Tuple[TradeSignal, float, List[str], str]:
@@ -98,15 +98,15 @@ def classify_insider_signal(
     value = transaction_value or 0.0
     senior = is_officer or is_director
 
-    if code in INSIDER_BUY_CODES or ad == "A":
+    if code in INSIDER_BUY_CODES:
         if value >= min_value or (senior and value >= min_value / 5):
             return TradeSignal.BUY, f"Insider purchase ({code}) value=${value:,.0f}"
         return TradeSignal.WATCH, f"Small insider purchase ({code})"
-    if code in INSIDER_SELL_CODES or ad == "D":
+    if code in INSIDER_SELL_CODES:
         if value >= min_value or (senior and value >= min_value / 5):
             return TradeSignal.SHORT, f"Insider sale ({code}) value=${value:,.0f}"
         return TradeSignal.WATCH, f"Small insider sale ({code})"
-    return TradeSignal.WATCH, "Non-standard insider transaction"
+    return TradeSignal.WATCH, f"Non-market or non-standard insider transaction ({code or ad or 'unknown'})"
 
 
 def extract_tickers(text: str, known_tickers: List[str] | None = None) -> List[str]:

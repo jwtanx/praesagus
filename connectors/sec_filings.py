@@ -69,18 +69,18 @@ class SecFilingsConnector:
         cursor: Optional[str] = None,
     ) -> Iterator[RawRecord]:
         for cik, ticker, company_name in self._resolve_companies():
-            metrics: Optional[FinancialMetrics] = None
-            if self.include_metrics:
-                try:
-                    metrics = self.client.extract_metrics(cik)
-                except Exception:
-                    metrics = None
             for filing in self.client.iter_filings(cik, form_types=self.form_types, limit=self.limit_per_company):
                 filing_date = filing.get("filing_date", "")
                 if filing_date:
                     filed_dt = datetime.strptime(filing_date, "%Y-%m-%d")
                     if filed_dt < start or filed_dt > end:
                         continue
+                metrics: Optional[FinancialMetrics] = None
+                if self.include_metrics:
+                    try:
+                        metrics = self.client.extract_metrics(cik, as_of=filing_date or None)
+                    except Exception:
+                        metrics = None
                 payload = {
                     "cik": cik,
                     "ticker": ticker,

@@ -2,6 +2,7 @@
 
 import argparse
 import importlib
+import inspect
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List
@@ -53,6 +54,21 @@ def instantiate_connector(connector_def: Dict[str, Any], extra_kwargs: Dict[str,
     return cls(**combined)
 
 
+def store_with_s3(connector, connector_name: str, raw, normalized, bucket: str) -> Dict[str, Any]:
+    """Persist connector output even when connector uses SDK's minimal store signature."""
+    params = inspect.signature(connector.store).parameters
+    if "s3_bucket" in params:
+        return connector.store(raw, normalized, s3_bucket=bucket, s3_writer=s3_atomic_write)
+    source_id = normalized.source_id or raw.payload.get("id") or "unknown"
+    raw_uri = s3_atomic_write(bucket, f"raw/{connector_name}/source_id={source_id}/raw.json", raw.payload)
+    normalized_uri = s3_atomic_write(
+        bucket,
+        f"bronze/{connector_name}/source_id={source_id}/normalized.json",
+        normalized.__dict__,
+    )
+    return {"raw": raw_uri, "normalized": normalized_uri}
+
+
 def main():
     parser = argparse.ArgumentParser(description="Run one or more connectors and optionally store normalized output to S3.")
     parser.add_argument("--connectors", nargs="+", help="Connector keys to run (reddit, twitter, hackernews)")
@@ -76,16 +92,27 @@ def main():
     start = datetime.fromisoformat(args.start) if args.start else end - timedelta(hours=1)
     extra_kwargs = parse_unknown_args(unknown_args)
 
+    failed = 0
+    completed = 0
     for connector_def in connector_defs:
         connector_name = connector_def.get("name", "unknown")
-        connector = instantiate_connector(connector_def, extra_kwargs)
         print(f"Running connector: {connector_name}")
-        for raw in connector.fetch(start, end):
-            normalized = connector.normalize(raw)
-            if args.s3_bucket:
-                connector.store(raw, normalized, s3_bucket=args.s3_bucket, s3_writer=s3_atomic_write)
-            else:
-                print(normalized)
+        try:
+            connector = instantiate_connector(connector_def, extra_kwargs)
+            connector.authenticate()
+            for raw in connector.fetch(start, end):
+                normalized = connector.normalize(raw)
+                if args.s3_bucket:
+                    store_with_s3(connector, connector_name, raw, normalized, args.s3_bucket)
+                else:
+                    print(normalized)
+            completed += 1
+        except Exception as exc:
+            failed += 1
+            print(f"Connector {connector_name} failed: {exc}")
+
+    if completed == 0 and failed:
+        raise RuntimeError("All configured connectors failed")
 
 
 if __name__ == "__main__":

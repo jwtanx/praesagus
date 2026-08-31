@@ -67,11 +67,12 @@ class SettingsResponse(BaseModel):
     s3_bucket: str
     platform_count: int
     auth_enabled: bool
+    api_base_url: str
 
 
 class ResearchRequest(BaseModel):
     skill_id: str
-    prompt: str
+    prompt: str = Field(..., min_length=1, max_length=10_000)
     tickers: Optional[List[str]] = None
     context: Optional[str] = None
 

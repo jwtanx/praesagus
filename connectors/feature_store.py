@@ -2,7 +2,6 @@
 
 import os
 from decimal import Decimal
-from decimal import Decimal
 from typing import Dict, List
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -52,9 +51,16 @@ class DynamoFeatureStore:
         )
 
     def get_top_trends(self, limit: int = 10) -> List[Dict]:
-        # Scan and sort in-memory (adequate for small MVP).
-        resp = self.table.scan()
-        items = resp.get("Items", [])
+        # Scan all pages; DynamoDB caps each response at 1 MB.
+        items = []
+        scan_kwargs = {}
+        while True:
+            resp = self.table.scan(**scan_kwargs)
+            items.extend(resp.get("Items", []))
+            last_key = resp.get("LastEvaluatedKey")
+            if not last_key:
+                break
+            scan_kwargs["ExclusiveStartKey"] = last_key
         # sort by latest_score desc
         items_sorted = sorted(items, key=lambda x: float(x.get("latest_score", 0)), reverse=True)
         return [normalize_dynamodb_item(item) for item in items_sorted[:limit]]

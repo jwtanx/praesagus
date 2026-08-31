@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { fetchSkills, postResearch } from '../services/api';
 
+const DEFAULT_SKILL_ID = 'elite-ipo-equity-research';
+
 export default function Research() {
   const [skills, setSkills] = useState<any[]>([]);
-  const [selectedSkill, setSelectedSkill] = useState<string>('elite-ipo');
+  const [selectedSkill, setSelectedSkill] = useState<string>('');
   const [prompt, setPrompt] = useState('Identify the next emerging consumer trend in Southeast Asia.');
   const [response, setResponse] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -11,11 +13,18 @@ export default function Research() {
 
   useEffect(() => {
     fetchSkills()
-      .then((result) => setSkills(result.skills))
+      .then((result) => {
+        setSkills(result.skills);
+        setSelectedSkill((current) => current || result.skills.find((skill) => skill.id === DEFAULT_SKILL_ID)?.id || result.skills[0]?.id || '');
+      })
       .catch((err) => setError(err.message));
   }, []);
 
   async function handleSubmit() {
+    if (!selectedSkill || !prompt.trim()) {
+      setError('Select a skill and enter a prompt.');
+      return;
+    }
     setLoading(true);
     setError(null);
     try {

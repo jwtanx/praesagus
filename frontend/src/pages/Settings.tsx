@@ -23,7 +23,7 @@ export default function Settings() {
       <div className="settings-panel">
         <div className="settings-card">
           <h3>API Endpoint</h3>
-          <p>http://localhost:8000</p>
+          <p>{settings?.api_base_url ?? 'Loading...'}</p>
         </div>
         <div className="settings-card">
           <h3>Feature Store</h3>

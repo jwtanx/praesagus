@@ -62,7 +62,7 @@ def s3_atomic_write(bucket: str, key: str, data: Dict[str, Any], client=None) ->
     """
     client = client or _boto3_client("s3")
     temp_key = f"{key}.tmp.{uuid.uuid4().hex}"
-    body = json.dumps(data).encode("utf-8")
+    body = json.dumps(data, default=str).encode("utf-8")
     try:
         client.put_object(Bucket=bucket, Key=temp_key, Body=body)
         # Copy temporary to final key

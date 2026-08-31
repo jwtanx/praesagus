@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -53,7 +54,11 @@ def save_dataset(
         "metadata": metadata or {},
         "records": records,
     }
-    path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+    serialized = json.dumps(payload, indent=2, default=str)
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=base, delete=False) as handle:
+        handle.write(serialized)
+        temp_path = Path(handle.name)
+    os.replace(temp_path, path)
     return str(path)
 
 

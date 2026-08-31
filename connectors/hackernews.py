@@ -26,7 +26,11 @@ class HackerNewsConnector:
         for item_id in ids:
             item_resp = self.client.get(f"{self.base_url}/item/{item_id}.json")
             item_resp.raise_for_status()
-            yield RawRecord(payload=item_resp.json())
+            item = item_resp.json()
+            item_time = datetime.utcfromtimestamp(item.get("time", 0)) if item.get("time") else None
+            if item_time and (item_time < start or item_time > end):
+                continue
+            yield RawRecord(payload=item)
 
     def normalize(self, raw: RawRecord) -> NormalizedRecord:
         p = raw.payload

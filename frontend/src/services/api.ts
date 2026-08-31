@@ -1,9 +1,15 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 async function fetchJson<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const headers = new Headers(init.headers);
+  headers.set('Content-Type', 'application/json');
+  if (API_KEY) {
+    headers.set('X-API-Key', API_KEY);
+  }
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
     ...init,
+    headers,
   });
   if (!res.ok) {
     const text = await res.text();
@@ -45,5 +51,39 @@ export function postResearch(payload: { skill_id: string; prompt: string; ticker
 }
 
 export function fetchSettings() {
-  return fetchJson<{ feature_table: string; s3_bucket: string; platform_count: number; auth_enabled: boolean }>('/api/v1/settings');
+  return fetchJson<{ feature_table: string; s3_bucket: string; platform_count: number; auth_enabled: boolean; api_base_url: string }>('/api/v1/settings');
+}
+
+export type FinancialRecord = Record<string, any>;
+
+export function fetchFinancialSummary() {
+  return fetchJson<{ latest_filings: FinancialRecord[]; latest_insider_trades: FinancialRecord[]; latest_news: FinancialRecord[]; upcoming_events: FinancialRecord[]; counts: Record<string, number>; watchlist: string[] }>('/api/v1/financial/summary');
+}
+
+export function fetchFinancialFilings(ticker?: string, formType?: string) {
+  const params = new URLSearchParams({ limit: '50' });
+  if (ticker) params.set('ticker', ticker);
+  if (formType) params.set('form_type', formType);
+  return fetchJson<{ records: FinancialRecord[]; count: number }>(`/api/v1/financial/filings?${params}`);
+}
+
+export function fetchFinancialInsiderTrades(ticker?: string, signal?: string) {
+  const params = new URLSearchParams({ limit: '50' });
+  if (ticker) params.set('ticker', ticker);
+  if (signal) params.set('signal', signal);
+  return fetchJson<{ records: FinancialRecord[]; count: number }>(`/api/v1/financial/insider-trades?${params}`);
+}
+
+export function fetchFinancialNews(ticker?: string, signal?: string) {
+  const params = new URLSearchParams({ limit: '50' });
+  if (ticker) params.set('ticker', ticker);
+  if (signal) params.set('signal', signal);
+  return fetchJson<{ records: FinancialRecord[]; count: number }>(`/api/v1/financial/news?${params}`);
+}
+
+export function fetchFinancialCalendar(ticker?: string, eventType?: string) {
+  const params = new URLSearchParams({ limit: '50' });
+  if (ticker) params.set('ticker', ticker);
+  if (eventType) params.set('event_type', eventType);
+  return fetchJson<{ records: FinancialRecord[]; count: number }>(`/api/v1/financial/calendar?${params}`);
 }

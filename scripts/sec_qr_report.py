@@ -269,6 +269,21 @@ def build_report_for_company(cik: str, ticker: str, forms: List[str], out_dir: P
                 "eps_prev": eps_prev,
                 "eps_pct_change": pct_change(eps_latest, eps_prev),
             }
+            changes = [
+                value for value in (
+                    metrics_summary["revenue_pct_change"],
+                    metrics_summary["net_income_pct_change"],
+                    metrics_summary["eps_pct_change"],
+                ) if value is not None
+            ]
+            if not changes:
+                metrics_summary["performance_label"] = "inline"
+            elif sum(value > 0 for value in changes) > sum(value < 0 for value in changes):
+                metrics_summary["performance_label"] = "overperformance"
+            elif sum(value < 0 for value in changes) > sum(value > 0 for value in changes):
+                metrics_summary["performance_label"] = "underperformance"
+            else:
+                metrics_summary["performance_label"] = "inline"
         except Exception:
             metrics_summary = {}
         report = {

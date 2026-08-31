@@ -33,8 +33,11 @@ def load_watchlist_tickers() -> List[str]:
 
     if not DEFAULT_WATCHLIST_PATH.exists():
         return []
-    payload = yaml.safe_load(DEFAULT_WATCHLIST_PATH.read_text(encoding="utf-8")) or {}
-    return [item["ticker"] for item in payload.get("watchlist", []) if item.get("ticker")]
+    try:
+        payload = yaml.safe_load(DEFAULT_WATCHLIST_PATH.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError):
+        return []
+    return [item["ticker"].upper() for item in payload.get("watchlist", []) if isinstance(item, dict) and item.get("ticker")]
 
 
 def get_filter_metadata() -> Dict[str, Any]:
@@ -67,7 +70,7 @@ def get_filter_metadata() -> Dict[str, Any]:
 def _query_dataset(
     dataset: str,
     filters_key: str,
-    limit: int = 100,
+    limit: Optional[int] = 100,
     extra_filters: Optional[List[Dict[str, Any]]] = None,
     project: bool = True,
 ) -> List[Dict[str, Any]]:
@@ -95,7 +98,7 @@ def _query_dataset(
         visible = (config.visible_fields or {}).get(dataset, [])
         if visible:
             filtered = project_visible_fields(filtered, visible)
-    return filtered[:limit]
+    return filtered if limit is None else filtered[:limit]
 
 
 def get_filings(
@@ -108,7 +111,7 @@ def get_filings(
         extra.append({"field": "ticker", "operator": "eq", "value": ticker.upper()})
     if form_type:
         extra.append({"field": "form_type", "operator": "eq", "value": form_type.upper()})
-    return _query_dataset("filings", "filings", limit=limit, extra_filters=extra or None, project=False)
+    return _query_dataset("filings", "filings", limit=limit, extra_filters=extra or None)
 
 
 def get_insider_trades(
@@ -121,7 +124,7 @@ def get_insider_trades(
         extra.append({"field": "ticker", "operator": "eq", "value": ticker.upper()})
     if signal:
         extra.append({"field": "signal", "operator": "eq", "value": signal.lower()})
-    return _query_dataset("insider_trades", "insider_trades", limit=limit, extra_filters=extra or None, project=False)
+    return _query_dataset("insider_trades", "insider_trades", limit=limit, extra_filters=extra or None)
 
 
 def get_news(
@@ -134,7 +137,7 @@ def get_news(
         extra.append({"field": "ticker", "operator": "eq", "value": ticker.upper()})
     if signal:
         extra.append({"field": "signal", "operator": "eq", "value": signal.lower()})
-    return _query_dataset("news", "news", limit=limit, extra_filters=extra or None, project=False)
+    return _query_dataset("news", "news", limit=limit, extra_filters=extra or None)
 
 
 def get_calendar(
@@ -147,7 +150,7 @@ def get_calendar(
         extra.append({"field": "ticker", "operator": "eq", "value": ticker.upper()})
     if event_type:
         extra.append({"field": "event_type", "operator": "eq", "value": event_type.lower()})
-    return _query_dataset("calendar", "calendar", limit=limit, extra_filters=extra or None, project=False)
+    return _query_dataset("calendar", "calendar", limit=limit, extra_filters=extra or None)
 
 
 def build_financial_summary() -> Dict[str, Any]:
@@ -155,20 +158,24 @@ def build_financial_summary() -> Dict[str, Any]:
     insider = get_insider_trades(limit=5)
     news = get_news(limit=5)
     calendar = get_calendar(limit=10)
-    buy_news = len([n for n in get_news(limit=200) if n.get("signal") == "buy"])
-    short_news = len([n for n in get_news(limit=200) if n.get("signal") == "short"])
-    insider_buy = len([t for t in get_insider_trades(limit=200) if t.get("signal") == "buy"])
-    insider_sell = len([t for t in get_insider_trades(limit=200) if t.get("signal") == "short"])
+    all_filings = load_dataset("filings", get_data_dir())
+    all_insider = load_dataset("insider_trades", get_data_dir())
+    all_news = load_dataset("news", get_data_dir())
+    all_calendar = load_dataset("calendar", get_data_dir())
+    buy_news = sum(n.get("signal") == "buy" for n in all_news)
+    short_news = sum(n.get("signal") == "short" for n in all_news)
+    insider_buy = sum(t.get("signal") == "buy" for t in all_insider)
+    insider_sell = sum(t.get("signal") == "short" for t in all_insider)
     return {
         "latest_filings": filings,
         "latest_insider_trades": insider,
         "latest_news": news,
         "upcoming_events": calendar,
         "counts": {
-            "filings": len(load_dataset("filings", get_data_dir())),
-            "insider_trades": len(load_dataset("insider_trades", get_data_dir())),
-            "news": len(load_dataset("news", get_data_dir())),
-            "calendar": len(load_dataset("calendar", get_data_dir())),
+            "filings": len(all_filings),
+            "insider_trades": len(all_insider),
+            "news": len(all_news),
+            "calendar": len(all_calendar),
             "buy_signals": buy_news + insider_buy,
             "short_signals": short_news + insider_sell,
         },

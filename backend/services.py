@@ -50,10 +50,12 @@ def load_skill_catalog() -> List[Dict[str, Any]]:
         except Exception:
             continue
         metadata = _parse_frontmatter(content)
+        skill_id = metadata.get("name", path.parent.name)
+        label = metadata.get("label") or skill_id.replace("-", " ").title()
         skills.append(
             {
-                "id": metadata.get("name", path.parent.name),
-                "label": metadata.get("name", path.parent.name),
+                "id": skill_id,
+                "label": label,
                 "description": metadata.get("description", ""),
                 "category": metadata.get("category", "General"),
                 "path": str(path.relative_to(Path(__file__).resolve().parents[1])),
@@ -81,11 +83,23 @@ def load_sample_signals() -> List[Dict[str, Any]]:
 
 
 def normalize_trend_item(item: Dict[str, Any]) -> Dict[str, Any]:
+    try:
+        score = float(item.get("latest_score", item.get("score", 0)) or 0)
+    except (TypeError, ValueError):
+        score = 0.0
+    try:
+        mention_count = int(item.get("mention_count", 0) or 0)
+    except (TypeError, ValueError):
+        mention_count = 0
+    evidence = item.get("evidence", [])
+    if not isinstance(evidence, list):
+        evidence = []
+    evidence = [entry for entry in evidence if isinstance(entry, dict)]
     return {
-        "entity": item.get("entity", "unknown"),
-        "score": float(item.get("latest_score", item.get("score", 0))),
-        "mention_count": int(item.get("mention_count", 0)),
-        "evidence": item.get("evidence", []),
+        "entity": str(item.get("entity", "unknown") or "unknown"),
+        "score": score,
+        "mention_count": mention_count,
+        "evidence": evidence,
         "last_seen": item.get("updated_at") or item.get("ts") or None,
     }
 
@@ -96,7 +110,8 @@ def get_trends(limit: int = 10, source: Optional[str] = None, query: Optional[st
     if table_name:
         try:
             fs = DynamoFeatureStore(table_name=table_name)
-            trends = fs.get_top_trends(limit=limit)
+            # Filter after loading enough candidates; filtering only the top N hides valid matches.
+            trends = fs.get_top_trends(limit=100 if source or query else limit)
         except Exception:
             trends = []
 
@@ -105,11 +120,17 @@ def get_trends(limit: int = 10, source: Optional[str] = None, query: Optional[st
 
     normalized = [normalize_trend_item(item) for item in trends]
     if source:
-        normalized = [t for t in normalized if any(e.get("source") == source for e in t.get("evidence", []))]
+        source_lower = source.lower()
+        normalized = [
+            t for t in normalized
+            if any(str(e.get("source", "")).lower() == source_lower for e in t.get("evidence", []))
+        ]
     if query:
         query_lower = query.lower()
         normalized = [
-            t for t in normalized if query_lower in t["entity"].lower() or any(query_lower in str(e.get("source", "")).lower() for e in t.get("evidence", []))
+            t for t in normalized
+            if query_lower in str(t["entity"]).lower()
+            or any(query_lower in str(e).lower() for e in t.get("evidence", []))
         ]
     return normalized[:limit]
 
@@ -215,10 +236,11 @@ def build_pipeline_statuses() -> Dict[str, Any]:
 
 def build_dashboard_summary(limit: int = 5) -> Dict[str, Any]:
     trends = get_trends(limit=limit)
+    tracked_trends = get_trends(limit=100)
     platforms = load_platform_config()
     return {
         "top_trends": trends,
-        "signal_count": len(trends),
+        "signal_count": len(tracked_trends),
         "platform_count": len(platforms),
         "feature_store": os.getenv("PRAESAGUS_FEATURE_TABLE", "unknown"),
         "chart_data": build_dashboard_chart_data(trends),

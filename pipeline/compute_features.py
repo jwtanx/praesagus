@@ -5,10 +5,11 @@ import json
 import boto3
 from collections import defaultdict
 from connectors.feature_store import DynamoFeatureStore
+from connectors.utils import _boto3_client
 
 
 def aggregate_mentions(bucket: str, prefix: str = "bronze/reddit/"):
-    s3 = boto3.client("s3")
+    s3 = _boto3_client("s3")
     paginator = s3.get_paginator("list_objects_v2")
     pages = paginator.paginate(Bucket=bucket, Prefix=prefix)
     counts = defaultdict(int)
@@ -22,7 +23,8 @@ def aggregate_mentions(bucket: str, prefix: str = "bronze/reddit/"):
             except Exception:
                 continue
             # For Reddit normalized JSON we stored metadata.subreddit
-            subreddit = data.get("metadata", {}).get("subreddit") or data.get("subreddit") or "unknown"
+            metadata = data.get("metadata") or {}
+            subreddit = metadata.get("subreddit") or data.get("subreddit") or "unknown"
             counts[subreddit] += 1
     return counts
 
