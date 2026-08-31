@@ -2,6 +2,14 @@
 
 Starter repo for the Praesagus market intelligence platform.
 
+## Architecture
+
+![Praesagus system architecture](docs/praesagus-architecture.png)
+
+Editable source: [docs/praesagus-architecture.svg](docs/praesagus-architecture.svg).
+
+The platform has five runtime layers: external market and social sources; config-driven connectors and scheduled workers; S3 raw/Bronze/Silver storage plus feature computation; DynamoDB-backed FastAPI serving; and React/Vite, CLI, monitoring, and production deployment consumers. Solid lines show primary runtime flow. Dashed lines show optional SerpApi summarization, standalone reports, observability, and Terraform/AWS deployment paths. Local Docker Compose uses LocalStack to emulate S3 and DynamoDB.
+
 Quickstart (local test of Reddit connector) — using Poetry:
 
 ```bash
