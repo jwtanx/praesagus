@@ -38,6 +38,8 @@ investable strategies.
 - Include practical considerations: turnover, transaction costs, capacity, and
   crowding.
 - Provide a monitoring plan for when signals degrade or market regimes shift.
+- Require sample size, benchmark, train/test or walk-forward split, out-of-sample result, transaction costs, spread, slippage, execution delay, turnover, capacity, drawdown, survivorship-bias and look-ahead-bias checks.
+- Define kill-switch thresholds before reviewing results. Do not promote an unvalidated signal to trade-ready.
 
 ## Output Template
 - Signal set: primary and supporting signals.

@@ -62,6 +62,12 @@ zones while minimizing complexity.
 6. Be patient: wait for the market to ping-pong between the range lines before
    trading.
 
+## Validation and safety gates
+- Sneaky Pivot is a hypothesis, not a proven edge. Define “meaningful level,” “big buyer,” “big seller,” and “crosses” numerically before backtesting.
+- Add higher-timeframe regime, volatility, spread, liquidity, gap, halt, earnings/news, session, slippage, and execution-delay checks.
+- Require risk-per-trade, maximum daily loss, consecutive-loss limit, target, time stop, expected value, sample size, walk-forward validation, and out-of-sample results.
+- Reject setup as `NO TRADE` when any gate fails. Never claim one 15-minute chart predicts direction without evidence.
+
 ## Output structure
 - Trade idea type: Buy or Sell.
 - Setup: exact pivot line, entry condition, and relevant candle.

@@ -31,10 +31,13 @@ Generate market intelligence and investment research focused on equity markets, 
 
 ## Research Rules
 - Use recent data when available; if not, indicate the latest quarter or month.
+- Freeze an `as_of` timestamp and data vintage; never mix future information into the thesis.
 - Compare companies on consistent metrics (e.g., P/E, EV/EBITDA, revenue CAGR).
 - Clearly identify sources as public filings, analyst consensus, macro releases, or survey data.
 - Do not fabricate numbers. Use exact values only when supported by a valid source.
 - Flag any assumption explicitly.
+- Include bull/base/bear cases, strongest disconfirming evidence, invalidation trigger, liquidity, and portfolio concentration.
+- Use `NO TRADE` when evidence, valuation, timing, or downside controls are insufficient.
 
 ## Valuation Table Example
 | Company | Market Cap | Revenue CAGR | P/E | EV/EBITDA | Gross Margin | RoE | Recommendation |

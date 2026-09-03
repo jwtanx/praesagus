@@ -36,6 +36,7 @@ price action.
 - Evaluate momentum through price trends, relative strength, and volume support.
 - Incorporate fundamental growth expectations to validate momentum.
 - Use scenario analysis to quantify valuation re-rating risk and upside.
+- Separate price evidence from fundamental evidence. State lookback windows, benchmark-relative performance, data timestamp, costs, liquidity, entry, stop, time stop, and `NO TRADE` conditions.
 
 ## Output Template
 - Valuation posture: cheap / fair / expensive.

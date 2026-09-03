@@ -36,6 +36,7 @@ scenario-based asset mix recommendations for uncertain macro environments.
   inflation-hedged exposures.
 - Provide a credible stress scenario and how the proposed portfolio behaves.
 - Avoid generic ‘‘defensive’’ recommendations without clear metrics.
+- Require portfolio context, correlation, concentration, liquidity, stress loss, risk budget, and position size. State invalidation and rebalancing triggers.
 
 ## Output Template
 - Resilience rating: high / medium / low.

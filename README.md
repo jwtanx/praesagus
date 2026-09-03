@@ -126,6 +126,12 @@ Use the elite-ipo-equity-research skill to analyze [Company A], [Company B]
 
 Replace the analysis targets placeholder in the skill with your company list, or provide them in your prompt.
 
+### Skill taxonomy and decision controls
+
+Use `skills/praesagus-trading-orchestrator/SKILL.md` as main trigger for investment theses, stock analysis, trade setups, portfolio actions, event analysis, and recommendations. It selects specialist skills by need: core decision; quantitative signals; macro and external risk; themes and demand; risk and execution; and Moomoo data inputs.
+
+Moomoo news, digest, sentiment, technical anomaly, capital anomaly, and derivatives skills provide observations, not standalone investment decisions. All skills follow shared contract in `skills/skill-template/SKILL.md`: timestamped provenance, source grading, disconfirming evidence, deduplication, no look-ahead, scenario analysis, invalidation, liquidity/cost checks, position sizing, validation gates, and mandatory `NO TRADE` when controls fail. Sneaky Pivot remains unvalidated candidate logic until out-of-sample testing passes.
+
 ## Standalone tools
 
 The following scripts can run without starting the backend:

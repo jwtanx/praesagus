@@ -164,6 +164,15 @@ Praesagus is built as a modular, event-driven market intelligence platform with 
 - Always record provenance for `source_url`, `ingest_ts`, and `connector`.
 - Keep new connectors shareable via YAML config and avoid hardcoding source lists.
 
+## Skill orchestration and trader safeguards
+
+- Use `skills/praesagus-trading-orchestrator/SKILL.md` for cross-domain investment, trade, portfolio, or event requests.
+- Use `skills/skill-template/SKILL.md` as shared contract: provenance, timestamp/data vintage, source tier, missing-data behavior, disconfirming evidence, confidence, invalidation, liquidity, sizing, and validation.
+- Moomoo outputs are data inputs. Do not treat them as independent confirmation or final recommendations.
+- Sneaky Pivot is a hypothesis. Require formal definitions, regime and event filters, realistic costs/slippage, risk limits, walk-forward, and out-of-sample validation before trade-ready classification.
+- Prevent hindsight, confirmation, look-ahead, survivorship, multiple-testing, and narrative-overfitting errors. Preserve ex-ante forecast timestamp; score ex-post results separately.
+- Actionable output must use `research only`, `watchlist`, `paper trade`, `human approval required`, `execution-ready`, or `NO TRADE`. Live execution requires human approval and independent risk checks.
+
 ---
 
 `AGENTS.md` is now the single source of truth for architecture, current state, catches, and next-phase planning for the Praesagus repo.

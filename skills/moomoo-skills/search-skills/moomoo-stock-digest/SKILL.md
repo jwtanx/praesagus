@@ -174,6 +174,14 @@ Extract:
 
 If no clear target is present, ask a follow-up question instead of guessing.
 
+### Evidence and trader-safety controls
+
+- Record `publish_time`, retrieval time, timezone, source URL, source type, and duplicate/syndication status.
+- Separate verified fact, interpretation, opinion, and missing evidence. News direction is not expected return or valuation.
+- Deduplicate syndicated headlines and do not count sentiment, repeated news, price reaction, volume, or capital flow as independent confirmation when they share one event.
+- Check whether market price already reacted. Treat this skill as discovery/supporting evidence; final trade classification requires primary financial or regulatory confirmation, downside, invalidation, liquidity, and portfolio checks through the orchestrator.
+- Mixed or low-quality evidence remains `neutral`; never force bullish/bearish output.
+
 ### 2. Call the News API
 
 Call `GET /news_search` on `https://ai-news-search.moomoo.com` directly to retrieve the latest related public information for the target.
