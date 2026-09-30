@@ -105,3 +105,48 @@ export function fetchFinancialCalendar(ticker?: string, eventType?: string) {
   if (eventType) params.set('event_type', eventType);
   return fetchJson<{ records: FinancialRecord[]; count: number }>(`/api/v1/financial/calendar?${params}`);
 }
+
+export type CatalystType = 'filing' | 'insider_trade' | 'news' | 'calendar';
+export type CatalystRecord = {
+  id: string;
+  source_id: string | null;
+  event_type: CatalystType;
+  subtype: string | null;
+  ticker: string | null;
+  title: string;
+  source: string | null;
+  source_url: string | null;
+  event_at: string | null;
+  time_precision: 'timestamp' | 'date' | 'unknown';
+  timezone: string | null;
+  published_at: string | null;
+  available_at: string | null;
+  ingested_at: string | null;
+  raw_event_at: unknown;
+  scheduled: boolean;
+  estimated: boolean | null;
+  data_gaps: string[];
+};
+export type CatalystResponse = {
+  records: CatalystRecord[];
+  count: number;
+  total: number;
+  limit: number;
+  offset: number;
+  retrieved_at: string;
+  dataset_status: Record<string, {
+    status: 'loaded' | 'absent' | 'unreadable';
+    rows_read: number;
+    rows_skipped: number;
+    duplicates_removed: number;
+    records_loaded?: number;
+    warning?: string;
+  }>;
+};
+
+export function fetchFinancialCatalysts(ticker = '', eventType = '', offset = 0, signal?: AbortSignal) {
+  const params = new URLSearchParams({ limit: '50', offset: String(offset) });
+  if (ticker.trim()) params.set('ticker', ticker.trim().toUpperCase());
+  if (eventType) params.set('event_type', eventType);
+  return fetchJson<CatalystResponse>(`/api/v1/financial/catalysts?${params}`, { signal });
+}

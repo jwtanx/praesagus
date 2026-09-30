@@ -1,0 +1,24 @@
+.catalyst-inbox { margin-bottom: 1.5rem; }
+.catalyst-inbox p { line-height: 1.5; }
+.catalyst-controls { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; margin: 1rem 0; }
+.catalyst-controls label { display: flex; flex-direction: column; gap: .35rem; min-width: 12rem; }
+.catalyst-controls input, .catalyst-controls select, .catalyst-controls button, .catalyst-pagination button { padding: .65rem; font: inherit; min-height: 42px; border: 1px solid #ffffff20; border-radius: 10px; background: #ffffff0d; color: #eff5ff; }
+.catalyst-controls button, .catalyst-pagination button { background: #3c82ff; cursor: pointer; }
+.catalyst-pagination button:disabled { opacity: .55; cursor: not-allowed; }
+.catalyst-controls select option { background: #142035; }
+.catalyst-inbox a { color: #8cbaff; }
+.catalyst-record { border-top: 1px solid #64748b55; padding: 1rem 0; overflow-wrap: anywhere; }
+.catalyst-record-heading, .catalyst-pagination { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem; align-items: center; }
+.catalyst-record h5 { font-size: 1rem; margin: .5rem 0; }
+.catalyst-record p { margin: .4rem 0; }
+.catalyst-record summary { cursor: pointer; padding: .4rem 0; }
+.catalyst-record dl { margin: .5rem 0; }
+.catalyst-record dt { font-weight: 600; margin-top: .5rem; }
+.catalyst-record dd { margin: .2rem 0; }
+.catalyst-warnings { border-left: 3px solid #ca8a04; padding: .6rem 1rem; }
+.catalyst-meta { font-size: .85rem; opacity: .85; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .catalyst-controls label { width: 100%; min-width: 0; }
+  .catalyst-controls input, .catalyst-controls select { width: 100%; box-sizing: border-box; }
+  .catalyst-record-heading { align-items: start; flex-direction: column; }
+}

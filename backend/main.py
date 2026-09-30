@@ -1,7 +1,7 @@
 import os
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from fastapi.encoders import jsonable_encoder
@@ -46,6 +46,7 @@ from connectors.moomoo_opend import (
     OpenDUnavailableError,
     configured_connector,
 )
+from backend.catalyst_services import get_catalysts
 
 app = FastAPI(title="Praesagus API")
 raw_origins = os.getenv("PRAESAGUS_CORS_ORIGINS", "http://localhost:5173")
@@ -182,6 +183,20 @@ def get_settings(api_key: Optional[str] = Depends(get_api_key)):
 def get_financial_summary(api_key: Optional[str] = Depends(get_api_key)):
     REQUESTS.inc()
     return JSONResponse(content=jsonable_encoder(build_financial_summary()))
+
+
+@app.get("/api/v1/financial/catalysts")
+def get_financial_catalysts(
+    ticker: Optional[str] = Query(None, min_length=1, max_length=32),
+    event_type: Optional[Literal["filing", "insider_trade", "news", "calendar"]] = Query(None),
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0, le=10000),
+    api_key: Optional[str] = Depends(get_api_key),
+):
+    REQUESTS.inc()
+    if ticker is not None and not ticker.strip():
+        raise HTTPException(status_code=422, detail="ticker must not be blank")
+    return get_catalysts(ticker=ticker, event_type=event_type, limit=limit, offset=offset)
 
 
 @app.get("/api/v1/financial/filings", response_model=FinancialListResponse)

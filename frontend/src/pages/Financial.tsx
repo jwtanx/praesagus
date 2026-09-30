@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import CatalystInbox from '../components/CatalystInbox';
 import {
   fetchFinancialCalendar,
   fetchFinancialFilings,
@@ -131,6 +132,8 @@ export default function Financial() {
         <h2>Financial Intelligence</h2>
         <p>SEC filings, insider activity, earliest news signals, and upcoming events.</p>
       </div>
+
+      <CatalystInbox />
 
       <div className="financial-filters">
         <input value={ticker} onChange={(event) => setTicker(event.target.value.toUpperCase())} placeholder="Ticker (for example AAPL)" />
