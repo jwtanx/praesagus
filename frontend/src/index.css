@@ -173,6 +173,40 @@ a {
 .signal-short { color: #ff8c8c !important; }
 .signal-watch { color: #ffd166 !important; }
 
+.moomoo-panel { margin-bottom: 24px; }
+.moomoo-panel h3 { margin-bottom: 8px; }
+.moomoo-description, .moomoo-meta { color: #9cb2ca; font-size: 0.9rem; }
+.moomoo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 20px;
+}
+.moomoo-controls label { color: #b8c4d8; }
+.moomoo-controls input,
+.moomoo-controls button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #eff5ff;
+}
+.moomoo-controls input { width: 170px; }
+.moomoo-controls button { background: #3c82ff; cursor: pointer; }
+.moomoo-controls button:disabled { opacity: 0.55; cursor: not-allowed; }
+.moomoo-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.moomoo-results h4 { margin: 0 0 8px; }
+.moomoo-record { display: grid; gap: 6px; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.moomoo-record:last-child { border-bottom: 0; }
+.moomoo-record > span, .moomoo-external-link { color: #9cb2ca; font-size: 0.9rem; }
+.moomoo-record p { margin: 4px 0 0; line-height: 1.5; white-space: pre-wrap; }
+.moomoo-external-link { color: #83b4ff; }
+.moomoo-quote-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; margin: 4px 0 0; }
+.moomoo-quote-fields dt { color: #9cb2ca; font-size: 0.82rem; }
+.moomoo-quote-fields dd { margin: 2px 0 0; }
+
 .stat-card,
 .trend-card,
 .platform-card,
@@ -299,8 +333,10 @@ a {
 
 @media (max-width: 640px) {
   .content-area { padding: 20px; }
-  .nav-menu, .financial-grid, .financial-stats { grid-template-columns: 1fr; }
+  .nav-menu, .financial-grid, .financial-stats, .moomoo-results { grid-template-columns: 1fr; }
   .financial-filters { flex-direction: column; }
+  .moomoo-controls { align-items: stretch; flex-direction: column; }
+  .moomoo-controls input { width: 100%; }
 }
 
 div.status-badge {

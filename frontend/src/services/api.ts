@@ -56,6 +56,24 @@ export function fetchSettings() {
 
 export type FinancialRecord = Record<string, any>;
 
+export type MoomooRecord = Record<string, unknown>;
+
+export type MoomooResponse = {
+  records: MoomooRecord[];
+  count: number;
+  retrieved_at: string;
+};
+
+export function fetchMoomooQuotes(code: string) {
+  const params = new URLSearchParams({ codes: code });
+  return fetchJson<MoomooResponse>(`/api/v1/moomoo/quotes?${params}`);
+}
+
+export function fetchMoomooNews(keyword: string, maxCount = 10) {
+  const params = new URLSearchParams({ keyword, max_count: String(maxCount) });
+  return fetchJson<MoomooResponse>(`/api/v1/moomoo/news?${params}`);
+}
+
 export function fetchFinancialSummary() {
   return fetchJson<{ latest_filings: FinancialRecord[]; latest_insider_trades: FinancialRecord[]; latest_news: FinancialRecord[]; upcoming_events: FinancialRecord[]; counts: Record<string, number>; watchlist: string[] }>('/api/v1/financial/summary');
 }
