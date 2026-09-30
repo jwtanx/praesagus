@@ -3,8 +3,8 @@
   "metadata": {
     "title": "Daily Market Brief",
     "date": "2026-09-30",
-    "as_of": "2026-09-30T22:38:00+08:00",
-    "subtitle": "Wednesday, 30 September 2026 · U.S. & Malaysia focus · Frozen snapshot: 10:38 p.m. MYT (10:38 a.m. EDT) · Week-ahead window: 5–9 October · U.S. latest completed close: 29 Sep; Bursa close: 30 Sep",
+    "as_of": "2026-09-30T23:40:10+08:00",
+    "subtitle": "Wednesday, 30 September 2026 · U.S. & Malaysia focus · Quote snapshot: 11:40 a.m. EDT / 11:40 p.m. MYT · Week-ahead target: Friday 9 October 2026",
     "disclaimer": "Research only. Forecasts are conditional scenarios, not promises or personalized instructions."
   },
   "summary": [
@@ -240,21 +240,22 @@
       ]
     },
     "top10": {
-      "title": "Current price & estimated week-end range",
-      "kicker": "02 · Top 10 weekly watch",
+      "title": "Top 10 watchlist in each sector",
+      "kicker": "02 · Ten-name sector watchlists",
       "description": [
         {
-          "text": "Target: Friday 9 Oct 2026 close. 10 liquid focus names from the U.S. watchlist and Malaysian large caps, including three U.S. ETFs; this is a coverage selection, not a ranked “best picks” list. U.S. prices are live snapshots at 30 Sep 2026 14:38 UTC (10:38 EDT); Bursa prices are 30 Sep closes in MYT. Mid-case prices are rounded centers of qualitative scenario bands, not statistically expected values. Bands are manually set—not analyst consensus, option-implied moves, or calibrated probability intervals. Confidence is low.",
-          "sources": []
-        },
-        {
-          "text": "Color key: ↑ Upside bias → Sideways ↓ Downside bias . U.S. live prices and Bursa closing prices use different cutoffs and currencies; compare each against its own starting level. Scenario bands are discretionary, low-confidence ranges without a statistical backtest. They are for research, not an instruction to trade.",
+          "text": "60 instruments total: ten names in each of Technology, Semiconductors, Financials, Energy, Utilities, and Broad-market ETFs. The broad-market ETF group is a peer group rather than a sector. Names are curated coverage candidates, not rank-ordered picks. U.S. quote marks are intraday snapshots from 30 Sep 2026 15:36–15:40 UTC; Malaysia prices are 30 Sep Bursa closes. Week-end centers and bands are manual, low-confidence scenarios—not consensus, option-implied intervals, or calibrated probabilities.",
           "sources": []
         }
       ],
       "tables": [],
       "items": [],
-      "notes": []
+      "notes": [
+        {
+          "text": "Direction reflects a conditional scenario view. Current-day price movement is a weak cue only, not evidence of persistent direction. Verify every quote, current catalysts, and market-hours status before relying on it. All estimates are research-only.",
+          "sources": []
+        }
+      ]
     },
     "calendar": {
       "title": "Events to watch & likely transmission",
@@ -713,48 +714,27 @@
       "ticker": "AAPL",
       "name": "Apple",
       "sector": "Technology",
+      "sector_category": "technology",
       "sector_emoji": "💻",
-      "current_price": "US$338.74",
-      "price_as_of": "30 Sep · 14:38 UTC",
+      "current_price": "US$337.49",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
       "direction": "up",
       "direction_label": "Upside bias",
-      "estimated_mid_case": "US$351",
-      "estimated_range": "US$343–358",
-      "scenario": "Rate relief may support growth if yields keep easing; payrolls/services data can reverse it. Low confidence.",
+      "estimated_mid_case": "US$340.86",
+      "estimated_range": "US$323.99–350.99",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
       "sources": [
         {
-          "label": "Quote",
+          "label": "Quote / price source",
           "url": "https://finance.yahoo.com/quote/AAPL/"
         }
       ],
-      "sector_category": "technology"
-    },
-    {
-      "market": "US",
-      "country": "us",
-      "asset_type": "equity",
-      "ticker": "NVDA",
-      "name": "NVIDIA",
-      "sector": "Technology / semiconductors",
-      "sector_emoji": "💻",
-      "current_price": "US$230.39",
-      "price_as_of": "30 Sep · 14:38 UTC",
-      "direction": "up",
-      "direction_label": "Upside bias",
-      "estimated_mid_case": "US$237",
-      "estimated_range": "US$226–248",
-      "scenario": "Buyback headline and softer yields support sentiment; valuation, yields, and AI capex are disconfirming risks. Low confidence. ·",
-      "sources": [
-        {
-          "label": "Quote",
-          "url": "https://finance.yahoo.com/quote/NVDA/"
-        },
-        {
-          "label": "AP",
-          "url": "https://apnews.com/article/e695d7024ad68b0defd6fb2fc1aa25d7"
-        }
-      ],
-      "sector_category": "technology"
+      "currency": "USD",
+      "current_price_value": 337.49,
+      "estimated_mid_case_value": 340.86,
+      "range_low_value": 323.99,
+      "range_high_value": 350.99
     },
     {
       "market": "US",
@@ -763,21 +743,56 @@
       "ticker": "MSFT",
       "name": "Microsoft",
       "sector": "Technology",
+      "sector_category": "technology",
       "sector_emoji": "💻",
-      "current_price": "US$517.54",
-      "price_as_of": "30 Sep · 14:38 UTC",
-      "direction": "flat",
-      "direction_label": "Sideways",
-      "estimated_mid_case": "US$523",
-      "estimated_range": "US$508–538",
-      "scenario": "Broad rate relief offsets still-elevated yield and event risk; no specific near-term company catalyst verified. Low confidence.",
+      "current_price": "US$518.65",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$523.84",
+      "estimated_range": "US$497.90–539.40",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
       "sources": [
         {
-          "label": "Quote",
+          "label": "Quote / price source",
           "url": "https://finance.yahoo.com/quote/MSFT/"
         }
       ],
-      "sector_category": "technology"
+      "currency": "USD",
+      "current_price_value": 518.65,
+      "estimated_mid_case_value": 523.84,
+      "range_low_value": 497.9,
+      "range_high_value": 539.4
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "GOOGL",
+      "name": "Alphabet",
+      "sector": "Technology",
+      "sector_category": "technology",
+      "sector_emoji": "💻",
+      "current_price": "US$351.40",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$354.91",
+      "estimated_range": "US$337.34–365.46",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/GOOGL/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 351.4,
+      "estimated_mid_case_value": 354.91,
+      "range_low_value": 337.34,
+      "range_high_value": 365.46
     },
     {
       "market": "US",
@@ -785,118 +800,724 @@
       "asset_type": "equity",
       "ticker": "META",
       "name": "Meta Platforms",
-      "sector": "Technology / internet",
+      "sector": "Technology",
+      "sector_category": "technology",
       "sector_emoji": "💻",
-      "current_price": "US$725.49",
-      "price_as_of": "30 Sep · 14:38 UTC",
-      "direction": "down",
-      "direction_label": "Downside bias",
-      "estimated_mid_case": "US$723",
-      "estimated_range": "US$700–745",
-      "scenario": "Shares lagged this session’s broad-market advance; one intraday move is weak evidence and reversal risk is high. Low confidence.",
+      "current_price": "US$733.34",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$733.34",
+      "estimated_range": "US$704.01–762.67",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
       "sources": [
         {
-          "label": "Quote",
+          "label": "Quote / price source",
           "url": "https://finance.yahoo.com/quote/META/"
         }
       ],
-      "sector_category": "technology"
+      "currency": "USD",
+      "current_price_value": 733.34,
+      "estimated_mid_case_value": 733.34,
+      "range_low_value": 704.01,
+      "range_high_value": 762.67
     },
     {
       "market": "US",
       "country": "us",
-      "asset_type": "etf",
-      "ticker": "SPY",
-      "name": "SPDR S&P 500 ETF",
-      "sector": "Broad market",
-      "sector_emoji": "📊",
-      "current_price": "US$767.72",
-      "price_as_of": "30 Sep · 14:38 UTC",
-      "direction": "flat",
-      "direction_label": "Sideways",
-      "estimated_mid_case": "US$771",
-      "estimated_range": "US$752–790",
-      "scenario": "PCE relief is countered by high yields and Friday payrolls; broad-index outcome remains two-sided. Low confidence.",
-      "sources": [
-        {
-          "label": "Quote",
-          "url": "https://finance.yahoo.com/quote/SPY/"
-        }
-      ],
-      "sector_category": "broad-market"
-    },
-    {
-      "market": "US",
-      "country": "us",
-      "asset_type": "etf",
-      "ticker": "QQQ",
-      "name": "Invesco Nasdaq-100 ETF",
-      "sector": "Broad market / growth",
-      "sector_emoji": "📊",
-      "current_price": "US$742.60",
-      "price_as_of": "30 Sep · 14:38 UTC",
-      "direction": "up",
-      "direction_label": "Upside bias",
-      "estimated_mid_case": "US$757",
-      "estimated_range": "US$738–775",
-      "scenario": "Softer inflation can aid duration-sensitive holdings; concentration and yields create downside risk. Low confidence.",
-      "sources": [
-        {
-          "label": "Quote",
-          "url": "https://finance.yahoo.com/quote/QQQ/"
-        }
-      ],
-      "sector_category": "broad-market"
-    },
-    {
-      "market": "US",
-      "country": "us",
-      "asset_type": "etf",
-      "ticker": "XLE",
-      "name": "Energy Select Sector SPDR",
-      "sector": "Energy",
-      "sector_emoji": "⚡",
-      "current_price": "US$61.74",
-      "price_as_of": "30 Sep · 14:38 UTC",
-      "direction": "flat",
-      "direction_label": "Sideways",
-      "estimated_mid_case": "US$61.75",
-      "estimated_range": "US$60.00–63.50",
-      "scenario": "Geopolitical supply-risk premium may support energy; oil easing or no verified disruption could unwind it. Low confidence. ·",
-      "sources": [
-        {
-          "label": "Quote",
-          "url": "https://finance.yahoo.com/quote/XLE/"
-        },
-        {
-          "label": "AP",
-          "url": "https://apnews.com/article/stocks-markets-oil-bonds-us-ai-chips-e61d3d7b947a390c7eee6c8758e3095d"
-        }
-      ],
-      "sector_category": "energy"
-    },
-    {
-      "market": "MY",
-      "country": "my",
       "asset_type": "equity",
-      "ticker": "5347",
-      "name": "Tenaga Nasional",
-      "sector": "Utilities",
-      "sector_emoji": "💡",
-      "current_price": "RM12.96",
-      "price_as_of": "30 Sep close · MYT",
+      "ticker": "AMZN",
+      "name": "Amazon",
+      "sector": "Technology",
+      "sector_category": "technology",
+      "sector_emoji": "💻",
+      "current_price": "US$251.36",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
       "direction": "up",
       "direction_label": "Upside bias",
-      "estimated_mid_case": "RM13.08",
-      "estimated_range": "RM12.70–13.45",
-      "scenario": "Utility-led index rebound supports a follow-through case; weak Bursa breadth argues for caution. Low confidence.",
+      "estimated_mid_case": "US$253.87",
+      "estimated_range": "US$241.31–261.41",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
       "sources": [
         {
-          "label": "Close / market context",
-          "url": "https://www.klsescreener.com/v2/news/view/1800805/"
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/AMZN/"
         }
       ],
-      "sector_category": "utilities"
+      "currency": "USD",
+      "current_price_value": 251.36,
+      "estimated_mid_case_value": 253.87,
+      "range_low_value": 241.31,
+      "range_high_value": 261.41
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "ORCL",
+      "name": "Oracle",
+      "sector": "Technology",
+      "sector_category": "technology",
+      "sector_emoji": "💻",
+      "current_price": "US$137.53",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$137.53",
+      "estimated_range": "US$132.03–143.03",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/ORCL/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 137.53,
+      "estimated_mid_case_value": 137.53,
+      "range_low_value": 132.03,
+      "range_high_value": 143.03
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "CRM",
+      "name": "Salesforce",
+      "sector": "Technology",
+      "sector_category": "technology",
+      "sector_emoji": "💻",
+      "current_price": "US$232.66",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$234.99",
+      "estimated_range": "US$223.35–241.97",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/CRM/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 232.66,
+      "estimated_mid_case_value": 234.99,
+      "range_low_value": 223.35,
+      "range_high_value": 241.97
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "IBM",
+      "name": "IBM",
+      "sector": "Technology",
+      "sector_category": "technology",
+      "sector_emoji": "💻",
+      "current_price": "US$221.17",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$221.17",
+      "estimated_range": "US$212.32–230.02",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/IBM/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 221.17,
+      "estimated_mid_case_value": 221.17,
+      "range_low_value": 212.32,
+      "range_high_value": 230.02
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "NOW",
+      "name": "ServiceNow",
+      "sector": "Technology",
+      "sector_category": "technology",
+      "sector_emoji": "💻",
+      "current_price": "US$134.72",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$136.07",
+      "estimated_range": "US$129.33–140.11",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/NOW/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 134.72,
+      "estimated_mid_case_value": 136.07,
+      "range_low_value": 129.33,
+      "range_high_value": 140.11
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "PLTR",
+      "name": "Palantir",
+      "sector": "Technology",
+      "sector_category": "technology",
+      "sector_emoji": "💻",
+      "current_price": "US$190.54",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$192.45",
+      "estimated_range": "US$182.92–198.16",
+      "confidence": "low",
+      "scenario": "Rate relief can support duration-sensitive names; payrolls and services data may reverse the move. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/PLTR/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 190.54,
+      "estimated_mid_case_value": 192.45,
+      "range_low_value": 182.92,
+      "range_high_value": 198.16
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$230.55",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$230.55",
+      "estimated_range": "US$216.72–244.38",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/NVDA/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 230.55,
+      "estimated_mid_case_value": 230.55,
+      "range_low_value": 216.72,
+      "range_high_value": 244.38
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "TSM",
+      "name": "Taiwan Semiconductor ADR",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$461.00",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$461.00",
+      "estimated_range": "US$433.34–488.66",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/TSM/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 461.0,
+      "estimated_mid_case_value": 461.0,
+      "range_low_value": 433.34,
+      "range_high_value": 488.66
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "AVGO",
+      "name": "Broadcom",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$353.77",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$353.77",
+      "estimated_range": "US$332.54–375.00",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/AVGO/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 353.77,
+      "estimated_mid_case_value": 353.77,
+      "range_low_value": 332.54,
+      "range_high_value": 375.0
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "AMD",
+      "name": "Advanced Micro Devices",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$601.69",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$601.69",
+      "estimated_range": "US$565.59–637.79",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/AMD/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 601.69,
+      "estimated_mid_case_value": 601.69,
+      "range_low_value": 565.59,
+      "range_high_value": 637.79
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "QCOM",
+      "name": "Qualcomm",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$185.19",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$185.19",
+      "estimated_range": "US$174.08–196.30",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/QCOM/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 185.19,
+      "estimated_mid_case_value": 185.19,
+      "range_low_value": 174.08,
+      "range_high_value": 196.3
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "TXN",
+      "name": "Texas Instruments",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$280.76",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$280.76",
+      "estimated_range": "US$263.91–297.61",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/TXN/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 280.76,
+      "estimated_mid_case_value": 280.76,
+      "range_low_value": 263.91,
+      "range_high_value": 297.61
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "MU",
+      "name": "Micron Technology",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$1,072.20",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$1,072.20",
+      "estimated_range": "US$1,007.87–1,136.53",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/MU/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 1072.2,
+      "estimated_mid_case_value": 1072.2,
+      "range_low_value": 1007.87,
+      "range_high_value": 1136.53
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "AMAT",
+      "name": "Applied Materials",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$508.81",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$508.81",
+      "estimated_range": "US$478.28–539.34",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/AMAT/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 508.81,
+      "estimated_mid_case_value": 508.81,
+      "range_low_value": 478.28,
+      "range_high_value": 539.34
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "LRCX",
+      "name": "Lam Research",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$325.96",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$325.96",
+      "estimated_range": "US$306.40–345.52",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/LRCX/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 325.96,
+      "estimated_mid_case_value": 325.96,
+      "range_low_value": 306.4,
+      "range_high_value": 345.52
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "KLAC",
+      "name": "KLA",
+      "sector": "Semiconductors",
+      "sector_category": "semiconductors",
+      "sector_emoji": "🔬",
+      "current_price": "US$196.16",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$196.16",
+      "estimated_range": "US$184.39–207.93",
+      "confidence": "low",
+      "scenario": "Demand and AI-capex exposure may support the group; valuation, export policy, and large-customer spending are key disconfirming risks. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/KLAC/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 196.16,
+      "estimated_mid_case_value": 196.16,
+      "range_low_value": 184.39,
+      "range_high_value": 207.93
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "JPM",
+      "name": "JPMorgan Chase",
+      "sector": "Financials",
+      "sector_category": "financials",
+      "sector_emoji": "🏦",
+      "current_price": "US$332.76",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$332.76",
+      "estimated_range": "US$321.11–344.41",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/JPM/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 332.76,
+      "estimated_mid_case_value": 332.76,
+      "range_low_value": 321.11,
+      "range_high_value": 344.41
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "BAC",
+      "name": "Bank of America",
+      "sector": "Financials",
+      "sector_category": "financials",
+      "sector_emoji": "🏦",
+      "current_price": "US$54.79",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$54.79",
+      "estimated_range": "US$52.87–56.71",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/BAC/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 54.79,
+      "estimated_mid_case_value": 54.79,
+      "range_low_value": 52.87,
+      "range_high_value": 56.71
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "WFC",
+      "name": "Wells Fargo",
+      "sector": "Financials",
+      "sector_category": "financials",
+      "sector_emoji": "🏦",
+      "current_price": "US$80.10",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$80.10",
+      "estimated_range": "US$77.30–82.90",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/WFC/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 80.1,
+      "estimated_mid_case_value": 80.1,
+      "range_low_value": 77.3,
+      "range_high_value": 82.9
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "GS",
+      "name": "Goldman Sachs",
+      "sector": "Financials",
+      "sector_category": "financials",
+      "sector_emoji": "🏦",
+      "current_price": "US$906.00",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$906.00",
+      "estimated_range": "US$874.29–937.71",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/GS/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 906.0,
+      "estimated_mid_case_value": 906.0,
+      "range_low_value": 874.29,
+      "range_high_value": 937.71
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "MS",
+      "name": "Morgan Stanley",
+      "sector": "Financials",
+      "sector_category": "financials",
+      "sector_emoji": "🏦",
+      "current_price": "US$190.43",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$190.43",
+      "estimated_range": "US$183.76–197.10",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/MS/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 190.43,
+      "estimated_mid_case_value": 190.43,
+      "range_low_value": 183.76,
+      "range_high_value": 197.1
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "C",
+      "name": "Citigroup",
+      "sector": "Financials",
+      "sector_category": "financials",
+      "sector_emoji": "🏦",
+      "current_price": "US$130.11",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$130.11",
+      "estimated_range": "US$125.56–134.66",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/C/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 130.11,
+      "estimated_mid_case_value": 130.11,
+      "range_low_value": 125.56,
+      "range_high_value": 134.66
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "V",
+      "name": "Visa",
+      "sector": "Financials",
+      "sector_category": "financials",
+      "sector_emoji": "🏦",
+      "current_price": "US$362.23",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$362.23",
+      "estimated_range": "US$349.55–374.91",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/V/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 362.23,
+      "estimated_mid_case_value": 362.23,
+      "range_low_value": 349.55,
+      "range_high_value": 374.91
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "MA",
+      "name": "Mastercard",
+      "sector": "Financials",
+      "sector_category": "financials",
+      "sector_emoji": "🏦",
+      "current_price": "US$558.07",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$558.07",
+      "estimated_range": "US$538.54–577.60",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/MA/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 558.07,
+      "estimated_mid_case_value": 558.07,
+      "range_low_value": 538.54,
+      "range_high_value": 577.6
     },
     {
       "market": "MY",
@@ -905,21 +1526,27 @@
       "ticker": "1155",
       "name": "Malayan Banking (Maybank)",
       "sector": "Financials",
+      "sector_category": "financials",
       "sector_emoji": "🏦",
       "current_price": "RM9.99",
-      "price_as_of": "30 Sep close · MYT",
+      "price_as_of": "30 Sep 2026 Bursa close · MYT",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "RM10.00",
-      "estimated_range": "RM9.80–10.20",
-      "scenario": "Bank shares remain sensitive to foreign flows and market breadth; today's broad close is not confirmation. Low confidence.",
+      "estimated_mid_case": "RM9.99",
+      "estimated_range": "RM9.64–10.34",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
       "sources": [
         {
-          "label": "Close / market context",
+          "label": "Quote / price source",
           "url": "https://www.klsescreener.com/v2/news/view/1800805/"
         }
       ],
-      "sector_category": "financials"
+      "currency": "MYR",
+      "current_price_value": 9.99,
+      "estimated_mid_case_value": 9.99,
+      "range_low_value": 9.64,
+      "range_high_value": 10.34
     },
     {
       "market": "MY",
@@ -928,25 +1555,897 @@
       "ticker": "1023",
       "name": "CIMB Group",
       "sector": "Financials",
+      "sector_category": "financials",
       "sector_emoji": "🏦",
       "current_price": "RM7.79",
-      "price_as_of": "30 Sep close · MYT",
+      "price_as_of": "30 Sep 2026 Bursa close · MYT",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "RM7.80",
-      "estimated_range": "RM7.60–8.00",
-      "scenario": "Recovery is possible if financials stabilize, but the earlier sell-off and weak breadth remain risks. Low confidence. ·",
+      "estimated_mid_case": "RM7.79",
+      "estimated_range": "RM7.52–8.06",
+      "confidence": "low",
+      "scenario": "Rates, yield-curve shape, credit quality, and loan/deposit trends remain the main drivers; evidence is mixed into the week. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
       "sources": [
         {
-          "label": "Historical quote",
-          "url": "https://www.investing.com/equities/bumiputra---commerce-holdings-bhd-historical-data"
-        },
-        {
-          "label": "Close / market context",
+          "label": "Quote / price source",
           "url": "https://www.klsescreener.com/v2/news/view/1800805/"
         }
       ],
-      "sector_category": "financials"
+      "currency": "MYR",
+      "current_price_value": 7.79,
+      "estimated_mid_case_value": 7.79,
+      "range_low_value": 7.52,
+      "range_high_value": 8.06
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "XOM",
+      "name": "Exxon Mobil",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$163.48",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$163.48",
+      "estimated_range": "US$155.31–171.65",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/XOM/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 163.48,
+      "estimated_mid_case_value": 163.48,
+      "range_low_value": 155.31,
+      "range_high_value": 171.65
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "CVX",
+      "name": "Chevron",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$205.65",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$205.65",
+      "estimated_range": "US$195.37–215.93",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/CVX/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 205.65,
+      "estimated_mid_case_value": 205.65,
+      "range_low_value": 195.37,
+      "range_high_value": 215.93
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "COP",
+      "name": "ConocoPhillips",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$125.84",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$125.84",
+      "estimated_range": "US$119.55–132.13",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/COP/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 125.84,
+      "estimated_mid_case_value": 125.84,
+      "range_low_value": 119.55,
+      "range_high_value": 132.13
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "SLB",
+      "name": "SLB",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$49.20",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$49.20",
+      "estimated_range": "US$46.74–51.65",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/SLB/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 49.2,
+      "estimated_mid_case_value": 49.2,
+      "range_low_value": 46.74,
+      "range_high_value": 51.65
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "EOG",
+      "name": "EOG Resources",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$139.06",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$139.06",
+      "estimated_range": "US$132.11–146.01",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/EOG/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 139.06,
+      "estimated_mid_case_value": 139.06,
+      "range_low_value": 132.11,
+      "range_high_value": 146.01
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "OXY",
+      "name": "Occidental Petroleum",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$55.16",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$55.16",
+      "estimated_range": "US$52.40–57.92",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/OXY/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 55.16,
+      "estimated_mid_case_value": 55.16,
+      "range_low_value": 52.4,
+      "range_high_value": 57.92
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "PSX",
+      "name": "Phillips 66",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$258.10",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$258.10",
+      "estimated_range": "US$245.20–271.01",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/PSX/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 258.1,
+      "estimated_mid_case_value": 258.1,
+      "range_low_value": 245.2,
+      "range_high_value": 271.01
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "VLO",
+      "name": "Valero Energy",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$395.01",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$395.01",
+      "estimated_range": "US$375.26–414.76",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/VLO/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 395.01,
+      "estimated_mid_case_value": 395.01,
+      "range_low_value": 375.26,
+      "range_high_value": 414.76
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "FANG",
+      "name": "Diamondback Energy",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$185.23",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$185.23",
+      "estimated_range": "US$175.97–194.49",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/FANG/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 185.23,
+      "estimated_mid_case_value": 185.23,
+      "range_low_value": 175.97,
+      "range_high_value": 194.49
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "XLE",
+      "name": "Energy Select Sector SPDR ETF",
+      "sector": "Energy",
+      "sector_category": "energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$61.85",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$61.85",
+      "estimated_range": "US$58.76–64.95",
+      "confidence": "low",
+      "scenario": "Oil and supply-risk headlines may support energy; the risk premium can reverse quickly if no disruption materializes. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/XLE/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 61.85,
+      "estimated_mid_case_value": 61.85,
+      "range_low_value": 58.76,
+      "range_high_value": 64.95
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "NEE",
+      "name": "NextEra Energy",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "US$76.21",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$76.21",
+      "estimated_range": "US$73.92–78.50",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/NEE/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 76.21,
+      "estimated_mid_case_value": 76.21,
+      "range_low_value": 73.92,
+      "range_high_value": 78.5
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "SO",
+      "name": "Southern Company",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "US$83.31",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$83.31",
+      "estimated_range": "US$80.81–85.81",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/SO/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 83.31,
+      "estimated_mid_case_value": 83.31,
+      "range_low_value": 80.81,
+      "range_high_value": 85.81
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "DUK",
+      "name": "Duke Energy",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "US$114.38",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$114.38",
+      "estimated_range": "US$110.94–117.81",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/DUK/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 114.38,
+      "estimated_mid_case_value": 114.38,
+      "range_low_value": 110.94,
+      "range_high_value": 117.81
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "CEG",
+      "name": "Constellation Energy",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "US$252.58",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "down",
+      "direction_label": "Downside bias",
+      "estimated_mid_case": "US$252.58",
+      "estimated_range": "US$245.00–260.16",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/CEG/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 252.58,
+      "estimated_mid_case_value": 252.58,
+      "range_low_value": 245.0,
+      "range_high_value": 260.16
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "AEP",
+      "name": "American Electric Power",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "US$119.78",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$119.78",
+      "estimated_range": "US$116.19–123.37",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/AEP/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 119.78,
+      "estimated_mid_case_value": 119.78,
+      "range_low_value": 116.19,
+      "range_high_value": 123.37
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "EXC",
+      "name": "Exelon",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "US$40.76",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$40.76",
+      "estimated_range": "US$39.54–41.98",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/EXC/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 40.76,
+      "estimated_mid_case_value": 40.76,
+      "range_low_value": 39.54,
+      "range_high_value": 41.98
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "XEL",
+      "name": "Xcel Energy",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "US$70.88",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$70.88",
+      "estimated_range": "US$68.75–73.01",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/XEL/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 70.88,
+      "estimated_mid_case_value": 70.88,
+      "range_low_value": 68.75,
+      "range_high_value": 73.01
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "SRE",
+      "name": "Sempra",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "US$78.30",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$78.30",
+      "estimated_range": "US$75.95–80.65",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/SRE/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 78.3,
+      "estimated_mid_case_value": 78.3,
+      "range_low_value": 75.95,
+      "range_high_value": 80.65
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "D",
+      "name": "Dominion Energy",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "US$60.90",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$60.90",
+      "estimated_range": "US$59.07–62.73",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/D/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 60.9,
+      "estimated_mid_case_value": 60.9,
+      "range_low_value": 59.07,
+      "range_high_value": 62.73
+    },
+    {
+      "market": "MY",
+      "country": "my",
+      "asset_type": "equity",
+      "ticker": "5347",
+      "name": "Tenaga Nasional",
+      "sector": "Utilities",
+      "sector_category": "utilities",
+      "sector_emoji": "💡",
+      "current_price": "RM12.96",
+      "price_as_of": "30 Sep 2026 Bursa close · MYT",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "RM12.96",
+      "estimated_range": "RM12.57–13.35",
+      "confidence": "low",
+      "scenario": "Defensive demand and data-center power needs are potential supports; bond yields and company-specific regulation matter. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://www.klsescreener.com/v2/news/view/1800805/"
+        }
+      ],
+      "currency": "MYR",
+      "current_price_value": 12.96,
+      "estimated_mid_case_value": 12.96,
+      "range_low_value": 12.57,
+      "range_high_value": 13.35
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "SPY",
+      "name": "SPDR S&P 500 ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$768.36",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$768.36",
+      "estimated_range": "US$749.15–787.57",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/SPY/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 768.36,
+      "estimated_mid_case_value": 768.36,
+      "range_low_value": 749.15,
+      "range_high_value": 787.57
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "QQQ",
+      "name": "Invesco Nasdaq-100 ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$743.73",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$743.73",
+      "estimated_range": "US$725.14–762.32",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/QQQ/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 743.73,
+      "estimated_mid_case_value": 743.73,
+      "range_low_value": 725.14,
+      "range_high_value": 762.32
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "VTI",
+      "name": "Vanguard Total Stock Market ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$377.11",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$377.11",
+      "estimated_range": "US$367.68–386.54",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/VTI/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 377.11,
+      "estimated_mid_case_value": 377.11,
+      "range_low_value": 367.68,
+      "range_high_value": 386.54
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "DIA",
+      "name": "SPDR Dow Jones Industrial Average ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$512.54",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$512.54",
+      "estimated_range": "US$499.73–525.35",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/DIA/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 512.54,
+      "estimated_mid_case_value": 512.54,
+      "range_low_value": 499.73,
+      "range_high_value": 525.35
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "IWM",
+      "name": "iShares Russell 2000 ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$279.54",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$279.54",
+      "estimated_range": "US$272.55–286.53",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/IWM/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 279.54,
+      "estimated_mid_case_value": 279.54,
+      "range_low_value": 272.55,
+      "range_high_value": 286.53
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "RSP",
+      "name": "Invesco S&P 500 Equal Weight ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$209.22",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$209.22",
+      "estimated_range": "US$203.99–214.45",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/RSP/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 209.22,
+      "estimated_mid_case_value": 209.22,
+      "range_low_value": 203.99,
+      "range_high_value": 214.45
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "VXUS",
+      "name": "Vanguard Total International Stock ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$85.28",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$85.28",
+      "estimated_range": "US$83.15–87.41",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/VXUS/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 85.28,
+      "estimated_mid_case_value": 85.28,
+      "range_low_value": 83.15,
+      "range_high_value": 87.41
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "EFA",
+      "name": "iShares MSCI EAFE ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$104.41",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$104.41",
+      "estimated_range": "US$101.80–107.02",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/EFA/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 104.41,
+      "estimated_mid_case_value": 104.41,
+      "range_low_value": 101.8,
+      "range_high_value": 107.02
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "FXI",
+      "name": "iShares China Large-Cap ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$34.06",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$34.06",
+      "estimated_range": "US$33.21–34.91",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/FXI/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 34.06,
+      "estimated_mid_case_value": 34.06,
+      "range_low_value": 33.21,
+      "range_high_value": 34.91
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "MCHI",
+      "name": "iShares MSCI China ETF",
+      "sector": "Broad-market ETFs",
+      "sector_category": "broad-market",
+      "sector_emoji": "📊",
+      "current_price": "US$52.34",
+      "price_as_of": "30 Sep 2026 · intraday 15:36–15:40 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$52.34",
+      "estimated_range": "US$51.03–53.65",
+      "confidence": "low",
+      "scenario": "Cooler inflation is supportive, while elevated yields and upcoming labor/services data keep the index outlook two-sided. One-session market movement is not proof of a persistent direction; event volatility may dominate.",
+      "sources": [
+        {
+          "label": "Quote / price source",
+          "url": "https://finance.yahoo.com/quote/MCHI/"
+        }
+      ],
+      "currency": "USD",
+      "current_price_value": 52.34,
+      "estimated_mid_case_value": 52.34,
+      "range_low_value": 51.03,
+      "range_high_value": 53.65
     }
   ],
   "calendar": {
@@ -1114,5 +2613,47 @@
       }
     ]
   },
-  "footer": "Sources / limitations: Primary schedule/calendar sources include BLS, BEA, NY Fed, ISM, Shenzhen Exchange, and company investor relations; current market/news context uses AP and Bernama. Source URLs are linked inline. Market/news snapshot: 30 Sep 2026 22:38 MYT. Table U.S. prices are time-stamped intraday snapshots; Malaysia prices are 30 Sep closing prices. S&P last completed close is Sep 29; U.S. session was in progress at snapshot. AP’s prices are time-stamped morning observations, not guaranteed current quotes. Certain ETF exact baselines, complete OHLCV, current consensus estimates, and live Moomoo/OpenD data were not independently verified. No personalized portfolio context, costs, liquidity tests, order prices, or strategy backtest. Action class: research only / watchlist ."
+  "footer": "Sources / limitations: Primary schedule/calendar sources include BLS, BEA, NY Fed, ISM, Shenzhen Exchange, and company investor relations; current market/news context uses AP and Bernama. Source URLs are linked inline. Quote snapshot: 30 Sep 2026 23:40 MYT. U.S. table prices are time-stamped intraday snapshots; Malaysia prices are 30 Sep closing prices. S&P last completed close is Sep 29; U.S. session was in progress at snapshot. AP’s prices are time-stamped morning observations, not guaranteed current quotes. Certain ETF exact baselines, complete OHLCV, current consensus estimates, and live Moomoo/OpenD data were not independently verified. No personalized portfolio context, costs, liquidity tests, order prices, or strategy backtest. Action class: research only / watchlist .",
+  "watchlist_config": {
+    "count_per_sector": 10,
+    "selection_method": "Curated liquidity/coverage shortlist; not mechanically ranked or a best-picks list. Broad-market ETFs are a separate peer group, not an industry sector.",
+    "groups": [
+      {
+        "key": "technology",
+        "label": "Technology",
+        "emoji": "💻",
+        "instrument_scope": "sector watchlist"
+      },
+      {
+        "key": "semiconductors",
+        "label": "Semiconductors",
+        "emoji": "🔬",
+        "instrument_scope": "sector watchlist"
+      },
+      {
+        "key": "financials",
+        "label": "Financials",
+        "emoji": "🏦",
+        "instrument_scope": "sector watchlist"
+      },
+      {
+        "key": "energy",
+        "label": "Energy",
+        "emoji": "⚡",
+        "instrument_scope": "sector watchlist"
+      },
+      {
+        "key": "utilities",
+        "label": "Utilities",
+        "emoji": "💡",
+        "instrument_scope": "sector watchlist"
+      },
+      {
+        "key": "broad-market",
+        "label": "Broad-market ETFs",
+        "emoji": "📊",
+        "instrument_scope": "ETF peer group"
+      }
+    ]
+  }
 }

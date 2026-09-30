@@ -46,6 +46,7 @@ def validate_report(path: Path, d):
     def has_html_key(x):
         if isinstance(x,dict): return any(k.lower() in {'html','html_fragment','markup'} or has_html_key(v) for k,v in x.items())
         if isinstance(x,list): return any(has_html_key(v) for v in x)
+        if isinstance(x,str): return bool(re.search(r'<\s*/?\s*[a-z][^>]*>',x,re.I))
         return False
     if has_html_key(d): fail(path,'report JSON must contain structured data, not HTML fragments')
     meta=d.get('metadata')
@@ -78,18 +79,35 @@ def validate_report(path: Path, d):
             if not isinstance(item,dict) or not isinstance(item.get('title'),str):fail(path,f'sections.{name}.items[{ii}] requires title')
             for pi,p in enumerate(item.get('paragraphs',[])):validate_rich(p,path,f'sections.{name}.items[{ii}].paragraphs[{pi}]')
         for ni,note in enumerate(section.get('notes',[])):validate_rich(note,path,f'sections.{name}.notes[{ni}]')
+    config=d.get('watchlist_config')
+    if not isinstance(config,dict) or config.get('count_per_sector')!=10:fail(path,'watchlist_config.count_per_sector must be 10')
+    groups=config.get('groups')
+    if not isinstance(groups,list) or not groups:fail(path,'watchlist_config.groups must be nonempty')
+    group_keys=[g.get('key') for g in groups if isinstance(g,dict)]
+    if len(group_keys)!=len(groups) or len(group_keys)!=len(set(group_keys)) or 'semiconductors' not in group_keys:fail(path,'watchlist groups must have unique keys and include semiconductors')
+    for i,g in enumerate(groups):
+        if any(not isinstance(g.get(k),str) or not g[k].strip() for k in ('key','label','emoji')):fail(path,f'watchlist_config.groups[{i}] needs key, label and emoji')
     forecasts=d.get('forecasts')
-    if not isinstance(forecasts,list) or len(forecasts)!=10:fail(path,'forecasts must contain exactly 10 entries')
-    symbols=set()
+    expected_total=10*len(group_keys)
+    if not isinstance(forecasts,list) or len(forecasts)!=expected_total:fail(path,f'forecasts must contain {expected_total} entries (10 for each of {len(group_keys)} groups)')
+    symbols=set();sector_counts={key:0 for key in group_keys}
     for i,f in enumerate(forecasts):
         if not isinstance(f,dict):fail(path,f'forecasts[{i}] must be object')
-        required=('market','country','asset_type','ticker','name','sector','sector_category','sector_emoji','current_price','price_as_of','direction','direction_label','estimated_mid_case','estimated_range','scenario')
+        required=('market','country','asset_type','ticker','name','sector','sector_category','sector_emoji','currency','current_price','price_as_of','direction','direction_label','estimated_mid_case','estimated_range','scenario')
         if any(not isinstance(f.get(k),str) or not f[k].strip() for k in required):fail(path,f'forecasts[{i}] missing required text fields')
+        for numeric in ('current_price_value','estimated_mid_case_value','range_low_value','range_high_value'):
+            if not isinstance(f.get(numeric),(int,float)) or isinstance(f[numeric],bool) or f[numeric]<=0:fail(path,f'forecasts[{i}].{numeric} must be positive numeric data')
+        if f['range_low_value']>f['range_high_value']:fail(path,f'forecasts[{i}] range low exceeds range high')
+        if f['currency'] not in {'USD','MYR'}:fail(path,f'forecasts[{i}].currency must be USD or MYR')
         if f['direction'] not in {'up','flat','down'}:fail(path,f'forecasts[{i}].direction must be up, flat, or down')
         if f['country'] not in {'us','my'}:fail(path,f'forecasts[{i}].country must be us or my')
-        if f['sector_category'] not in {'technology','broad-market','energy','financials','utilities'}:fail(path,f'forecasts[{i}].sector_category is not supported')
+        if f['sector_category'] not in sector_counts:fail(path,f'forecasts[{i}].sector_category is not in watchlist_config.groups')
+        sector_counts[f['sector_category']]+=1
+        if not isinstance(f.get('confidence'),str) or not f['confidence'].strip():fail(path,f'forecasts[{i}].confidence required')
         if f['ticker'] in symbols:fail(path,f'duplicate ticker: {f["ticker"]}')
         symbols.add(f['ticker']);validate_sources(f.get('sources',[]),path,f'forecasts[{i}]')
+    for key,count in sector_counts.items():
+        if count!=10:fail(path,f'watchlist group {key} has {count} tickers; expected 10')
     cal=d.get('calendar')
     if not isinstance(cal,dict) or cal.get('timezone')!='Asia/Kuala_Lumpur' or not re.fullmatch(r'\d{4}-\d{2}',str(cal.get('month',''))):fail(path,'calendar requires timezone Asia/Kuala_Lumpur and YYYY-MM month')
     if not isinstance(cal.get('events'),list) or not cal['events']:fail(path,'calendar.events must be nonempty')
@@ -105,7 +123,7 @@ def validate_report(path: Path, d):
             if not isinstance(event.get(key),str) or not event[key].strip():fail(path,f'{loc}.{key} required')
         validate_sources(event.get('sources',[]),path,loc)
     if not isinstance(d.get('footer'),str) or not d['footer'].strip():fail(path,'footer is required')
-    return len(forecasts),len(cal['events'])
+    return len(forecasts),len(cal['events']),sector_counts
 
 def validate_index(path:Path,d,json_files):
     if not isinstance(d,dict) or d.get('schema_version')!=1:fail(path,'schema_version must be 1')
@@ -130,8 +148,9 @@ def main():
     if not candidates:raise ValueError(f'{root}: no dated JSON reports found')
     file_names={p.name for p in root.glob('????-??-??.json')};total=0
     for p in candidates:
-        n,events=validate_report(p,read_json(p));total+=1
-        print(f'OK {p}: {n} forecasts, {events} calendar events')
+        n,events,counts=validate_report(p,read_json(p));total+=1
+        breakdown=', '.join(f'{key}={count}' for key,count in counts.items())
+        print(f'OK {p}: {n} forecasts ({breakdown}), {events} calendar events')
     idx=root/'reports.json'
     validate_index(idx,read_json(idx),file_names)
     print(f'OK {idx}: {len(read_json(idx)["reports"])} report dates indexed')
