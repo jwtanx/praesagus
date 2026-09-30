@@ -24,6 +24,11 @@ Treat `docs/`, scripts, configuration, and tests as evidence of implemented beha
 - Preserve raw-source provenance and timestamps. Avoid destructive changes to stored data; use versioned or append-only outputs where appropriate.
 - Keep failures visible and bounded: validate inputs, handle upstream errors, use sensible timeouts/retries, and avoid claiming freshness or success without evidence.
 
+## Project lead workflow
+
+- Use `skills/praesagus-feature-planner/SKILL.md` to prioritize new features and define an evidence-backed, measurable MVP.
+- Use `skills/praesagus-project-lead/SKILL.md` for material multi-step coordination. Delegate bounded evidence work to Researcher and accepted implementation work to Engineer; Lead owns scope, review, integration, and final decisions.
+
 ## Data, research, and trader safeguards
 
 - Record `source_url` where allowed, source/provider, publication time, retrieval/availability time, timezone, data period, connector, and ingestion time. Separate source facts from interpretation and model-generated text.
