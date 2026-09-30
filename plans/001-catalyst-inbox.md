@@ -1,0 +1,54 @@
+# 001 — Company catalyst inbox
+
+State: selected for implementation, assigned to Engineer on 1 October 2026. Target: a solo or small-team researcher reviewing tracked companies. Lead accepts the scope below; implementation remains pending.
+
+## Problem and value
+
+Financial Intelligence exposes filings, news, insider trades, and calendars in separate panels. Users must scan several lists and reconcile different timestamps to find relevant evidence. A source-linked inbox connects those existing records into one filterable workflow. Expected impact: high reduction in navigation and verification friction; no measured time saving yet.
+
+Success hypothesis: at least four of five test users can find the original source for a supplied company event in under 60 seconds. Record time-to-source before/after using the same frozen fixture set. Failure means revisit layout or source coverage before adding automated interpretation.
+
+## Scope and interfaces
+
+Add `GET /api/v1/financial/catalysts` with existing API-key enforcement. Query parameters: optional `ticker` (trimmed, uppercased, bounded text), optional `event_type` from `filing`, `insider_trade`, `news`, `calendar`; `limit` default 50, range 1–200; `offset` default 0, range 0–10000. Invalid type/bounds return 422. Return `{records, count, total, limit, offset, retrieved_at, dataset_status}` where total is after filtering/deduplication and before slicing. Offset paging is stable for an unchanged dataset; concurrent ingestion may shift pages.
+
+Read only the local financial datasets selected by `PRAESAGUS_FINANCIAL_DATA_DIR`. Do not fetch providers on this path. Preserve existing financial APIs and filter behavior; the inbox deliberately reads raw stored records rather than the visible-field projections or directional/transaction-value filters in `financial_filters.yaml`. Clearly label this as all stored evidence, so it does not quietly imply that existing signal filters apply.
+
+Each item exposes:
+
+| Field | Contract |
+|---|---|
+| `id` | Dataset-prefixed stable source ID; fallback exact-record hash if absent |
+| `source_id` | Original ID or null; never fabricate provider identity |
+| `event_type`, `subtype` | Four normalized types plus original form/event subtype when present |
+| `ticker`, `title` | Original normalized ticker or null; sensible deterministic factual title fallback |
+| `source`, `source_url` | Original news provider or SEC attribution; safe HTTP(S) URL or null |
+| `event_at`, `time_precision`, `timezone` | Valid aware timestamp in UTC, or original date-only event with precision `date`; missing/invalid time remains null/unknown |
+| `published_at`, `available_at`, `ingested_at` | Original source/publication, first-observed/available and ingestion times independently retained where known; no substitutes represented as facts |
+| `scheduled`, `data_gaps` | Calendar future events labeled scheduled; explicit unavailable/ambiguous fields |
+
+`retrieved_at` is API read time, not publication, ingestion success, or proof of fresh provider coverage. Do not equate event time with publication time. A future calendar event is valid scheduled information; a future observed news/filing timestamp is flagged and cannot lead the observed feed as if it already occurred.
+
+## Normalization and ordering
+
+- Filings: source URLs prefer document_url then filing_url; factual title includes company/ticker and form. Acceptance timestamp is the occurrence/publication candidate; filing_date is a date-only fallback. A timezone-naive acceptance string stays explicitly ambiguous; do not assume UTC.
+- Insider: document_url then form_url; title describes owner/transaction without claiming informed direction. Transaction date is occurrence date; acceptance time separately records disclosure availability.
+- News: link and source_name; published_at is publication; first_seen_at is observation, ingest_ts is ingestion. Preserve discrepancies and flag invalid/future values rather than replacing them with read time.
+- Calendar: event_date/event_time and supplied timezone; date-only events remain date-only. Preserve estimated flag; obtain source_url only if actually present (including metadata). Global macro records can have null ticker; ticker filter excludes them unless they explicitly match.
+- Deduplicate within each dataset by source_id. Never collapse an insider transaction into its filing or independently sourced articles into one event. For missing IDs, remove only exact duplicate normalized/raw content using a deterministic digest; report the gap. Choose duplicate representatives deterministically (valid latest ingestion timestamp, then canonical serialized record); do not depend on input order.
+- Observed dated events sort newest first, missing/ambiguous times last, stable ID breaks ties. Show future scheduled calendar events in a clearly labeled upcoming group sorted soonest first, followed by observed/past events. Do not convert a date-only value into an invented midnight timestamp; a date sorting key is acceptable if precision stays visible.
+- Dataset status distinguishes loaded, absent, and unreadable/malformed. Surface partial results with warnings; an empty valid dataset is not a failed run and an old file is not proof of health. Validate record lists, skip malformed rows with visible counts, and never log raw private payloads.
+
+## Frontend and engineering boundary
+
+Add a typed API client and a `CatalystInbox` component embedded in the Financial page. Include event-type/ticker controls, Apply/Refresh, pagination, loading/error/empty states, partial-dataset warnings, original-source link, precise/date-only/unavailable times, and research-only explanatory text. Display data gaps on demand without drowning the main feed. Source links use safe HTTP(S), `rel="noopener noreferrer"`; render text through React, never injected HTML. Ignore stale responses after filters change or unmount; refresh failure must not leave old records presented as new results.
+
+Engineer owns `backend/catalyst_services.py` (new), minimal route wiring in `backend/main.py`, `frontend/src/services/api.ts`, new `frontend/src/components/CatalystInbox.tsx`, minimal embed in `frontend/src/pages/Financial.tsx`, optional component-scoped stylesheet, and focused tests. Lead owns `plans/` and documentation integration. Preserve existing Moomoo panel and shared report/skill/ledger work. No schema migration, LLM summaries, new signals, provider calls, notifications, or persistent Moomoo ingestion.
+
+## Acceptance and harness
+
+Deterministic service/API fixtures cover all four datasets, missing/malformed files, malformed rows, duplicate IDs, missing IDs, offset pages, invalid filters, empty results, null tickers, naive/date-only/offset timestamps, future news versus scheduled events, malicious links, and API authentication. Assert original timestamps/provenance survive normalization and that no upstream calls occur. Test filtering before limit and stable tie sorting.
+
+Frontend checks cover source links, partial warnings, stale-request protection, apply/refresh/paging, and empty/error states. Use existing test tooling where available; if no component harness exists, add a small testable normalization/view helper plus documented browser fixture checks rather than claiming a build proves UI behavior. Run focused tests, full pytest, frontend build/type check, and desktop/mobile fixture review; report exact commands and outcomes.
+
+Effort: normalization/API 1–1.5 days; frontend 0.75–1.25; failure/replay tests 0.75–1.25; review/runbook 0.5–1. Total 3–5 person-days. Largest uncertainty: timestamp/source completeness. Deliver complete end-to-end MVP before expanding. Rollback is removing the additive route/component; raw datasets remain untouched.
