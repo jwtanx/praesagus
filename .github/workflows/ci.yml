@@ -22,7 +22,7 @@ jobs:
       - name: Run tests
         run: |
           test_log="$RUNNER_TEMP/pytest.log"
-          if poetry run pytest -q >"$test_log" 2>&1; then
+          if poetry run python -m pytest -q >"$test_log" 2>&1; then
             cat "$test_log"
           else
             cat "$test_log"
