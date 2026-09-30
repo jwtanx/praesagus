@@ -1,0 +1,12 @@
+#!/bin/sh
+# Require a ticket key and a nonblank description on the subject line.
+if [ "$#" -ne 1 ] || [ ! -r "$1" ]; then
+    echo 'Cannot read commit message file.' >&2
+    exit 1
+fi
+subject=$(sed -n '1p' "$1")
+if ! printf '%s\n' "$subject" | LC_ALL=C grep -Eq '^PRSG-(0|[1-9][0-9]*) [^[:space:]].*$'; then
+    echo 'Commit title must be: PRSG-<number> <description>' >&2
+    echo 'Example: PRSG-0 Add ticket harness and commit hooks' >&2
+    exit 1
+fi

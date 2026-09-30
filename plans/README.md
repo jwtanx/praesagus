@@ -34,6 +34,8 @@ This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATI
 
 ## Ticket convention and harness
 
+Commit titles: `PRSG-N Description`; shared harness changes use `PRSG-0`. Enable the title check in each checkout with `sh scripts/install_git_hooks.sh`. The local hook is not a server-side policy and can be bypassed; review titles before pushing.
+
 Create plans under `plans/YYYY-MM-DD/` using the planning date in Asia/Kuala_Lumpur. Allocate the next unused repository-wide `PRSG-N` key; never restart numbering for a new day or reuse a completed key. Filename: `PRSG-N-short-title.md`, with matching `PRSG-N.harness.json`. Preserve creation date when resuming work. Each plan has a "When it's considered done" checklist whose stable IDs match JSON acceptance items. Mark a box only when evidence is recorded; pending reviews and measurements stay unchecked.
 
 The planning skill defines the [manifest contract and researched patterns](../skills/praesagus-feature-planner/references/ticket-harness.md). Validate a manifest with:

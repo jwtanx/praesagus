@@ -19,6 +19,8 @@ Treat `docs/`, scripts, configuration, and tests as evidence of implemented beha
 
 ## Engineering practice
 
+- Commit titles must be `PRSG-<number> <description>` (for example `PRSG-1 Add catalyst inbox`). Reserve `PRSG-0` for shared harness/workflow infrastructure. Install the versioned commit-msg hook once per checkout with `sh scripts/install_git_hooks.sh`; Git clones do not enable hooks automatically. Existing hooks are preserved by the installer. Local hooks can be bypassed, so Lead must also review commit titles before pushing. User-required ticket titles supersede Conventional Commits skill defaults.
+
 - Inspect the relevant implementation and tests before changing behavior. Make the smallest coherent change and preserve unrelated working-tree changes.
 - Follow existing interfaces, formatting, and dependency choices. Prefer official APIs and documented connector contracts; respect rate limits, terms, licensing, and authentication boundaries.
 - Never put credentials, tokens, private user data, or generated secrets in source, logs, fixtures, or commits. Load secrets from environment/configuration or a secret store; do not print them.
