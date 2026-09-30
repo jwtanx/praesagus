@@ -18,19 +18,6 @@ jobs:
       - name: Install Poetry and dependencies
         run: |
           pip install poetry
-          install_log="$RUNNER_TEMP/poetry-install.log"
-          if poetry install --no-interaction --no-ansi --no-root >"$install_log" 2>&1; then
-            cat "$install_log"
-          else
-            cat "$install_log"
-            error="$(tail -n 1 "$install_log")"
-            error="${error//'%'/'%25'}"
-            error="${error//$'\r'/'%0D'}"
-            error="${error//$'\n'/'%0A'}"
-            error="${error//':'/'%3A'}"
-            error="${error//','/'%2C'}"
-            echo "::error title=Poetry install failed::$error"
-            exit 1
-          fi
+          poetry install --no-interaction --no-ansi --no-root
       - name: Run tests
         run: poetry run pytest -q
