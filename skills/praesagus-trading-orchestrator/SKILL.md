@@ -19,6 +19,8 @@ Coordinate specialist skills into one auditable decision. Specialist skills prod
 
 ## Skill map
 
+For routine daily work, start with `daily-market-brief` for timestamped news and catalyst synthesis, or `technical-trend-analysis` for price structure and conditional technical scenarios. These are bounded research workflows; they do not replace this orchestrator for investment decisions, portfolios, or trade plans.
+
 1. Core decision: `market-analysis`, `earnings-quality`, `valuation-momentum`, `corporate-governance`, `issuer-credit-quality`.
 2. Quantitative signals: `alpha-signal-engine`, `smart-beta-factor`, `sector-rotation`, `securities-arbitrage`.
 3. Macro and external risk: `global-macro-cycle`, `quantitative-macro`, `geopolitics-risk`, `regulation-policy`, `regulatory-event-driven`, `inflation-opportunity`, `commodity-insights`.

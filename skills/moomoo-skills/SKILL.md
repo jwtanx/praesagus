@@ -12,7 +12,11 @@ metadata:
 
 # moomoo Skill Installation Guide
 
-By installing moomoo Skills, you can search news, analyze comment sentiment, detect stock anomaly signals, and access real-time quotes, execute trades, and manage portfolios via OpenAPI - all within your AI conversations, without switching between apps.
+## Praesagus repository scope
+
+This vendor guide describes capabilities of separately installed moomoo/OpenAPI skills; it is not a description of the checked-in Praesagus runtime. In this repository, `connectors/moomoo_opend.py` and `/api/v1/moomoo/news` and `/api/v1/moomoo/quotes` are read-only, request/response integrations. News has a per-process rolling limit of 10 calls per 30 seconds; quotes are latest snapshots after a request-scoped subscription. OpenD runs separately, market-data entitlements are required, and this adapter does not provide push ingestion, account/portfolio access, or order execution. Do not infer that a vendor skill, its examples, or this document installs or enables those functions in Praesagus. Consult the repository's root `AGENTS.md` for the maintained integration boundary.
+
+The separately installed vendor package describes skills for news search, sentiment, anomaly detection, quotes, trading, and portfolio management through its OpenAPI integration. Those package capabilities do not imply equivalent functionality in the checked-in Praesagus runtime; see the scope boundary above.
 
 ---
 

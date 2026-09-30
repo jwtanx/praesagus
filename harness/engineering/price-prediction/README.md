@@ -6,7 +6,7 @@ This folder supports evidence-based review of the `daily-market-brief` and `tech
 
 1. Freeze `as_of` timestamp/timezone, market/venue/session, input window, source links, and whether prices are live, delayed, or prior close.
 2. Search earlier dated briefs for forecasts due to mature. Preserve their original wording and baseline; do not retroactively edit a forecast.
-3. For each discrete directional forecast, append one row to `forecast-ledger.csv`. Record ticker/instrument, benchmark, baseline close and date, forecast direction or range, confidence (prefer calibrated probability only when method supports it), horizon type, target date, and invalidation condition. Use separate rows for next-session and week-end targets.
+3. For each discrete directional forecast, append one row to `forecast-ledger.csv`. Record ticker/instrument, benchmark, baseline close and date, forecast direction or range, confidence (prefer calibrated probability only when method supports it), `llm_model` (the model that collected or authored the forecast row; leave blank for historical rows where unknown), horizon type, target date, and invalidation condition. Use separate rows for next-session and week-end targets.
 4. If prior reports or required actual prices are unavailable, state `not scored` and why. Never synthesize a T-1 forecast or fill missing price data by inference.
 
 ## When a target matures
@@ -19,4 +19,4 @@ Candidate errors can become frozen regression cases after human review. Any fore
 
 ## CSV columns
 
-`forecast_id` is a stable unique identifier. Use ISO-8601 timestamps with timezone offsets and decimal prices in the instrument's quote currency. Store blank cells for unknown/unmatured values, not invented zeros. Suggested status values: `pending`, `scored`, `not_scored`, `data_unavailable`, `abstain`. Preserve source URLs where licensing permits.
+`forecast_id` is a stable unique identifier. Use ISO-8601 timestamps with timezone offsets and decimal prices in the instrument's quote currency. Store blank cells for unknown/unmatured values, not invented zeros. Suggested status values: `pending`, `scored`, `not_scored`, `data_unavailable`, `abstain`. Preserve source URLs where licensing permits. The `llm_model` column records which LLM collected or authored that audit row (for example `Composer`); it is provenance for review, not a quality score.
