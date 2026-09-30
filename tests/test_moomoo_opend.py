@@ -4,6 +4,8 @@ from connectors.moomoo_opend import (
     MoomooOpenDConnector,
     OpenDAPIError,
     OpenDUnavailableError,
+    OpenDRateLimitError,
+    SlidingWindowRateLimiter,
 )
 
 
@@ -109,3 +111,24 @@ def test_missing_sdk_is_reported_without_opening_connection(monkeypatch):
     monkeypatch.setattr(builtins, "__import__", import_without_moomoo)
     with pytest.raises(OpenDUnavailableError, match="install moomoo-api"):
         MoomooOpenDConnector().search_news("AAPL")
+
+
+def test_news_search_rate_limiter_enforces_rolling_quota():
+    now = [0.0]
+    limiter = SlidingWindowRateLimiter(limit=2, window_seconds=30, clock=lambda: now[0])
+
+    limiter.acquire()
+    limiter.acquire()
+    with pytest.raises(OpenDRateLimitError) as exc:
+        limiter.acquire()
+    assert exc.value.retry_after == 30
+
+    now[0] = 30.0
+    limiter.acquire()
+
+
+def test_non_finite_numbers_are_json_safe():
+    from connectors.moomoo_opend import _json_value
+
+    assert _json_value(float("nan")) is None
+    assert _json_value(float("inf")) is None

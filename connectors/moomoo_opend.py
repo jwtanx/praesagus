@@ -6,8 +6,12 @@ market quotes require a subscription before they can be read.
 
 from __future__ import annotations
 
+import math
 import os
+from collections import deque
 from contextlib import contextmanager
+from threading import Lock
+from time import monotonic
 from typing import Any, Callable, Iterator, Optional
 
 
@@ -19,6 +23,38 @@ class OpenDAPIError(RuntimeError):
     """Raised when an OpenD API call returns a failure status."""
 
 
+class OpenDRateLimitError(RuntimeError):
+    """Raised when this process reaches the documented OpenD news-search limit."""
+
+    def __init__(self, retry_after: int) -> None:
+        self.retry_after = retry_after
+        super().__init__(f"Moomoo news search limit reached; retry in {retry_after} seconds")
+
+
+class SlidingWindowRateLimiter:
+    """Thread-safe fixed quota over a rolling time window."""
+
+    def __init__(self, limit: int = 10, window_seconds: float = 30.0, clock=monotonic) -> None:
+        self.limit = limit
+        self.window_seconds = window_seconds
+        self._clock = clock
+        self._timestamps: deque[float] = deque()
+        self._lock = Lock()
+
+    def acquire(self) -> None:
+        now = self._clock()
+        with self._lock:
+            while self._timestamps and now - self._timestamps[0] >= self.window_seconds:
+                self._timestamps.popleft()
+            if len(self._timestamps) >= self.limit:
+                retry_after = max(1, math.ceil(self.window_seconds - (now - self._timestamps[0])))
+                raise OpenDRateLimitError(retry_after)
+            self._timestamps.append(now)
+
+
+NEWS_SEARCH_RATE_LIMITER = SlidingWindowRateLimiter()
+
+
 def _json_value(value: Any) -> Any:
     if hasattr(value, "isoformat"):
         return value.isoformat()
@@ -27,6 +63,8 @@ def _json_value(value: Any) -> Any:
     if isinstance(value, (list, tuple)):
         return [_json_value(item) for item in value]
     if value is None or isinstance(value, (str, int, float, bool)):
+        if isinstance(value, float) and not math.isfinite(value):
+            return None
         return value
     # pandas/numpy scalar values expose item(); avoid importing pandas here.
     if hasattr(value, "item"):
@@ -60,12 +98,14 @@ class MoomooOpenDConnector:
         context_factory: Optional[Callable[..., Any]] = None,
         ret_ok: Optional[int] = None,
         quote_subtype: Any = None,
+        news_rate_limiter: Optional[SlidingWindowRateLimiter] = None,
     ) -> None:
         self.host = host or os.getenv("MOOMOO_OPEND_HOST", "127.0.0.1")
         self.port = int(port or os.getenv("MOOMOO_OPEND_PORT", "11111"))
         self._context_factory = context_factory
         self._ret_ok = ret_ok
         self._quote_subtype = quote_subtype
+        self._news_rate_limiter = news_rate_limiter or NEWS_SEARCH_RATE_LIMITER
 
     def _sdk(self) -> tuple[Callable[..., Any], int, Any]:
         if self._context_factory is not None:
@@ -109,6 +149,7 @@ class MoomooOpenDConnector:
 
     def search_news(self, keyword: str, max_count: int = 10) -> list[dict[str, Any]]:
         """Search Moomoo news/notices/ratings (request/response, not a push feed)."""
+        self._news_rate_limiter.acquire()
         with self._connection() as (context, ret_ok, _):
             data = self._check(
                 context.get_search_news(keyword, max_count=max_count), ret_ok, "news search"

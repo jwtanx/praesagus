@@ -1,6 +1,6 @@
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
@@ -42,6 +42,7 @@ from backend.financial_services import (
 from connectors.moomoo_opend import (
     MoomooOpenDConnector,
     OpenDAPIError,
+    OpenDRateLimitError,
     OpenDUnavailableError,
     configured_connector,
 )
@@ -247,12 +248,29 @@ def get_moomoo_news(
     """Search Moomoo news, notices, and ratings through OpenD."""
     REQUESTS.inc()
     try:
-        records = connector.search_news(keyword.strip(), max_count=max_count)
+        normalized_keyword = keyword.strip()
+        if not normalized_keyword:
+            raise HTTPException(status_code=422, detail="keyword must contain non-whitespace characters")
+        records = connector.search_news(normalized_keyword, max_count=max_count)
+    except OpenDRateLimitError as exc:
+        raise HTTPException(
+            status_code=429,
+            detail=str(exc),
+            headers={"Retry-After": str(exc.retry_after)},
+        ) from exc
     except OpenDUnavailableError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except OpenDAPIError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
-    return JSONResponse(content=jsonable_encoder({"records": records, "count": len(records)}))
+    return JSONResponse(
+        content=jsonable_encoder(
+            {
+                "records": records,
+                "count": len(records),
+                "retrieved_at": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+    )
 
 
 @app.get("/api/v1/moomoo/quotes")
@@ -264,7 +282,13 @@ def get_moomoo_quotes(
     """Fetch latest read-only quotes for market-qualified codes, e.g. US.AAPL."""
     REQUESTS.inc()
     normalized_codes = list(dict.fromkeys(code.strip().upper() for code in codes))
-    if any("." not in code or any(char.isspace() for char in code) for code in normalized_codes):
+    if any(
+        "." not in code
+        or not code.split(".", 1)[0]
+        or not code.split(".", 1)[1]
+        or any(char.isspace() for char in code)
+        for code in normalized_codes
+    ):
         raise HTTPException(
             status_code=422,
             detail="Each code must be market-qualified, for example US.AAPL",
@@ -275,7 +299,15 @@ def get_moomoo_quotes(
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except OpenDAPIError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
-    return JSONResponse(content=jsonable_encoder({"records": records, "count": len(records)}))
+    return JSONResponse(
+        content=jsonable_encoder(
+            {
+                "records": records,
+                "count": len(records),
+                "retrieved_at": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+    )
 
 
 @app.get("/metrics")

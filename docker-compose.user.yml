@@ -25,6 +25,10 @@ services:
       - PRAESAGUS_S3_BUCKET=praesagus-raw-data-local
       - PRAESAGUS_FEATURE_TABLE=praesagus-feature-store-local
       - PRAESAGUS_CORS_ORIGINS=http://localhost:5173
+      - MOOMOO_OPEND_HOST=${MOOMOO_OPEND_HOST:-host.docker.internal}
+      - MOOMOO_OPEND_PORT=${MOOMOO_OPEND_PORT:-11111}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - localstack
 

@@ -10,11 +10,85 @@ Editable source: [docs/praesagus-architecture.svg](docs/praesagus-architecture.s
 
 The platform has five runtime layers: external market and social sources; config-driven connectors and scheduled workers; S3 raw/Bronze/Silver storage plus feature computation; DynamoDB-backed FastAPI serving; and React/Vite, CLI, monitoring, and production deployment consumers. Solid lines show primary runtime flow. Dashed lines show optional SerpApi summarization, standalone reports, observability, and Terraform/AWS deployment paths. Local Docker Compose uses LocalStack to emulate S3 and DynamoDB.
 
-Quickstart (local test of Reddit connector) — using Poetry:
+## Quick Start
+
+### 1. Install dependencies
 
 ```bash
-# Install Poetry: https://python-poetry.org/docs/#installation
 poetry install
+```
+
+Install Node.js separately for the frontend.
+
+### 2. Start backend, ingestion, and local services
+
+In terminal 1, from the repository root:
+
+```bash
+docker compose up --build
+```
+
+This starts the API, configured ingestion worker, LocalStack, Airflow, Prometheus, and Grafana. API is at `http://localhost:8000`; Airflow `:8080`; Prometheus `:9090`; Grafana `:3000`.
+
+### 3. Start the frontend
+
+In terminal 2:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`. Keep both terminals running. Press `Ctrl+C` in each terminal to stop services.
+
+### 4. Connect Moomoo OpenD (optional)
+
+Install and start Moomoo OpenD separately, log in there, and ensure its listening port is reachable from the API container. Compose defaults the API connection to `host.docker.internal:11111`; override it when needed:
+
+```bash
+MOOMOO_OPEND_HOST=host.docker.internal MOOMOO_OPEND_PORT=11111 docker compose up --build
+```
+
+Search news (request/response polling; maximum 10 calls per 30 seconds in one API process):
+
+```bash
+curl --get 'http://localhost:8000/api/v1/moomoo/news' --data-urlencode 'keyword=AAPL' --data-urlencode 'max_count=10'
+```
+
+Fetch a latest quote snapshot (codes must include a market prefix):
+
+```bash
+curl --get 'http://localhost:8000/api/v1/moomoo/quotes' --data-urlencode 'codes=US.AAPL'
+```
+
+Both responses include `retrieved_at`. News search is not a continuous push feed, and the quote route returns a snapshot rather than streaming updates. Market-data entitlements may be required. If `PRAESAGUS_API_KEY` is configured, add `-H 'X-API-Key: YOUR_KEY'` to the requests.
+
+### 5. Run SEC filing analysis or live QR monitoring
+
+Run a one-time report with local summarization (no SerpApi key required):
+
+```bash
+poetry run python scripts/sec_qr_report.py --companies AAPL:0000320193 MSFT:0000789019 --forms 10-Q 8-K --out /tmp/sec_reports --interval 0 --summarize
+```
+
+Monitor current SEC filings continuously (default poll: 60 seconds):
+
+```bash
+poetry run python scripts/realtime_qr_watcher.py --poll-interval 60 --lookback-minutes 60
+```
+
+For the shortest path to the standalone tool menu:
+
+```bash
+poetry run python scripts/cli_tools.py
+```
+
+`--use-serpapi` is optional and requires `SERPAPI_KEY`. Social connectors such as Reddit and X also need their own credentials; connectors without credentials may log failures while other configured connectors run.
+
+Local test of the Reddit connector:
+
+```bash
 poetry run python -m connectors.examples.reddit_connector
 
 # Run tests
@@ -22,16 +96,6 @@ poetry run pytest -q
 ```
 
 If you prefer pip, a `requirements.txt` file is included for compatibility, but Poetry is the recommended workflow.
-
-Local development with Docker Compose (localstack):
-
-```bash
-# Build and start containers
-docker-compose up --build
-
-# API will be available at http://localhost:8000
-# Bootstrap runs once to create S3 bucket and DynamoDB table in localstack.
-```
 # praesagus
 
 A quantitative market analysis engine designed to spot institutional trading signals and predict macro trend reversals.

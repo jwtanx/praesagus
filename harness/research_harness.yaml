@@ -1,0 +1,200 @@
+version: 1
+status: design_only
+runtime_enforced: false
+purpose: >-
+  Future contract for routing Praesagus research requests, preserving evidence
+  provenance, tracing answer generation, grading deterministic requirements,
+  and gating improvement on evaluation and human review.
+
+request_routing:
+  default_mode: research_only
+  classify_fields:
+    - request_type
+    - asset_or_market
+    - asset_class
+    - region
+    - horizon
+    - user_objective
+    - portfolio_context
+  routes:
+    - when: [investment_thesis, stock_analysis, event_analysis]
+      skill: skills/praesagus-trading-orchestrator/SKILL.md
+      specialists:
+        fundamental: skills/market-analysis/SKILL.md
+        earnings: skills/earnings-quality/SKILL.md
+        valuation_and_price: skills/valuation-momentum/SKILL.md
+        portfolio_risk: skills/portfolio-resilience/SKILL.md
+        news_retrieval: skills/moomoo-skills/search-skills/moomoo-news-search/SKILL.md
+        news_interpretation: skills/moomoo-skills/search-skills/moomoo-stock-digest/SKILL.md
+    - when: [trade_setup, execution_question]
+      skill: skills/praesagus-trading-orchestrator/SKILL.md
+      specialists:
+        execution: skills/swing-trading-for-idiots/SKILL.md
+        signal_validation: skills/alpha-signal-engine/SKILL.md
+        portfolio_risk: skills/portfolio-resilience/SKILL.md
+  rules:
+    - Select only specialists relevant to request, asset, and horizon.
+    - Moomoo sources provide observations; they cannot independently produce a recommendation.
+    - Missing classification or essential user context lowers confidence and may require clarification or NO TRADE.
+    - No route authorizes broker orders or live execution.
+
+evidence_policy:
+  source_tiers:
+    tier_1: [regulator, exchange, audited_filing, official_company, central_bank, official_statistics]
+    tier_2: [verified_market_data, official_transcript, verified_transaction_data]
+    tier_3: [reputable_research, established_data_vendor]
+    tier_4: [news_reporting, analyst_commentary]
+    tier_5: [social_post, sentiment, anecdotal, model_generated]
+  required_provenance_fields:
+    - source_id
+    - source_type
+    - source_tier
+    - source_url
+    - published_at
+    - retrieved_at
+    - data_available_at
+    - timezone
+    - data_period
+    - connector
+    - content_hash
+  rules:
+    - Preserve the information available at decision time; exclude later data from ex_ante reasoning.
+    - Distinguish fact, interpretation, opinion, proxy, and model-generated content.
+    - Deduplicate syndicated reports and correlated observations by event/source lineage.
+    - Mark missing, stale, revised, or conflicting data; never fill gaps with invented values.
+    - Apply provider licensing, terms, entitlements, and rate limits.
+
+trace:
+  required_fields:
+    - request_id
+    - received_at
+    - decision_as_of
+    - request_type
+    - asset_identifiers
+    - horizon
+    - selected_routes
+    - model_provider_and_id
+    - prompt_version
+    - skill_versions
+    - tool_calls
+    - evidence_references
+    - evidence_time_window
+    - answer_schema_version
+    - grader_results
+    - human_review_status
+    - input_tokens
+    - output_tokens
+    - estimated_cost
+    - latency_ms
+    - final_action_classification
+  privacy:
+    - Do not store secrets, access tokens, or broker credentials in traces.
+    - Minimize or redact personal and account data; set retention before production use.
+    - Trace storage, access control, and retention require implementation and security review.
+
+answer_contract:
+  required_fields:
+    - decision
+    - horizon
+    - evidence_grade
+    - thesis
+    - supporting_evidence
+    - disconfirming_evidence
+    - bull_base_bear_scenarios
+    - invalidation
+    - confidence_and_uncertainty
+    - data_gaps
+    - liquidity_and_execution_risks
+    - action_classification
+  action_classifications:
+    - research_only
+    - watchlist
+    - paper_trade
+    - human_approval_required
+    - execution_ready
+    - no_trade
+  execution_ready_requirements:
+    - explicit_human_approval
+    - independent_risk_check
+    - defined_entry_exit_stop_and_time_stop
+    - position_size_and_max_loss
+    - liquidity_cost_and_fill_assumptions
+    - validated_signal_and_current_data
+
+graders:
+  deterministic:
+    - id: provenance_complete
+      check: Every material factual claim references evidence with required provenance fields.
+      failure: downgrade_confidence_and_block_execution_ready
+    - id: temporal_integrity
+      check: Evidence used for ex_ante claims was available no later than decision_as_of.
+      failure: fail_case_and_block_execution_ready
+    - id: source_deduplication
+      check: Repeated or syndicated reports are not counted as independent evidence.
+      failure: fail_case_and_downgrade_confidence
+    - id: answer_schema
+      check: All answer_contract.required_fields are present or explicitly marked unavailable.
+      failure: fail_case
+    - id: risk_gate
+      check: execution_ready includes every execution_ready_requirements item.
+      failure: force_human_approval_or_no_trade
+    - id: live_execution_gate
+      check: No order is submitted without explicit user approval and independent risk checks.
+      failure: hard_fail
+  thresholds:
+    critical_graders_must_pass: true
+    minimum_golden_set_pass_rate: 0.95
+    score_by_request_type: true
+    report_confidence_intervals: true
+
+human_review:
+  required_for:
+    - investment_judgment
+    - changes_to_risk_policy
+    - promotion_of_prompt_skill_or_model_versions
+    - any_execution_ready_classification
+  reviewer_checks:
+    - factual_support_and_source_quality
+    - strongest_disconfirming_evidence
+    - calibration_and_uncertainty
+    - omitted_risks_or_conflicts
+    - suitability_of_action_classification
+  feedback_record:
+    - case_id
+    - trace_id
+    - reviewer_id_or_role
+    - error_category
+    - evidence_for_correction
+    - proposed_regression_case
+    - disposition
+
+evaluation_and_reinforcement:
+  dataset:
+    format: versioned_jsonl
+    path: null
+    planned_path: harness/evals/golden_cases.jsonl
+    status: not_created
+    include_cases:
+      - ordinary_news_and_filings
+      - stale_or_future_dated_sources
+      - missing_or_conflicting_evidence
+      - duplicate_syndicated_news
+      - event_already_reflected_in_price
+      - mandatory_no_trade
+      - risk_limit_and_liquidity_rejections
+    freeze_source_snapshots: true
+  loop:
+    - Capture a reviewed failure or correction as a candidate case with decision-time evidence.
+    - Review labels and expected evidence; exclude hindsight from ex_ante expected answers.
+    - Run the full regression set against candidate prompt, skill, or model versions.
+    - Require deterministic critical graders and per-category thresholds to pass.
+    - Obtain human approval before promoting any version or changing production guidance.
+    - Monitor realized forecast outcomes, calibration, latency, token use, and cost after promotion.
+  prohibited:
+    - autonomous_production_prompt_or_skill_edits
+    - self_training_on_unreviewed_user_feedback
+    - promotion_based_only_on_prose_preference_or_aggregate_accuracy
+
+implementation_note: >-
+  Design contract only. No current application component reads this file, records
+  these traces, invokes these graders, or runs this evaluation loop.

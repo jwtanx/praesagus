@@ -1,178 +1,59 @@
-# Praesagus Architecture and Agent Notes
+# Praesagus Agent Guidance
 
-This document describes the architecture implemented so far in Praesagus, the current product scope, major engineering tradeoffs, known catches, and a detailed future plan.
+This file is the repository's single source of agent instructions. Keep it concise, accurate to the checked-in implementation, and update it when architecture or workflow changes. Instructions here apply repository-wide; nearer `AGENTS.md` files may add scoped guidance.
 
-## Current Architecture Summary
+## Project and current implementation
 
-Praesagus is built as a modular, event-driven market intelligence platform with the following core pieces:
+Praesagus is a market-intelligence research platform. Current repository capabilities include:
 
-- **Standalone tool scripts** for commerce-ready execution without a running backend.
-  - `scripts/sec_qr_report.py` — EDGAR QR polling, filing index scraping, XBRL metric extraction, optional local summarization, and SerpApi fallback.
-  - `scripts/realtime_qr_watcher.py` — continuous SEC QR watch for new filings with buy/short signal heuristics.
-  - `scripts/cli_tools.py` — unified CLI navigation for standalone tools.
-  - `scripts/run_sec_filings.py`, `scripts/run_insider_monitor.py`, `scripts/run_company_news.py` — specialized ingestion/monitoring helpers.
+- FastAPI services in `backend/` and a Vite/React interface in `frontend/`.
+- Configured data connectors in `connectors/`, including SEC, news, and social sources; connector settings live under `ingest/config/`.
+- Financial ingestion and monitoring scripts in `scripts/`, including SEC filings, insider activity, company news, financial calendars, and QR reports/watchers.
+- Local development with Docker Compose, LocalStack bootstrap, and Terraform scaffolding under `infra/`.
+- Research instructions under `skills/`. Skills guide analysis; they are not, by themselves, executable agents or a production answer harness.
 
-- **Run commands** for the SEC QR report:
-  - `make sec-qr-report`
-  - `python scripts/sec_qr_report.py --companies AAPL:0000320193 MSFT:0000789019 --forms 10-Q 8-K --out /tmp/sec_reports --interval 300 --summarize --use-serpapi`
+The repository does **not** currently contain a hosted LLM answer path, general-purpose agent runtime, persistent answer traces, or a runtime-enforced answer-quality evaluation harness. A read-only Moomoo OpenD adapter and FastAPI routes exist for request/response news search and quote snapshots; they do not provide persistent ingestion, continuous news push, or model-backed analysis. The API's research route must not be described as model-backed unless implementation changes. `harness/research_harness.yaml` is a proposed future contract only; nothing currently loads or enforces it.
 
-- **Connector ecosystem** with a shared SDK pattern and config-driven runner.
-  - `connectors/multi_runner.py` reads `ingest/config/platform_connectors.yaml` and executes connectors dynamically.
-  - Specific connectors exist for social/news sources and regulatory sources, including `connectors/sec_filings.py` and `connectors/sec_form4_insider.py`.
+Treat `docs/`, scripts, configuration, and tests as evidence of implemented behavior. Label planned work as roadmap, not as current capability. Do not assume cloud services in the architecture notes are provisioned or operational merely because Terraform/docs mention them.
 
-- **Backend API and dashboard services**.
-  - `backend/main.py` exposes API endpoints for trends, dashboard summaries, platforms, pipelines, research, and settings.
-  - `backend/services.py` assembles trend and status data from feature store sources.
+## Engineering practice
 
-- **Local development environment**.
-  - `docker-compose.yml` and `scripts/bootstrap_localstack.py` bootstrap localstack resources.
-  - A minimal Terraform scaffold exists for S3 buckets, DynamoDB feature store, Secrets Manager secret store, and SQS DLQ.
+- Inspect the relevant implementation and tests before changing behavior. Make the smallest coherent change and preserve unrelated working-tree changes.
+- Follow existing interfaces, formatting, and dependency choices. Prefer official APIs and documented connector contracts; respect rate limits, terms, licensing, and authentication boundaries.
+- Never put credentials, tokens, private user data, or generated secrets in source, logs, fixtures, or commits. Load secrets from environment/configuration or a secret store; do not print them.
+- Preserve raw-source provenance and timestamps. Avoid destructive changes to stored data; use versioned or append-only outputs where appropriate.
+- Keep failures visible and bounded: validate inputs, handle upstream errors, use sensible timeouts/retries, and avoid claiming freshness or success without evidence.
 
-- **Watchlist-driven financial ingestion**.
-  - `ingest/config/financial_watchlist.yaml` defines watchlist tickers, companies, priorities, and scraping settings.
-  - The watchlist is used by SEC filing ingestion, insider monitoring, and news polling scripts.
+## Data, research, and trader safeguards
 
-## What Has Been Implemented So Far
+- Record `source_url` where allowed, source/provider, publication time, retrieval/availability time, timezone, data period, connector, and ingestion time. Separate source facts from interpretation and model-generated text.
+- Prefer primary evidence: filings, regulators, exchanges, official company disclosures, central banks, and official statistics. Label secondary reporting, vendor data, proxies, social sentiment, and missing or stale data. Deduplicate syndicated or correlated evidence; do not count repeated views of one event as independent confirmation.
+- Preserve the decision-time information set. Never use later information to justify an earlier signal. Keep forecast timestamps and score outcomes separately.
+- Use `skills/praesagus-trading-orchestrator/SKILL.md` for applicable investment, trading, portfolio, or event-analysis requests; use `skills/skill-template/SKILL.md` for shared analysis requirements.
+- Moomoo news, sentiment, price/technical anomalies, capital flows, and derivatives activity are evidence inputs, not standalone recommendations or proof of informed direction. Check source, timestamp, liquidity, market context, event overlap, and whether the information may already be priced in.
+- Treat the Sneaky Pivot setup as an unvalidated hypothesis. Do not call it trade-ready without formal rules, realistic fill/cost assumptions, regime and event filters, risk limits, and robust out-of-sample validation.
+- State uncertainty, bull and bear evidence, key disconfirming evidence, and measurable invalidation. Missing required evidence means lower confidence or `NO TRADE`, not invented precision. Separate research conclusions from execution instructions.
+- Use the skill's action vocabulary where relevant: `research only`, `watchlist`, `paper trade`, `human approval required`, `execution-ready`, or `NO TRADE`. Live execution requires explicit human approval and independent risk checks; never imply the repository executes trades if it does not.
 
-### Ingestion + Regulatory Tools
+## Moomoo / OpenD integration boundary
 
-- `scripts/sec_qr_report.py` now:
-  - polls EDGAR company Atom feeds for SEC filings
-  - downloads filing pages and extracts SEC document links
-  - protects against non-SEC domains
-  - extracts XBRL-based metrics from the SEC API
-  - computes pct-change deltas for revenue, net income, and EPS
-  - optionally summarizes filings locally using LexRank + embeddings
-  - optionally falls back to SerpApi Google AI Overview
+The implemented `connectors/moomoo_opend.py` adapter and `/api/v1/moomoo/news` and `/api/v1/moomoo/quotes` routes are read-only. OpenD must run separately and be reachable at `MOOMOO_OPEND_HOST`/`MOOMOO_OPEND_PORT`; native defaults are `127.0.0.1:11111`, while Compose configures the host gateway by default. News search is request/response, with a per-process rolling limit of 10 calls per 30 seconds; it is not a push feed. Quote results are latest snapshots after a request-scoped subscription, not a continuous stream. Runtime integration needs Moomoo market-data entitlements. This process-local quota does not coordinate across multiple API workers/replicas. Treat option flow and capital-flow data as ambiguous until independently interpreted. Do not expose account credentials or private account data to frontend code, traces, or logs.
 
-- `scripts/realtime_qr_watcher.py` now:
-  - polls the SEC `getcurrent` filings feed for 10-Q / 10-K filings
-  - deduplicates filings by accession
-  - logs a simple buy/short/watch signal based on language heuristics
+## Testing and validation
 
-- Local summarization support is available via `--summarize`.
-- SerpApi fallback support is available via `--use-serpapi` and `SERPAPI_KEY`.
+- Add or update focused tests for behavior changes. Prefer deterministic fixtures and mocked external APIs; tests must not require live credentials or place orders.
+- Run the narrow relevant test set, then broader checks when scope warrants. Validate changed configuration and documentation references. Report commands and outcomes accurately; do not claim tests passed if they were not run.
+- For ingestion or signal logic, cover malformed/missing data, duplicates, stale/future timestamps, rate-limit/upstream failures, and risk/rejection cases where relevant.
+- Keep CI-compatible, repeatable checks. Never weaken or remove a test merely to make a change pass without explaining the reason and replacing its coverage.
 
-### Connector Framework
+## Future answer harness contract
 
-- `ingest/config/platform_connectors.yaml` centralizes connector catalog metadata.
-- A runner can launch connectors based on YAML config rather than hard-coded lists.
-- Existing connectors support multiple sources: Reddit, Twitter, Hacker News, YouTube, Google Trends, EDGAR, news RSS, etc.
+`harness/research_harness.yaml` specifies a design contract for a future answer harness: routing, provenance, traces, deterministic graders, human review, and evaluation-gated improvement. It is **not runtime-enforced**. Do not claim it routes requests, records traces, grades answers, or updates skills until code implements and tests those behaviors.
 
-### API and Frontend Wiring
+The future loop must use frozen/replayable evidence and a versioned evaluation set. Corrections may become candidate regression cases; prompt, skill, or model changes require evaluation and human review before adoption. Do not enable autonomous self-training or self-editing of production instructions. Track quality, calibration, latency, and token/call cost so reinforcement cannot optimize a proxy while degrading factuality or risk controls.
 
-- The backend exposes higher-level endpoints for dashboard and financial intelligence.
-- Frontend pages were wired to these API endpoints, enabling dashboard and trends consumption in the UI.
+## Roadmap (not implemented unless code says otherwise)
 
-### Infrastructure and Local Development
-
-- Localstack bootstraps raw/bronze/silver S3 buckets and DynamoDB feature store.
-- Docker Compose coordinates frontend, backend, localstack, and ingestion services.
-- Terraform scaffold provisioned the core cloud resources, including S3, DynamoDB, Secrets Manager, and SQS DLQ.
-
-## Catch Points and Current Gaps
-
-### Data Extraction and Summarization
-
-- Local summarization is extractive and heuristic-based. It is not a substitute for a true generative model summary.
-- `SerpApi` fallback is supported but not free; it should be used sparingly and with caching.
-- Filing page parsing currently depends on HTML structure and may break if SEC page layout changes.
-- The current metric extraction uses XBRL tags via the SEC API, but it may not always span prior period values or correct accounting tags for all issuers.
-
-### Model / AI Limitations
-
-- There is not yet a hosted local LLM integration in the repository.
-- Current summaries are based on local LexRank + sentence embedding retrieval, which is a safe fallback but not always semantically deep.
-- There is no integrated `performance_label` classification yet, beyond the extracted raw metrics.
-
-### Monitoring and Alerting
-
-- The existing scripts log terminal output, but there is not yet a centralized alerting pipeline for file-level or signal-level alerts.
-- No alert persistence or deduplication exists for repeated insider/news events from the same company.
-
-### Infrastructure and Production Readiness
-
-- Terraform scaffold is present, but ECS task definitions and secrets wiring are still minimal.
-- The localstack bootstrap is enough for dev, but not for a full staging/prod workflow.
-- There is no fully implemented CI/CD pipeline in the repo for deployment automation.
-
-### Documentation and Operational Visibility
-
-- API endpoint documentation and openapi descriptions are still sparse.
-- There is no unified runbook covering daily ingestion monitoring or failure handling.
-- The watchlist currently lives in YAML; a UI or backend CRUD layer would improve usability.
-
-## Future Plan (Detailed)
-
-### 1. Harden SEC / QR Processing
-
-- Build a dedicated `qr_processor` module with:
-  - robust SEC page parsing and fallback from `index.json`
-  - explicit verification of SEC links and XBRL metadata
-  - `performance_label` output: `overperformance` / `inline` / `underperformance`
-  - normalized earnings metrics and trend scoring
-- Add a `scripts/local_summarize_qr.py` or module version that supports both local LLM summarization and fallback retrieval.
-
-### 2. Add Real-time Detectability and Alerts
-
-- Implement earliest-news detector connector and API.
-- Implement insider trade monitor connector with first-second alert semantics.
-- Add an alerting pipeline with deduplication, webhook/Slack/email adapters, and severity scoring.
-
-### 3. Build Local LLM Support
-
-- Add a local inference adapter using a compact GGUF model on MacBook Neo, e.g. Vicuna/Mistral 7B quantized.
-- Support chunked document summarization and RAG retrieval.
-- Provide a Colab-friendly notebook or script for one-time model setup and local inference.
-
-### 4. Improve Ingestion Framework
-
-- Extend `ingest/config/platform_connectors.yaml` to include SEC and financial connectors explicitly.
-- Add dynamic Airflow/ECS DAG generation for all connectors, including SEC filing jobs and news ingestion.
-- Add connector health dashboards and event-driven retry semantics.
-
-### 5. Enhance Feature Store & Analytics
-
-- Complete DynamoDB feature store materialization for signals, trends, and watchlist history.
-- Add query endpoints for filings, insider trades, and news with filters.
-- Add data retention and archiving policies for stale signals.
-
-### 6. Production-Ready Deployment
-
-- Wire Terraform ECS task definitions with Secrets Manager and environment variables.
-- Add observability: Prometheus metrics, Grafana dashboards, tracing, and cost monitoring.
-- Establish CI/CD for code, infra, and data pipeline deployments.
-
-### 7. UX / Dashboard Enhancements
-
-- Add watchlist management UI and queryable financial settings.
-- Add signal drilldowns linking to source evidence (SEC docs, news links, raw ingestion metadata).
-- Add a research workspace for trend summaries and skill-powered insights.
-
-## Recommended Next Action Items
-
-1. Add a `performance_label` in `scripts/sec_qr_report.py` based on XBRL deltas and summary signals.
-2. Implement the earliest-news detector connector and its API endpoints.
-3. Add local LLM summarization support with a compact GGUF model on MacBook Neo.
-4. Wire SerpApi fallback behind a strict usage gate and caching to preserve credits.
-5. Add a `docs/AGENT.md`-style runbook for daily operational checks.
-
-## Notes for Agents
-
-- Treat `SEC` connectors as first-party data sources with strict legal and privacy requirements.
-- Prefer deterministic, rule-based signal labels when possible; use generative reasoning only for natural-language explanation.
-- Always record provenance for `source_url`, `ingest_ts`, and `connector`.
-- Keep new connectors shareable via YAML config and avoid hardcoding source lists.
-
-## Skill orchestration and trader safeguards
-
-- Use `skills/praesagus-trading-orchestrator/SKILL.md` for cross-domain investment, trade, portfolio, or event requests.
-- Use `skills/skill-template/SKILL.md` as shared contract: provenance, timestamp/data vintage, source tier, missing-data behavior, disconfirming evidence, confidence, invalidation, liquidity, sizing, and validation.
-- Moomoo outputs are data inputs. Do not treat them as independent confirmation or final recommendations.
-- Sneaky Pivot is a hypothesis. Require formal definitions, regime and event filters, realistic costs/slippage, risk limits, walk-forward, and out-of-sample validation before trade-ready classification.
-- Prevent hindsight, confirmation, look-ahead, survivorship, multiple-testing, and narrative-overfitting errors. Preserve ex-ante forecast timestamp; score ex-post results separately.
-- Actionable output must use `research only`, `watchlist`, `paper trade`, `human approval required`, `execution-ready`, or `NO TRADE`. Live execution requires human approval and independent risk checks.
-
----
-
-`AGENTS.md` is now the single source of truth for architecture, current state, catches, and next-phase planning for the Praesagus repo.
+- Build persistent, deduplicated OpenD-backed watchlist ingestion and a catalyst brief: retain timestamped source evidence, summarize with linked evidence, and display observed quote response. Validate entitlements, distributed rate limiting, data rights, and economics before treating it as a service.
+- Implement the answer harness described in `harness/research_harness.yaml`, initially for one end-to-end research flow with replayable cases and human-reviewed investment judgments.
+- Continue improving SEC/QR extraction, alert persistence/deduplication, connector health, feature-store queries, operational runbooks, and deployment automation as scoped by current docs and implementation evidence.
