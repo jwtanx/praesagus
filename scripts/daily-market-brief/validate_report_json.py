@@ -3,6 +3,7 @@
 from __future__ import annotations
 import argparse
 import json
+import math
 import re
 import sys
 from datetime import date, datetime
@@ -150,10 +151,15 @@ def validate_report(path: Path, d, universe_data=None):
         required=('market','country','asset_type','ticker','name','sector','sector_category','sector_emoji','currency','current_price','price_as_of','direction','direction_label','estimated_mid_case','estimated_range','scenario')
         if any(not isinstance(f.get(k),str) or not f[k].strip() for k in required):fail(path,f'forecasts[{i}] missing required text fields')
         for numeric in ('current_price_value','estimated_mid_case_value','range_low_value','range_high_value'):
-            if not isinstance(f.get(numeric),(int,float)) or isinstance(f[numeric],bool) or f[numeric]<=0:fail(path,f'forecasts[{i}].{numeric} must be positive numeric data')
-        if f['range_low_value']>f['range_high_value']:fail(path,f'forecasts[{i}] range low exceeds range high')
+            value=f.get(numeric)
+            if value is None:
+                if not f.get('data_gaps') or (numeric=='current_price_value' and f.get('quote_status')!='missing') or (numeric!='current_price_value' and f.get('forecast_status')!='unavailable'):
+                    fail(path,f'forecasts[{i}].{numeric} null requires explicit status and data_gaps')
+            elif not isinstance(value,(int,float)) or isinstance(value,bool) or not math.isfinite(value) or value<=0:fail(path,f'forecasts[{i}].{numeric} must be positive finite numeric data or an explicit gap')
+        if f['range_low_value'] is not None and f['range_high_value'] is not None and f['range_low_value']>f['range_high_value']:fail(path,f'forecasts[{i}] range low exceeds range high')
         if f['currency'] not in {'USD','MYR'}:fail(path,f'forecasts[{i}].currency must be USD or MYR')
-        if f['direction'] not in {'up','flat','down'}:fail(path,f'forecasts[{i}].direction must be up, flat, or down')
+        if f['direction'] not in {'up','flat','down','unknown'}:fail(path,f'forecasts[{i}].direction must be up, flat, down, or unknown')
+        if f['direction']=='unknown' and f.get('forecast_status')!='unavailable':fail(path,f'forecasts[{i}] unknown direction requires unavailable forecast')
         if f['country'] not in {'us','my'}:fail(path,f'forecasts[{i}].country must be us or my')
         if f['sector_category'] not in sector_counts:fail(path,f'forecasts[{i}].sector_category is not in watchlist_config.groups')
         sector_counts[f['sector_category']]+=1
