@@ -1,0 +1,1 @@
+forecast_id,report_date,as_of,market,venue,ticker,benchmark,horizon_type,reference_close_date,reference_close,reference_source,forecast_target_date,forecast_direction,forecast_range_low,forecast_range_high,confidence,probability_up,thesis,confirmation,invalidation,actual_close_date,actual_close,actual_source,realized_return_pct,direction_hit,range_hit,status,scoring_notes
