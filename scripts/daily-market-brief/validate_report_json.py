@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
+UNIVERSE_ROLES = {'benchmark','sector','industry_overlay','sector_group'}
 
 def fail(path: Path, message: str) -> None:
     raise ValueError(f'{path}: {message}')
@@ -40,7 +41,51 @@ def validate_rich(item, path, location):
     if not isinstance(item,dict) or not isinstance(item.get('text'),str): fail(path,f'{location} requires text')
     validate_sources(item.get('sources',[]),path,location)
 
-def validate_report(path: Path, d):
+def validate_universe(path: Path, d):
+    if not isinstance(d,dict) or d.get('schema_version')!=1: fail(path,'schema_version must be 1')
+    if not isinstance(d.get('taxonomy_id'),str) or not d['taxonomy_id'].strip(): fail(path,'taxonomy_id is required')
+    valid_date(d.get('effective_from'),path,'effective_from')
+    if d.get('count_per_group')!=10: fail(path,'count_per_group must be 10')
+    for key in ('selection_method','collection_policy'):
+        if not isinstance(d.get(key),str) or not d[key].strip(): fail(path,f'{key} is required')
+    validate_sources(d.get('sources'),path,'universe')
+    groups=d.get('groups')
+    if not isinstance(groups,list) or not groups: fail(path,'groups must be a nonempty list')
+    keys=[]; universe={}
+    for gi,g in enumerate(groups):
+        loc=f'groups[{gi}]'
+        if not isinstance(g,dict): fail(path,f'{loc} must be an object')
+        for key in ('key','label','emoji','role','classification'):
+            if not isinstance(g.get(key),str) or not g[key].strip(): fail(path,f'{loc}.{key} is required')
+        if g['role'] not in UNIVERSE_ROLES: fail(path,f'{loc}.role is invalid')
+        keys.append(g['key'])
+        items=g.get('instruments')
+        if not isinstance(items,list) or len(items)!=10 or g.get('count')!=10:
+            fail(path,f'{loc} must define exactly 10 instruments')
+        group_symbols=set()
+        for ii,item in enumerate(items):
+            iloc=f'{loc}.instruments[{ii}]'
+            required=('ticker','name','country','market','currency','asset_type','sector_category','sector','sector_emoji','classification')
+            if not isinstance(item,dict) or any(not isinstance(item.get(k),str) or not item[k].strip() for k in required):
+                fail(path,f'{iloc} is missing required text fields')
+            if item['sector_category']!=g['key'] or item['sector']!=g['label'] or item['sector_emoji']!=g['emoji']:
+                fail(path,f'{iloc} group metadata does not match its parent')
+            if item['country'] not in {'us','my'} or item['market']!=item['country'].upper():
+                fail(path,f'{iloc} country/market must be us/US or my/MY')
+            if item['currency']!=('USD' if item['country']=='us' else 'MYR'):
+                fail(path,f'{iloc} currency does not match country')
+            if item['asset_type'] not in {'equity','etf'}: fail(path,f'{iloc}.asset_type must be equity or etf')
+            if (g['role']=='benchmark') != (item['asset_type']=='etf'):
+                fail(path,f'{iloc} benchmark group membership must match ETF asset type')
+            symbol=(item['market'],item['ticker'])
+            if symbol in group_symbols or symbol in universe: fail(path,f'duplicate instrument: {symbol[0]}:{symbol[1]}')
+            group_symbols.add(symbol); universe[symbol]={'group':g['key'],'asset_type':item['asset_type'],'country':item['country'],'currency':item['currency']}
+    if len(keys)!=len(set(keys)): fail(path,'group keys must be unique')
+    expected={'benchmarks','financials','technology','semiconductors','healthcare','consumer-staples','consumer-discretionary','energy','industrials-transport-logistics','materials-plantation'}
+    if set(keys)!=expected: fail(path,f'groups must cover exactly {sorted(expected)}')
+    return keys,universe
+
+def validate_report(path: Path, d, universe_data=None):
     if not isinstance(d,dict) or d.get('schema_version')!=2: fail(path,'schema_version must be 2')
     # HTML markup belongs in the shared viewer, never in the report data.
     def has_html_key(x):
@@ -80,13 +125,22 @@ def validate_report(path: Path, d):
             for pi,p in enumerate(item.get('paragraphs',[])):validate_rich(p,path,f'sections.{name}.items[{ii}].paragraphs[{pi}]')
         for ni,note in enumerate(section.get('notes',[])):validate_rich(note,path,f'sections.{name}.notes[{ni}]')
     config=d.get('watchlist_config')
-    if not isinstance(config,dict) or config.get('count_per_sector')!=10:fail(path,'watchlist_config.count_per_sector must be 10')
+    if not isinstance(config,dict) or config.get('count_per_group',config.get('count_per_sector'))!=10:fail(path,'watchlist_config count_per_group (or legacy count_per_sector) must be 10')
     groups=config.get('groups')
     if not isinstance(groups,list) or not groups:fail(path,'watchlist_config.groups must be nonempty')
     group_keys=[g.get('key') for g in groups if isinstance(g,dict)]
     if len(group_keys)!=len(groups) or len(group_keys)!=len(set(group_keys)) or 'semiconductors' not in group_keys:fail(path,'watchlist groups must have unique keys and include semiconductors')
     for i,g in enumerate(groups):
         if any(not isinstance(g.get(k),str) or not g[k].strip() for k in ('key','label','emoji')):fail(path,f'watchlist_config.groups[{i}] needs key, label and emoji')
+    if universe_data and meta['date']>=universe_data[0]:
+        universe_keys,universe=universe_data[1],universe_data[2]
+        if config.get('taxonomy_id')!=universe_data[3]:fail(path,f'watchlist_config.taxonomy_id must be {universe_data[3]} for reports on/after {universe_data[0]}')
+        if group_keys!=universe_keys:fail(path,'watchlist groups must match the current daily collection universe in priority order')
+        expected_groups={g['key']:g for g in universe_data[4]}
+        for g in groups:
+            expected=expected_groups[g['key']]
+            if g.get('label')!=expected['label'] or g.get('emoji')!=expected['emoji']:
+                fail(path,f'watchlist group metadata does not match current universe: {g["key"]}')
     forecasts=d.get('forecasts')
     expected_total=10*len(group_keys)
     if not isinstance(forecasts,list) or len(forecasts)!=expected_total:fail(path,f'forecasts must contain {expected_total} entries (10 for each of {len(group_keys)} groups)')
@@ -103,6 +157,11 @@ def validate_report(path: Path, d):
         if f['country'] not in {'us','my'}:fail(path,f'forecasts[{i}].country must be us or my')
         if f['sector_category'] not in sector_counts:fail(path,f'forecasts[{i}].sector_category is not in watchlist_config.groups')
         sector_counts[f['sector_category']]+=1
+        if universe_data and meta['date']>=universe_data[0]:
+            instrument=universe.get((f['market'].upper(),f['ticker']))
+            if not instrument:fail(path,f'forecasts[{i}] instrument is not in the current collection universe')
+            if instrument['group']!=f['sector_category'] or instrument['asset_type']!=f['asset_type'] or instrument['country']!=f['country'] or instrument['currency']!=f['currency']:
+                fail(path,f'forecasts[{i}] classification does not match the current collection universe')
         if not isinstance(f.get('confidence'),str) or not f['confidence'].strip():fail(path,f'forecasts[{i}].confidence required')
         if f['ticker'] in symbols:fail(path,f'duplicate ticker: {f["ticker"]}')
         symbols.add(f['ticker']);validate_sources(f.get('sources',[]),path,f'forecasts[{i}]')
@@ -142,13 +201,19 @@ def validate_index(path:Path,d,json_files):
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--reports-dir',type=Path,default=Path('artifacts/daily-market-brief'))
+    ap.add_argument('--universe',type=Path,default=Path('artifacts/daily-market-brief/watchlist-universe.json'))
     ap.add_argument('--date',help='validate one YYYY-MM-DD report')
     a=ap.parse_args();root=a.reports_dir
+    universe_json=read_json(a.universe)
+    universe_keys,universe_map=validate_universe(a.universe,universe_json)
+    effective_from=universe_json['effective_from']
+    universe_data=(effective_from,universe_keys,universe_map,universe_json['taxonomy_id'],universe_json['groups'])
+    print(f'OK {a.universe}: {len(universe_keys)} groups, {len(universe_map)} instruments; effective {effective_from}')
     candidates=[root/f'{a.date}.json'] if a.date else sorted(root.glob('????-??-??.json'))
     if not candidates:raise ValueError(f'{root}: no dated JSON reports found')
     file_names={p.name for p in root.glob('????-??-??.json')};total=0
     for p in candidates:
-        n,events,counts=validate_report(p,read_json(p));total+=1
+        n,events,counts=validate_report(p,read_json(p),universe_data);total+=1
         breakdown=', '.join(f'{key}={count}' for key,count in counts.items())
         print(f'OK {p}: {n} forecasts ({breakdown}), {events} calendar events')
     idx=root/'reports.json'
