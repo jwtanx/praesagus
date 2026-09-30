@@ -198,6 +198,16 @@ Moomoo news, digest, sentiment, technical anomaly, capital anomaly, and derivati
 
 ## Standalone tools
 
+### Review forecast outcomes
+
+Evaluate the frozen forecast ledger at an explicit review timestamp:
+
+```bash
+poetry run python -m harness.forecast_review --ledger harness/engineering/price-prediction/forecast-ledger.csv --as-of 2026-10-01T03:00:00+08:00
+```
+
+The offline evaluator reports pending, unscored, abstained, and invalid rows separately, and computes outcome metrics only when comparable actual data is available. It reads the ledger without changing it. See [the forecast review runbook](harness/FORECAST_REVIEW.md) for input requirements and regression checks. The broader answer harness remains a design document.
+
 The following scripts can run without starting the backend:
 
 - `python scripts/cli_tools.py` — list and launch standalone ingestion and monitoring tools.

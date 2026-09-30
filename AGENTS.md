@@ -11,6 +11,7 @@ Praesagus is a market-intelligence research platform. Current repository capabil
 - Financial ingestion and monitoring scripts in `scripts/`, including SEC filings, insider activity, company news, financial calendars, and QR reports/watchers.
 - Local development with Docker Compose, LocalStack bootstrap, and Terraform scaffolding under `infra/`.
 - Research instructions under `skills/`. Skills guide analysis; they are not, by themselves, executable agents or a production answer harness.
+- Offline forecast review in `harness/forecast_review.py`: deterministic CSV validation and outcome scoring at an explicit review timestamp. This does not generate answers or implement the proposed research harness.
 
 The repository does **not** currently contain a hosted LLM answer path, general-purpose agent runtime, persistent answer traces, or a runtime-enforced answer-quality evaluation harness. A read-only Moomoo OpenD adapter and FastAPI routes exist for request/response news search and quote snapshots; they do not provide persistent ingestion, continuous news push, or model-backed analysis. The API's research route must not be described as model-backed unless implementation changes. `harness/research_harness.yaml` is a proposed future contract only; nothing currently loads or enforces it.
 
