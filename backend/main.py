@@ -39,6 +39,12 @@ from backend.financial_services import (
     get_insider_trades,
     get_news,
 )
+from connectors.moomoo_opend import (
+    MoomooOpenDConnector,
+    OpenDAPIError,
+    OpenDUnavailableError,
+    configured_connector,
+)
 
 app = FastAPI(title="Praesagus API")
 raw_origins = os.getenv("PRAESAGUS_CORS_ORIGINS", "http://localhost:5173")
@@ -229,6 +235,47 @@ def get_financial_calendar(
 def get_financial_filters(api_key: Optional[str] = Depends(get_api_key)):
     REQUESTS.inc()
     return JSONResponse(content=jsonable_encoder(get_filter_metadata()))
+
+
+@app.get("/api/v1/moomoo/news")
+def get_moomoo_news(
+    keyword: str = Query(..., min_length=1, max_length=200),
+    max_count: int = Query(10, ge=1, le=100),
+    connector: MoomooOpenDConnector = Depends(configured_connector),
+    api_key: Optional[str] = Depends(get_api_key),
+):
+    """Search Moomoo news, notices, and ratings through OpenD."""
+    REQUESTS.inc()
+    try:
+        records = connector.search_news(keyword.strip(), max_count=max_count)
+    except OpenDUnavailableError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except OpenDAPIError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    return JSONResponse(content=jsonable_encoder({"records": records, "count": len(records)}))
+
+
+@app.get("/api/v1/moomoo/quotes")
+def get_moomoo_quotes(
+    codes: List[str] = Query(..., min_length=1, max_length=20),
+    connector: MoomooOpenDConnector = Depends(configured_connector),
+    api_key: Optional[str] = Depends(get_api_key),
+):
+    """Fetch latest read-only quotes for market-qualified codes, e.g. US.AAPL."""
+    REQUESTS.inc()
+    normalized_codes = list(dict.fromkeys(code.strip().upper() for code in codes))
+    if any("." not in code or any(char.isspace() for char in code) for code in normalized_codes):
+        raise HTTPException(
+            status_code=422,
+            detail="Each code must be market-qualified, for example US.AAPL",
+        )
+    try:
+        records = connector.get_quotes(normalized_codes)
+    except OpenDUnavailableError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except OpenDAPIError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    return JSONResponse(content=jsonable_encoder({"records": records, "count": len(records)}))
 
 
 @app.get("/metrics")

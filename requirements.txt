@@ -18,3 +18,4 @@ sumy
 sentence-transformers
 scikit-learn
 numpy
+moomoo-api
