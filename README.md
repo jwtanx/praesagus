@@ -4,11 +4,11 @@ Starter repo for the Praesagus market intelligence platform.
 
 ## Architecture
 
-![Praesagus system architecture](docs/praesagus-architecture.png)
+![Detailed Praesagus architecture diagram with source and infrastructure service marks](docs/praesagus-architecture.png)
 
 Editable source: [docs/praesagus-architecture.svg](docs/praesagus-architecture.svg).
 
-The platform has five runtime layers: external market and social sources; config-driven connectors and scheduled workers; S3 raw/Bronze/Silver storage plus feature computation; DynamoDB-backed FastAPI serving; and React/Vite, CLI, monitoring, and production deployment consumers. Solid lines show primary runtime flow. Dashed lines show optional SerpApi summarization, standalone reports, observability, and Terraform/AWS deployment paths. Local Docker Compose uses LocalStack to emulate S3 and DynamoDB.
+The diagram separates working local paths from optional or scaffolded cloud paths, labels representative source and infrastructure services, and shows the API-only Moomoo/OpenD route. The architecture is intentionally explicit that Moomoo requests are not persisted by those routes, and the research harness YAML is a design document rather than a running service. The editable vector source is [docs/praesagus-architecture.svg](docs/praesagus-architecture.svg).
 
 ## Quick Start
 

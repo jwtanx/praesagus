@@ -1,30 +1,172 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1500" viewBox="0 0 2400 1500">
-<defs><style>
-.bg{fill:#f7f9fc}.title{font:700 42px Arial;fill:#102a43}.sub{font:22px Arial;fill:#486581}.h{font:700 25px Arial;fill:#fff}.t{font:20px Arial;fill:#102a43}.s{font:17px Arial;fill:#486581}.box{stroke:#829ab1;stroke-width:3;rx:18}.blue{fill:#d9eaf7}.green{fill:#d8f3dc}.gold{fill:#fff3bf}.purple{fill:#eadcff}.gray{fill:#e8eef4}.red{fill:#ffe0e0}.line{stroke:#52606d;stroke-width:4;fill:none;marker-end:url(#arrow)}.dash{stroke:#829ab1;stroke-width:3;stroke-dasharray:10 8;fill:none;marker-end:url(#arrow)}
-</style><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#52606d"/></marker></defs>
-<rect class="bg" width="2400" height="1500"/><text class="title" x="90" y="75">Praesagus Market Intelligence Platform</text><text class="sub" x="92" y="112">Event-driven ingestion, SEC QR intelligence, feature serving, and dashboard delivery</text>
-<rect x="70" y="150" width="2260" height="205" class="box blue"/><text class="h" x="100" y="190" fill="#102a43">External sources</text>
-<g class="t"><rect x="110" y="220" width="260" height="90" class="box gray"/><text x="135" y="255">SEC EDGAR</text><text class="s" x="135" y="283">Atom, current, XBRL</text><rect x="410" y="220" width="260" height="90" class="box gray"/><text x="435" y="255">Social platforms</text><text class="s" x="435" y="283">Reddit, X, HN, GitHub</text><rect x="710" y="220" width="260" height="90" class="box gray"/><text x="735" y="255">News &amp; trends</text><text class="s" x="735" y="283">RSS, YouTube, Google Trends</text><rect x="1010" y="220" width="260" height="90" class="box gray"/><text x="1035" y="255">Market calendars</text><text class="s" x="1035" y="283">Earnings, macro events</text><rect x="1310" y="220" width="260" height="90" class="box gray"/><text x="1335" y="255">Insider filings</text><text class="s" x="1335" y="283">SEC Form 4</text><rect x="1610" y="220" width="260" height="90" class="box gray"/><text x="1635" y="255">SerpApi</text><text class="s" x="1635" y="283">Optional summary fallback</text></g>
-<rect x="70" y="410" width="2260" height="300" class="box green"/><text class="h" x="100" y="450" fill="#102a43">Ingestion and orchestration</text>
-<rect x="110" y="480" width="350" height="180" class="box gold"/><text class="t" x="135" y="520">Watchlist + connector config</text><text class="s" x="135" y="552">financial_watchlist.yaml</text><text class="s" x="135" y="580">platform_connectors.yaml</text><text class="s" x="135" y="608">financial_filters.yaml</text>
-<rect x="520" y="480" width="350" height="180" class="box gold"/><text class="t" x="545" y="520">Connector framework</text><text class="s" x="545" y="552">multi_runner</text><text class="s" x="545" y="580">registry + base contracts</text><text class="s" x="545" y="608">retry / normalization</text>
-<rect x="930" y="480" width="350" height="180" class="box gold"/><text class="t" x="955" y="520">Scheduled execution</text><text class="s" x="955" y="552">Airflow DAGs</text><text class="s" x="955" y="580">ECS runner / Fargate path</text><text class="s" x="955" y="608">local Docker worker</text>
-<rect x="1340" y="480" width="350" height="180" class="box gold"/><text class="t" x="1365" y="520">Financial monitors</text><text class="s" x="1365" y="552">SEC QR report + watcher</text><text class="s" x="1365" y="580">Form 4 insider monitor</text><text class="s" x="1365" y="608">company news polling</text>
-<rect x="1750" y="480" width="490" height="180" class="box gold"/><text class="t" x="1775" y="520">Signal and document logic</text><text class="s" x="1775" y="552">XBRL metrics + deltas</text><text class="s" x="1775" y="580">buy / short / watch heuristics</text><text class="s" x="1775" y="608">provenance: URL, timestamp, connector</text>
-<rect x="70" y="765" width="2260" height="320" class="box purple"/><text class="h" x="100" y="805" fill="#102a43">Storage, transformation, and serving</text>
-<rect x="110" y="840" width="390" height="185" class="box gray"/><text class="t" x="135" y="880">LocalStack / AWS data lake</text><text class="s" x="135" y="912">S3 Raw: replay + lineage</text><text class="s" x="135" y="940">S3 Bronze: normalized parquet</text><text class="s" x="135" y="968">S3 Silver: enriched datasets</text>
-<rect x="590" y="840" width="390" height="185" class="box gray"/><text class="t" x="615" y="880">Feature computation</text><text class="s" x="615" y="912">raw_to_bronze.py</text><text class="s" x="615" y="940">compute_features.py</text><text class="s" x="615" y="968">quality + trend aggregation</text>
-<rect x="1070" y="840" width="390" height="185" class="box gray"/><text class="t" x="1095" y="880">DynamoDB feature store</text><text class="s" x="1095" y="912">low-latency signal lookup</text><text class="s" x="1095" y="940">dashboard summaries</text><text class="s" x="1095" y="968">watchlist history</text>
-<rect x="1550" y="840" width="690" height="185" class="box blue"/><text class="t" x="1575" y="880">Backend API: FastAPI / Uvicorn</text><text class="s" x="1575" y="912">/trends  /dashboard  /platforms  /pipelines</text><text class="s" x="1575" y="940">/research  /financial  /settings</text><text class="s" x="1575" y="968">services.py + financial_services.py</text>
-<rect x="70" y="1140" width="2260" height="270" class="box red"/><text class="h" x="100" y="1180" fill="#102a43">Consumers, operations, and deployment</text>
-<rect x="110" y="1215" width="500" height="145" class="box blue"/><text class="t" x="135" y="1255">React + Vite frontend</text><text class="s" x="135" y="1287">Dashboard, Trends, Financial, Research</text><text class="s" x="135" y="1315">Pipeline, Platforms, Settings</text>
-<rect x="700" y="1215" width="430" height="145" class="box gray"/><text class="t" x="725" y="1255">Standalone CLI tools</text><text class="s" x="725" y="1287">cli_tools.py</text><text class="s" x="725" y="1315">JSON reports + realtime logs</text>
-<rect x="1220" y="1215" width="430" height="145" class="box gray"/><text class="t" x="1245" y="1255">Observability</text><text class="s" x="1245" y="1287">Prometheus :9090</text><text class="s" x="1245" y="1315">Grafana :3000</text>
-<rect x="1740" y="1215" width="500" height="145" class="box gray"/><text class="t" x="1765" y="1255">Terraform / production path</text><text class="s" x="1765" y="1287">ECS, S3, DynamoDB, Secrets Manager</text><text class="s" x="1765" y="1315">SQS DLQ, Airflow / MWAA</text>
-<path class="line" d="M240 310 V400"/><path class="line" d="M540 310 V400"/><path class="line" d="M840 310 V400"/><path class="line" d="M1140 310 V400"/><path class="line" d="M1440 310 V400"/><path class="dash" d="M1740 310 V400"/>
-<path class="line" d="M460 570 H510"/><path class="line" d="M870 570 H920"/><path class="line" d="M1280 570 H1330"/><path class="line" d="M1690 570 H1740"/>
-<path class="line" d="M285 670 V830"/><path class="line" d="M695 670 V830"/><path class="line" d="M1105 670 V830"/><path class="line" d="M1515 670 V830"/><path class="line" d="M1995 670 V830"/>
-<path class="line" d="M500 930 H580"/><path class="line" d="M980 930 H1060"/><path class="line" d="M1460 930 H1540"/>
-<path class="line" d="M1895 1035 V1130 H360 V1205"/><path class="dash" d="M1750 1035 V1130 H915 V1205"/><path class="dash" d="M2100 1035 V1205 H1435"/><path class="dash" d="M1995 660 V1130 H1990 V1205"/>
-<text class="s" x="90" y="1460">Solid lines: primary runtime flow. Dashed lines: optional or operational paths. Local Compose mirrors core AWS services through LocalStack.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="2600" height="1800" viewBox="0 0 2600 1800" role="img" aria-labelledby="title description">
+<title id="title">Praesagus system architecture</title>
+<desc id="description">Detailed view of configured source systems, ingestion and storage flow, FastAPI and frontend services, local operations, cloud deployment scaffolding, and the design-only research harness.</desc>
+<defs>
+  <style>
+    .bg{fill:#f5f8fc}.panel{stroke:#cbd5e1;stroke-width:2;rx:24}.sources{fill:#eaf3fb}.pipeline{fill:#edf6ef}.consumers{fill:#f1effb}.guidance{fill:#fff7e8}
+    .card{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:18}.card-blue{fill:#f2f8ff;stroke:#91b9dc}.card-green{fill:#f2faf4;stroke:#91c3a0}.card-gold{fill:#fffaf0;stroke:#e0c574}.card-purple{fill:#f7f4ff;stroke:#b6a4dc}
+    .title{font:700 46px Arial,sans-serif;fill:#102a43}.subtitle{font:22px Arial,sans-serif;fill:#486581}.section{font:700 25px Arial,sans-serif;fill:#102a43}.label{font:700 23px Arial,sans-serif;fill:#102a43}.body{font:19px Arial,sans-serif;fill:#334e68}.small{font:17px Arial,sans-serif;fill:#52677c}.tiny{font:15px Arial,sans-serif;fill:#52677c}.white{fill:#fff}.muted{fill:#607d96}
+    .flow{stroke:#315b78;stroke-width:4;fill:none;marker-end:url(#arrow)}.optional{stroke:#718096;stroke-width:3;stroke-dasharray:10 9;fill:none;marker-end:url(#arrow-muted)}.rule{stroke:#d5e0ea;stroke-width:2}.tag{font:700 14px Arial,sans-serif;letter-spacing:.6px}
+  </style>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 12 6 0 12z" fill="#315b78"/></marker>
+  <marker id="arrow-muted" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0 12 6 0 12z" fill="#718096"/></marker>
+</defs>
+
+<rect class="bg" width="2600" height="1800"/>
+<text class="title" x="78" y="78">Praesagus | System Architecture</text>
+<text class="subtitle" x="80" y="119">Research-data flow from external sources to features, API, user interface, and operations</text>
+<g transform="translate(80 153)">
+  <path class="flow" d="M0 0h66"/><text class="small" x="82" y="6">Implemented data / request flow</text>
+  <path class="optional" d="M365 0h66"/><text class="small" x="447" y="6">Optional, development, or planned path</text>
+  <rect x="820" y="-13" width="132" height="27" rx="13" fill="#e7f5eb" stroke="#7fb58e"/><text class="tag" x="838" y="6" fill="#246b45">IN REPO</text>
+  <rect x="973" y="-13" width="165" height="27" rx="13" fill="#f1f3f5" stroke="#a0aec0" stroke-dasharray="5 4"/><text class="tag" x="991" y="6" fill="#52677c">SCAFFOLD / DESIGN</text>
+</g>
+
+<!-- External sources and provider marks -->
+<rect class="panel sources" x="52" y="202" width="2496" height="254"/>
+<text class="section" x="82" y="241">1  External data sources</text>
+<g>
+  <rect class="card" x="80" y="261" width="458" height="165"/>
+  <circle cx="126" cy="302" r="25" fill="#1f5e91"/><text x="106" y="308" font="700 13px Arial" fill="#fff">SEC</text>
+  <text class="label" x="166" y="307">SEC EDGAR</text>
+  <text class="small" x="105" y="348">Atom feeds • filing documents</text><text class="small" x="105" y="374">Company Facts / XBRL • Form 4</text>
+  <text class="tiny" x="105" y="404">Primary regulatory evidence</text>
+
+  <rect class="card card-gold" x="565" y="261" width="458" height="165"/>
+  <rect x="590" y="280" width="90" height="42" rx="20" fill="#ff6b35"/><text x="601" y="309" font="700 17px Arial" fill="#fff">moomoo</text>
+  <text class="label" x="694" y="307">OpenD market data</text>
+  <text class="small" x="590" y="348">News search: request / response polling</text><text class="small" x="590" y="374">Quotes: subscribe then fetch snapshot</text>
+  <text class="tiny" x="590" y="404">Direct API path • separate logged-in OpenD • entitlements apply</text>
+
+  <rect class="card" x="1050" y="261" width="458" height="165"/>
+  <circle cx="1097" cy="301" r="22" fill="#ff4500"/><text x="1080" y="308" font="700 17px Arial" fill="#fff">r/</text>
+  <rect x="1128" y="280" width="42" height="42" rx="8" fill="#111827"/><text x="1139" y="309" font="700 22px Arial" fill="#fff">X</text>
+  <rect x="1180" y="280" width="42" height="42" rx="8" fill="#ff6600"/><text x="1190" y="309" font="700 17px Arial" fill="#fff">Y!</text>
+  <text class="label" x="1234" y="307">Social connectors</text>
+  <text class="small" x="1075" y="348">Reddit • X • Hacker News • GitHub</text><text class="small" x="1075" y="374">Connector catalog + credentials determine use</text>
+  <text class="tiny" x="1075" y="404">Sources can be unavailable independently</text>
+
+  <rect class="card" x="1535" y="261" width="458" height="165"/>
+  <circle cx="1582" cy="301" r="22" fill="#f97316"/><path d="M1571 301a11 11 0 0 1 22 0M1577 301a5 5 0 0 1 10 0" fill="none" stroke="#fff" stroke-width="3"/><circle cx="1582" cy="309" r="2.5" fill="#fff"/>
+  <rect x="1615" y="280" width="42" height="42" rx="8" fill="#ff0033"/><path d="m1631 290 15 11-15 11z" fill="#fff"/>
+  <g transform="translate(1670 282)"><rect x="0" y="23" width="8" height="17" fill="#4285f4"/><rect x="12" y="13" width="8" height="27" fill="#34a853"/><rect x="24" y="4" width="8" height="36" fill="#fbbc05"/><rect x="36" y="17" width="8" height="23" fill="#ea4335"/></g>
+  <text class="label" x="1730" y="307">News &amp; discovery</text>
+  <text class="small" x="1560" y="348">RSS / Google News • YouTube • Trends</text><text class="small" x="1560" y="374">Calendars and news polled by scheduled jobs</text>
+  <text class="tiny" x="1560" y="404">Publication time ≠ retrieval time</text>
+
+  <rect class="card" x="2020" y="261" width="500" height="165"/>
+  <rect x="2045" y="280" width="58" height="42" rx="9" fill="#27364b"/><text x="2053" y="308" font="700 13px Arial" fill="#fff">SERP</text>
+  <text class="label" x="2115" y="307">Optional enrichment</text>
+  <text class="small" x="2045" y="348">SerpApi Google AI Overview fallback</text><text class="small" x="2045" y="374">Explicit opt-in • requires SERPAPI_KEY</text>
+  <text class="tiny" x="2045" y="404">External paid usage; not core ingestion</text>
+</g>
+
+<!-- Main ingestion-to-serving pipeline -->
+<rect class="panel pipeline" x="52" y="486" width="2496" height="592"/>
+<text class="section" x="82" y="526">2  Ingestion, transformation, and API serving</text>
+<text class="small" x="82" y="552">Jobs consume enabled sources → storage → feature computation → feature store → FastAPI. Moomoo requests use a separate direct API path.</text>
+
+<!-- Six stage cards -->
+<g>
+  <rect class="card card-gold" x="74" y="579" width="386" height="397"/>
+  <circle cx="110" cy="619" r="21" fill="#d97706"/><path d="M100 619h20M110 609v20" stroke="#fff" stroke-width="3"/>
+  <text class="label" x="145" y="626">Config &amp; schedule</text>
+  <text class="body" x="98" y="675">Watchlists and connector YAML</text><text class="small" x="98" y="704">financial_watchlist.yaml</text><text class="small" x="98" y="730">platform_connectors.yaml</text>
+  <line class="rule" x1="98" y1="752" x2="436" y2="752"/>
+  <text class="body" x="98" y="786">Airflow DAG generation</text><text class="small" x="98" y="815">Configured schedules / retries</text>
+  <text class="body" x="98" y="854">Local orchestration</text><text class="small" x="98" y="883">Docker worker + CLI scripts</text>
+  <rect x="98" y="915" width="133" height="27" rx="13" fill="#e7f5eb"/><text class="tag" x="115" y="934" fill="#246b45">CONFIGURED</text>
+
+  <rect class="card card-green" x="488" y="579" width="386" height="397"/>
+  <circle cx="524" cy="619" r="21" fill="#16845b"/><path d="M514 613h20M514 620h20M514 627h20" stroke="#fff" stroke-width="2.5"/>
+  <text class="label" x="559" y="626">Collectors &amp; monitors</text>
+  <text class="body" x="512" y="675">connectors.multi_runner</text><text class="small" x="512" y="704">Registry + connector contracts</text><text class="small" x="512" y="730">Social / news / EDGAR connectors</text>
+  <line class="rule" x1="512" y1="752" x2="850" y2="752"/>
+  <text class="body" x="512" y="786">Financial scripts</text><text class="small" x="512" y="815">Filings • Form 4 • company news</text>
+  <text class="body" x="512" y="854">SEC QR tools</text><text class="small" x="512" y="883">Report / watcher • XBRL deltas</text>
+  <rect x="512" y="915" width="133" height="27" rx="13" fill="#e7f5eb"/><text class="tag" x="529" y="934" fill="#246b45">IN REPO</text>
+
+  <rect class="card card-blue" x="902" y="579" width="386" height="397"/>
+  <path d="M932 606h34l13 13v29h-47z" fill="#ff9900"/><path d="M966 606v14h13" fill="none" stroke="#fff" stroke-width="2"/><text x="939" y="638" font="700 12px Arial" fill="#fff">S3</text>
+  <text class="label" x="990" y="626">Object storage</text>
+  <text class="body" x="926" y="675">S3 data lake</text><text class="small" x="926" y="704">Raw: source payloads / replay</text><text class="small" x="926" y="730">Bronze: normalized records</text><text class="small" x="926" y="756">Silver: enriched datasets</text>
+  <line class="rule" x1="926" y1="778" x2="1264" y2="778"/>
+  <rect x="926" y="803" width="95" height="34" rx="8" fill="#eef4fa" stroke="#b8c9d9"/><text class="tag" x="938" y="825" fill="#315b78">LOCAL</text><text class="small" x="1033" y="825">LocalStack in Compose</text>
+  <rect x="926" y="854" width="95" height="34" rx="8" fill="#f4f5f6" stroke="#a0aec0" stroke-dasharray="5 4"/><text class="tag" x="940" y="876" fill="#52677c">CLOUD</text><text class="small" x="1033" y="876">AWS S3 target scaffold</text>
+  <text class="tiny" x="926" y="932">Connector S3 writes are opt-in per run</text>
+
+  <rect class="card card-purple" x="1316" y="579" width="386" height="397"/>
+  <rect x="1340" y="599" width="45" height="42" rx="8" fill="#7542a6"/><text x="1347" y="626" font="700 13px Arial" fill="#fff">ETL</text>
+  <text class="label" x="1402" y="626">Transform &amp; score</text>
+  <text class="body" x="1340" y="675">Batch feature pipeline</text><text class="small" x="1340" y="704">raw_to_bronze.py</text><text class="small" x="1340" y="730">compute_features.py</text>
+  <line class="rule" x1="1340" y1="752" x2="1678" y2="752"/>
+  <text class="body" x="1340" y="786">Normalize and aggregate</text><text class="small" x="1340" y="815">Trends • summaries • signals</text>
+  <text class="small" x="1340" y="854">Financial QR metrics and deltas</text><text class="small" x="1340" y="883">Preserve source / time provenance</text>
+  <rect x="1340" y="915" width="180" height="27" rx="13" fill="#e7f5eb"/><text class="tag" x="1357" y="934" fill="#246b45">BATCH / SCRIPTED</text>
+
+  <rect class="card card-blue" x="1730" y="579" width="386" height="397"/>
+  <ellipse cx="1760" cy="608" rx="17" ry="7" fill="#2774c8"/><path d="M1743 608v25c0 5 34 5 34 0v-25M1743 620c0 5 34 5 34 0" fill="none" stroke="#2774c8" stroke-width="3"/><text class="tiny" x="1749" y="632" fill="#fff">DB</text>
+  <text class="label" x="1792" y="626">Feature store</text>
+  <text class="body" x="1754" y="675">DynamoDB</text><text class="small" x="1754" y="704">Feature / signal lookups</text><text class="small" x="1754" y="730">Dashboard summaries</text><text class="small" x="1754" y="756">Financial filters and records</text>
+  <line class="rule" x1="1754" y1="778" x2="2092" y2="778"/>
+  <rect x="1754" y="803" width="95" height="34" rx="8" fill="#eef4fa" stroke="#b8c9d9"/><text class="tag" x="1766" y="825" fill="#315b78">LOCAL</text><text class="small" x="1861" y="825">LocalStack endpoint</text>
+  <rect x="1754" y="854" width="95" height="34" rx="8" fill="#f4f5f6" stroke="#a0aec0" stroke-dasharray="5 4"/><text class="tag" x="1768" y="876" fill="#52677c">CLOUD</text><text class="small" x="1861" y="876">AWS Terraform scaffold</text>
+  <text class="tiny" x="1754" y="932">Not a transactional trading ledger</text>
+
+  <rect class="card card-green" x="2144" y="579" width="386" height="397"/>
+  <rect x="2168" y="600" width="46" height="40" rx="9" fill="#16845b"/><text x="2174" y="626" font="700 12px Arial" fill="#fff">API</text>
+  <text class="label" x="2232" y="626">FastAPI service</text>
+  <text class="body" x="2168" y="675">Uvicorn • port 8000</text><text class="small" x="2168" y="704">Dashboard / trends / pipeline</text><text class="small" x="2168" y="730">Financial records / research</text><text class="small" x="2168" y="756">Moomoo news / quote snapshot</text>
+  <line class="rule" x1="2168" y1="778" x2="2506" y2="778"/>
+  <text class="body" x="2168" y="812">API key gate (optional env)</text><text class="small" x="2168" y="841">CORS • health • Prometheus /metrics</text>
+  <rect x="2168" y="870" width="198" height="34" rx="8" fill="#fff2d8" stroke="#e0c574"/><text class="tag" x="2181" y="892" fill="#8a5b00">MOOMOO IS DIRECT</text>
+  <text class="tiny" x="2168" y="932">OpenD reads are not persisted by these routes</text>
+</g>
+
+<!-- Stage-to-stage data flow -->
+<path class="flow" d="M460 780h22"/><path class="flow" d="M874 780h22"/><path class="flow" d="M1288 780h22"/><path class="flow" d="M1702 780h22"/><path class="flow" d="M2116 780h22"/>
+
+<!-- Moomoo bypass: direct, request-scoped API integration -->
+<path class="flow" d="M794 426v30h1500v107"/>
+
+<!-- Consumers and operator surfaces -->
+<rect class="panel consumers" x="52" y="1120" width="2496" height="387"/>
+<text class="section" x="82" y="1160">3  Consumers and operations</text>
+<g>
+  <rect class="card card-blue" x="78" y="1185" width="590" height="270"/>
+  <g transform="translate(103 1211)" stroke="#087ea4" stroke-width="3" fill="none"><ellipse cx="25" cy="22" rx="27" ry="10"/><ellipse cx="25" cy="22" rx="27" ry="10" transform="rotate(60 25 22)"/><ellipse cx="25" cy="22" rx="27" ry="10" transform="rotate(120 25 22)"/><circle cx="25" cy="22" r="4" fill="#087ea4"/></g>
+  <text class="label" x="166" y="1242">React + Vite frontend</text><text class="small" x="103" y="1281">Dashboard • Trends • Financial • Research</text><text class="small" x="103" y="1308">Pipeline • Platforms • Settings</text>
+  <line class="rule" x1="103" y1="1327" x2="642" y2="1327"/><text class="body" x="103" y="1361">Browser → REST API</text><text class="small" x="103" y="1390">Dev server: localhost:5173</text><text class="tiny" x="103" y="1421">Moomoo routes are available through API; no live quote stream UI</text>
+
+  <rect class="card" x="694" y="1185" width="570" height="270"/>
+  <rect x="719" y="1210" width="50" height="45" rx="9" fill="#35495e"/><text x="728" y="1239" font="700 15px Arial" fill="#fff">CLI</text>
+  <text class="label" x="788" y="1242">Standalone tools</text><text class="small" x="719" y="1281">sec_qr_report.py • realtime_qr_watcher.py</text><text class="small" x="719" y="1308">Financial ingestion / monitor scripts</text>
+  <line class="rule" x1="719" y1="1327" x2="1238" y2="1327"/><text class="body" x="719" y="1361">Run independently of the API</text><text class="small" x="719" y="1390">Files, JSON reports, and console logs</text><text class="tiny" x="719" y="1421">Optional S3 output when configured</text>
+
+  <rect class="card" x="1290" y="1185" width="560" height="270"/>
+  <circle cx="1325" cy="1232" r="22" fill="#e6522c"/><path d="M1317 1243q8-24 16 0m-13-12 6 5 6-5" fill="none" stroke="#fff" stroke-width="2.5"/>
+  <text class="label" x="1363" y="1242">Observability</text><text class="small" x="1315" y="1281">Prometheus scrapes API /metrics</text><text class="small" x="1315" y="1308">Grafana dashboards • ports 9090 / 3000</text>
+  <line class="rule" x1="1315" y1="1327" x2="1825" y2="1327"/><text class="body" x="1315" y="1361">Request counter currently exported</text><text class="small" x="1315" y="1390">Not full tracing or alerting</text><text class="tiny" x="1315" y="1421">Local Compose services</text>
+
+  <rect class="card" x="1876" y="1185" width="644" height="270"/>
+  <rect x="1901" y="1210" width="48" height="45" rx="9" fill="#2496ed"/><path d="M1908 1232h34m-29-7h24m-18-7h12" stroke="#fff" stroke-width="3"/><text class="label" x="1968" y="1242">Runtime &amp; deployment</text>
+  <text class="small" x="1901" y="1281">Root Compose: API • worker • LocalStack • Airflow</text><text class="small" x="1901" y="1308">Optional overlay: frontend • Prometheus • Grafana</text>
+  <line class="rule" x1="1901" y1="1327" x2="2495" y2="1327"/><text class="body" x="1901" y="1361">Terraform: S3 • DynamoDB • Secrets • SQS</text><text class="small" x="1901" y="1390">Cloud/ECS deployment remains scaffold, not turnkey</text><text class="tiny" x="1901" y="1421">Solid = local implementation • dashed = target / optional</text>
+</g>
+
+<!-- API consumers and metrics paths -->
+<path class="flow" d="M2337 976v108H373v86"/>
+<path class="flow" d="M2298 976v88H1570v106"/>
+<text class="tiny" x="515" y="1075">REST to frontend</text><text class="tiny" x="1600" y="1054">Prometheus scrapes /metrics</text>
+
+<!-- Agent policy and harness boundary -->
+<rect class="panel guidance" x="52" y="1541" width="2496" height="197"/>
+<text class="section" x="82" y="1580">4  Research guidance and system boundaries</text>
+<rect class="card" x="80" y="1600" width="1178" height="105"/>
+<rect x="104" y="1620" width="60" height="52" rx="10" fill="#30475e"/><text x="115" y="1652" font="700 15px Arial" fill="#fff">SKILL</text>
+<text class="label" x="184" y="1638">AGENTS.md + research skills</text><text class="small" x="184" y="1668">Guide provenance, risk controls, evidence quality, and allowed action language; they do not run as ingestion services.</text>
+<rect class="card" x="1280" y="1600" width="1240" height="105" stroke-dasharray="7 5"/>
+<rect x="1304" y="1620" width="60" height="52" rx="10" fill="#64748b"/><text x="1315" y="1652" font="700 15px Arial" fill="#fff">YAML</text>
+<text class="label" x="1384" y="1638">harness/research_harness.yaml — DESIGN ONLY</text><text class="small" x="1384" y="1668">Routing / trace / grader proposal; not loaded or enforced by the application. No automatic broker orders.</text>
+<text class="tiny" x="80" y="1770">Important boundary: OpenD routes return request-scoped news / quote data; they are not a persistent news pipeline, a push stream, or an investment recommendation service.</text>
 </svg>
