@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-2",
+  "tags": {
+    "type": "feature",
+    "modules": ["backend","frontend","connectors","observability"],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "M",
+    "effort_person_days": {"low": 3, "high": 5},
+    "impact": "high"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-2-connector-freshness.md",
+  "objective": "Show real financial connector attempts, successes, data freshness and failures.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "provisional",
+  "base_sha": null,
+  "allowed_paths": [
+    "backend/freshness_services.py",
+    "backend/main.py",
+    "connectors/financial/run_status.py",
+    "scripts/run_sec_filings.py",
+    "scripts/run_insider_monitor.py",
+    "scripts/run_company_news.py",
+    "scripts/run_financial_calendar.py",
+    "frontend/src/services/api.ts",
+    "frontend/src/pages/Platforms.tsx",
+    "frontend/src/pages/Pipeline.tsx",
+    "frontend/src/pages/Financial.tsx",
+    "tests/test_connector_freshness.py",
+    "plans/2026-10-01/PRSG-2-connector-freshness.md",
+    "plans/2026-10-01/PRSG-2.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "README.md",
+    "skills/",
+    "artifacts/",
+    "data/",
+    "harness/",
+    "infra/",
+    ".github/"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_connector_freshness.py"
+      ],
+      "cwd": ".",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "suite",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": ".",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "frontend",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "frontend",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "behavior",
+      "kind": "manual",
+      "description": "Review ticket-specific fixture behavior and required failure cases, including desktop/mobile UI where relevant.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead checks complete ticket diff against base, reviews results and records release/limitations.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-2-D1",
+      "description": "Four financial scripts persist real run outcomes",
+      "check_ids": [
+        "focused",
+        "behavior"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-2-D2",
+      "description": "API/UI truthful stale/absent/never-run states",
+      "check_ids": [
+        "focused",
+        "behavior"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-2-D3",
+      "description": "Failure/concurrency/time fixtures preserve evidence",
+      "check_ids": [
+        "focused",
+        "behavior"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-2-D4",
+      "description": "Tests, Lead review and rollout evidence",
+      "check_ids": [
+        "focused",
+        "suite",
+        "frontend",
+        "lead-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  },
+  "dependencies": [
+    "Review provisional scope and current implementation before starting"
+  ],
+  "diff_scope": "Complete ticket-owned tracked/untracked/deleted paths plus both rename endpoints; preserve unrelated pre-existing changes.",
+  "scope_control": "Lead reviews changes to write scope, checks, base and acceptance definitions; agents may record progress/evidence."
+}

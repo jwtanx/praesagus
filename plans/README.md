@@ -6,19 +6,45 @@ Planning baseline: 1 October 2026 (Asia/Kuala_Lumpur). Lead owns prioritization 
 
 | Order | Spec | State | Engineering effort | Expected impact | Confidence |
 |---|---|---|---|---|---|
-| 1 | [Company catalyst inbox](001-catalyst-inbox.md) | Selected; delegated to Engineer | 3–5 person-days | High: connects four existing datasets into one research workflow | Medium-high: data/interfaces exist; user value unmeasured |
-| 2 | [Connector freshness](002-connector-freshness.md) | Planned | 3–5 person-days | High: makes stale data and failed runs visible | High for reliability need; moderate for delivery estimate |
-| 3 | [Filing evidence detail](003-filing-evidence.md) | Planned | 2–4 person-days | Medium-high: faster verification of filing facts | Medium: metric attribution needs audit |
-| 4 | [Watchlist management](004-watchlist-management.md) | Planned | 3–5 person-days | Medium: removes manual configuration work | Medium: shared ownership/concurrency need design |
-| 5 | [Durable alert delivery](005-alert-outbox.md) | Planned | 4–7 person-days | High for alert-dependent users; otherwise medium | Medium: receiver delivery semantics vary |
+| PRSG-1 | [Company catalyst inbox](2026-10-01/PRSG-1-catalyst-inbox.md) | In progress; Engineer delivery pending Lead review | 3–5 person-days | High: connects four existing datasets into one research workflow | Medium-high: data/interfaces exist; user value unmeasured |
+| PRSG-2 | [Connector freshness](2026-10-01/PRSG-2-connector-freshness.md) | Planned | 3–5 person-days | High: makes stale data and failed runs visible | High for reliability need; moderate for delivery estimate |
+| PRSG-3 | [Filing evidence detail](2026-10-01/PRSG-3-filing-evidence.md) | Planned | 2–4 person-days | Medium-high: faster verification of filing facts | Medium: metric attribution needs audit |
+| PRSG-4 | [Watchlist management](2026-10-01/PRSG-4-watchlist-management.md) | Planned | 3–5 person-days | Medium: removes manual configuration work | Medium: shared ownership/concurrency need design |
+| PRSG-5 | [Durable alert delivery](2026-10-01/PRSG-5-alert-outbox.md) | Planned | 4–7 person-days | High for alert-dependent users; otherwise medium | Medium: receiver delivery semantics vary |
 
 Estimates include focused tests, documentation, and Lead review for one engineer familiar with the repository. One person-day means roughly six focused engineering hours; these are planning ranges, not calendar promises. API/provider onboarding and user-testing recruitment are excluded. Parallel tasks may reduce elapsed time without reducing effort. Impact is a hypothesis about user friction or reliability, not a financial ROI or trading-return estimate.
 
-## Decision and baseline
+## Quick-glance routing tags
+
+| Ticket | Type | Modules | Owner | Priority | Effort | Impact |
+|---|---|---|---|---|---|---|
+| PRSG-1 | feature | backend, frontend, connectors | Engineer | P1 | M: 3–5 days | high |
+| PRSG-2 | feature | backend, frontend, connectors, observability | Engineer | P2 | M: 3–5 days | high |
+| PRSG-3 | feature | backend, frontend, financial-data | Engineer | P2 | M: 2–4 days | medium-high |
+| PRSG-4 | feature | backend, frontend, connectors | Engineer | P2 | M: 3–5 days | medium |
+| PRSG-5 | feature | backend, frontend, alerting | Engineer | P2 | M: 4–7 days | high |
+
+Future research/feasibility tickets use `spike` and Researcher ownership; market-analysis spikes use Consultant ownership. Bugs include reproduction, severity and regression coverage. The planning skill defines all tag values and routing rules.
+
+## Decision rationale
 
 The inbox wins first because `backend/financial_services.py` and `frontend/src/pages/Financial.tsx` already expose the four datasets separately. New joins and presentation can be tested offline. Freshness instrumentation follows so users can judge dataset coverage. The forecast evaluator in `harness/forecast_review.py` is implemented separately; the broader answer harness YAML remains design-only.
 
-This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATION_ROADMAP.md). It does not supersede current implementation evidence or authorize all backlog items to run at once. Only item 001 is assigned now. Keep provider integrations, persistent Moomoo collection, model-backed answers, and trade execution outside these MVPs.
+This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATION_ROADMAP.md). It does not supersede current implementation evidence or authorize all backlog items to run at once. Only PRSG-1 is assigned now. Keep provider integrations, persistent Moomoo collection, model-backed answers, and trade execution outside these MVPs.
+
+## Ticket convention and harness
+
+Create plans under `plans/YYYY-MM-DD/` using the planning date in Asia/Kuala_Lumpur. Allocate the next unused repository-wide `PRSG-N` key; never restart numbering for a new day or reuse a completed key. Filename: `PRSG-N-short-title.md`, with matching `PRSG-N.harness.json`. Preserve creation date when resuming work. Each plan has a "When it's considered done" checklist whose stable IDs match JSON acceptance items. Mark a box only when evidence is recorded; pending reviews and measurements stay unchecked.
+
+The planning skill defines the [manifest contract and researched patterns](../skills/praesagus-feature-planner/references/ticket-harness.md). Validate a manifest with:
+
+```bash
+python3 scripts/planning/validate_ticket.py plans/2026-10-01/PRSG-1.harness.json
+# Check every path in the ticket's reviewed change set, including both rename endpoints:
+python3 scripts/planning/validate_ticket.py plans/2026-10-01/PRSG-1.harness.json --changed-file backend/catalyst_services.py
+```
+
+The validator checks supplied paths and declared evidence, but does not collect a Git diff, run test commands, prevent edits, verify log truth, or implement the future answer runtime. Lead must compare the complete ticket diff against the frozen base, account for pre-existing dirty changes separately, and review evidence. Protected paths win. Future manifests have provisional scope until Lead accepts exact paths and freezes a base SHA before implementation.
 
 ## Delivery record
 

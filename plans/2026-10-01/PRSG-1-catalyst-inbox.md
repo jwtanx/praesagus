@@ -1,4 +1,8 @@
-# 001 — Company catalyst inbox
+# PRSG-1 — Company catalyst inbox
+
+Type: feature · Modules: backend, frontend, connectors · Owner: Engineer · Priority: P1 · Effort: M (3–5 person-days) · Impact: high
+
+Harness manifest: [PRSG-1.harness.json](PRSG-1.harness.json). Created 2026-10-01, Asia/Kuala_Lumpur. Owner: Engineer; acceptance: Lead.
 
 State: selected for implementation, assigned to Engineer on 1 October 2026. Target: a solo or small-team researcher reviewing tracked companies. Lead accepts the scope below; implementation remains pending.
 
@@ -52,3 +56,13 @@ Deterministic service/API fixtures cover all four datasets, missing/malformed fi
 Frontend checks cover source links, partial warnings, stale-request protection, apply/refresh/paging, and empty/error states. Use existing test tooling where available; if no component harness exists, add a small testable normalization/view helper plus documented browser fixture checks rather than claiming a build proves UI behavior. Run focused tests, full pytest, frontend build/type check, and desktop/mobile fixture review; report exact commands and outcomes.
 
 Effort: normalization/API 1–1.5 days; frontend 0.75–1.25; failure/replay tests 0.75–1.25; review/runbook 0.5–1. Total 3–5 person-days. Largest uncertainty: timestamp/source completeness. Deliver complete end-to-end MVP before expanding. Rollback is removing the additive route/component; raw datasets remain untouched.
+
+## When it's considered done
+
+- [ ] PRSG-1-D1: Four datasets normalize with source/time precision, deduplication, filters and paging proved by replay tests.
+- [ ] PRSG-1-D2: Authentication, malformed/absent datasets, unsafe links and future-observed versus scheduled events pass rejection tests.
+- [ ] PRSG-1-D3: Desktop/mobile fixture review proves source links, partial warnings, stale-response handling and paging.
+- [ ] PRSG-1-D4: Focused tests, full pytest and frontend checks pass; commands/results recorded in manifest checks.
+- [ ] PRSG-1-D5: Lead reviews the scoped diff, records limitations and accepts release; commit/deployment evidence recorded where applicable.
+
+Check items only with evidence; update corresponding manifest acceptance status/evidence in the same edit. User usability target is a separate post-release impact check and must be reported as unmeasured until tested.

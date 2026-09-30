@@ -49,6 +49,8 @@ Use `skills/research-brief/SKILL.md` for evidence-comparison assignments and `sk
 6. Do not accept a passing test suite as proof of live service connectivity, provider entitlement, production deployment, or user value unless those were separately exercised.
 7. Close completed agent work when the platform supports it and no follow-up is pending. Keep unfinished sessions open only when needed for continued work.
 
+Use the role skill registry in `AGENTS.md` when delegating to the established Researcher, Engineer and Consultant chats. Delivery assignments include a dated `PRSG-*` spec and JSON manifest: owner, accepted write scope, protected paths, frozen base, checks and evidence. Keep checklist IDs synchronized with acceptance evidence, validate the complete ticket diff, and require demonstrated checks plus Lead review before completion. Research briefs and skill instructions are not runtime execution or filesystem restrictions.
+
 ## Decision and communication record
 
 For multi-step work, maintain a brief working record with:

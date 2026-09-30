@@ -30,6 +30,25 @@ Treat `docs/`, scripts, configuration, and tests as evidence of implemented beha
 - Use `skills/praesagus-feature-planner/SKILL.md` to prioritize new features and define an evidence-backed, measurable MVP.
 - Use `skills/praesagus-project-lead/SKILL.md` for material multi-step coordination. Delegate bounded evidence work to Researcher and accepted implementation work to Engineer; Lead owns scope, review, integration, and final decisions.
 
+### Agent-created skill registry and reuse
+
+| Role / contribution | Reuse these skills | When |
+|---|---|---|
+| Lead — created | `skills/praesagus-feature-planner/SKILL.md`, `skills/praesagus-project-lead/SKILL.md` | Prioritization, dated ticket specs, scope/evidence review and established-session delegation |
+| Engineer — created | `skills/praesagus-implementation/SKILL.md` | Accepted code changes, focused test harnesses, implementation handoff |
+| Researcher — created | `skills/research-brief/SKILL.md` | Market/product/API/technical research, sourced options and tradeoffs |
+| Consultant — created; Researcher also maintains reports | `skills/daily-market-brief/SKILL.md`, `skills/technical-trend-analysis/SKILL.md` | Timestamped news/catalyst briefs and data-supported technical trend review |
+| Consultant — amended existing skills | `skills/praesagus-trading-orchestrator/SKILL.md`, `skills/moomoo-skills/SKILL.md` | Financial specialist routing, risk/evidence controls and Moomoo interpretation |
+
+Before an applicable assignment, reuse and read the relevant role skill rather than recreate its workflow. Keep shared requirements in `skills/skill-template/SKILL.md`; load specialist finance skills only when relevant. Skill changes need metadata/reference validation and a relevant replayed behavioral case (for example missing data, future evidence, duplicate news, unsupported causal claims or failed delivery). Record evidence and limitations; skill validation alone does not prove analysis quality. Reuse tested failure cases as regressions and require human review before promoting prompt/model/risk-policy changes. These skills are instructions, not an autonomous runtime.
+
+### Ticket tags and delivery contract
+
+- Store specs under `plans/YYYY-MM-DD/PRSG-N-title.md` with matching `.harness.json`; date is MYT creation date and PRSG numbers are globally unique. Keep stable checklist IDs in "When it's considered done" synchronized with JSON evidence/status.
+- Quick-glance tags in Markdown and JSON: type (`feature`, `bug`, `spike`, `refactor`, `chore`, `docs`, `test`, `skill`); modules (`backend`, `frontend`, `connectors`, `financial-data`, `market-research`, `alerting`, `observability`, `harness`, `skills`, `infra`, `docs`); one owner role; priority (`P0` actual critical incident, `P1` next committed, `P2` planned, `P3` later); effort (`XS` <0.5, `S` 0.5–2, `M` >2–7, `L` >7–15, `XL` >15 person-days plus range); impact (`low`, `medium`, `medium-high`, `high` with rationale).
+- Research/feasibility spikes go to Researcher; market/chart/news interpretation to Consultant; code bugs and accepted implementation to Engineer; prioritization/integration to Lead. Mixed tickets have one owner and disjoint delegated scopes. Bugs include reproduction/expected behavior and regressions; spikes include a timebox, decision question, sources/tradeoffs and reviewed findings.
+- Freeze accepted paths, protected paths, base SHA, checks and owner before implementation. Validate with `scripts/planning/validate_ticket.py` and review every ticket-owned changed path, including new/deleted files and both rename endpoints; preserve unrelated pre-existing edits. The checker validates supplied paths and declared evidence, not completeness of a Git diff or filesystem write prevention. Lead controls scope changes and independently accepts completion.
+
 ## Data, research, and trader safeguards
 
 - Record `source_url` where allowed, source/provider, publication time, retrieval/availability time, timezone, data period, connector, and ingestion time. Separate source facts from interpretation and model-generated text.

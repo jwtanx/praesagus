@@ -1,4 +1,8 @@
-# 002 — Connector and dataset freshness
+# PRSG-2 — Connector and dataset freshness
+
+Type: feature · Modules: backend, frontend, connectors, observability · Owner: Engineer · Priority: P2 · Effort: M (3–5 person-days) · Impact: high
+
+Harness manifest: [PRSG-2.harness.json](PRSG-2.harness.json). Created 2026-10-01, Asia/Kuala_Lumpur. Owner: Engineer; acceptance: Lead.
 
 State: planned, not assigned. Target: researchers and operators who need to know whether monitored evidence is available and current. Effort: 3–5 person-days. Expected impact: high trust and failure-detection improvement; do not equate a successful run with complete market coverage.
 
@@ -21,3 +25,12 @@ Fixtures cover successful empty runs, partial acceptance, upstream failures, int
 Metric: every instrumented dataset card displays a real last-success time or explicit unknown/never-run state; simulated failures become visible after one refresh. Establish an incident-detection baseline with scripted failures rather than guessed production savings.
 
 Work breakdown: ledger/instrumentation 1.5–2 days; API/UI 1; tests/failure drills 0.75–1.25; docs/review 0.5. Dependency: approved single-host retention and status storage location. Rollout one script first, then extend to four. Stop if metadata failures affect ingestion; status reporting must not silently discard raw data.
+
+## When it's considered done
+
+- [ ] PRSG-2-D1: Four financial scripts persist real attempts/successes with bounded retention and sanitized failures.
+- [ ] PRSG-2-D2: API/UI distinguish stale, absent, failed, never-run and successful empty datasets.
+- [ ] PRSG-2-D3: Interrupted/concurrent writes and stale/future timestamps pass fixture tests without losing raw data.
+- [ ] PRSG-2-D4: Focused/full checks pass and Lead accepts scoped diff, limitations and rollout evidence.
+
+Check items and manifest acceptance evidence together; simulated failure-detection metric must be demonstrated before claiming impact.

@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-5",
+  "tags": {
+    "type": "feature",
+    "modules": ["backend","frontend","alerting"],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "M",
+    "effort_person_days": {"low": 4, "high": 7},
+    "impact": "high"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-5-alert-outbox.md",
+  "objective": "Persist alert attempts with bounded retries and observable delivery state.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "provisional",
+  "base_sha": null,
+  "allowed_paths": [
+    "alerting/outbox.py",
+    "alerting/financial_alerts.py",
+    "scripts/run_alert_dispatcher.py",
+    "backend/alert_services.py",
+    "backend/main.py",
+    "frontend/src/services/api.ts",
+    "frontend/src/components/AlertDelivery.tsx",
+    "frontend/src/pages/Financial.tsx",
+    "tests/test_alert_outbox.py",
+    "plans/2026-10-01/PRSG-5-alert-outbox.md",
+    "plans/2026-10-01/PRSG-5.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "README.md",
+    "skills/",
+    "artifacts/",
+    "data/",
+    "harness/",
+    "infra/",
+    ".github/"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_alert_outbox.py"
+      ],
+      "cwd": ".",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "suite",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": ".",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "frontend",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "frontend",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "behavior",
+      "kind": "manual",
+      "description": "Review ticket-specific fixture behavior and required failure cases, including desktop/mobile UI where relevant.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead checks complete ticket diff against base, reviews results and records release/limitations.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-5-D1",
+      "description": "Transactional outbox/leases/bounded retries",
+      "check_ids": [
+        "focused",
+        "behavior"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-5-D2",
+      "description": "Observable delivery contract and secret protection",
+      "check_ids": [
+        "focused",
+        "behavior"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-5-D3",
+      "description": "Restart/failure/concurrency fixture behavior",
+      "check_ids": [
+        "focused",
+        "behavior"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-5-D4",
+      "description": "Tests, Lead review and fake-receiver rollout",
+      "check_ids": [
+        "focused",
+        "suite",
+        "frontend",
+        "lead-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  },
+  "dependencies": [
+    "Review provisional scope and current implementation before starting"
+  ],
+  "diff_scope": "Complete ticket-owned tracked/untracked/deleted paths plus both rename endpoints; preserve unrelated pre-existing changes.",
+  "scope_control": "Lead reviews changes to write scope, checks, base and acceptance definitions; agents may record progress/evidence."
+}

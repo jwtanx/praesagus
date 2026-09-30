@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-1",
+  "tags": {
+    "type": "feature",
+    "modules": ["backend","frontend","connectors"],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {"low": 3, "high": 5},
+    "impact": "high"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-1-catalyst-inbox.md",
+  "objective": "Unify stored company catalysts with source provenance and timestamp precision.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "53e0b051dc5aeade9156c29ae1917f3363d0d1b5",
+  "allowed_paths": [
+    "backend/catalyst_services.py",
+    "backend/main.py",
+    "frontend/src/services/api.ts",
+    "frontend/src/pages/Financial.tsx",
+    "frontend/src/components/CatalystInbox.tsx",
+    "frontend/src/components/CatalystInbox.css",
+    "tests/test_catalyst_inbox.py",
+    "tests/catalyst_frontend_checks.cjs",
+    "tests/catalyst_ui_fixture.py",
+    "plans/2026-10-01/PRSG-1-catalyst-inbox.md",
+    "plans/2026-10-01/PRSG-1.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "README.md",
+    "skills/",
+    "artifacts/",
+    "data/",
+    "harness/",
+    "infra/",
+    ".github/"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_catalyst_inbox.py"
+      ],
+      "cwd": ".",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "suite",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": ".",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "frontend",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "frontend",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "behavior",
+      "kind": "manual",
+      "description": "Review ticket-specific fixture behavior and required failure cases, including desktop/mobile UI where relevant.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead checks complete ticket diff against base, reviews results and records release/limitations.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "frontend-replay",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/catalyst_frontend_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-1-D1",
+      "description": "Four-dataset normalization, deduplication, filters and paging",
+      "check_ids": [
+        "focused"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-1-D2",
+      "description": "Authentication and malformed/future data rejection",
+      "check_ids": [
+        "focused"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-1-D3",
+      "description": "Desktop/mobile provenance and async request behavior",
+      "check_ids": [
+        "behavior",
+        "frontend-replay"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-1-D4",
+      "description": "Focused/full tests and frontend checks",
+      "check_ids": [
+        "focused",
+        "suite",
+        "frontend"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-1-D5",
+      "description": "Lead scoped-diff and release review",
+      "check_ids": [
+        "lead-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  },
+  "dependencies": [],
+  "diff_scope": "Complete ticket-owned tracked/untracked/deleted paths plus both rename endpoints; preserve unrelated pre-existing changes.",
+  "scope_control": "Lead reviews changes to write scope, checks, base and acceptance definitions; agents may record progress/evidence."
+}
