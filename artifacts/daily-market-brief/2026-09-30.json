@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "metadata": {
     "title": "Daily Market Brief",
     "date": "2026-09-30",
@@ -26,29 +26,1093 @@
   ],
   "sections": {
     "outlook": {
-      "html": "<div class=\"eyebrow\">01 · Cross-sector outlook</div><h2>Fields & expected weekly movement</h2><p class=\"small\">Baseline for U.S.-listed products is generally the 29 Sep close because the U.S. session was open at the snapshot; exact ETF baselines are omitted where not freshly verified. Target: Fri 9 Oct close. Direction is conditional and confidence is qualitative, not a modeled probability.</p><div class=\"scroll\"><table><thead><tr><th>Field / proxy</th><th>Expected path into Oct 9</th><th>What supports it</th><th>What argues against it / trigger</th><th>Confidence</th></tr></thead><tbody>\n<tr><td><b>Broad U.S. equities</b><br>SPX / SPY</td><td>Choppy, roughly range-bound with a mild rebound bias only if softer inflation translates into easing yields. Avoid a precise point target without full data.</td><td>PCE surprise eased immediate rate pressure; early U.S. trading was modestly positive.</td><td>SPX closed 7,670.84 Sep 29 after two lower closes; Sep 29 range 7,653.55–7,699.60. A sustained break below that low weakens the rebound read; reclaim/hold above recent range strengthens it. <a href=\"https://chartexchange.com/symbol/index-spx/historical/\">Historical OHLC</a></td><td><span class=\"tag watch\">Low–medium</span></td></tr>\n<tr><td><b>Large-cap growth / semis</b><br>QQQ / NVDA</td><td>Volatile, neutral-to-up if yields continue lower; otherwise vulnerable to renewed valuation pressure.</td><td>Rate relief is supportive for long-duration growth; Nvidia disclosed a larger repurchase authorization.</td><td>Repurchase authorization does not prove demand or earnings acceleration; rising yields or weak guidance would disconfirm. <a href=\"https://apnews.com/article/e695d7024ad68b0defd6fb2fc1aa25d7\">AP on Nvidia buyback</a></td><td><span class=\"tag watch\">Low</span></td></tr>\n<tr><td><b>Energy</b><br>XLE / integrated energy</td><td>Relative resilience if crude remains elevated; reversal risk is high if supply fears fade or prices retreat.</td><td>Recent AP market coverage cited elevated crude and Brent amid Hormuz-related uncertainty.</td><td>Oil headline risk is not a reliable price forecast; check current futures, positioning, and actual company exposure before drawing conclusions. <a href=\"https://apnews.com/article/stocks-markets-oil-bonds-us-ai-chips-e61d3d7b947a390c7eee6c8758e3095d\">AP market update</a></td><td><span class=\"tag watch\">Low</span></td></tr>\n<tr><td><b>Healthcare / defensives</b><br>XLV</td><td>Potential relative shelter in a risk-off week; likely market-sensitive rather than a standalone catalyst call.</td><td>Defensive exposure may hold up relatively if index weakness returns.</td><td>No verified new sector catalyst in this scan. Relative strength needs confirmation against SPY; defensives can fall in broad selloffs.</td><td><span class=\"tag watch\">Low</span></td></tr>\n<tr><td><b>Financials</b><br>XLF / large banks</td><td>Mixed to neutral: higher yields can help some reinvestment margins, but pressure equity valuations/credit demand and create funding stress.</td><td>Rates remain elevated; US XLF had declined across recent closes (Sep 25–29 historical series).</td><td>Yield curve, credit quality, deposit costs, and bank-specific disclosures matter more than a simple “higher rates = bullish” rule. <a href=\"https://www.marketbeat.com/stocks/NYSEARCA/XLF/chart/\">Historical chart reference</a></td><td><span class=\"tag watch\">Low</span></td></tr>\n<tr><td><b>Malaysia / Bursa</b><br>FBM KLCI</td><td>Recovery attempt, but breadth-confirmation required; sideways-to-cautious until the rebound broadens.</td><td>KLCI Sep 30 +0.43% to 1,651.17.</td><td>Decliners (703) exceeded advancers (413). Sep 29 analyst-cited 1,660 support was still not reclaimed on Sep 30; a close above that zone and stronger breadth would improve the read. <a href=\"https://web26.bernama.com/bm/news.php?id=2613857\">Bernama close & breadth</a></td><td><span class=\"tag watch\">Low–medium</span></td></tr>\n<tr><td><b>China exposure</b><br>FXI / MCHI</td><td>Event/liquidity uncertainty; underlying mainland market is closed Oct 1–7, limiting local price discovery.</td><td>Shenzhen exchange's 2026 calendar lists National Day holiday Oct 1–7 and reopening Oct 8.</td><td>U.S.-listed funds may still trade, but local underlying prices can be stale while mainland markets are shut; gap risk on reopening. <a href=\"https://investor.szse.cn/English/services/trading/calendar/index.html\">SZSE calendar</a></td><td><span class=\"tag watch\">Low</span></td></tr>\n</tbody></table></div><div class=\"callout\"><b>Technical snapshot:</b> SPX close 7,670.84 on Sep 29; nearby session range 7,653.55–7,699.60. Two lower closes preceded PCE relief; this short sample does not establish trend or support. KLCI fell from 1,671.62 Sep 25 to 1,651.17 Sep 30 despite the final-day bounce. Full OHLCV, adjusted series, and confirmed live quotes were not assembled.</div>"
+      "title": "Fields & expected weekly movement",
+      "kicker": "01 · Cross-sector outlook",
+      "description": [
+        {
+          "text": "Baseline for U.S.-listed products is generally the 29 Sep close because the U.S. session was open at the snapshot; exact ETF baselines are omitted where not freshly verified. Target: Fri 9 Oct close. Direction is conditional and confidence is qualitative, not a modeled probability.",
+          "sources": []
+        }
+      ],
+      "tables": [
+        {
+          "columns": [
+            "Field / proxy",
+            "Expected path into Oct 9",
+            "What supports it",
+            "What argues against it / trigger",
+            "Confidence"
+          ],
+          "rows": [
+            [
+              {
+                "text": "Broad U.S. equities SPX / SPY",
+                "sources": []
+              },
+              {
+                "text": "Choppy, roughly range-bound with a mild rebound bias only if softer inflation translates into easing yields. Avoid a precise point target without full data.",
+                "sources": []
+              },
+              {
+                "text": "PCE surprise eased immediate rate pressure; early U.S. trading was modestly positive.",
+                "sources": []
+              },
+              {
+                "text": "SPX closed 7,670.84 Sep 29 after two lower closes; Sep 29 range 7,653.55–7,699.60. A sustained break below that low weakens the rebound read; reclaim/hold above recent range strengthens it.",
+                "sources": [
+                  {
+                    "label": "Historical OHLC",
+                    "url": "https://chartexchange.com/symbol/index-spx/historical/"
+                  }
+                ]
+              },
+              {
+                "text": "Low–medium",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "Large-cap growth / semis QQQ / NVDA",
+                "sources": []
+              },
+              {
+                "text": "Volatile, neutral-to-up if yields continue lower; otherwise vulnerable to renewed valuation pressure.",
+                "sources": []
+              },
+              {
+                "text": "Rate relief is supportive for long-duration growth; Nvidia disclosed a larger repurchase authorization.",
+                "sources": []
+              },
+              {
+                "text": "Repurchase authorization does not prove demand or earnings acceleration; rising yields or weak guidance would disconfirm.",
+                "sources": [
+                  {
+                    "label": "AP on Nvidia buyback",
+                    "url": "https://apnews.com/article/e695d7024ad68b0defd6fb2fc1aa25d7"
+                  }
+                ]
+              },
+              {
+                "text": "Low",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "Energy XLE / integrated energy",
+                "sources": []
+              },
+              {
+                "text": "Relative resilience if crude remains elevated; reversal risk is high if supply fears fade or prices retreat.",
+                "sources": []
+              },
+              {
+                "text": "Recent AP market coverage cited elevated crude and Brent amid Hormuz-related uncertainty.",
+                "sources": []
+              },
+              {
+                "text": "Oil headline risk is not a reliable price forecast; check current futures, positioning, and actual company exposure before drawing conclusions.",
+                "sources": [
+                  {
+                    "label": "AP market update",
+                    "url": "https://apnews.com/article/stocks-markets-oil-bonds-us-ai-chips-e61d3d7b947a390c7eee6c8758e3095d"
+                  }
+                ]
+              },
+              {
+                "text": "Low",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "Healthcare / defensives XLV",
+                "sources": []
+              },
+              {
+                "text": "Potential relative shelter in a risk-off week; likely market-sensitive rather than a standalone catalyst call.",
+                "sources": []
+              },
+              {
+                "text": "Defensive exposure may hold up relatively if index weakness returns.",
+                "sources": []
+              },
+              {
+                "text": "No verified new sector catalyst in this scan. Relative strength needs confirmation against SPY; defensives can fall in broad selloffs.",
+                "sources": []
+              },
+              {
+                "text": "Low",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "Financials XLF / large banks",
+                "sources": []
+              },
+              {
+                "text": "Mixed to neutral: higher yields can help some reinvestment margins, but pressure equity valuations/credit demand and create funding stress.",
+                "sources": []
+              },
+              {
+                "text": "Rates remain elevated; US XLF had declined across recent closes (Sep 25–29 historical series).",
+                "sources": []
+              },
+              {
+                "text": "Yield curve, credit quality, deposit costs, and bank-specific disclosures matter more than a simple “higher rates = bullish” rule.",
+                "sources": [
+                  {
+                    "label": "Historical chart reference",
+                    "url": "https://www.marketbeat.com/stocks/NYSEARCA/XLF/chart/"
+                  }
+                ]
+              },
+              {
+                "text": "Low",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "Malaysia / Bursa FBM KLCI",
+                "sources": []
+              },
+              {
+                "text": "Recovery attempt, but breadth-confirmation required; sideways-to-cautious until the rebound broadens.",
+                "sources": []
+              },
+              {
+                "text": "KLCI Sep 30 +0.43% to 1,651.17.",
+                "sources": []
+              },
+              {
+                "text": "Decliners (703) exceeded advancers (413). Sep 29 analyst-cited 1,660 support was still not reclaimed on Sep 30; a close above that zone and stronger breadth would improve the read.",
+                "sources": [
+                  {
+                    "label": "Bernama close & breadth",
+                    "url": "https://web26.bernama.com/bm/news.php?id=2613857"
+                  }
+                ]
+              },
+              {
+                "text": "Low–medium",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "China exposure FXI / MCHI",
+                "sources": []
+              },
+              {
+                "text": "Event/liquidity uncertainty; underlying mainland market is closed Oct 1–7, limiting local price discovery.",
+                "sources": []
+              },
+              {
+                "text": "Shenzhen exchange's 2026 calendar lists National Day holiday Oct 1–7 and reopening Oct 8.",
+                "sources": []
+              },
+              {
+                "text": "U.S.-listed funds may still trade, but local underlying prices can be stale while mainland markets are shut; gap risk on reopening.",
+                "sources": [
+                  {
+                    "label": "SZSE calendar",
+                    "url": "https://investor.szse.cn/English/services/trading/calendar/index.html"
+                  }
+                ]
+              },
+              {
+                "text": "Low",
+                "sources": []
+              }
+            ]
+          ]
+        }
+      ],
+      "items": [],
+      "notes": [
+        {
+          "text": "Technical snapshot: SPX close 7,670.84 on Sep 29; nearby session range 7,653.55–7,699.60. Two lower closes preceded PCE relief; this short sample does not establish trend or support. KLCI fell from 1,671.62 Sep 25 to 1,651.17 Sep 30 despite the final-day bounce. Full OHLCV, adjusted series, and confirmed live quotes were not assembled.",
+          "sources": []
+        }
+      ]
     },
     "top10": {
-      "html": "<div class=\"eyebrow\">02 · Top 10 weekly watch</div><h2>Current price & estimated week-end range</h2><p class=\"small\">Target: Friday 9 Oct 2026 close. 10 liquid focus names from the U.S. watchlist and Malaysian large caps, including three U.S. ETFs; this is a coverage selection, not a ranked “best picks” list. U.S. prices are live snapshots at 30 Sep 2026 14:38 UTC (10:38 EDT); Bursa prices are 30 Sep closes in MYT. Mid-case prices are rounded centers of qualitative scenario bands, not statistically expected values. Bands are manually set—not analyst consensus, option-implied moves, or calibrated probability intervals. Confidence is low.</p><div class=\"filter-row\" aria-label=\"Filter weekly ticker table\"><label for=\"asset-filter\">Field / instrument type<select id=\"asset-filter\"><option value=\"all\">All fields</option><option value=\"equity\">Company shares</option><option value=\"etf\">ETFs</option></select></label><label for=\"sector-filter\">Sector<select id=\"sector-filter\"><option value=\"all\">All sectors</option><option value=\"technology\">Technology</option><option value=\"broad-market\">Broad market</option><option value=\"energy\">Energy</option><option value=\"financials\">Financials</option><option value=\"utilities\">Utilities</option></select></label><label for=\"country-filter\">Country / market<select id=\"country-filter\"><option value=\"all\">All markets</option><option value=\"us\">US</option><option value=\"my\">MY</option></select></label><span class=\"filter-count\" id=\"filter-count\" aria-live=\"polite\">10 tickers</span></div><div class=\"scroll\"><table><thead><tr><th>Market</th><th>Ticker</th><th>Sector</th><th>Current price · as of</th><th>Direction · indicative target / range by 9 Oct</th><th>Scenario note / source</th></tr></thead><tbody id=\"forecast-rows\">\n<tr class=\"forecast-row up\" data-asset=\"equity\" data-sector=\"technology\" data-country=\"us\" data-trend=\"up\"><td>US</td><td><b>AAPL</b><br>Apple</td><td>Technology</td><td>US$338.74<br><span class=\"small\">30 Sep · 14:38 UTC</span></td><td><span class=\"signal up\"><span aria-hidden=\"true\">↑</span> Upside bias</span><br><span class=\"estimate\">Mid-case US$351 · band US$343–358</span></td><td>Rate relief may support growth if yields keep easing; payrolls/services data can reverse it. Low confidence. <a href=\"https://finance.yahoo.com/quote/AAPL/\">Quote</a></td></tr>\n<tr class=\"forecast-row up\" data-asset=\"equity\" data-sector=\"technology\" data-country=\"us\" data-trend=\"up\"><td>US</td><td><b>NVDA</b><br>NVIDIA</td><td>Technology / semiconductors</td><td>US$230.39<br><span class=\"small\">30 Sep · 14:38 UTC</span></td><td><span class=\"signal up\"><span aria-hidden=\"true\">↑</span> Upside bias</span><br><span class=\"estimate\">Mid-case US$237 · band US$226–248</span></td><td>Buyback headline and softer yields support sentiment; valuation, yields, and AI capex are disconfirming risks. Low confidence. <a href=\"https://finance.yahoo.com/quote/NVDA/\">Quote</a> · <a href=\"https://apnews.com/article/e695d7024ad68b0defd6fb2fc1aa25d7\">AP</a></td></tr>\n<tr class=\"forecast-row flat\" data-asset=\"equity\" data-sector=\"technology\" data-country=\"us\" data-trend=\"flat\"><td>US</td><td><b>MSFT</b><br>Microsoft</td><td>Technology</td><td>US$517.54<br><span class=\"small\">30 Sep · 14:38 UTC</span></td><td><span class=\"signal flat\"><span aria-hidden=\"true\">→</span> Sideways</span><br><span class=\"estimate\">Mid-case US$523 · band US$508–538</span></td><td>Broad rate relief offsets still-elevated yield and event risk; no specific near-term company catalyst verified. Low confidence. <a href=\"https://finance.yahoo.com/quote/MSFT/\">Quote</a></td></tr>\n<tr class=\"forecast-row down\" data-asset=\"equity\" data-sector=\"technology\" data-country=\"us\" data-trend=\"down\"><td>US</td><td><b>META</b><br>Meta Platforms</td><td>Technology / internet</td><td>US$725.49<br><span class=\"small\">30 Sep · 14:38 UTC</span></td><td><span class=\"signal down\"><span aria-hidden=\"true\">↓</span> Downside bias</span><br><span class=\"estimate\">Mid-case US$723 · band US$700–745</span></td><td>Shares lagged this session’s broad-market advance; one intraday move is weak evidence and reversal risk is high. Low confidence. <a href=\"https://finance.yahoo.com/quote/META/\">Quote</a></td></tr>\n<tr class=\"forecast-row flat\" data-asset=\"etf\" data-sector=\"broad-market\" data-country=\"us\" data-trend=\"flat\"><td>US</td><td><b>SPY</b><br>SPDR S&amp;P 500 ETF</td><td>Broad market</td><td>US$767.72<br><span class=\"small\">30 Sep · 14:38 UTC</span></td><td><span class=\"signal flat\"><span aria-hidden=\"true\">→</span> Sideways</span><br><span class=\"estimate\">Mid-case US$771 · band US$752–790</span></td><td>PCE relief is countered by high yields and Friday payrolls; broad-index outcome remains two-sided. Low confidence. <a href=\"https://finance.yahoo.com/quote/SPY/\">Quote</a></td></tr>\n<tr class=\"forecast-row up\" data-asset=\"etf\" data-sector=\"broad-market\" data-country=\"us\" data-trend=\"up\"><td>US</td><td><b>QQQ</b><br>Invesco Nasdaq-100 ETF</td><td>Broad market / growth</td><td>US$742.60<br><span class=\"small\">30 Sep · 14:38 UTC</span></td><td><span class=\"signal up\"><span aria-hidden=\"true\">↑</span> Upside bias</span><br><span class=\"estimate\">Mid-case US$757 · band US$738–775</span></td><td>Softer inflation can aid duration-sensitive holdings; concentration and yields create downside risk. Low confidence. <a href=\"https://finance.yahoo.com/quote/QQQ/\">Quote</a></td></tr>\n<tr class=\"forecast-row flat\" data-asset=\"etf\" data-sector=\"energy\" data-country=\"us\" data-trend=\"flat\"><td>US</td><td><b>XLE</b><br>Energy Select Sector SPDR</td><td>Energy</td><td>US$61.74<br><span class=\"small\">30 Sep · 14:38 UTC</span></td><td><span class=\"signal flat\"><span aria-hidden=\"true\">→</span> Sideways</span><br><span class=\"estimate\">Mid-case US$61.75 · band US$60.00–63.50</span></td><td>Geopolitical supply-risk premium may support energy; oil easing or no verified disruption could unwind it. Low confidence. <a href=\"https://finance.yahoo.com/quote/XLE/\">Quote</a> · <a href=\"https://apnews.com/article/stocks-markets-oil-bonds-us-ai-chips-e61d3d7b947a390c7eee6c8758e3095d\">AP</a></td></tr>\n<tr class=\"forecast-row up\" data-asset=\"equity\" data-sector=\"utilities\" data-country=\"my\" data-trend=\"up\"><td>MY</td><td><b>5347</b><br>Tenaga Nasional</td><td>Utilities</td><td>RM12.96<br><span class=\"small\">30 Sep close · MYT</span></td><td><span class=\"signal up\"><span aria-hidden=\"true\">↑</span> Upside bias</span><br><span class=\"estimate\">Mid-case RM13.08 · band RM12.70–13.45</span></td><td>Utility-led index rebound supports a follow-through case; weak Bursa breadth argues for caution. Low confidence. <a href=\"https://www.klsescreener.com/v2/news/view/1800805/\">Close / market context</a></td></tr>\n<tr class=\"forecast-row flat\" data-asset=\"equity\" data-sector=\"financials\" data-country=\"my\" data-trend=\"flat\"><td>MY</td><td><b>1155</b><br>Malayan Banking (Maybank)</td><td>Financials</td><td>RM9.99<br><span class=\"small\">30 Sep close · MYT</span></td><td><span class=\"signal flat\"><span aria-hidden=\"true\">→</span> Sideways</span><br><span class=\"estimate\">Mid-case RM10.00 · band RM9.80–10.20</span></td><td>Bank shares remain sensitive to foreign flows and market breadth; today's broad close is not confirmation. Low confidence. <a href=\"https://www.klsescreener.com/v2/news/view/1800805/\">Close / market context</a></td></tr>\n<tr class=\"forecast-row flat\" data-asset=\"equity\" data-sector=\"financials\" data-country=\"my\" data-trend=\"flat\"><td>MY</td><td><b>1023</b><br>CIMB Group</td><td>Financials</td><td>RM7.79<br><span class=\"small\">30 Sep close · MYT</span></td><td><span class=\"signal flat\"><span aria-hidden=\"true\">→</span> Sideways</span><br><span class=\"estimate\">Mid-case RM7.80 · band RM7.60–8.00</span></td><td>Recovery is possible if financials stabilize, but the earlier sell-off and weak breadth remain risks. Low confidence. <a href=\"https://www.investing.com/equities/bumiputra---commerce-holdings-bhd-historical-data\">Historical quote</a> · <a href=\"https://www.klsescreener.com/v2/news/view/1800805/\">Close / market context</a></td></tr>\n</tbody></table></div><p class=\"source\">Color key: <span class=\"signal up\"><span aria-hidden=\"true\">↑</span> Upside bias</span> <span class=\"signal flat\"><span aria-hidden=\"true\">→</span> Sideways</span> <span class=\"signal down\"><span aria-hidden=\"true\">↓</span> Downside bias</span>. U.S. live prices and Bursa closing prices use different cutoffs and currencies; compare each against its own starting level. Scenario bands are discretionary, low-confidence ranges without a statistical backtest. They are for research, not an instruction to trade.</p>"
+      "title": "Current price & estimated week-end range",
+      "kicker": "02 · Top 10 weekly watch",
+      "description": [
+        {
+          "text": "Target: Friday 9 Oct 2026 close. 10 liquid focus names from the U.S. watchlist and Malaysian large caps, including three U.S. ETFs; this is a coverage selection, not a ranked “best picks” list. U.S. prices are live snapshots at 30 Sep 2026 14:38 UTC (10:38 EDT); Bursa prices are 30 Sep closes in MYT. Mid-case prices are rounded centers of qualitative scenario bands, not statistically expected values. Bands are manually set—not analyst consensus, option-implied moves, or calibrated probability intervals. Confidence is low.",
+          "sources": []
+        },
+        {
+          "text": "Color key: ↑ Upside bias → Sideways ↓ Downside bias . U.S. live prices and Bursa closing prices use different cutoffs and currencies; compare each against its own starting level. Scenario bands are discretionary, low-confidence ranges without a statistical backtest. They are for research, not an instruction to trade.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [],
+      "notes": []
     },
     "calendar": {
-      "html": "<div class=\"eyebrow\">03 · Financial calendar</div><h2>Events to watch & likely transmission</h2><p class=\"small\">U.S. Eastern Time converted to Malaysia Time (MYT = EDT + 12 hours). Outcomes are scenario implications, not guaranteed reactions. “Consensus” omitted unless independently verified.</p><div class=\"scroll\"><table><thead><tr><th>MYT / ET</th><th>Event</th><th>Known baseline</th><th>Potential influence & scenario</th><th>Relevant exposure</th></tr></thead><tbody>\n<tr><td>Fri Oct 2<br>8:30 pm MYT / 8:30 am ET</td><td>U.S. Employment Situation, September</td><td>Official BLS schedule confirms release. No verified consensus cited.</td><td>Hot jobs/wages could lift yields and pressure growth equities; a softer report could ease yields but raise growth concerns. Interpret wages, participation, revisions, and payrolls together. <a href=\"https://www.bls.gov/schedule/news_release/empsit.htm\">BLS calendar</a></td><td>SPY, QQQ, XLF, Treasury-sensitive shares</td></tr>\n<tr><td>Mon Oct 5<br>10:00 pm MYT / 10:00 am ET</td><td>ISM Services PMI, September</td><td>August ISM Services PMI was 55.4 (expansion); no September consensus cited.</td><td>Stronger activity may support cyclicals but push yields higher; weaker activity may cool yields while reviving demand fears. Read prices/employment/new orders, not headline alone. <a href=\"https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/services/august/\">ISM prior report</a> · <a href=\"https://www.newyorkfed.org/research/calendars/i-oct26.html\">NY Fed calendar</a></td><td>SPY, QQQ, XLF, industrials</td></tr>\n<tr><td>Tue Oct 6<br>8:30 pm / 8:30 am ET<br>10:00 pm / 10:00 am ET</td><td>U.S. trade data; Global Supply Chain Pressure Index</td><td>Scheduled by NY Fed calendar.</td><td>Trade composition and supply constraints may affect growth/inflation expectations; market response depends on surprise and oil/freight context. <a href=\"https://www.newyorkfed.org/research/calendars/i-oct26.html\">NY Fed calendar</a></td><td>Industrials, transports, energy, rates</td></tr>\n<tr><td>Tue Oct 6 after close</td><td>Constellation Brands (STZ) fiscal Q2 results</td><td>Company confirmed results after market close; call Oct 7, 8:00 am ET.</td><td>Guidance, volume/pricing and demand commentary could move beverage/consumer staples; earnings gap risk makes pre-result direction uncertain. <a href=\"https://ir.cbrands.com/news-events/press-releases/detail/345/constellation-brands-to-report-second-quarter-fiscal-2027-financial-results-on-october-6-2026-after-market-close-and-host-conference-call-on-october-7-2026-at-8-00-am-et\">Issuer IR</a></td><td>STZ, consumer staples</td></tr>\n<tr><td>Wed Oct 7<br>11:00 pm MYT / 11:00 am ET</td><td>NY Fed Survey of Consumer Expectations</td><td>Scheduled by NY Fed calendar.</td><td>Changes in inflation expectations or labor-market outlook may influence rates and consumer stocks; survey is not a realized outcome. <a href=\"https://www.newyorkfed.org/research/calendars/i-oct26.html\">NY Fed calendar</a></td><td>Treasuries, consumer discretionary/staples</td></tr>\n<tr><td>Wed Oct 7<br>5:00 pm ET (Thu 5:00 am MYT)</td><td>Levi Strauss (LEVI) Q3 earnings call / results</td><td>Company confirms Oct 7 webcast at 5 pm ET.</td><td>Inventory, margins, demand and outlook may affect apparel retail read-through; earnings gap risk. <a href=\"https://investors.levistrauss.com/news/financial-news/news-details/2026/Levi-Strauss--Co--to-Webcast-Third-Quarter-2026-Earnings-Conference-Call/default.aspx\">Issuer IR</a></td><td>LEVI, apparel retail</td></tr>\n<tr><td>Thu Oct 8<br>6:00 pm MYT / 6:00 am ET</td><td>PepsiCo (PEP) Q3 results; call 8:15 am ET (8:15 pm MYT)</td><td>Company-confirmed timing.</td><td>Volume, price/mix, input cost and guidance may inform staples demand/inflation pass-through. Gap risk; consider event exposure explicitly. <a href=\"https://www.pepsico.com/en/newsroom/press-releases/2026/pepsico-announces-timing-and-availability-of-third-quarter-2026-financial-results\">Issuer IR</a></td><td>PEP, staples, consumer demand</td></tr>\n<tr><td>Thu Oct 8<br>8:30 pm / 8:30 am ET;<br>10:00 pm / 10:00 am ET</td><td>Initial claims; wholesale trade</td><td>Scheduled by NY Fed calendar.</td><td>Claims provide a timely labor check; wholesale inventories/sales inform demand and stockbuilding. Surprise matters relative to contemporaneous expectations. <a href=\"https://www.newyorkfed.org/research/calendars/i-oct26.html\">NY Fed calendar</a></td><td>Broad market, retailers, transports</td></tr>\n<tr><td>Fri Oct 9<br>10:00 pm MYT / 10:00 am ET</td><td>Preliminary Michigan Consumer Survey; Delta (DAL) results webcast</td><td>Survey scheduled by NY Fed; Delta confirms 10:00 am ET webcast.</td><td>Consumer sentiment/inflation expectations may influence rate narrative. Delta guidance intersects demand, labor and fuel costs; avoid treating oil direction as a one-way airline signal. Earnings event/gap risk. <a href=\"https://www.newyorkfed.org/research/calendars/i-oct26.html\">NY Fed</a> · <a href=\"https://news.delta.com/delta-air-lines-announces-webcast-september-quarter-2026-financial-results\">Delta IR</a></td><td>Consumer cyclicals, DAL, airlines, energy</td></tr>\n</tbody></table></div><p class=\"footnote\">Mainland China holiday: Shenzhen exchange calendar lists Oct 1–7 closed, reopening Oct 8. Calendar schedules may change. NY Fed notes its release times/dates are tentative.</p>"
+      "title": "Events to watch & likely transmission",
+      "kicker": "03 · Financial calendar",
+      "description": [
+        {
+          "text": "U.S. Eastern Time converted to Malaysia Time (MYT = EDT + 12 hours). Outcomes are scenario implications, not guaranteed reactions. “Consensus” omitted unless independently verified.",
+          "sources": []
+        },
+        {
+          "text": "Mainland China holiday: Shenzhen exchange calendar lists Oct 1–7 closed, reopening Oct 8. Calendar schedules may change. NY Fed notes its release times/dates are tentative.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [],
+      "notes": [
+        {
+          "text": "Mainland China holiday: Shenzhen exchange calendar lists Oct 1–7 closed, reopening Oct 8. Calendar schedules may change. NY Fed notes its release times/dates are tentative.",
+          "sources": []
+        }
+      ]
     },
     "swing": {
-      "html": "<div class=\"eyebrow\">04 · Swing watchlist</div><h2>Potential setups for the upcoming week</h2><p class=\"small\">No validated entry, stop, position size, or risk-adjusted expectancy is available. The following are event/sector watch candidates only; wait for market-price confirmation and use the trading orchestrator for any full trade analysis.</p><div class=\"grid\">\n<article class=\"card\"><h3>XLE · Energy Select Sector SPDR</h3><span class=\"tag watch\">WATCHLIST</span><p><b>Trajectory scenario:</b> Relative strength could persist into Oct 9 if crude remains firm and energy shares hold their recent relative trend; could reverse sharply if supply-risk premium fades.</p><p><b>Confirmation:</b> Verify current crude/Brent and XLE relative strength to SPY; require a fresh, timestamped price series before defining a level.</p><p><b>Invalidation:</b> Oil falls materially while XLE loses its recent swing structure or lags SPY.</p><p><b>Risk:</b> Geopolitical headlines, commodity gaps, and company-specific exposure; this scan did not verify a complete XLE baseline series.</p></article>\n<article class=\"card\"><h3>NVDA · NVIDIA</h3><span class=\"tag watch\">RESEARCH ONLY</span><p><b>Trajectory scenario:</b> Two-sided/high volatility. Softer yields may support growth valuations; the larger repurchase authorization is not proof of future demand or a floor.</p><p><b>Confirmation:</b> Price holds/reclaims a verified short-term level, with yields stable and no adverse company/AI-capex evidence.</p><p><b>Invalidation:</b> Renewed yield spike, weak price action versus QQQ, or demand/capex disconfirmation.</p><p><b>Risk:</b> Concentration, high expectations, event/news gaps. Exact current baseline and technical levels were not verified here.</p></article>\n<article class=\"card\"><h3>PEP · PepsiCo</h3><span class=\"tag watch\">EVENT WATCH</span><p><b>Trajectory scenario:</b> Defensive relative resilience is possible, but the Oct 8 report dominates near-term event risk.</p><p><b>Confirmation:</b> Wait for release/guidance reaction and a verified price/volume response.</p><p><b>Invalidation:</b> Weak organic volume or margin/guidance evidence with a failed post-result recovery.</p><p><b>Risk:</b> Overnight earnings gap; no directional call into results.</p></article>\n<article class=\"card\"><h3>DAL · Delta Air Lines</h3><span class=\"tag watch\">EVENT WATCH</span><p><b>Trajectory scenario:</b> Demand may support shares, while fuel cost and Oct 9 results create a wide two-sided distribution.</p><p><b>Confirmation:</b> Evaluate actual results/guidance, current fuel prices, and post-release price response.</p><p><b>Invalidation:</b> Weaker bookings/margins or fuel cost pressure overwhelms demand read.</p><p><b>Risk:</b> Earnings on the target day means weekly close can be dominated by event gap; baseline/trajectory not modeled.</p></article></div><p class=\"source\">Action class: `watchlist` / `research only`. No candidate is an execution-ready trade.</p>"
+      "title": "Potential setups for the upcoming week",
+      "kicker": "04 · Swing watchlist",
+      "description": [
+        {
+          "text": "No validated entry, stop, position size, or risk-adjusted expectancy is available. The following are event/sector watch candidates only; wait for market-price confirmation and use the trading orchestrator for any full trade analysis.",
+          "sources": []
+        },
+        {
+          "text": "Action class: `watchlist` / `research only`. No candidate is an execution-ready trade.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [
+        {
+          "title": "XLE · Energy Select Sector SPDR",
+          "badge": "WATCHLIST",
+          "paragraphs": [
+            {
+              "text": "Trajectory scenario: Relative strength could persist into Oct 9 if crude remains firm and energy shares hold their recent relative trend; could reverse sharply if supply-risk premium fades.",
+              "sources": []
+            },
+            {
+              "text": "Confirmation: Verify current crude/Brent and XLE relative strength to SPY; require a fresh, timestamped price series before defining a level.",
+              "sources": []
+            },
+            {
+              "text": "Invalidation: Oil falls materially while XLE loses its recent swing structure or lags SPY.",
+              "sources": []
+            },
+            {
+              "text": "Risk: Geopolitical headlines, commodity gaps, and company-specific exposure; this scan did not verify a complete XLE baseline series.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "NVDA · NVIDIA",
+          "badge": "RESEARCH ONLY",
+          "paragraphs": [
+            {
+              "text": "Trajectory scenario: Two-sided/high volatility. Softer yields may support growth valuations; the larger repurchase authorization is not proof of future demand or a floor.",
+              "sources": []
+            },
+            {
+              "text": "Confirmation: Price holds/reclaims a verified short-term level, with yields stable and no adverse company/AI-capex evidence.",
+              "sources": []
+            },
+            {
+              "text": "Invalidation: Renewed yield spike, weak price action versus QQQ, or demand/capex disconfirmation.",
+              "sources": []
+            },
+            {
+              "text": "Risk: Concentration, high expectations, event/news gaps. Exact current baseline and technical levels were not verified here.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "PEP · PepsiCo",
+          "badge": "EVENT WATCH",
+          "paragraphs": [
+            {
+              "text": "Trajectory scenario: Defensive relative resilience is possible, but the Oct 8 report dominates near-term event risk.",
+              "sources": []
+            },
+            {
+              "text": "Confirmation: Wait for release/guidance reaction and a verified price/volume response.",
+              "sources": []
+            },
+            {
+              "text": "Invalidation: Weak organic volume or margin/guidance evidence with a failed post-result recovery.",
+              "sources": []
+            },
+            {
+              "text": "Risk: Overnight earnings gap; no directional call into results.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "DAL · Delta Air Lines",
+          "badge": "EVENT WATCH",
+          "paragraphs": [
+            {
+              "text": "Trajectory scenario: Demand may support shares, while fuel cost and Oct 9 results create a wide two-sided distribution.",
+              "sources": []
+            },
+            {
+              "text": "Confirmation: Evaluate actual results/guidance, current fuel prices, and post-release price response.",
+              "sources": []
+            },
+            {
+              "text": "Invalidation: Weaker bookings/margins or fuel cost pressure overwhelms demand read.",
+              "sources": []
+            },
+            {
+              "text": "Risk: Earnings on the target day means weekly close can be dominated by event gap; baseline/trajectory not modeled.",
+              "sources": []
+            }
+          ]
+        }
+      ],
+      "notes": []
     },
     "etfs": {
-      "html": "<div class=\"eyebrow\">05 · ETF candidates</div><h2>Conditional long exposure and downside hedges</h2><div class=\"scroll\"><table><thead><tr><th>Ticker</th><th>Exposure</th><th>Conditional weekly thesis</th><th>What to wait for</th><th>Primary risk / note</th></tr></thead><tbody>\n<tr><td><b>XLV</b></td><td>Long U.S. healthcare sector</td><td>Defensive relative-strength candidate if broad-market risk aversion returns.</td><td>Confirm relative strength vs SPY and updated price/sector breadth; no new catalyst found in this scan.</td><td>Could still fall in market-wide selloff; low-conviction, not a standalone buy signal.</td></tr>\n<tr><td><b>XLE</b></td><td>Long U.S. energy sector</td><td>Conditional relative strength if elevated oil/supply-risk backdrop persists.</td><td>Oil holds firm and XLE confirms versus SPY.</td><td>Geopolitical premium can reverse quickly; no verified entry/stop.</td></tr>\n<tr><td><b>SPY</b></td><td>Long broad U.S. equities</td><td>Only a conditional broad rebound candidate if the recent SPX low holds and yields remain contained.</td><td>Market stabilizes above Sep 29 low zone and breadth improves.</td><td>Recent lower closes and macro data may invalidate quickly.</td></tr>\n<tr><td><b>SH</b></td><td>Daily −1× S&P 500 inverse</td><td>Potential short-term hedge/watch candidate only if SPX confirms a breakdown, not a default “go long for the week.”</td><td>Fresh close below the recent range with weak breadth; verify current quote and personal suitability separately.</td><td>ProShares targets −1× the index's daily return. Multi-day return can diverge from −1× weekly index return due to daily reset/compounding. <a href=\"https://www.proshares.com/our-etfs/leveraged-and-inverse/sh\">Issuer fund page</a></td></tr>\n<tr><td><b>PSQ</b></td><td>Daily −1× Nasdaq-100 inverse</td><td>Potential short-term hedge/watch candidate only if growth/tech breakdown is confirmed.</td><td>QQQ/Nasdaq weakness confirmed alongside adverse yield action.</td><td>Daily objective; multi-day result can diverge materially. <a href=\"https://www.proshares.com/our-etfs/leveraged-and-inverse/psq\">Issuer fund page</a></td></tr>\n</tbody></table></div><div class=\"callout\"><b>Not a personalized ETF recommendation.</b> SH and PSQ are inverse funds, not conventional “long” bullish ETFs; their shares may be bought as an inverse exposure, but a multi-day holding is not a static one-week hedge. This brief does not give allocations or execution instructions.</div>"
+      "title": "Conditional long exposure and downside hedges",
+      "kicker": "05 · ETF candidates",
+      "description": [],
+      "tables": [
+        {
+          "columns": [
+            "Ticker",
+            "Exposure",
+            "Conditional weekly thesis",
+            "What to wait for",
+            "Primary risk / note"
+          ],
+          "rows": [
+            [
+              {
+                "text": "XLV",
+                "sources": []
+              },
+              {
+                "text": "Long U.S. healthcare sector",
+                "sources": []
+              },
+              {
+                "text": "Defensive relative-strength candidate if broad-market risk aversion returns.",
+                "sources": []
+              },
+              {
+                "text": "Confirm relative strength vs SPY and updated price/sector breadth; no new catalyst found in this scan.",
+                "sources": []
+              },
+              {
+                "text": "Could still fall in market-wide selloff; low-conviction, not a standalone buy signal.",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "XLE",
+                "sources": []
+              },
+              {
+                "text": "Long U.S. energy sector",
+                "sources": []
+              },
+              {
+                "text": "Conditional relative strength if elevated oil/supply-risk backdrop persists.",
+                "sources": []
+              },
+              {
+                "text": "Oil holds firm and XLE confirms versus SPY.",
+                "sources": []
+              },
+              {
+                "text": "Geopolitical premium can reverse quickly; no verified entry/stop.",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "SPY",
+                "sources": []
+              },
+              {
+                "text": "Long broad U.S. equities",
+                "sources": []
+              },
+              {
+                "text": "Only a conditional broad rebound candidate if the recent SPX low holds and yields remain contained.",
+                "sources": []
+              },
+              {
+                "text": "Market stabilizes above Sep 29 low zone and breadth improves.",
+                "sources": []
+              },
+              {
+                "text": "Recent lower closes and macro data may invalidate quickly.",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "SH",
+                "sources": []
+              },
+              {
+                "text": "Daily −1× S&P 500 inverse",
+                "sources": []
+              },
+              {
+                "text": "Potential short-term hedge/watch candidate only if SPX confirms a breakdown, not a default “go long for the week.”",
+                "sources": []
+              },
+              {
+                "text": "Fresh close below the recent range with weak breadth; verify current quote and personal suitability separately.",
+                "sources": []
+              },
+              {
+                "text": "ProShares targets −1× the index's daily return. Multi-day return can diverge from −1× weekly index return due to daily reset/compounding.",
+                "sources": [
+                  {
+                    "label": "Issuer fund page",
+                    "url": "https://www.proshares.com/our-etfs/leveraged-and-inverse/sh"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "text": "PSQ",
+                "sources": []
+              },
+              {
+                "text": "Daily −1× Nasdaq-100 inverse",
+                "sources": []
+              },
+              {
+                "text": "Potential short-term hedge/watch candidate only if growth/tech breakdown is confirmed.",
+                "sources": []
+              },
+              {
+                "text": "QQQ/Nasdaq weakness confirmed alongside adverse yield action.",
+                "sources": []
+              },
+              {
+                "text": "Daily objective; multi-day result can diverge materially.",
+                "sources": [
+                  {
+                    "label": "Issuer fund page",
+                    "url": "https://www.proshares.com/our-etfs/leveraged-and-inverse/psq"
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "items": [],
+      "notes": [
+        {
+          "text": "Not a personalized ETF recommendation. SH and PSQ are inverse funds, not conventional “long” bullish ETFs; their shares may be bought as an inverse exposure, but a multi-day holding is not a static one-week hedge. This brief does not give allocations or execution instructions.",
+          "sources": []
+        }
+      ]
     },
     "news": {
-      "html": "<div class=\"eyebrow\">06 · Top news</div><h2>Five developments with week-ahead implications</h2><div class=\"timeline\">\n<article class=\"event\"><h3>1 · U.S. PCE came in below economists’ expectation</h3><p><b>Reported:</b> August headline PCE inflation was 3.4% year-over-year versus 3.7% expected; yields eased and U.S. stocks were modestly higher in early Wednesday trading, per AP. <b>Could mean:</b> near-term rate anxiety may cool, supporting duration-sensitive shares if yields continue lower. <b>Counterpoint:</b> one print does not establish a disinflation trend; Friday jobs and Monday services data can reverse the move. <a href=\"https://apnews.com/article/stocks-markets-oil-bonds-us-ai-chips-e61d3d7b947a390c7eee6c8758e3095d\">AP, Sep 30</a></p></article>\n<article class=\"event\"><h3>2 · Treasury yields remain a key equity constraint</h3><p><b>Reported:</b> AP reported the 10-year yield at a 24-year high near 5.25% at Tuesday’s close; on Wednesday it eased from about 5.26% to 5.24% around the PCE report. <b>Could mean:</b> softer yields support growth valuations; renewed rise can overwhelm a single inflation surprise. <b>Counterpoint:</b> yields reflect multiple forces, not inflation alone. <a href=\"https://apnews.com/article/wall-street-stocks-dow-nasdaq-69778ade7a033a10cb44b9078b6bb15d\">AP, Sep 29 close</a> · <a href=\"https://apnews.com/article/stocks-markets-oil-bonds-us-ai-chips-e61d3d7b947a390c7eee6c8758e3095d\">AP, Sep 30 update</a></p></article>\n<article class=\"event\"><h3>3 · Oil and Hormuz uncertainty keep an energy/inflation risk premium</h3><p><b>Reported:</b> AP’s Wednesday coverage cited crude near $90.42 and Brent near $97.49 in its morning snapshot, alongside uncertainty over tanker passage through Hormuz. <b>Could mean:</b> energy may outperform if supply concerns persist, while airlines/transport and inflation-sensitive assets may face costs. <b>Counterpoint:</b> no sustained supply interruption is established by this report; oil can reverse quickly. <a href=\"https://apnews.com/article/stocks-markets-oil-bonds-us-ai-chips-e61d3d7b947a390c7eee6c8758e3095d\">AP, Sep 30</a></p></article>\n<article class=\"event\"><h3>4 · Nvidia expanded its share repurchase authorization</h3><p><b>Reported:</b> Nvidia added $150 billion to buybacks, leaving $235 billion authorized, according to AP. <b>Could mean:</b> capital returns are a supportive corporate signal, but do not establish undervaluation or AI demand. <b>Counterpoint:</b> buybacks do not eliminate concentration, valuation, yield, or customer-capex risks. <a href=\"https://apnews.com/article/e695d7024ad68b0defd6fb2fc1aa25d7\">AP report</a></p></article>\n<article class=\"event\"><h3>5 · Bursa rebounded, but market breadth remained weak</h3><p><b>Reported:</b> FBM KLCI gained 0.43% to 1,651.17 on Sep 30 after the previous session’s sharp fall; decliners (703) outnumbered advancers (413). <b>Could mean:</b> bargain buying, but not a broad confirmation of recovery. <b>Counterpoint:</b> breadth can change quickly; seek follow-through and reclaim of the prior 1,660 area. <a href=\"https://web26.bernama.com/bm/news.php?id=2613857\">Bernama, Sep 30</a></p></article>\n</div>"
+      "title": "Five developments with week-ahead implications",
+      "kicker": "06 · Top news",
+      "description": [],
+      "tables": [],
+      "items": [
+        {
+          "title": "1 · U.S. PCE came in below economists’ expectation",
+          "badge": "",
+          "paragraphs": [
+            {
+              "text": "Reported: August headline PCE inflation was 3.4% year-over-year versus 3.7% expected; yields eased and U.S. stocks were modestly higher in early Wednesday trading, per AP. Could mean: near-term rate anxiety may cool, supporting duration-sensitive shares if yields continue lower. Counterpoint: one print does not establish a disinflation trend; Friday jobs and Monday services data can reverse the move.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "2 · Treasury yields remain a key equity constraint",
+          "badge": "",
+          "paragraphs": [
+            {
+              "text": "Reported: AP reported the 10-year yield at a 24-year high near 5.25% at Tuesday’s close; on Wednesday it eased from about 5.26% to 5.24% around the PCE report. Could mean: softer yields support growth valuations; renewed rise can overwhelm a single inflation surprise. Counterpoint: yields reflect multiple forces, not inflation alone. ·",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "3 · Oil and Hormuz uncertainty keep an energy/inflation risk premium",
+          "badge": "",
+          "paragraphs": [
+            {
+              "text": "Reported: AP’s Wednesday coverage cited crude near $90.42 and Brent near $97.49 in its morning snapshot, alongside uncertainty over tanker passage through Hormuz. Could mean: energy may outperform if supply concerns persist, while airlines/transport and inflation-sensitive assets may face costs. Counterpoint: no sustained supply interruption is established by this report; oil can reverse quickly.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "4 · Nvidia expanded its share repurchase authorization",
+          "badge": "",
+          "paragraphs": [
+            {
+              "text": "Reported: Nvidia added $150 billion to buybacks, leaving $235 billion authorized, according to AP. Could mean: capital returns are a supportive corporate signal, but do not establish undervaluation or AI demand. Counterpoint: buybacks do not eliminate concentration, valuation, yield, or customer-capex risks.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "5 · Bursa rebounded, but market breadth remained weak",
+          "badge": "",
+          "paragraphs": [
+            {
+              "text": "Reported: FBM KLCI gained 0.43% to 1,651.17 on Sep 30 after the previous session’s sharp fall; decliners (703) outnumbered advancers (413). Could mean: bargain buying, but not a broad confirmation of recovery. Counterpoint: breadth can change quickly; seek follow-through and reclaim of the prior 1,660 area.",
+              "sources": []
+            }
+          ]
+        }
+      ],
+      "notes": []
     },
     "trends": {
-      "html": "<div class=\"eyebrow\">07 · What is prominent now</div><h2>Five themes in this source set</h2><p class=\"small\">Qualitative, evidence-led themes—not a measured social-media or search trend ranking.</p><div class=\"grid\">\n<article class=\"card\"><span class=\"tag blue\">01</span><h3>Inflation relief vs. rates</h3><p>PCE surprise helps sentiment, but labor/services data and elevated Treasury yields can retest the story.</p></article>\n<article class=\"card\"><span class=\"tag blue\">02</span><h3>Oil supply risk and geopolitics</h3><p>Hormuz uncertainty supports an energy-risk narrative; the size and persistence of real-world disruption remain unverified here.</p></article>\n<article class=\"card\"><span class=\"tag blue\">03</span><h3>AI leaders: returns vs. valuation</h3><p>Nvidia’s expanded buyback is a headline; it is not independent evidence that AI spending or returns justify current valuations.</p></article>\n<article class=\"card\"><span class=\"tag blue\">04</span><h3>Breadth and sector rotation</h3><p>Index-level moves can obscure weak participation; monitor advancers/decliners and defensive/energy relative strength.</p></article>\n<article class=\"card\"><span class=\"tag blue\">05</span><h3>China holiday liquidity gap</h3><p>Mainland closure Oct 1–7 leaves U.S.-listed China products trading against less-current onshore price discovery until reopening.</p></article></div>\n<h3 style=\"margin-top:20px\">What changes the read?</h3><p>Upside case strengthens if yields keep easing, SPX holds above the Sep 29 low area, and market breadth improves. Downside case strengthens if yields rebound, oil rises on verified disruption, jobs/services data surprise hot, or SPX breaks below 7,653.55. For Bursa, follow-through above 1,660 with improved breadth would be more convincing than one green close. These are monitoring thresholds, not guaranteed support/resistance.</p><div class=\"callout\"><b>Strongest disconfirmation to a cautious view:</b> PCE inflation was cooler than consensus and equities/yields initially reacted constructively. That is meaningful counterevidence—not grounds to ignore the high-yield backdrop or upcoming catalysts.</div>"
+      "title": "Five themes in this source set",
+      "kicker": "07 · What is prominent now",
+      "description": [
+        {
+          "text": "Qualitative, evidence-led themes—not a measured social-media or search trend ranking.",
+          "sources": []
+        },
+        {
+          "text": "Upside case strengthens if yields keep easing, SPX holds above the Sep 29 low area, and market breadth improves. Downside case strengthens if yields rebound, oil rises on verified disruption, jobs/services data surprise hot, or SPX breaks below 7,653.55. For Bursa, follow-through above 1,660 with improved breadth would be more convincing than one green close. These are monitoring thresholds, not guaranteed support/resistance.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [
+        {
+          "title": "Inflation relief vs. rates",
+          "badge": "01",
+          "paragraphs": [
+            {
+              "text": "PCE surprise helps sentiment, but labor/services data and elevated Treasury yields can retest the story.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "Oil supply risk and geopolitics",
+          "badge": "02",
+          "paragraphs": [
+            {
+              "text": "Hormuz uncertainty supports an energy-risk narrative; the size and persistence of real-world disruption remain unverified here.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "AI leaders: returns vs. valuation",
+          "badge": "03",
+          "paragraphs": [
+            {
+              "text": "Nvidia’s expanded buyback is a headline; it is not independent evidence that AI spending or returns justify current valuations.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "Breadth and sector rotation",
+          "badge": "04",
+          "paragraphs": [
+            {
+              "text": "Index-level moves can obscure weak participation; monitor advancers/decliners and defensive/energy relative strength.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "China holiday liquidity gap",
+          "badge": "05",
+          "paragraphs": [
+            {
+              "text": "Mainland closure Oct 1–7 leaves U.S.-listed China products trading against less-current onshore price discovery until reopening.",
+              "sources": []
+            }
+          ]
+        }
+      ],
+      "notes": [
+        {
+          "text": "Strongest disconfirmation to a cautious view: PCE inflation was cooler than consensus and equities/yields initially reacted constructively. That is meaningful counterevidence—not grounds to ignore the high-yield backdrop or upcoming catalysts.",
+          "sources": []
+        }
+      ]
     },
     "score": {
-      "html": "<div class=\"eyebrow\">08 · T−1 forecast review</div><h2>Prediction versus actual</h2><p class=\"small\">This is the first structured brief in the new dated series. No eligible 29 Sep report with frozen forecasts was found, so a T−1→T hit rate cannot yet be calculated. Do not score this report’s week-end forecasts against next-day prices.</p><div class=\"grid\"><div class=\"metric\"><span class=\"label\">Daily directional success</span><div class=\"score\">n = 0</div><p>No prior eligible forecast; percentage is not meaningful.</p></div><div class=\"metric\"><span class=\"label\">Week-ahead validation</span><div class=\"score\">Pending</div><p>Target close: Fri 9 Oct 2026. Score only after that close using the recorded baseline and horizon.</p></div></div><div class=\"callout\"><b>Process:</b> Freeze each forecast with timestamp, market/venue, baseline close, target date, horizon, direction/range, and source. On the next report, add actual close and calculate return against that baseline; mark hit/miss/abstain using predeclared criteria. Keep next-session and weekly cohorts separate. Report sample count, coverage, and a naïve benchmark alongside hit rate. Missing prior forecast or actual = “not scored,” never a fabricated zero or backfilled success.</div><div class=\"footnote\">Ledger: <code>harness/engineering/price-prediction/forecast-ledger.csv</code>. This is a proposed manual harness workflow, not an implemented automated scorer or enforced harness.</div>"
+      "title": "Prediction versus actual",
+      "kicker": "08 · T−1 forecast review",
+      "description": [
+        {
+          "text": "This is the first structured brief in the new dated series. No eligible 29 Sep report with frozen forecasts was found, so a T−1→T hit rate cannot yet be calculated. Do not score this report’s week-end forecasts against next-day prices.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [
+        {
+          "title": "",
+          "badge": "Daily directional success",
+          "paragraphs": [
+            {
+              "text": "No prior eligible forecast; percentage is not meaningful.",
+              "sources": []
+            }
+          ]
+        },
+        {
+          "title": "",
+          "badge": "Week-ahead validation",
+          "paragraphs": [
+            {
+              "text": "Target close: Fri 9 Oct 2026. Score only after that close using the recorded baseline and horizon.",
+              "sources": []
+            }
+          ]
+        }
+      ],
+      "notes": [
+        {
+          "text": "Process: Freeze each forecast with timestamp, market/venue, baseline close, target date, horizon, direction/range, and source. On the next report, add actual close and calculate return against that baseline; mark hit/miss/abstain using predeclared criteria. Keep next-session and weekly cohorts separate. Report sample count, coverage, and a naïve benchmark alongside hit rate. Missing prior forecast or actual = “not scored,” never a fabricated zero or backfilled success.",
+          "sources": []
+        },
+        {
+          "text": "Ledger: harness/engineering/price-prediction/forecast-ledger.csv . This is a proposed manual harness workflow, not an implemented automated scorer or enforced harness.",
+          "sources": []
+        }
+      ]
     }
   },
-  "footer": "<b>Sources / limitations:</b> Primary schedule/calendar sources include BLS, BEA, NY Fed, ISM, Shenzhen Exchange, and company investor relations; current market/news context uses AP and Bernama. Source URLs are linked inline. Market/news snapshot: 30 Sep 2026 22:38 MYT. Table U.S. prices are time-stamped intraday snapshots; Malaysia prices are 30 Sep closing prices. S&P last completed close is Sep 29; U.S. session was in progress at snapshot. AP’s prices are time-stamped morning observations, not guaranteed current quotes. Certain ETF exact baselines, complete OHLCV, current consensus estimates, and live Moomoo/OpenD data were not independently verified. No personalized portfolio context, costs, liquidity tests, order prices, or strategy backtest. Action class: <b>research only / watchlist</b>."
+  "forecasts": [
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "AAPL",
+      "name": "Apple",
+      "sector": "Technology",
+      "sector_emoji": "💻",
+      "current_price": "US$338.74",
+      "price_as_of": "30 Sep · 14:38 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$351",
+      "estimated_range": "US$343–358",
+      "scenario": "Rate relief may support growth if yields keep easing; payrolls/services data can reverse it. Low confidence.",
+      "sources": [
+        {
+          "label": "Quote",
+          "url": "https://finance.yahoo.com/quote/AAPL/"
+        }
+      ],
+      "sector_category": "technology"
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "sector": "Technology / semiconductors",
+      "sector_emoji": "💻",
+      "current_price": "US$230.39",
+      "price_as_of": "30 Sep · 14:38 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$237",
+      "estimated_range": "US$226–248",
+      "scenario": "Buyback headline and softer yields support sentiment; valuation, yields, and AI capex are disconfirming risks. Low confidence. ·",
+      "sources": [
+        {
+          "label": "Quote",
+          "url": "https://finance.yahoo.com/quote/NVDA/"
+        },
+        {
+          "label": "AP",
+          "url": "https://apnews.com/article/e695d7024ad68b0defd6fb2fc1aa25d7"
+        }
+      ],
+      "sector_category": "technology"
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "sector": "Technology",
+      "sector_emoji": "💻",
+      "current_price": "US$517.54",
+      "price_as_of": "30 Sep · 14:38 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$523",
+      "estimated_range": "US$508–538",
+      "scenario": "Broad rate relief offsets still-elevated yield and event risk; no specific near-term company catalyst verified. Low confidence.",
+      "sources": [
+        {
+          "label": "Quote",
+          "url": "https://finance.yahoo.com/quote/MSFT/"
+        }
+      ],
+      "sector_category": "technology"
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "equity",
+      "ticker": "META",
+      "name": "Meta Platforms",
+      "sector": "Technology / internet",
+      "sector_emoji": "💻",
+      "current_price": "US$725.49",
+      "price_as_of": "30 Sep · 14:38 UTC",
+      "direction": "down",
+      "direction_label": "Downside bias",
+      "estimated_mid_case": "US$723",
+      "estimated_range": "US$700–745",
+      "scenario": "Shares lagged this session’s broad-market advance; one intraday move is weak evidence and reversal risk is high. Low confidence.",
+      "sources": [
+        {
+          "label": "Quote",
+          "url": "https://finance.yahoo.com/quote/META/"
+        }
+      ],
+      "sector_category": "technology"
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "SPY",
+      "name": "SPDR S&P 500 ETF",
+      "sector": "Broad market",
+      "sector_emoji": "📊",
+      "current_price": "US$767.72",
+      "price_as_of": "30 Sep · 14:38 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$771",
+      "estimated_range": "US$752–790",
+      "scenario": "PCE relief is countered by high yields and Friday payrolls; broad-index outcome remains two-sided. Low confidence.",
+      "sources": [
+        {
+          "label": "Quote",
+          "url": "https://finance.yahoo.com/quote/SPY/"
+        }
+      ],
+      "sector_category": "broad-market"
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "QQQ",
+      "name": "Invesco Nasdaq-100 ETF",
+      "sector": "Broad market / growth",
+      "sector_emoji": "📊",
+      "current_price": "US$742.60",
+      "price_as_of": "30 Sep · 14:38 UTC",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "US$757",
+      "estimated_range": "US$738–775",
+      "scenario": "Softer inflation can aid duration-sensitive holdings; concentration and yields create downside risk. Low confidence.",
+      "sources": [
+        {
+          "label": "Quote",
+          "url": "https://finance.yahoo.com/quote/QQQ/"
+        }
+      ],
+      "sector_category": "broad-market"
+    },
+    {
+      "market": "US",
+      "country": "us",
+      "asset_type": "etf",
+      "ticker": "XLE",
+      "name": "Energy Select Sector SPDR",
+      "sector": "Energy",
+      "sector_emoji": "⚡",
+      "current_price": "US$61.74",
+      "price_as_of": "30 Sep · 14:38 UTC",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$61.75",
+      "estimated_range": "US$60.00–63.50",
+      "scenario": "Geopolitical supply-risk premium may support energy; oil easing or no verified disruption could unwind it. Low confidence. ·",
+      "sources": [
+        {
+          "label": "Quote",
+          "url": "https://finance.yahoo.com/quote/XLE/"
+        },
+        {
+          "label": "AP",
+          "url": "https://apnews.com/article/stocks-markets-oil-bonds-us-ai-chips-e61d3d7b947a390c7eee6c8758e3095d"
+        }
+      ],
+      "sector_category": "energy"
+    },
+    {
+      "market": "MY",
+      "country": "my",
+      "asset_type": "equity",
+      "ticker": "5347",
+      "name": "Tenaga Nasional",
+      "sector": "Utilities",
+      "sector_emoji": "💡",
+      "current_price": "RM12.96",
+      "price_as_of": "30 Sep close · MYT",
+      "direction": "up",
+      "direction_label": "Upside bias",
+      "estimated_mid_case": "RM13.08",
+      "estimated_range": "RM12.70–13.45",
+      "scenario": "Utility-led index rebound supports a follow-through case; weak Bursa breadth argues for caution. Low confidence.",
+      "sources": [
+        {
+          "label": "Close / market context",
+          "url": "https://www.klsescreener.com/v2/news/view/1800805/"
+        }
+      ],
+      "sector_category": "utilities"
+    },
+    {
+      "market": "MY",
+      "country": "my",
+      "asset_type": "equity",
+      "ticker": "1155",
+      "name": "Malayan Banking (Maybank)",
+      "sector": "Financials",
+      "sector_emoji": "🏦",
+      "current_price": "RM9.99",
+      "price_as_of": "30 Sep close · MYT",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "RM10.00",
+      "estimated_range": "RM9.80–10.20",
+      "scenario": "Bank shares remain sensitive to foreign flows and market breadth; today's broad close is not confirmation. Low confidence.",
+      "sources": [
+        {
+          "label": "Close / market context",
+          "url": "https://www.klsescreener.com/v2/news/view/1800805/"
+        }
+      ],
+      "sector_category": "financials"
+    },
+    {
+      "market": "MY",
+      "country": "my",
+      "asset_type": "equity",
+      "ticker": "1023",
+      "name": "CIMB Group",
+      "sector": "Financials",
+      "sector_emoji": "🏦",
+      "current_price": "RM7.79",
+      "price_as_of": "30 Sep close · MYT",
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "RM7.80",
+      "estimated_range": "RM7.60–8.00",
+      "scenario": "Recovery is possible if financials stabilize, but the earlier sell-off and weak breadth remain risks. Low confidence. ·",
+      "sources": [
+        {
+          "label": "Historical quote",
+          "url": "https://www.investing.com/equities/bumiputra---commerce-holdings-bhd-historical-data"
+        },
+        {
+          "label": "Close / market context",
+          "url": "https://www.klsescreener.com/v2/news/view/1800805/"
+        }
+      ],
+      "sector_category": "financials"
+    }
+  ],
+  "calendar": {
+    "timezone": "Asia/Kuala_Lumpur",
+    "month": "2026-10",
+    "events": [
+      {
+        "date": "2026-10-02",
+        "title": "U.S. Employment Situation, September",
+        "kind": "event",
+        "time": "Fri Oct 2 8:30 pm MYT / 8:30 am ET",
+        "summary": "Hot jobs/wages could lift yields and pressure growth equities; a softer report could ease yields but raise growth concerns. Interpret wages, participation, revisions, and payrolls together.",
+        "details": "Official BLS schedule confirms release. No verified consensus cited. Hot jobs/wages could lift yields and pressure growth equities; a softer report could ease yields but raise growth concerns. Interpret wages, participation, revisions, and payrolls together.",
+        "exposures": "SPY, QQQ, XLF, Treasury-sensitive shares",
+        "sources": [
+          {
+            "label": "BLS calendar",
+            "url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-05",
+        "title": "ISM Services PMI, September",
+        "kind": "event",
+        "time": "Mon Oct 5 10:00 pm MYT / 10:00 am ET",
+        "summary": "Stronger activity may support cyclicals but push yields higher; weaker activity may cool yields while reviving demand fears. Read prices/employment/new orders, not headline alone. ·",
+        "details": "August ISM Services PMI was 55.4 (expansion); no September consensus cited. Stronger activity may support cyclicals but push yields higher; weaker activity may cool yields while reviving demand fears. Read prices/employment/new orders, not headline alone. ·",
+        "exposures": "SPY, QQQ, XLF, industrials",
+        "sources": [
+          {
+            "label": "ISM prior report",
+            "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/services/august/"
+          },
+          {
+            "label": "NY Fed calendar",
+            "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-06",
+        "title": "U.S. trade data; Global Supply Chain Pressure Index",
+        "kind": "event",
+        "time": "Tue Oct 6 8:30 pm / 8:30 am ET 10:00 pm / 10:00 am ET",
+        "summary": "Trade composition and supply constraints may affect growth/inflation expectations; market response depends on surprise and oil/freight context.",
+        "details": "Scheduled by NY Fed calendar. Trade composition and supply constraints may affect growth/inflation expectations; market response depends on surprise and oil/freight context.",
+        "exposures": "Industrials, transports, energy, rates",
+        "sources": [
+          {
+            "label": "NY Fed calendar",
+            "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-06",
+        "title": "Constellation Brands (STZ) fiscal Q2 results",
+        "kind": "event",
+        "time": "Tue Oct 6 after close",
+        "summary": "Guidance, volume/pricing and demand commentary could move beverage/consumer staples; earnings gap risk makes pre-result direction uncertain.",
+        "details": "Company confirmed results after market close; call Oct 7, 8:00 am ET. Guidance, volume/pricing and demand commentary could move beverage/consumer staples; earnings gap risk makes pre-result direction uncertain.",
+        "exposures": "STZ, consumer staples",
+        "sources": [
+          {
+            "label": "Issuer IR",
+            "url": "https://ir.cbrands.com/news-events/press-releases/detail/345/constellation-brands-to-report-second-quarter-fiscal-2027-financial-results-on-october-6-2026-after-market-close-and-host-conference-call-on-october-7-2026-at-8-00-am-et"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-07",
+        "title": "NY Fed Survey of Consumer Expectations",
+        "kind": "event",
+        "time": "Wed Oct 7 11:00 pm MYT / 11:00 am ET",
+        "summary": "Changes in inflation expectations or labor-market outlook may influence rates and consumer stocks; survey is not a realized outcome.",
+        "details": "Scheduled by NY Fed calendar. Changes in inflation expectations or labor-market outlook may influence rates and consumer stocks; survey is not a realized outcome.",
+        "exposures": "Treasuries, consumer discretionary/staples",
+        "sources": [
+          {
+            "label": "NY Fed calendar",
+            "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-07",
+        "title": "Levi Strauss (LEVI) Q3 earnings call / results",
+        "kind": "event",
+        "time": "Wed Oct 7 5:00 pm ET (Thu 5:00 am MYT)",
+        "summary": "Inventory, margins, demand and outlook may affect apparel retail read-through; earnings gap risk.",
+        "details": "Company confirms Oct 7 webcast at 5 pm ET. Inventory, margins, demand and outlook may affect apparel retail read-through; earnings gap risk.",
+        "exposures": "LEVI, apparel retail",
+        "sources": [
+          {
+            "label": "Issuer IR",
+            "url": "https://investors.levistrauss.com/news/financial-news/news-details/2026/Levi-Strauss--Co--to-Webcast-Third-Quarter-2026-Earnings-Conference-Call/default.aspx"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-08",
+        "title": "PepsiCo (PEP) Q3 results; call 8:15 am ET (8:15 pm MYT)",
+        "kind": "event",
+        "time": "Thu Oct 8 6:00 pm MYT / 6:00 am ET",
+        "summary": "Volume, price/mix, input cost and guidance may inform staples demand/inflation pass-through. Gap risk; consider event exposure explicitly.",
+        "details": "Company-confirmed timing. Volume, price/mix, input cost and guidance may inform staples demand/inflation pass-through. Gap risk; consider event exposure explicitly.",
+        "exposures": "PEP, staples, consumer demand",
+        "sources": [
+          {
+            "label": "Issuer IR",
+            "url": "https://www.pepsico.com/en/newsroom/press-releases/2026/pepsico-announces-timing-and-availability-of-third-quarter-2026-financial-results"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-08",
+        "title": "Initial claims; wholesale trade",
+        "kind": "event",
+        "time": "Thu Oct 8 8:30 pm / 8:30 am ET; 10:00 pm / 10:00 am ET",
+        "summary": "Claims provide a timely labor check; wholesale inventories/sales inform demand and stockbuilding. Surprise matters relative to contemporaneous expectations.",
+        "details": "Scheduled by NY Fed calendar. Claims provide a timely labor check; wholesale inventories/sales inform demand and stockbuilding. Surprise matters relative to contemporaneous expectations.",
+        "exposures": "Broad market, retailers, transports",
+        "sources": [
+          {
+            "label": "NY Fed calendar",
+            "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-09",
+        "title": "Preliminary Michigan Consumer Survey; Delta (DAL) results webcast",
+        "kind": "event",
+        "time": "Fri Oct 9 10:00 pm MYT / 10:00 am ET",
+        "summary": "Consumer sentiment/inflation expectations may influence rate narrative. Delta guidance intersects demand, labor and fuel costs; avoid treating oil direction as a one-way airline signal. Earnings event/gap risk. ·",
+        "details": "Survey scheduled by NY Fed; Delta confirms 10:00 am ET webcast. Consumer sentiment/inflation expectations may influence rate narrative. Delta guidance intersects demand, labor and fuel costs; avoid treating oil direction as a one-way airline signal. Earnings event/gap risk. ·",
+        "exposures": "Consumer cyclicals, DAL, airlines, energy",
+        "sources": [
+          {
+            "label": "NY Fed",
+            "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html"
+          },
+          {
+            "label": "Delta IR",
+            "url": "https://news.delta.com/delta-air-lines-announces-webcast-september-quarter-2026-financial-results"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-01",
+        "date_end": "2026-10-07",
+        "title": "Mainland China market holiday",
+        "kind": "market-closure",
+        "time": "1–7 October",
+        "summary": "Mainland China exchanges are closed for National Day; reopening is scheduled for 8 October. U.S.-listed China ETFs may trade while underlying onshore price discovery is paused.",
+        "details": "Holiday calendar in the report’s source set identifies Shenzhen market closure from 1–7 October 2026. Expect stale underlying reference prices and reopening gap risk.",
+        "exposures": "FXI, MCHI, China-linked assets",
+        "sources": [
+          {
+            "label": "Shenzhen Stock Exchange calendar",
+            "url": "https://investor.szse.cn/English/services/trading/calendar/index.html"
+          }
+        ]
+      }
+    ]
+  },
+  "footer": "Sources / limitations: Primary schedule/calendar sources include BLS, BEA, NY Fed, ISM, Shenzhen Exchange, and company investor relations; current market/news context uses AP and Bernama. Source URLs are linked inline. Market/news snapshot: 30 Sep 2026 22:38 MYT. Table U.S. prices are time-stamped intraday snapshots; Malaysia prices are 30 Sep closing prices. S&P last completed close is Sep 29; U.S. session was in progress at snapshot. AP’s prices are time-stamped morning observations, not guaranteed current quotes. Certain ETF exact baselines, complete OHLCV, current consensus estimates, and live Moomoo/OpenD data were not independently verified. No personalized portfolio context, costs, liquidity tests, order prices, or strategy backtest. Action class: research only / watchlist ."
 }
