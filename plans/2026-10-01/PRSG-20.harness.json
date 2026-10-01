@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-20",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.05,
+      "high": 0.1
+    },
+    "impact": "low"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-20-logo-home-link.md",
+  "objective": "Report logo navigates to product landing page.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "01343dd72cc229350275553dbd169303e863fc47",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-01/PRSG-20-logo-home-link.md",
+    "plans/2026-10-01/PRSG-20.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "skills/",
+    "artifacts/financial-calendar/"
+  ],
+  "checks": [
+    {
+      "id": "dom",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed including desktop/mobile native-logo href and GitHub Pages prefix/query resolution. Lead reviewed four-file diff; git diff --check passed. Browser navigation/deployment not exercised."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed including desktop/mobile native-logo href and GitHub Pages prefix/query resolution. Lead reviewed four-file diff; git diff --check passed. Browser navigation/deployment not exercised."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-20-D1",
+      "description": "Logo resolves to site landing page and regression passes.",
+      "check_ids": [
+        "dom",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed including desktop/mobile native-logo href and GitHub Pages prefix/query resolution. Lead reviewed four-file diff; git diff --check passed. Browser navigation/deployment not exercised."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed including desktop/mobile native-logo href and GitHub Pages prefix/query resolution. Lead reviewed four-file diff; git diff --check passed. Browser navigation/deployment not exercised."
+    ]
+  }
+}

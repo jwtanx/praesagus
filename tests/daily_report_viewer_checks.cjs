@@ -78,6 +78,8 @@ async function navigation(width) {
   assert.equal(t.$('.day[aria-pressed="true"]').dataset.date,'2026-10-01');
   other.click();assert.equal(other.getAttribute('aria-pressed'),'true');
   assert.equal(t.w.document.body.firstElementChild.className, 'topbar');
+  assert.equal(t.$('.brand').getAttribute('href'),'../');
+  assert.equal(new URL(t.$('.brand').getAttribute('href'),'https://jwtanx.github.io/praesagus/daily-market-brief/?date=2026-10-01').href,'https://jwtanx.github.io/praesagus/');
   assert.ok(t.$('.topbar').compareDocumentPosition(t.$('header')) & t.w.Node.DOCUMENT_POSITION_FOLLOWING, 'Main navigation precedes report header');
   assert.equal(t.w.getComputedStyle(t.$('.topbar')).position, 'sticky');
   assert.equal(t.w.getComputedStyle(t.$('.topbar')).top, '0px');
