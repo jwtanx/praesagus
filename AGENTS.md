@@ -77,6 +77,8 @@ The implemented `connectors/moomoo_opend.py` adapter and `/api/v1/moomoo/news` a
 
 ## Testing and validation
 
+- Ticket verification: `scripts/planning/verify_ticket.py` checks actual Git scope against an accepted frozen manifest and runs only exact argv/cwd pairs in `harness/verification_policy.json`. Evidence is written outside the repository; manual checks remain review-required. Reviewed baselines may separate unchanged pre-existing work. This is not a sandbox, and CI currently replays runner regressions rather than auto-dispatching every ticket. See `docs/TICKET_VERIFICATION.md`.
+
 - Add or update focused tests for behavior changes. Prefer deterministic fixtures and mocked external APIs; tests must not require live credentials or place orders.
 - Run the narrow relevant test set, then broader checks when scope warrants. Validate changed configuration and documentation references. Report commands and outcomes accurately; do not claim tests passed if they were not run.
 - For ingestion or signal logic, cover malformed/missing data, duplicates, stale/future timestamps, rate-limit/upstream failures, and risk/rejection cases where relevant.

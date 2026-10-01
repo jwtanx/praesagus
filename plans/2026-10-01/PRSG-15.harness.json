@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-15",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "harness",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-15-ticket-verification-runner.md",
+  "objective": "Verify actual Git scope and approved checks with revision-linked evidence.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "5d91079bb93fe219121dba0696dccbbd8028618b",
+  "allowed_paths": [
+    "scripts/planning/verify_ticket.py",
+    "tests/test_ticket_verification.py",
+    "harness/verification_policy.json",
+    "docs/TICKET_VERIFICATION.md",
+    "plans/README.md",
+    ".github/workflows/ci.yml",
+    "AGENTS.md",
+    "plans/2026-10-01/PRSG-15-ticket-verification-runner.md",
+    "plans/2026-10-01/PRSG-15.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "artifacts/",
+    ".githooks/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "runner",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_ticket_verification.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: focused runner suite15 passed; full python3 -m pytest -q189 passed with5 existing Python3.9/Boto3 warnings. Real PRSG-15 CLI artifact /tmp/PRSG-15-verification-reviewed.json SHA256 e2818b47583203b8eda772e68cb3878b4fa02ed2c58d57d042c4030a87b62460: all9 paths in scope, runner exit0, manual review required, worktree/HEAD unchanged. Artifact covers pre-acceptance manifest cfa61ac501134a6966d753c31124b3570035f9ffd3ea1f184acea580bfd7bd45, not this later evidence edit."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed9 allowed files, exact argv/cwd allowlist, index/worktree baseline hashing, no raw output retention, bounded process-group timeout and manual-check non-acceptance. CI only replays regressions; no automatic ticket dispatch or sandbox claimed. Existing PRSG-12/13 research remains review-pending. Functional delivery accepted; impact unmeasured."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-15-D1",
+      "description": "Git scope, exact baseline, command approval, evidence and manual review safety cases pass.",
+      "check_ids": [
+        "runner",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT: focused runner suite15 passed; full python3 -m pytest -q189 passed with5 existing Python3.9/Boto3 warnings. Real PRSG-15 CLI artifact /tmp/PRSG-15-verification-reviewed.json SHA256 e2818b47583203b8eda772e68cb3878b4fa02ed2c58d57d042c4030a87b62460: all9 paths in scope, runner exit0, manual review required, worktree/HEAD unchanged. Artifact covers pre-acceptance manifest cfa61ac501134a6966d753c31124b3570035f9ffd3ea1f184acea580bfd7bd45, not this later evidence edit.",
+        "Lead independently reviewed9 allowed files, exact argv/cwd allowlist, index/worktree baseline hashing, no raw output retention, bounded process-group timeout and manual-check non-acceptance. CI only replays regressions; no automatic ticket dispatch or sandbox claimed. Existing PRSG-12/13 research remains review-pending. Functional delivery accepted; impact unmeasured."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed9 allowed files, exact argv/cwd allowlist, index/worktree baseline hashing, no raw output retention, bounded process-group timeout and manual-check non-acceptance. CI only replays regressions; no automatic ticket dispatch or sandbox claimed. Existing PRSG-12/13 research remains review-pending. Functional delivery accepted; impact unmeasured."
+    ]
+  }
+}
