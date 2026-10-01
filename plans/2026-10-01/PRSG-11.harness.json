@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-11",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.3
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-11-dashboard-readability.md",
+  "objective": "Improve ticket readability and offer a root dashboard chooser.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "76db469b5a3fde5519be956db54a597f8858f0df",
+  "allowed_paths": [
+    "artifacts/index.html",
+    "artifacts/tickets/index.html",
+    "tests/ticket_dashboard_checks.cjs",
+    "plans/2026-10-01/PRSG-11-dashboard-readability.md",
+    "plans/2026-10-01/PRSG-11.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    ".githooks/",
+    "AGENTS.md",
+    "skills/",
+    "artifacts/daily-market-brief/",
+    "artifacts/financial-calendar/"
+  ],
+  "checks": [
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/ticket_dashboard_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/ticket_dashboard_checks.cjs --audit-json artifacts/tickets/audit.json: passed, including Reports/Technical Analysis coming soon, bottom Tickets bar, safe links, colored statuses and separate key/title columns."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-11-D1",
+      "description": "Separate columns and accessible status badges",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    },
+    {
+      "id": "PRSG-11-D2",
+      "description": "Product landing with Reports, Technical Analysis coming soon, and bottom Tickets utility bar",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    },
+    {
+      "id": "PRSG-11-D3",
+      "description": "Desktop/mobile and Lead review",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+    ]
+  }
+}

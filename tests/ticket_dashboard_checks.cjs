@@ -52,8 +52,12 @@ async function controls(width) {
   const t = mount({ width }); await settle();
   assert.deepEqual(t.requested, ['./audit.json']); assert.equal(t.$('#full-audit').getAttribute('href'), './audit.json'); assert.equal(t.$('#full-audit').download, 'praesagus-ticket-audit.json'); assert.equal(t.$('#dashboard').hidden, false);
   assert.deepEqual(t.rows(), ['PRSG-0', 'PRSG-1', 'PRSG-2', 'PRSG-3', 'PRSG-10']);
+  assert.deepEqual([...t.w.document.querySelectorAll('thead th')].slice(0,2).map(el=>el.textContent), ['Ticket','Title']);
+  const row=t.$('button[data-key="PRSG-1"]').closest('tr');assert.equal(row.children[0].textContent,'PRSG-1');assert.equal(row.children[1].textContent,'Catalyst inbox');assert.equal(row.children.length,7);assert.match(row.children[6].textContent,/MYT/);assert.equal(row.children[6].querySelector('time').dateTime,fixture.tickets[1].updated_at);
+  for(const [key,emoji,color] of [['PRSG-10','✅','complete'],['PRSG-1','🔄','progress'],['PRSG-2','📝','planned']]){const badge=t.$(`button[data-key="${key}"]`).closest('tr').querySelector('.status-badge');assert.ok(badge.classList.contains(`status-${color}`));assert.equal(badge.firstChild.textContent,emoji);assert.equal(badge.firstChild.getAttribute('aria-hidden'),'true');assert.ok(badge.lastChild.textContent);}
+  assert.equal(t.$('header a[href="../"]').textContent,'← Home');
   assert.match(t.$('#result-count').textContent, /1 declared complete · 1 completion commits/);
-  assert.equal(t.$('header a').getAttribute('href'), '../daily-market-brief/'); assert.match(t.$('header').textContent, /side-branch intermediate/); assert.match(t.$('header').textContent, /Frozen fixture/);
+  assert.equal(t.$('header a[href="../daily-market-brief/"]').getAttribute('href'), '../daily-market-brief/'); assert.match(t.$('header').textContent, /side-branch intermediate/); assert.match(t.$('header').textContent, /Frozen fixture/);
   t.change('#search', 'LICENSED', 'input'); assert.deepEqual(t.rows(), ['PRSG-10']);
   t.change('#search', 'Catalyst inbox', 'input'); assert.deepEqual(t.rows(), ['PRSG-1']);
   t.change('#search', 'prsg-2', 'input'); assert.deepEqual(t.rows(), ['PRSG-2']);
@@ -134,6 +138,21 @@ async function historicalSpecification() {
   assert.equal(specs.length, 1); assert.equal(specs[0].href, data.tickets[1].history[0].spec_url); assert.equal(specs[0].rel, 'noopener noreferrer');
   t.dom.window.close();
 }
+function landingChecks(){
+  const file=path.join(root,'artifacts/index.html');const dom=new JSDOM(fs.readFileSync(file,'utf8'),{url:'http://localhost/praesagus/'}),doc=dom.window.document;
+  assert.equal(doc.querySelector('meta[http-equiv="refresh"]'),null);assert.equal(doc.querySelector('script'),null);
+  assert.match(doc.querySelector('h1').textContent,/Understand the market/);
+  assert.doesNotMatch(doc.querySelector('h1').textContent,/Choose your dashboard/);
+  const products=doc.querySelector('section[aria-label="Research dashboards"]');
+  assert.deepEqual([...products.querySelectorAll('h2')].map(el=>el.textContent),['Report dashboard','Technical analysis']);
+  assert.equal(products.querySelector('a').getAttribute('href'),'daily-market-brief/');
+  assert.equal(doc.querySelector('#technical-analysis .coming-soon').textContent,'Coming soon');
+  assert.equal(doc.querySelector('#technical-analysis a'),null);
+  assert.equal(products.querySelector('a[href="tickets/"]'),null);
+  assert.equal(doc.querySelector('footer nav[aria-label="Project utilities"] a').getAttribute('href'),'tickets/');
+  for(const link of doc.querySelectorAll('a'))assert.ok(fs.existsSync(path.join(root,'artifacts',link.getAttribute('href'),'index.html')));
+  dom.window.close();
+}
 async function generatedAudit() {
   const option = process.argv.indexOf('--audit-json'); if (option < 0) return;
   const data = JSON.parse(fs.readFileSync(process.argv[option + 1], 'utf8'));
@@ -149,4 +168,4 @@ async function generatedAudit() {
 if (process.argv.includes('--write-browser-fixture')) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'praesagus-ticket-fixture-'));
   fs.mkdirSync(path.join(dir, 'tickets')); fs.writeFileSync(path.join(dir, 'tickets/index.html'), html); fs.writeFileSync(path.join(dir, 'tickets/audit.json'), JSON.stringify(inconsistentFixture(), null, 2)); console.log(dir);
-} else (async () => { await controls(1280); await controls(390); await safetyAndCsv(); await loadingAndFailure(); await inconsistentAndRecovery(); await historicalSpecification(); await generatedAudit(); console.log('Ticket dashboard DOM checks passed: search, all filters/sorts, committed evidence timeline, completion/activity separation, safe links/text, CSV neutralization/export, loading/error/empty, inconsistent checkpoints and recovery.'); })().catch(error => { console.error(error); process.exitCode = 1; });
+} else (async () => { landingChecks(); await controls(1280); await controls(390); await safetyAndCsv(); await loadingAndFailure(); await inconsistentAndRecovery(); await historicalSpecification(); await generatedAudit(); console.log('Ticket dashboard DOM checks passed: search, all filters/sorts, committed evidence timeline, completion/activity separation, safe links/text, CSV neutralization/export, loading/error/empty, inconsistent checkpoints and recovery.'); })().catch(error => { console.error(error); process.exitCode = 1; });
