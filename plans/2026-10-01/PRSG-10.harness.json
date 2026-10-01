@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-10",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.3
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-10-top-navigation.md",
+  "objective": "Place report main navigation above the report header.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "427f1d746ca5bc92785dd1d0d3533b6bf2a4bcd7",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-01/PRSG-10-top-navigation.md",
+    "plans/2026-10-01/PRSG-10.harness.json"
+  ],
+  "protected_paths": [
+    ".githooks/",
+    "AGENTS.md",
+    "skills/",
+    "backend/",
+    "artifacts/financial-calendar/"
+  ],
+  "checks": [
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed existing desktop/mobile date/calendar/error/safety cases plus topbar-first/sticky DOM regression."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed exact four-file scope. Engineer read-only actual local browser QA:1280x720 topbar y0/header y63.25, sticky after720px scroll;390x844 topbar y0 after2874px scroll, menu calendar/tickers work and close,50 rows, popup x17–317, Sep30/Oct1 date transitions work, widths1280/1280 and390/390. Remote deployment/other engines not checked. Pending PRSG-9 and .DS_Store untouched."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-10-D1",
+      "description": "Navigation precedes header and existing views and date navigation work.",
+      "check_ids": [
+        "viewer",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed existing desktop/mobile date/calendar/error/safety cases plus topbar-first/sticky DOM regression.",
+        "Lead reviewed exact four-file scope. Engineer read-only actual local browser QA:1280x720 topbar y0/header y63.25, sticky after720px scroll;390x844 topbar y0 after2874px scroll, menu calendar/tickers work and close,50 rows, popup x17–317, Sep30/Oct1 date transitions work, widths1280/1280 and390/390. Remote deployment/other engines not checked. Pending PRSG-9 and .DS_Store untouched."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewed exact four-file scope. Engineer read-only actual local browser QA:1280x720 topbar y0/header y63.25, sticky after720px scroll;390x844 topbar y0 after2874px scroll, menu calendar/tickers work and close,50 rows, popup x17–317, Sep30/Oct1 date transitions work, widths1280/1280 and390/390. Remote deployment/other engines not checked. Pending PRSG-9 and .DS_Store untouched."
+    ]
+  }
+}

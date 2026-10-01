@@ -48,6 +48,10 @@ function mount({ width = 1280, search = '', routes = {} } = {}) {
 }
 async function navigation(width) {
   const t = mount({ width }); await settle();
+  assert.equal(t.w.document.body.firstElementChild.className, 'topbar');
+  assert.ok(t.$('.topbar').compareDocumentPosition(t.$('header')) & t.w.Node.DOCUMENT_POSITION_FOLLOWING, 'Main navigation precedes report header');
+  assert.equal(t.w.getComputedStyle(t.$('.topbar')).position, 'sticky');
+  assert.equal(t.w.getComputedStyle(t.$('.topbar')).top, '0px');
   assert.equal(t.$('#subtitle').textContent, 'Fixture 2026-10-01');
   assert.equal(t.$('.sections a[href="#top10"]').textContent, 'Sector shortlist');
   for (const level of ['low', 'medium', 'high', 'unavailable']) assert.match(t.$('#forecast-rows').textContent, new RegExp(`${level} evidence confidence`));
