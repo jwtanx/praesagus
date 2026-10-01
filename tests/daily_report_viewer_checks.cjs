@@ -18,18 +18,18 @@ const report = (date, version = 3) => {
   for (const id of ['outlook', 'top10', 'swing', 'etfs', 'news', 'trends', 'score']) data.sections[id] = { title: `${date} ${id}`, kicker: id, description: [], notes: [], items: [], tables: [] };
   data.forecasts = ['low', 'medium', 'high', null].map((confidence, i) => ({ ticker: `TEST${i}`, name: 'Fixture', market: 'US', country: 'us', asset_type: 'equity', sector: 'Technology', sector_category: 'technology', confidence, confidence_reason: `Reason ${i}`, direction: 'unknown', direction_label: 'Unrated', current_price_value: null, estimated_mid_case: 'Unavailable', estimated_range: 'Unavailable', sources: [source] }));
   if (version === 3) data.calendar_ref = '../financial-calendar/2026-10.json';
-  else { data.calendar = { month: '2026-09', timezone: 'Asia/Kuala_Lumpur', events: [{ date: '2026-09-30', title: 'Legacy event', kind: 'event', time: 'Date only', details: 'Legacy retained', sources: [source] }] }; data.sections.calendar = { description: [{ text: 'Legacy calendar description' }], notes: [] }; }
+  else { data.calendar = { month: '2026-09', timezone: 'Asia/Kuala_Lumpur', events: [{ country: 'US', date: '2026-09-30', title: 'Legacy event', kind: 'event', time: 'Date only', details: 'Legacy retained', sources: [source] }] }; data.sections.calendar = { description: [{ text: 'Legacy calendar description' }], notes: [] }; }
   return data;
 };
-const revision = (revision, extra = {}) => ({ event_id: 'jobs', revision, recorded_at: '2026-09-29T00:00:00Z', status: 'scheduled', change_reason: 'Official initial schedule', date: '2026-10-02', kind: 'event', title: 'Employment release', time: '08:30 ET', summary: 'Outcome unknown', details: 'Fixture event', exposures: 'Market-wide', sources: [source], ...extra });
+const revision = (revision, extra = {}) => ({ country: 'US', event_id: 'jobs', revision, recorded_at: '2026-09-29T00:00:00Z', status: 'scheduled', change_reason: 'Official initial schedule', date: '2026-10-02', kind: 'event', title: 'Employment release', time: '08:30 ET', summary: 'Outcome unknown', details: 'Fixture event', exposures: 'Market-wide', sources: [source], ...extra });
 const calendar = (month = '2026-10', entries = [revision(1)]) => ({ schema_version: 1, month, timezone: 'Asia/Kuala_Lumpur', notes: [{ text: 'Frozen official schedule', sources: [source] }], entries });
 const index = { latest: '2026-10-01', reports: [{ date: '2026-10-01', label: '1 October 2026' }, { date: '2026-09-30', label: '30 September 2026' }, { date: '2026-10-02', label: '2 October 2026' }] };
 async function settle() { for (let i = 0; i < 8; i++) await new Promise(resolve => setImmediate(resolve)); }
-function mount({ width = 1280, search = '', routes = {} } = {}) {
+function mount({ width = 1280, search = '', routes = {}, latestSchedule = false } = {}) {
   const requests = [], errors = [];
   const responses = { './reports.json': index, './2026-10-01.json': report('2026-10-01'), './2026-09-30.json': report('2026-09-30', 2), '../financial-calendar/2026-10.json': calendar(), ...routes };
   const vc = new VirtualConsole(); vc.on('jsdomError', e => errors.push(e));
-  const dom = new JSDOM(html, { url: `http://localhost/daily-market-brief/${search}`, runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc, beforeParse(w) {
+  const dom = new JSDOM(latestSchedule?html:html.replace('<option value="report">As of selected report', '<option value="report" selected>As of selected report'), { url: `http://localhost/daily-market-brief/${search}`, runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc, beforeParse(w) {
     Object.defineProperty(w, 'innerWidth', { value: width });
     w.scrollTo = () => {}; w.HTMLElement.prototype.scrollIntoView = () => {};
     w.IntersectionObserver = class { observe() {} disconnect() {} };
@@ -45,6 +45,20 @@ function mount({ width = 1280, search = '', routes = {} } = {}) {
   const w = dom.window, $ = selector => w.document.querySelector(selector);
   const click = selector => { const el = $(selector); assert.ok(el, selector); assert.ok(!el.disabled, `Enabled: ${selector}`); el.click(); };
   return { dom, w, $, click, requests, responses, errors };
+}
+async function countryFiltersAndLatest() {
+  const rows = [revision(1), revision(1, {event_id:'malaysia', country:'MY', date:'2026-10-30', title:'Malaysia late-month release', recorded_at:'2026-10-01T10:00:00Z'}), revision(1, {event_id:'china', country:'CN', title:'China holiday'}), revision(1, {event_id:'legacy', country:undefined, title:'Unclassified event'})];
+  const t=mount({latestSchedule:true,routes:{'../financial-calendar/2026-10.json':calendar('2026-10',rows)}}); await settle();
+  assert.match(t.$('#calendar-notes').textContent,/independent of report timestamp/);
+  assert.ok(t.$('.day[data-date="2026-10-30"] .day-marker'));
+  t.click('.day[data-date="2026-10-02"]'); assert.doesNotMatch(t.$('#event-details').textContent,/China|Unclassified/);
+  const select=(id,value)=>{t.$(id).value=value;t.$(id).dispatchEvent(new t.w.Event('change'));};
+  select('#calendar-country','MY'); assert.equal(t.$('.day[data-date="2026-10-02"] .day-marker'),null); assert.match(t.$('#event-details').textContent,/Malaysia late-month/);
+  select('#calendar-country','US'); assert.equal(t.$('.day[data-date="2026-10-30"] .day-marker'),null);
+  select('#calendar-country','all'); select('#calendar-schedule','report');await settle();
+  assert.equal(t.$('.day[data-date="2026-10-30"] .day-marker'),null);
+  assert.match(t.$('#calendar-notes').textContent,/Revisions known as of/);
+  t.dom.window.close();
 }
 async function navigation(width) {
   const t = mount({ width }); await settle();
@@ -178,6 +192,7 @@ if (process.argv.includes('--write-browser-fixture')) {
   write('financial-calendar/2026-10.json', calendar('2026-10', [revision(1), revision(2, { recorded_at: '2026-09-30T00:00:00Z', status: 'cancelled', change_reason: 'Official cancellation; retained for audit' })]));
   console.log(dir);
 } else (async () => {
+  await countryFiltersAndLatest();
   await navigation(1280); await navigation(390); await historyAndSafety(); await activeRevisionsAndReportCalendarRace(); await staleAndFailures(); await calendarStaleAndInvalid(); await checkedInReports();
   console.log('Daily report DOM checks passed: desktop/mobile date switching, schema2/3, confidence, as-of revisions/cancellations, safe sources, missing months, stale/error handling.');
 })().catch(e => { console.error(e); process.exitCode = 1; });

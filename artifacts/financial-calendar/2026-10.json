@@ -354,6 +354,1030 @@
       "source_verification": "inherited; not newly verified",
       "source_date": "2026-10-07",
       "source_timezone": "America/New_York"
+    },
+    {
+      "date": "2026-10-02",
+      "title": "U.S. Employment Situation, September",
+      "kind": "event",
+      "time": "Fri Oct 2 8:30 pm MYT / 8:30 am ET",
+      "summary": "Hot jobs/wages could lift yields and pressure growth equities; a softer report could ease yields but raise growth concerns. Interpret wages, participation, revisions, and payrolls together.",
+      "details": "Official BLS schedule confirms release. No verified consensus cited. Hot jobs/wages could lift yields and pressure growth equities; a softer report could ease yields but raise growth concerns. Interpret wages, participation, revisions, and payrolls together.",
+      "exposures": "SPY, QQQ, XLF, Treasury-sensitive shares",
+      "sources": [
+        {
+          "label": "BLS calendar",
+          "url": "https://www.bls.gov/schedule/news_release/empsit.htm",
+          "migration_limitation": "Inherited report evidence; missing publication/retrieval metadata remains unknown. No new verification during migration."
+        }
+      ],
+      "event_id": "us-employment-september-2026",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-10-01.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "US",
+      "revision": 3,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-05",
+      "title": "ISM Services PMI, September",
+      "kind": "event",
+      "time": "Mon Oct 5 10:00 pm MYT / 10:00 am ET",
+      "summary": "Stronger activity may support cyclicals but push yields higher; weaker activity may cool yields while reviving demand fears. Read prices/employment/new orders, not headline alone. ·",
+      "details": "August ISM Services PMI was 55.4 (expansion); no September consensus cited. Stronger activity may support cyclicals but push yields higher; weaker activity may cool yields while reviving demand fears. Read prices/employment/new orders, not headline alone. ·",
+      "exposures": "SPY, QQQ, XLF, industrials",
+      "sources": [
+        {
+          "label": "ISM prior report",
+          "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/services/august/",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        },
+        {
+          "label": "NY Fed calendar",
+          "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        }
+      ],
+      "event_id": "ism-services-september-2026",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-09-30.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "US",
+      "revision": 2,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-06",
+      "title": "U.S. trade data; Global Supply Chain Pressure Index",
+      "kind": "event",
+      "time": "Tue Oct 6 8:30 pm / 8:30 am ET 10:00 pm / 10:00 am ET",
+      "summary": "Trade composition and supply constraints may affect growth/inflation expectations; market response depends on surprise and oil/freight context.",
+      "details": "Scheduled by NY Fed calendar. Trade composition and supply constraints may affect growth/inflation expectations; market response depends on surprise and oil/freight context.",
+      "exposures": "Industrials, transports, energy, rates",
+      "sources": [
+        {
+          "label": "NY Fed calendar",
+          "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        }
+      ],
+      "event_id": "us-trade-gscpi-october-2026",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-09-30.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "US",
+      "revision": 2,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-06",
+      "title": "Constellation Brands (STZ) fiscal Q2 results",
+      "kind": "event",
+      "time": "Tue Oct 6 after close",
+      "summary": "Guidance, volume/pricing and demand commentary could move beverage/consumer staples; earnings gap risk makes pre-result direction uncertain.",
+      "details": "Company confirmed results after market close; call Oct 7, 8:00 am ET. Guidance, volume/pricing and demand commentary could move beverage/consumer staples; earnings gap risk makes pre-result direction uncertain.",
+      "exposures": "STZ, consumer staples",
+      "sources": [
+        {
+          "label": "Issuer IR",
+          "url": "https://ir.cbrands.com/news-events/press-releases/detail/345/constellation-brands-to-report-second-quarter-fiscal-2027-financial-results-on-october-6-2026-after-market-close-and-host-conference-call-on-october-7-2026-at-8-00-am-et",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        }
+      ],
+      "event_id": "stz-fy2027-q2-results",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-09-30.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "US",
+      "revision": 2,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-07",
+      "title": "NY Fed Survey of Consumer Expectations",
+      "kind": "event",
+      "time": "Wed Oct 7 11:00 pm MYT / 11:00 am ET",
+      "summary": "Changes in inflation expectations or labor-market outlook may influence rates and consumer stocks; survey is not a realized outcome.",
+      "details": "Scheduled by NY Fed calendar. Changes in inflation expectations or labor-market outlook may influence rates and consumer stocks; survey is not a realized outcome.",
+      "exposures": "Treasuries, consumer discretionary/staples",
+      "sources": [
+        {
+          "label": "NY Fed calendar",
+          "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        }
+      ],
+      "event_id": "nyfed-sce-october-2026",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-09-30.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "US",
+      "revision": 2,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-08",
+      "title": "Levi Strauss (LEVI) Q3 earnings call / results",
+      "kind": "event",
+      "time": "Thu Oct 8 5:00 am MYT / Wed Oct 7 5:00 pm ET",
+      "summary": "Inventory, margins, demand and outlook may affect apparel retail read-through; earnings gap risk.",
+      "details": "Company confirms Oct 7 webcast at 5 pm ET. Inventory, margins, demand and outlook may affect apparel retail read-through; earnings gap risk.",
+      "exposures": "LEVI, apparel retail",
+      "sources": [
+        {
+          "label": "Issuer IR",
+          "url": "https://investors.levistrauss.com/news/financial-news/news-details/2026/Levi-Strauss--Co--to-Webcast-Third-Quarter-2026-Earnings-Conference-Call/default.aspx",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        }
+      ],
+      "event_id": "levi-2026-q3-call",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-09-30.json",
+      "source_verification": "inherited; not newly verified",
+      "source_date": "2026-10-07",
+      "source_timezone": "America/New_York",
+      "country": "US",
+      "revision": 3,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-08",
+      "title": "PepsiCo (PEP) Q3 results; call 8:15 am ET (8:15 pm MYT)",
+      "kind": "event",
+      "time": "Thu Oct 8 6:00 pm MYT / 6:00 am ET",
+      "summary": "Volume, price/mix, input cost and guidance may inform staples demand/inflation pass-through. Gap risk; consider event exposure explicitly.",
+      "details": "Company-confirmed timing. Volume, price/mix, input cost and guidance may inform staples demand/inflation pass-through. Gap risk; consider event exposure explicitly.",
+      "exposures": "PEP, staples, consumer demand",
+      "sources": [
+        {
+          "label": "Issuer IR",
+          "url": "https://www.pepsico.com/en/newsroom/press-releases/2026/pepsico-announces-timing-and-availability-of-third-quarter-2026-financial-results",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        }
+      ],
+      "event_id": "pep-2026-q3-results",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-09-30.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "US",
+      "revision": 2,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-08",
+      "title": "Initial claims; wholesale trade",
+      "kind": "event",
+      "time": "Thu Oct 8 8:30 pm / 8:30 am ET; 10:00 pm / 10:00 am ET",
+      "summary": "Claims provide a timely labor check; wholesale inventories/sales inform demand and stockbuilding. Surprise matters relative to contemporaneous expectations.",
+      "details": "Scheduled by NY Fed calendar. Claims provide a timely labor check; wholesale inventories/sales inform demand and stockbuilding. Surprise matters relative to contemporaneous expectations.",
+      "exposures": "Broad market, retailers, transports",
+      "sources": [
+        {
+          "label": "NY Fed calendar",
+          "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        }
+      ],
+      "event_id": "us-claims-wholesale-october8-2026",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-09-30.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "US",
+      "revision": 2,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-09",
+      "title": "Preliminary Michigan Consumer Survey; Delta (DAL) results webcast",
+      "kind": "event",
+      "time": "Fri Oct 9 10:00 pm MYT / 10:00 am ET",
+      "summary": "Consumer sentiment/inflation expectations may influence rate narrative. Delta guidance intersects demand, labor and fuel costs; avoid treating oil direction as a one-way airline signal. Earnings event/gap risk. ·",
+      "details": "Survey scheduled by NY Fed; Delta confirms 10:00 am ET webcast. Consumer sentiment/inflation expectations may influence rate narrative. Delta guidance intersects demand, labor and fuel costs; avoid treating oil direction as a one-way airline signal. Earnings event/gap risk. ·",
+      "exposures": "Consumer cyclicals, DAL, airlines, energy",
+      "sources": [
+        {
+          "label": "NY Fed",
+          "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        },
+        {
+          "label": "Delta IR",
+          "url": "https://news.delta.com/delta-air-lines-announces-webcast-september-quarter-2026-financial-results",
+          "migration_limitation": "Inherited URL and report availability; exact source publication/retrieval time not recorded in legacy event. No new verification."
+        }
+      ],
+      "event_id": "michigan-delta-october9-2026",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-09-30.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "US",
+      "revision": 2,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-01",
+      "date_end": "2026-10-07",
+      "title": "Mainland China market holiday",
+      "kind": "market-closure",
+      "time": "1–7 October",
+      "summary": "Mainland China exchanges are closed for National Day; reopening is scheduled for 8 October. U.S.-listed China ETFs may trade while underlying onshore price discovery is paused.",
+      "details": "Holiday calendar in the report’s source set identifies Shenzhen market closure from 1–7 October 2026. Expect stale underlying reference prices and reopening gap risk.",
+      "exposures": "FXI, MCHI, China-linked assets",
+      "sources": [
+        {
+          "label": "Shenzhen calendar",
+          "url": "https://www.szse.cn/www/English/services/trading/calendar/index.html",
+          "migration_limitation": "Inherited report evidence; missing publication/retrieval metadata remains unknown. No new verification during migration."
+        }
+      ],
+      "event_id": "mainland-china-national-day-2026",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-10-01.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "CN",
+      "revision": 3,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-01",
+      "kind": "event",
+      "title": "ISM Manufacturing PMI, September",
+      "time": "10:00 pm MYT / 10:00 am ET",
+      "summary": "Scheduled release; outcome unknown at cutoff.",
+      "details": "Watch new orders, employment and prices. Strong demand may support cyclicals but raise yield pressure; weaker activity can ease rates while raising growth concerns. No verified consensus is cited.",
+      "exposures": "Industrials, semiconductors, materials, broad equities",
+      "sources": [
+        {
+          "label": "ISM August release / next release schedule",
+          "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/august/",
+          "provider": "ISM",
+          "source_tier": "primary",
+          "published_at": "2026-09-01",
+          "retrieved_at": "2026-10-01T08:04:38+08:00",
+          "data_period": "August 2026; September release schedule",
+          "limitation": "Publication time of page not verified; September outcome still future at cutoff.",
+          "migration_limitation": "Inherited report evidence; missing publication/retrieval metadata remains unknown. No new verification during migration."
+        }
+      ],
+      "event_id": "ism-manufacturing-september-2026",
+      "status": "scheduled",
+      "change_reason": "Added explicit country classification; original schedule retained.",
+      "inherited_from": "daily-market-brief/2026-10-01.json",
+      "source_verification": "inherited; not newly verified",
+      "country": "US",
+      "revision": 2,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "bls-2026-10-14",
+      "date": "2026-10-14",
+      "title": "Consumer Price Index and real earnings — September",
+      "time": "20:30 MYT (08:30 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "BLS scheduled release. Eastern daylight time converted to MYT; values not yet known.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.bls.gov/schedule/2026/10_sched.htm"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "bls-2026-10-15",
+      "date": "2026-10-15",
+      "title": "Producer Price Index — September",
+      "time": "20:30 MYT (08:30 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "BLS scheduled release. Eastern daylight time converted to MYT; values not yet known.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.bls.gov/schedule/2026/10_sched.htm"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "bls-2026-10-16",
+      "date": "2026-10-16",
+      "title": "Import and export prices — September",
+      "time": "20:30 MYT (08:30 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "BLS scheduled release. Eastern daylight time converted to MYT; values not yet known.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.bls.gov/schedule/2026/10_sched.htm"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "bls-2026-10-20",
+      "date": "2026-10-20",
+      "title": "State employment — September",
+      "time": "22:00 MYT (10:00 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "BLS scheduled release. Eastern daylight time converted to MYT; values not yet known.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.bls.gov/schedule/2026/10_sched.htm"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "bls-2026-10-21",
+      "date": "2026-10-21",
+      "title": "Usual weekly earnings — Q3",
+      "time": "22:00 MYT (10:00 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "BLS scheduled release. Eastern daylight time converted to MYT; values not yet known.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.bls.gov/schedule/2026/10_sched.htm"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "bls-2026-10-28",
+      "date": "2026-10-28",
+      "title": "Metropolitan employment and business employment dynamics",
+      "time": "22:00 MYT (10:00 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "BLS scheduled release. Eastern daylight time converted to MYT; values not yet known.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.bls.gov/schedule/2026/10_sched.htm"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "bls-2026-10-29",
+      "date": "2026-10-29",
+      "title": "Consumer expenditures — 2025",
+      "time": "22:00 MYT (10:00 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "BLS scheduled release. Eastern daylight time converted to MYT; values not yet known.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.bls.gov/schedule/2026/10_sched.htm"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "bls-2026-10-30",
+      "date": "2026-10-30",
+      "title": "Employment Cost Index — Q3",
+      "time": "20:30 MYT (08:30 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "BLS scheduled release. Eastern daylight time converted to MYT; values not yet known.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.bls.gov/schedule/2026/10_sched.htm"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "bea-gdp-pio-october-2026",
+      "date": "2026-10-29",
+      "title": "Advance GDP — Q3; personal income and outlays — September",
+      "time": "20:30 MYT (08:30 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "Scheduled BEA releases; estimates and outcomes unknown.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.bea.gov/news/schedule"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "fed-industrial-production-october-2026",
+      "date": "2026-10-16",
+      "title": "Industrial production — September",
+      "time": "21:15 MYT (09:15 ET)",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "Federal Reserve scheduled G.17 release; outcome unknown.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.federalreserve.gov/feeds/G17.html"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "fomc-october-2026",
+      "date": "2026-10-27",
+      "title": "FOMC meeting",
+      "time": "Release time unconfirmed",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "Meeting October 27–28; policy decision and press conference on final day. Outcome unknown.",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "date_end": "2026-10-28",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-agriculture_2025-2026-10-29",
+      "date": "2026-10-29",
+      "title": "Agriculture: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: agriculture_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-bci_2026-09-2026-10-12",
+      "date": "2026-10-12",
+      "title": "Building Materials Cost Index: Sep 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Sep 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: bci_2026-09",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-capstock_2025-2026-10-01",
+      "date": "2026-10-01",
+      "title": "Capital Stock: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: capstock_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-cod_2025-2026-10-29",
+      "date": "2026-10-29",
+      "title": "Causes of Death: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: cod_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-col_2025-2026-10-30",
+      "date": "2026-10-30",
+      "title": "Cost of Living: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: col_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-cpi_2026-09-2026-10-19",
+      "date": "2026-10-19",
+      "title": "Consumer Price Index: Sep 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Sep 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: cpi_2026-09",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-crime_2025-2026-10-16",
+      "date": "2026-10-16",
+      "title": "Crime: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: crime_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-environment_protection_2025-2026-10-30",
+      "date": "2026-10-30",
+      "title": "Environmental Protection: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: environment_protection_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-fats_2025-2026-10-14",
+      "date": "2026-10-14",
+      "title": "Foreign Affiliates: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: fats_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-formal_wages_2026-q2-2026-10-27",
+      "date": "2026-10-27",
+      "title": "Formal Sector Wages: 2Q 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2Q 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: formal_wages_2026-q2",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-gdp_advance_2026-q3-2026-10-16",
+      "date": "2026-10-16",
+      "title": "Advance Gross Domestic Product: 3Q 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 3Q 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: gdp_advance_2026-q3",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-ictsa_2025-2026-10-15",
+      "date": "2026-10-15",
+      "title": "ICT Satellite Account: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: ictsa_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-io_tables_2025-2026-10-30",
+      "date": "2026-10-30",
+      "title": "Input-Output Tables: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: io_tables_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-ipi_2026-08-2026-10-09",
+      "date": "2026-10-09",
+      "title": "Industrial Production: Aug 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Aug 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: ipi_2026-08",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-lfs_2026-08-2026-10-09",
+      "date": "2026-10-09",
+      "title": "Labour Force Survey: Aug 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Aug 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: lfs_2026-08",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-mei_2026-08-2026-10-23",
+      "date": "2026-10-23",
+      "title": "Economic Indicators: Aug 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Aug 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: mei_2026-08",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-mfg_2026-08-2026-10-09",
+      "date": "2026-10-09",
+      "title": "Manufacturing: Aug 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Aug 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: mfg_2026-08",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-population_district_2026-2026-10-07",
+      "date": "2026-10-07",
+      "title": "Current Population Estimates by District: 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: population_district_2026",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-ppi_2026-09-2026-10-28",
+      "date": "2026-10-28",
+      "title": "Producer Price Index: Sep 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Sep 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: ppi_2026-09",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-productivity_state_2025-2026-10-29",
+      "date": "2026-10-29",
+      "title": "Labour Productivity by State: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: productivity_state_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-rubber_2026-08-2026-10-12",
+      "date": "2026-10-12",
+      "title": "Rubber: Aug 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Aug 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: rubber_2026-08",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-trade_2026-09-2026-10-28",
+      "date": "2026-10-28",
+      "title": "External Trade: Sep 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Sep 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: trade_2026-09",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-trade_headline_2026-09-2026-10-19",
+      "date": "2026-10-19",
+      "title": "External Trade (Headline): Sep 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Sep 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: trade_headline_2026-09",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-tradeindices_2026-09-2026-10-28",
+      "date": "2026-10-28",
+      "title": "External Trade Indices: Sep 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Sep 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: tradeindices_2026-09",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-vitalstatistics_2025-2026-10-15",
+      "date": "2026-10-15",
+      "title": "Vital Statistics: 2025",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: 2025. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: vitalstatistics_2025",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "event_id": "dosm-wrt_2026-08-2026-10-09",
+      "date": "2026-10-09",
+      "title": "Wholesale & Retail Trade: Aug 2026",
+      "time": "12:00 Malaysia local time (timezone assumption)",
+      "country": "MY",
+      "kind": "event",
+      "status": "scheduled",
+      "summary": "Scheduled publication; outcome unknown.",
+      "details": "DOSM advance release calendar. Reference period: Aug 2026. CSV timestamps have no timezone offset; interpreted as Malaysia local time. Scheduled, subject to revision. Publication ID: wrt_2026-08",
+      "sources": [
+        {
+          "label": "Official release schedule",
+          "url": "https://storage.dosm.gov.my/meta/arc.csv"
+        }
+      ],
+      "change_reason": "Full-month schedule initialization from primary source.",
+      "revision": 1,
+      "recorded_at": "2026-10-01T18:50:02+08:00"
     }
   ]
 }

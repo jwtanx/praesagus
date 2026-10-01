@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-16",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-16-us-my-monthly-calendar.md",
+  "objective": "US and Malaysia full-month calendar",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "bbf4ddf65bae20c4def9f81e4229a73135432e15",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/financial-calendar/2026-10.json",
+    "scripts/daily-market-brief/monthly_calendar.py",
+    "tests/test_monthly_calendar.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-01/PRSG-16-us-my-monthly-calendar.md",
+    "plans/2026-10-01/PRSG-16.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "infra/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "calendar",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_monthly_calendar.py",
+        "tests/test_daily_report.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "python3 -m pytest -q tests/test_monthly_calendar.py tests/test_daily_report.py: 29 passed. Original 14 committed revisions preserved exactly; 21 US and 26 MY current events span October 1–30, with full October 1–31 grid. BLS, BEA, Federal Reserve official schedules and DOSM arc.csv source evidence; DOSM timezone assumption labelled.",
+        "Broader rerun: python3 -m pytest -q: 197 passed, 5 existing local Python 3.9 boto3 warnings. git diff --check passed. Manifest and all seven ticket-owned paths validated."
+      ]
+    },
+    {
+      "id": "dom",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/daily_report_viewer_checks.cjs: passed; country filters, CN/unclassified exclusion, latest versus report-time cutoff, revisions/cancellations, safe sources and request races."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead independently reviews scope and evidence",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT Lead independently reviewed all7 paths: original14 ledger entries identical to HEAD prefix; country validation/filter and latest/report-as-of cutoff preserve source history, explicit timezone/coverage limitations. Focused29 tests and DOM checks passed; full197 passed with5 existing Python3.9/Boto3 warnings; diff whitespace passed. Official BLS, BEA, Fed and DOSM sources checked (DOSM CSV retrieved directly); no exhaustive coverage claim. Actual browser visual QA not run; functional source/DOM review accepted."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-16-D1",
+      "description": "Country filters, schedule modes and full-month sourced entries",
+      "check_ids": [
+        "calendar",
+        "dom"
+      ],
+      "status": "done",
+      "evidence": [
+        "Focused calendar Python and DOM regressions passed; Lead review remains pending."
+      ]
+    },
+    {
+      "id": "PRSG-16-D2",
+      "description": "Lead review",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT Lead independently reviewed all7 paths: original14 ledger entries identical to HEAD prefix; country validation/filter and latest/report-as-of cutoff preserve source history, explicit timezone/coverage limitations. Focused29 tests and DOM checks passed; full197 passed with5 existing Python3.9/Boto3 warnings; diff whitespace passed. Official BLS, BEA, Fed and DOSM sources checked (DOSM CSV retrieved directly); no exhaustive coverage claim. Actual browser visual QA not run; functional source/DOM review accepted."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-01 MYT Lead independently reviewed all7 paths: original14 ledger entries identical to HEAD prefix; country validation/filter and latest/report-as-of cutoff preserve source history, explicit timezone/coverage limitations. Focused29 tests and DOM checks passed; full197 passed with5 existing Python3.9/Boto3 warnings; diff whitespace passed. Official BLS, BEA, Fed and DOSM sources checked (DOSM CSV retrieved directly); no exhaustive coverage claim. Actual browser visual QA not run; functional source/DOM review accepted."
+    ]
+  }
+}

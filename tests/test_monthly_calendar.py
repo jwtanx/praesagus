@@ -90,3 +90,26 @@ def test_cli_initializes_once_and_rejects_invalid_update(tmp_path):
     payload.write_text(json.dumps({'events': [event(status='cancelled', change_reason='')]}))
     assert subprocess.run(command, capture_output=True).returncode != 0
     assert saved.read_bytes() == original
+
+
+@pytest.mark.parametrize('country', ['us', '', 'USA', None, 123])
+def test_invalid_country_code(country):
+    with pytest.raises(ValueError, match='country'):
+        calendar.append_events(None, [event(country=country)], '2026-10', '2026-10-01T08:00:00+08:00')
+
+
+def test_country_classification_is_append_only():
+    old = initial()
+    updated = calendar.append_events(old, [event(country='US', change_reason='Explicit country classification')], '2026-10', '2026-10-01T09:00:00+08:00')
+    assert updated['entries'][0] == old['entries'][0]
+    assert updated['entries'][1]['country'] == 'US'
+
+
+def test_checked_in_calendar_has_both_countries_through_month_end():
+    data = json.loads((Path(calendar.__file__).resolve().parents[2] / 'artifacts/financial-calendar/2026-10.json').read_text())
+    calendar.validate_calendar(data)
+    latest = {row['event_id']: row for row in data['entries']}
+    for country in ('US', 'MY'):
+        rows = [row for row in latest.values() if row.get('country') == country]
+        assert any(row['date'] >= '2026-10-29' for row in rows)
+        assert all(row['sources'] for row in rows)

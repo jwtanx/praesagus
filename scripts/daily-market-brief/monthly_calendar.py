@@ -48,6 +48,8 @@ def validate_calendar(data, previous=None):
             raise ValueError('event must intersect ledger month')
         if row.get('kind') not in {'event', 'market-closure'} or row.get('status') not in {'scheduled', 'cancelled'}:
             raise ValueError('unknown event kind/status')
+        if 'country' in row and (not isinstance(row['country'], str) or not re.fullmatch(r'[A-Z]{2}', row['country'])):
+            raise ValueError('country must be an uppercase two-letter code')
         when = timestamp(row.get('recorded_at'))
         prior = latest.get(row['event_id'])
         expected = prior['revision'] + 1 if prior else 1

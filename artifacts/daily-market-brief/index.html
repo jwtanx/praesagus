@@ -5,7 +5,7 @@
 <div class="topbar"><div class="nav-inner"><a class="brand" href="./">PRAESAGUS</a><button id="menu-toggle" class="menu-toggle" aria-expanded="false" aria-controls="nav-links">☰ Menu</button><nav class="nav-links" id="nav-links" aria-label="Main navigation"><button class="nav-link" data-view="brief" aria-current="true">Daily brief</button><button class="nav-link" data-view="calendar">Financial calendar</button><button class="nav-link" data-view="tickers">Ticker forecasts</button></nav></div></div>
 <header><div class="eyebrow">Praesagus · Research-only market intelligence</div><h1>Daily Market Brief</h1><p class="muted" id="subtitle">Loading report…</p><div class="date-picker"><button class="picker-button" id="date-picker-button" aria-expanded="false" aria-controls="date-picker-pop">📅 <span id="selected-date-label">Choose report date</span></button><div id="date-picker-pop" class="picker-pop hidden"><div class="picker-head"><button class="month-control" id="picker-prev" aria-label="Previous month">←</button><b id="picker-month"></b><button class="month-control" id="picker-next" aria-label="Next month">→</button></div><div class="date-grid" id="picker-grid"></div><p class="small">Dates without a saved report are disabled.</p></div></div><div class="disclaimer"><b>Research only.</b> Forecasts are conditional scenarios, not promises, personalized recommendations, or validated strategies.</div><div class="tldr" id="summary"></div></header>
 <div id="brief-tools"><div class="bar"><div class="barin"><button id="prev" aria-label="Previous section">← Prev</button><label for="slider" class="small">Section</label><input id="slider" type="range" min="0" max="6" value="0" step="1" aria-label="Navigate report sections"><span id="position">1 / 7</span><button id="next" aria-label="Next section">Next →</button><nav class="sections" aria-label="Report sections"><a href="#outlook">Markets</a><a href="#top10">Sector shortlist</a><a href="#swing">Swing</a><a href="#etfs">ETFs</a><a href="#news">News</a><a href="#trends">Themes</a><a href="#score">Scorecard</a></nav></div></div></div>
-<main><div id="brief-view"><div id="report"><p class="muted">Loading selected report…</p></div><footer id="footer"></footer></div><section id="calendar-view" class="hidden"><section class="panel"><div class="eyebrow">Financial calendar · event and holiday dates</div><h2>Market catalysts & closures</h2><p class="small" id="calendar-caption">Hover, focus, or tap a marked date for event notes and source links.</p><div id="calendar-notes"></div><div class="calendar-head"><button class="month-control" id="calendar-prev" aria-label="Previous month">←</button><h2 id="calendar-month"></h2><button class="month-control" id="calendar-next" aria-label="Next month">→</button></div><div id="calendar-grid" class="calendar-grid" role="grid"></div><div id="event-details" class="event-list" aria-live="polite"></div></section></section></main>
+<main><div id="brief-view"><div id="report"><p class="muted">Loading selected report…</p></div><footer id="footer"></footer></div><section id="calendar-view" class="hidden"><section class="panel"><div class="eyebrow">Financial calendar · event and holiday dates</div><h2>Market catalysts & closures</h2><p class="small" id="calendar-caption">Hover, focus, or tap a marked date for event notes and source links.</p><div class="filter-row"><label>Country <select id="calendar-country"><option value="all">🇺🇸 US + 🇲🇾 Malaysia</option><option value="US">🇺🇸 United States</option><option value="MY">🇲🇾 Malaysia</option></select></label><label>Schedule <select id="calendar-schedule"><option value="latest">Latest stored schedule</option><option value="report">As of selected report</option></select></label></div><div id="calendar-notes"></div><div class="calendar-head"><button class="month-control" id="calendar-prev" aria-label="Previous month">←</button><h2 id="calendar-month"></h2><button class="month-control" id="calendar-next" aria-label="Next month">→</button></div><div id="calendar-grid" class="calendar-grid" role="grid"></div><div id="event-details" class="event-list" aria-live="polite"></div></section></section></main>
 <script>
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let indexData,reportData,selectedDate='',view='brief',calendarMonth='2026-10',pickerMonth='2026-09';
@@ -55,7 +55,7 @@ function revisionsAsOf(data,asOf){
   if(data.timezone!=='Asia/Kuala_Lumpur')throw Error('Invalid calendar timezone');
   const groups=new Map(),latest=new Map();
   for(const e of data.entries){
-    if(!e||typeof e!=='object'||['event_id','date','title','time','summary','details'].some(k=>typeof e[k]!=='string'||!e[k].trim())||!validDate(e.date)||(e.date_end&&!validDate(e.date_end))||!['event','market-closure'].includes(e.kind)||!['scheduled','cancelled'].includes(e.status)||awareTime(e.recorded_at)===null||!Array.isArray(e.sources)||!e.sources.length)throw Error('Invalid calendar revision');
+    if(!e||typeof e!=='object'||(e.country!==undefined&&!/^[A-Z]{2}$/.test(e.country))||['event_id','date','title','time','summary','details'].some(k=>typeof e[k]!=='string'||!e[k].trim())||!validDate(e.date)||(e.date_end&&!validDate(e.date_end))||!['event','market-closure'].includes(e.kind)||!['scheduled','cancelled'].includes(e.status)||awareTime(e.recorded_at)===null||!Array.isArray(e.sources)||!e.sources.length)throw Error('Invalid calendar revision');
     const prior=latest.get(e.event_id),end=e.date_end||e.date;
     if(end<e.date||end<`${calendarMonth}-01`||e.date.slice(0,7)>calendarMonth||!Number.isInteger(e.revision)||e.revision!==(prior?prior.revision+1:1)||(prior&&awareTime(e.recorded_at)<=awareTime(prior.recorded_at)))throw Error('Invalid calendar revision sequence or date');
     if((prior||e.status==='cancelled')&&(typeof e.change_reason!=='string'||!e.change_reason.trim()))throw Error('Correction/cancellation requires justification');
@@ -72,18 +72,19 @@ function revisionsAsOf(data,asOf){
   return {...data,events};
 }
 function rangeHas(event,date){return event.date<=date&&(event.date_end||event.date)>=date}
-function eventsFor(date){return (calendarData?.events||[]).filter(e=>rangeHas(e,date))}
+function visibleCountry(e){const selected=$('#calendar-country').value;return ['US','MY'].includes(e.country)&&(selected==='all'||e.country===selected)}
+function eventsFor(date){return (calendarData?.events||[]).filter(e=>visibleCountry(e)&&rangeHas(e,date))}
 function showDay(date){
   if(!calendarData)return;
   document.querySelectorAll('#calendar-grid .day').forEach(b=>b.setAttribute('aria-pressed',b.dataset.date===date?'true':'false'));
   const list=eventsFor(date);
-  $('#event-details').innerHTML=list.length?list.map(e=>`<article class="event-detail ${e.historical?'historical':''}"><h3>${e.historical?'<s>':''}${e.kind==='market-closure'?'🔒 ': '📌 '}${esc(e.title)}${e.historical?'</s>':''}</h3><div class="event-meta">${esc(date)} · ${esc(e.time)} · ${esc(e.history_label||(e.kind==='market-closure'?'Market closure':'Scheduled event'))}${e.revision?' · Revision '+esc(e.revision):''}</div>${e.history_reason?`<p class="revision-reason"><b>${esc(e.history_label)}:</b> ${esc(e.history_reason)} · ${sourceLinks(e.history_sources)}</p>`:''}<p>${e.historical?'<s>':''}${esc(e.details||e.summary)}${e.historical?'</s>':''}</p><p class="small"><b>Exposures:</b> ${esc(e.exposures||'Market-wide')}</p>${sourceLinks(e.sources)}</article>`).join(''):`<p class="empty">No tracked catalyst or market closure is recorded for ${esc(date)} as of this report.</p>`;
+  $('#event-details').innerHTML=list.length?list.map(e=>`<article class="event-detail ${e.historical?'historical':''}"><h3>${e.historical?'<s>':''}${e.kind==='market-closure'?'🔒 ': '📌 '}${esc(e.title)}${e.historical?'</s>':''}</h3><div class="event-meta">${esc(date)} · ${esc(e.time)} · ${esc(e.history_label||(e.kind==='market-closure'?'Market closure':'Scheduled event'))}${e.revision?' · Revision '+esc(e.revision):''}</div>${e.history_reason?`<p class="revision-reason"><b>${esc(e.history_label)}:</b> ${esc(e.history_reason)} · ${sourceLinks(e.history_sources)}</p>`:''}<p>${e.historical?'<s>':''}${esc(e.details||e.summary)}${e.historical?'</s>':''}</p><p class="small"><b>Exposures:</b> ${esc(e.exposures||'Market-wide')}</p>${sourceLinks(e.sources)}</article>`).join(''):`<p class="empty">No tracked catalyst or market closure is recorded for ${esc(date)} in the selected country and schedule view.</p>`;
 }
 function drawCalendar(){
   const [y,m]=calendarMonth.split('-').map(Number);
   $('#calendar-month').textContent=new Date(y,m-1,1).toLocaleDateString('en',{month:'long',year:'numeric'});
   $('#calendar-grid').innerHTML='';$('#event-details').innerHTML='';
-  $('#calendar-notes').innerHTML=calendarError?`<p class="disclaimer" role="alert">${esc(calendarError)}</p>`:!calendarData?'<p class="muted">Loading calendar…</p>':`<p class="small">Calendar timezone: ${esc(calendarData.timezone)} · Revisions known as of ${esc(reportData.metadata.as_of)}</p>`+(calendarData.notes||[]).map(n=>`<p class="footnote">${richText(n)}</p>`).join('');
+  $('#calendar-notes').innerHTML=calendarError?`<p class="disclaimer" role="alert">${esc(calendarError)}</p>`:!calendarData?'<p class="muted">Loading calendar…</p>':`<p class="small">Calendar timezone: ${esc(calendarData.timezone)} · ${$('#calendar-schedule').value==='report'?'Revisions known as of '+esc(reportData.metadata.as_of):'Latest stored schedule (independent of report timestamp)'} · US and Malaysia only. Unclassified legacy events are excluded. No tracked event does not imply no release.</p>`+(calendarData.notes||[]).map(n=>`<p class="footnote">${richText(n)}</p>`).join('');
   if(!calendarData)return;
   let h=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="weekday" role="columnheader">${x}</div>`).join('');
   const offset=(new Date(y,m-1,1).getDay()+6)%7,n=new Date(y,m,0).getDate();
@@ -94,7 +95,7 @@ function drawCalendar(){
   }
   $('#calendar-grid').innerHTML=h;
   document.querySelectorAll('#calendar-grid .day:not(:disabled)').forEach(b=>{b.onmouseenter=()=>{if(eventsFor(b.dataset.date).length)showDay(b.dataset.date)};b.onfocus=()=>showDay(b.dataset.date);b.onclick=()=>showDay(b.dataset.date)});
-  const first=calendarData.events.find(e=>e.date.slice(0,7)===calendarMonth);
+  const first=calendarData.events.find(e=>visibleCountry(e)&&e.date.slice(0,7)===calendarMonth);
   showDay(first?.date||`${calendarMonth}-01`);
 }
 async function loadCalendar(month){
@@ -103,7 +104,7 @@ async function loadCalendar(month){
   calendarMonth=month;calendarData=null;calendarError='';drawCalendar();
   if(!reportData){calendarError='Select a loaded report to view its calendar.';drawCalendar();return}
   try{
-    if(reportData.schema_version===2&&month===reportData.calendar.month){
+    if($('#calendar-schedule').value==='report'&&reportData.schema_version===2&&month===reportData.calendar.month){
       const cs=reportData.sections.calendar;
       calendarData={...reportData.calendar,notes:[...(cs.description||[]),...(cs.notes||[])]};
     }else{
@@ -111,7 +112,7 @@ async function loadCalendar(month){
       if(!r.ok)throw Error(`Calendar ${month} unavailable (HTTP ${r.status})`);
       const data=await r.json();
       if(request!==calendarRequest||reportVersion!==reportRequest)return;
-      calendarData=revisionsAsOf(data,reportData.metadata.as_of);
+      calendarData=revisionsAsOf(data,$('#calendar-schedule').value==='report'?reportData.metadata.as_of:new Date().toISOString());
     }
   }catch(e){if(request!==calendarRequest||reportVersion!==reportRequest)return;calendarData=null;calendarError=`Unable to load calendar: ${e.message}`}
   if(request===calendarRequest&&reportVersion===reportRequest)drawCalendar();
@@ -163,6 +164,8 @@ async function init(){
 $('#date-picker-button').onclick=()=>{const p=$('#date-picker-pop'),open=p.classList.toggle('hidden')===false;$('#date-picker-button').setAttribute('aria-expanded',String(open));drawDatePicker()};
 $('#picker-prev').onclick=()=>{pickerMonth=shiftMonth(pickerMonth,-1);drawDatePicker()};
 $('#picker-next').onclick=()=>{pickerMonth=shiftMonth(pickerMonth,1);drawDatePicker()};
+$('#calendar-country').onchange=()=>drawCalendar();
+$('#calendar-schedule').onchange=()=>loadCalendar(calendarMonth);
 $('#calendar-prev').onclick=()=>loadCalendar(shiftMonth(calendarMonth,-1));
 $('#calendar-next').onclick=()=>loadCalendar(shiftMonth(calendarMonth,1));
 $('#menu-toggle').onclick=()=>{const n=$('#nav-links').classList.toggle('open');$('#menu-toggle').setAttribute('aria-expanded',String(n))};
