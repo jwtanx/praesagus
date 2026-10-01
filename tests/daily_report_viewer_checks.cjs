@@ -30,6 +30,8 @@ function mount({ width = 1280, search = '', routes = {}, latestSchedule = false 
   const responses = { './reports.json': index, './2026-10-01.json': report('2026-10-01'), './2026-09-30.json': report('2026-09-30', 2), '../financial-calendar/2026-10.json': calendar(), ...routes };
   const vc = new VirtualConsole(); vc.on('jsdomError', e => errors.push(e));
   const dom = new JSDOM(latestSchedule?html:html.replace('<option value="report">As of selected report', '<option value="report" selected>As of selected report'), { url: `http://localhost/daily-market-brief/${search}`, runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc, beforeParse(w) {
+    const RealDate=w.Date;
+    w.Date=class extends RealDate {constructor(...args){super(...(args.length?args:['2026-10-01T12:00:00Z']))} static now(){return RealDate.parse('2026-10-01T12:00:00Z')}};
     Object.defineProperty(w, 'innerWidth', { value: width });
     w.scrollTo = () => {}; w.HTMLElement.prototype.scrollIntoView = () => {};
     w.IntersectionObserver = class { observe() {} disconnect() {} };
@@ -53,7 +55,7 @@ async function countryFiltersAndLatest() {
   assert.ok(t.$('.day[data-date="2026-10-30"] .day-marker'));
   t.click('.day[data-date="2026-10-02"]'); assert.doesNotMatch(t.$('#event-details').textContent,/China|Unclassified/);
   const select=(id,value)=>{t.$(id).value=value;t.$(id).dispatchEvent(new t.w.Event('change'));};
-  select('#calendar-country','MY'); assert.equal(t.$('.day[data-date="2026-10-02"] .day-marker'),null); assert.match(t.$('#event-details').textContent,/Malaysia late-month/);
+  select('#calendar-country','MY'); assert.equal(t.$('.day[data-date="2026-10-02"] .day-marker'),null); t.click('.day[data-date="2026-10-30"]'); assert.match(t.$('#event-details').textContent,/Malaysia late-month/);
   select('#calendar-country','US'); assert.equal(t.$('.day[data-date="2026-10-30"] .day-marker'),null);
   select('#calendar-country','all'); select('#calendar-schedule','report');await settle();
   assert.equal(t.$('.day[data-date="2026-10-30"] .day-marker'),null);
@@ -62,6 +64,17 @@ async function countryFiltersAndLatest() {
 }
 async function navigation(width) {
   const t = mount({ width }); await settle();
+  assert.equal(t.$('.day.today').dataset.date,'2026-10-01');
+  const Clock=t.w.Date;
+  t.w.Date=class extends Clock {constructor(){super('2026-09-30T16:30:00Z')}};
+  assert.equal(t.w.todayMYT(),'2026-10-01','MYT date crosses UTC midnight boundary');
+  t.w.Date=Clock;
+  assert.equal(t.$('.day.today').getAttribute('aria-current'),'date');
+  assert.equal(t.$('.day[aria-pressed="true"]').dataset.date,'2026-10-01');
+  const other=t.$('.day[data-date="2026-10-02"]');
+  other.dispatchEvent(new t.w.MouseEvent('mouseenter'));other.focus();
+  assert.equal(t.$('.day[aria-pressed="true"]').dataset.date,'2026-10-01');
+  other.click();assert.equal(other.getAttribute('aria-pressed'),'true');
   assert.equal(t.w.document.body.firstElementChild.className, 'topbar');
   assert.ok(t.$('.topbar').compareDocumentPosition(t.$('header')) & t.w.Node.DOCUMENT_POSITION_FOLLOWING, 'Main navigation precedes report header');
   assert.equal(t.w.getComputedStyle(t.$('.topbar')).position, 'sticky');
@@ -121,6 +134,8 @@ async function activeRevisionsAndReportCalendarRace() {
   await race.w.chooseReportDate('2026-09-30'); await settle(); assert.equal(old.options.signal.aborted, true);
   old.resolve(calendar()); await settle();
   assert.match(race.$('#calendar-notes').textContent, /Legacy calendar description/);
+  assert.equal(race.$('.day[aria-pressed="true"]').dataset.date,'2026-09-01');
+  race.click('.day[data-date="2026-09-30"]');
   assert.match(race.$('#event-details').textContent, /Legacy event/); race.dom.window.close();
 }
 async function staleAndFailures() {
@@ -162,7 +177,7 @@ async function calendarStaleAndInvalid() {
   }
   const initial = revision(1); delete initial.change_reason;
   const ok = mount({ routes: { '../financial-calendar/2026-10.json': calendar('2026-10', [initial]) } }); await settle();
-  assert.doesNotMatch(ok.$('#calendar-notes').textContent, /Unable to load/); assert.match(ok.$('#event-details').textContent, /Employment release/); ok.dom.window.close();
+  assert.doesNotMatch(ok.$('#calendar-notes').textContent, /Unable to load/); ok.click('.day[data-date="2026-10-02"]'); assert.match(ok.$('#event-details').textContent, /Employment release/); ok.dom.window.close();
   for (const rows of [[revision(1, { title: '' })], [revision(2)], [revision(1), revision(2)], [revision(1, { date: '2026-11-01' })], [revision(1, { recorded_at: '2026-09-29T00:00:00' })]]) {
     const bad = mount({ routes: { '../financial-calendar/2026-10.json': calendar('2026-10', rows) } }); await settle(); assert.match(bad.$('#calendar-notes').textContent, /Unable to load/); bad.dom.window.close();
   }
