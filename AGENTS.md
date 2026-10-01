@@ -12,6 +12,7 @@ Praesagus is a market-intelligence research platform. Current repository capabil
 - Local development with Docker Compose, LocalStack bootstrap, and Terraform scaffolding under `infra/`.
 - Research instructions under `skills/`. Skills guide analysis; they are not, by themselves, executable agents or a production answer harness.
 - Offline forecast review in `harness/forecast_review.py`: deterministic CSV validation and outcome scoring at an explicit review timestamp. This does not generate answers or implement the proposed research harness.
+- Shared daily-report viewer under `artifacts/daily-market-brief/`: legacy schema-2 reports and schema-3 five-name cross-market group shortlists. Schema-3 calendar data lives separately in `artifacts/financial-calendar/YYYY-MM.json`; `scripts/daily-market-brief/monthly_calendar.py` initializes a month and appends complete event revisions. This utility does not schedule itself.
 
 The repository does **not** currently contain a hosted LLM answer path, general-purpose agent runtime, persistent answer traces, or a runtime-enforced answer-quality evaluation harness. A read-only Moomoo OpenD adapter and FastAPI routes exist for request/response news search and quote snapshots; they do not provide persistent ingestion, continuous news push, or model-backed analysis. The API's research route must not be described as model-backed unless implementation changes. `harness/research_harness.yaml` is a proposed future contract only; nothing currently loads or enforces it.
 
@@ -54,6 +55,8 @@ Before an applicable assignment, reuse and read the relevant role skill rather t
 - Freeze accepted paths, protected paths, base SHA, checks and owner before implementation. Validate with `scripts/planning/validate_ticket.py` and review every ticket-owned changed path, including new/deleted files and both rename endpoints; preserve unrelated pre-existing edits. The checker validates supplied paths and declared evidence, not completeness of a Git diff or filesystem write prevention. Lead controls scope changes and independently accepts completion.
 
 ## Data, research, and trader safeguards
+
+- Daily briefs reuse `skills/daily-market-brief/SKILL.md`. New reports use five curated names per group, visible qualitative confidence plus rationale, and unknown/unrated null targets where unsupported. Reuse the monthly calendar; daily rechecks append source-backed corrections/cancellations only. Never delete prior events or treat a missing feed item as cancellation. Preserve original availability, and show cancelled/superseded entries struck through with adjacent justification. Monthly initialization and daily rechecks are workflow instructions, not evidence of a provisioned monthly scheduler.
 
 - Record `source_url` where allowed, source/provider, publication time, retrieval/availability time, timezone, data period, connector, and ingestion time. Separate source facts from interpretation and model-generated text.
 - Prefer primary evidence: filings, regulators, exchanges, official company disclosures, central banks, and official statistics. Label secondary reporting, vendor data, proxies, social sentiment, and missing or stale data. Deduplicate syndicated or correlated evidence; do not count repeated views of one event as independent confirmation.

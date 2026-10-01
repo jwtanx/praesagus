@@ -4,6 +4,8 @@ Planning baseline: 1 October 2026 (Asia/Kuala_Lumpur). Lead owns prioritization 
 
 ## Ordered backlog
 
+Active corrective delivery: [PRSG-7 — daily report navigation, shared monthly calendar and five-name coverage](2026-10-01/PRSG-7-daily-report-workflow.md). Type feature; modules frontend/financial-data/skills; Lead accountable, Engineer viewer implementation, Researcher artifact migration; P1; S (1–2 person-days estimated); high usability/maintenance impact. PRSG-6 is reserved for the earlier report-research assignment, not reused.
+
 | Order | Spec | State | Engineering effort | Expected impact | Confidence |
 |---|---|---|---|---|---|
 | PRSG-1 | [Company catalyst inbox](2026-10-01/PRSG-1-catalyst-inbox.md) | In progress; Engineer delivery pending Lead review | 3–5 person-days | High: connects four existing datasets into one research workflow | Medium-high: data/interfaces exist; user value unmeasured |

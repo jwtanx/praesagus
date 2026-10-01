@@ -9,6 +9,7 @@ import sys
 from datetime import date, datetime
 from pathlib import Path
 from urllib.parse import urlparse
+from monthly_calendar import validate_calendar
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
@@ -46,7 +47,8 @@ def validate_universe(path: Path, d):
     if not isinstance(d,dict) or d.get('schema_version')!=1: fail(path,'schema_version must be 1')
     if not isinstance(d.get('taxonomy_id'),str) or not d['taxonomy_id'].strip(): fail(path,'taxonomy_id is required')
     valid_date(d.get('effective_from'),path,'effective_from')
-    if d.get('count_per_group')!=10: fail(path,'count_per_group must be 10')
+    count=d.get('count_per_group')
+    if type(count) is not int or count not in {5,10}: fail(path,'count_per_group must be 5 or legacy 10')
     for key in ('selection_method','collection_policy'):
         if not isinstance(d.get(key),str) or not d[key].strip(): fail(path,f'{key} is required')
     validate_sources(d.get('sources'),path,'universe')
@@ -61,8 +63,8 @@ def validate_universe(path: Path, d):
         if g['role'] not in UNIVERSE_ROLES: fail(path,f'{loc}.role is invalid')
         keys.append(g['key'])
         items=g.get('instruments')
-        if not isinstance(items,list) or len(items)!=10 or g.get('count')!=10:
-            fail(path,f'{loc} must define exactly 10 instruments')
+        if not isinstance(items,list) or len(items)!=count or g.get('count')!=count:
+            fail(path,f'{loc} must define exactly {count} instruments')
         group_symbols=set()
         for ii,item in enumerate(items):
             iloc=f'{loc}.instruments[{ii}]'
@@ -87,7 +89,9 @@ def validate_universe(path: Path, d):
     return keys,universe
 
 def validate_report(path: Path, d, universe_data=None):
-    if not isinstance(d,dict) or d.get('schema_version')!=2: fail(path,'schema_version must be 2')
+    if not isinstance(d,dict) or d.get('schema_version') not in {2,3}: fail(path,'schema_version must be 2 or 3')
+    modern=d['schema_version']==3
+    count=5 if modern else 10
     # HTML markup belongs in the shared viewer, never in the report data.
     def has_html_key(x):
         if isinstance(x,dict): return any(k.lower() in {'html','html_fragment','markup'} or has_html_key(v) for k,v in x.items())
@@ -110,7 +114,8 @@ def validate_report(path: Path, d, universe_data=None):
     for i,item in enumerate(summary):
         if not isinstance(item,dict) or any(not isinstance(item.get(k),str) or not item[k].strip() for k in ('label','title','summary')):fail(path,f'summary[{i}] requires label/title/summary')
     sections=d.get('sections')
-    if not isinstance(sections,dict) or set(sections)!=REQUIRED_SECTIONS:fail(path,f'sections must contain exactly {sorted(REQUIRED_SECTIONS)}')
+    required_sections=REQUIRED_SECTIONS-{'calendar'} if modern else REQUIRED_SECTIONS
+    if not isinstance(sections,dict) or set(sections)!=required_sections:fail(path,f'sections must contain exactly {sorted(required_sections)}')
     for name,section in sections.items():
         if not isinstance(section,dict):fail(path,f'sections.{name} must be object')
         for key in ('title','kicker'):
@@ -126,7 +131,7 @@ def validate_report(path: Path, d, universe_data=None):
             for pi,p in enumerate(item.get('paragraphs',[])):validate_rich(p,path,f'sections.{name}.items[{ii}].paragraphs[{pi}]')
         for ni,note in enumerate(section.get('notes',[])):validate_rich(note,path,f'sections.{name}.notes[{ni}]')
     config=d.get('watchlist_config')
-    if not isinstance(config,dict) or config.get('count_per_group',config.get('count_per_sector'))!=10:fail(path,'watchlist_config count_per_group (or legacy count_per_sector) must be 10')
+    if not isinstance(config,dict) or config.get('count_per_group',config.get('count_per_sector'))!=count:fail(path,f'watchlist_config count_per_group must be {count}')
     groups=config.get('groups')
     if not isinstance(groups,list) or not groups:fail(path,'watchlist_config.groups must be nonempty')
     group_keys=[g.get('key') for g in groups if isinstance(g,dict)]
@@ -143,8 +148,8 @@ def validate_report(path: Path, d, universe_data=None):
             if g.get('label')!=expected['label'] or g.get('emoji')!=expected['emoji']:
                 fail(path,f'watchlist group metadata does not match current universe: {g["key"]}')
     forecasts=d.get('forecasts')
-    expected_total=10*len(group_keys)
-    if not isinstance(forecasts,list) or len(forecasts)!=expected_total:fail(path,f'forecasts must contain {expected_total} entries (10 for each of {len(group_keys)} groups)')
+    expected_total=count*len(group_keys)
+    if not isinstance(forecasts,list) or len(forecasts)!=expected_total:fail(path,f'forecasts must contain {expected_total} entries ({count} for each of {len(group_keys)} groups)')
     symbols=set();sector_counts={key:0 for key in group_keys}
     for i,f in enumerate(forecasts):
         if not isinstance(f,dict):fail(path,f'forecasts[{i}] must be object')
@@ -169,10 +174,26 @@ def validate_report(path: Path, d, universe_data=None):
             if instrument['group']!=f['sector_category'] or instrument['asset_type']!=f['asset_type'] or instrument['country']!=f['country'] or instrument['currency']!=f['currency']:
                 fail(path,f'forecasts[{i}] classification does not match the current collection universe')
         if not isinstance(f.get('confidence'),str) or not f['confidence'].strip():fail(path,f'forecasts[{i}].confidence required')
+        if modern:
+            if f['confidence'] not in {'low','medium','high','unavailable'}:fail(path,f'forecasts[{i}] confidence must be low/medium/high/unavailable')
+            if not isinstance(f.get('confidence_reason'),str) or not f['confidence_reason'].strip():fail(path,f'forecasts[{i}] confidence_reason required')
+            if f.get('forecast_status')=='unavailable' and (f['confidence']!='unavailable' or f['direction']!='unknown' or any(f.get(k) is not None for k in ('estimated_mid_case_value','range_low_value','range_high_value'))):fail(path,f'forecasts[{i}] unavailable forecast must be unknown/unrated with null targets')
         if f['ticker'] in symbols:fail(path,f'duplicate ticker: {f["ticker"]}')
         symbols.add(f['ticker']);validate_sources(f.get('sources',[]),path,f'forecasts[{i}]')
     for key,count in sector_counts.items():
-        if count!=10:fail(path,f'watchlist group {key} has {count} tickers; expected 10')
+        if count!=(5 if modern else 10):fail(path,f'watchlist group {key} has {count} tickers; expected {5 if modern else 10}')
+    if modern:
+        if 'calendar' in d:fail(path,'schema3 calendar must be shared, not inline')
+        ref=d.get('calendar_ref')
+        month=meta['date'][:7]
+        if ref!=f'../financial-calendar/{month}.json':fail(path,'calendar_ref must reference report month in shared folder')
+        calendar_path=path.parent/ref
+        data=read_json(calendar_path)
+        try:validate_calendar(data)
+        except ValueError as exc:fail(calendar_path,str(exc))
+        if data['month']!=month:fail(calendar_path,'calendar month does not match report')
+        if not isinstance(d.get('footer'),str) or not d['footer'].strip():fail(path,'footer is required')
+        return len(forecasts),len(data['entries']),sector_counts
     cal=d.get('calendar')
     if not isinstance(cal,dict) or cal.get('timezone')!='Asia/Kuala_Lumpur' or not re.fullmatch(r'\d{4}-\d{2}',str(cal.get('month',''))):fail(path,'calendar requires timezone Asia/Kuala_Lumpur and YYYY-MM month')
     if not isinstance(cal.get('events'),list) or not cal['events']:fail(path,'calendar.events must be nonempty')
@@ -214,12 +235,21 @@ def main():
     universe_keys,universe_map=validate_universe(a.universe,universe_json)
     effective_from=universe_json['effective_from']
     universe_data=(effective_from,universe_keys,universe_map,universe_json['taxonomy_id'],universe_json['groups'])
+    universes={universe_json['taxonomy_id']:universe_data}
+    for candidate in root.glob('watchlist-universe-*.json'):
+        other=read_json(candidate)
+        keys,members=validate_universe(candidate,other)
+        if other['taxonomy_id'] in universes:fail(candidate,'duplicate taxonomy_id')
+        universes[other['taxonomy_id']]=(other['effective_from'],keys,members,other['taxonomy_id'],other['groups'])
     print(f'OK {a.universe}: {len(universe_keys)} groups, {len(universe_map)} instruments; effective {effective_from}')
     candidates=[root/f'{a.date}.json'] if a.date else sorted(root.glob('????-??-??.json'))
     if not candidates:raise ValueError(f'{root}: no dated JSON reports found')
     file_names={p.name for p in root.glob('????-??-??.json')};total=0
     for p in candidates:
-        n,events,counts=validate_report(p,read_json(p),universe_data);total+=1
+        report=read_json(p)
+        taxonomy=report.get('watchlist_config',{}).get('taxonomy_id')
+        if report.get('schema_version')==3 and taxonomy not in universes:fail(p,'unknown schema3 taxonomy')
+        n,events,counts=validate_report(p,report,universes.get(taxonomy,universe_data));total+=1
         breakdown=', '.join(f'{key}={count}' for key,count in counts.items())
         print(f'OK {p}: {n} forecasts ({breakdown}), {events} calendar events')
     idx=root/'reports.json'

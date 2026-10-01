@@ -1,0 +1,731 @@
+{
+  "schema_version": 1,
+  "taxonomy_id": "praesagus-daily-coverage-v2-five",
+  "effective_from": "2026-10-01",
+  "selection_method": "Stable curated coverage: three US listings and two Malaysian listings per group, selected for monitoring diversity; not a performance ranking or recommendation.",
+  "collection_policy": "Collect the latest eligible market quote and decision-time evidence for each listed instrument on every report run. Preserve venue, currency, source, quote timestamp, and timezone. Never fabricate a missing quote; mark it unavailable with the source limitation in the dated report.",
+  "taxonomy_notes": [
+    "This cross-market shortlist is a monitoring taxonomy, not the canonical GICS or Bursa Malaysia classification.",
+    "The benchmarks group contains ETFs and is not a sector.",
+    "Semiconductors is an industry overlay within Information Technology. This collection keeps distinct constituents in each group to avoid duplicate ticker rows; review classification if an issuer's primary business changes.",
+    "Healthcare and Consumer Staples are explicit groups. Malaysian primary classifications differ; retain the exchange classification and sub-industry tag in each generated report.",
+    "Version 2 reduces daily collection to 50 names (30 US / 20 MY). Version 1 and historical snapshots remain preserved. Current cap, liquidity and expected-return rankings were not independently established."
+  ],
+  "sources": [
+    {
+      "label": "S&P Dow Jones Indices · GICS overview",
+      "url": "https://www.spglobal.com/spdji/en/landing/topic/gics/"
+    },
+    {
+      "label": "Bursa Malaysia · issuer sector classification",
+      "url": "https://www.bursamalaysia.com/sites/5bb54be15f36ca0af339077a/content_entry5ce3b50239fba2627b2864be/5ce3b5d35b711a163beae1c3/files/BURSA_MALAYSIA_SECTOR_CLASSIFICATION_OF_APPLICANTS_OR_LISTED_ISSUERS_Nov2024.pdf?1736733279="
+    },
+    {
+      "label": "Bursa Malaysia · ETF listings and instruments",
+      "url": "https://www.bursamalaysia.com/sites/5bb54be15f36ca0af339077a/content_entry617bfcad39fba20f70a0652d/63442f4039fba2400621330f/files/ETF_Performance_Report_-_September_2022_.pdf"
+    }
+  ],
+  "count_per_group": 5,
+  "groups": [
+    {
+      "key": "benchmarks",
+      "label": "Market Benchmarks & ETFs",
+      "emoji": "📊",
+      "role": "benchmark",
+      "classification": "Market benchmarks; not a sector",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "SPY",
+          "name": "SPDR S&P 500 ETF Trust",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "etf",
+          "sector_category": "benchmarks",
+          "sector": "Market Benchmarks & ETFs",
+          "sector_emoji": "📊",
+          "classification": "Market benchmarks; not a sector"
+        },
+        {
+          "ticker": "QQQ",
+          "name": "Invesco QQQ Trust",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "etf",
+          "sector_category": "benchmarks",
+          "sector": "Market Benchmarks & ETFs",
+          "sector_emoji": "📊",
+          "classification": "Market benchmarks; not a sector"
+        },
+        {
+          "ticker": "IWM",
+          "name": "iShares Russell 2000 ETF",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "etf",
+          "sector_category": "benchmarks",
+          "sector": "Market Benchmarks & ETFs",
+          "sector_emoji": "📊",
+          "classification": "Market benchmarks; not a sector"
+        },
+        {
+          "ticker": "0820EA",
+          "name": "FTSE4Good Bursa Malaysia ETF",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "etf",
+          "sector_category": "benchmarks",
+          "sector": "Market Benchmarks & ETFs",
+          "sector_emoji": "📊",
+          "classification": "Market benchmarks; not a sector"
+        },
+        {
+          "ticker": "0800EA",
+          "name": "ABF Malaysia Bond Index Fund",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "etf",
+          "sector_category": "benchmarks",
+          "sector": "Market Benchmarks & ETFs",
+          "sector_emoji": "📊",
+          "classification": "Market benchmarks; not a sector"
+        }
+      ]
+    },
+    {
+      "key": "financials",
+      "label": "Financials",
+      "emoji": "🏦",
+      "role": "sector",
+      "classification": "Financials",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "JPM",
+          "name": "JPMorgan Chase & Co.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "financials",
+          "sector": "Financials",
+          "sector_emoji": "🏦",
+          "classification": "Financials"
+        },
+        {
+          "ticker": "GS",
+          "name": "The Goldman Sachs Group, Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "financials",
+          "sector": "Financials",
+          "sector_emoji": "🏦",
+          "classification": "Financials"
+        },
+        {
+          "ticker": "V",
+          "name": "Visa Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "financials",
+          "sector": "Financials",
+          "sector_emoji": "🏦",
+          "classification": "Financials"
+        },
+        {
+          "ticker": "1155",
+          "name": "Malayan Banking Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "financials",
+          "sector": "Financials",
+          "sector_emoji": "🏦",
+          "classification": "Financials"
+        },
+        {
+          "ticker": "1023",
+          "name": "CIMB Group Holdings Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "financials",
+          "sector": "Financials",
+          "sector_emoji": "🏦",
+          "classification": "Financials"
+        }
+      ]
+    },
+    {
+      "key": "technology",
+      "label": "Information Technology",
+      "emoji": "💻",
+      "role": "sector",
+      "classification": "Information Technology (excluding semiconductor overlay names)",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "technology",
+          "sector": "Information Technology",
+          "sector_emoji": "💻",
+          "classification": "Information Technology (excluding semiconductor overlay names)"
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft Corporation",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "technology",
+          "sector": "Information Technology",
+          "sector_emoji": "💻",
+          "classification": "Information Technology (excluding semiconductor overlay names)"
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "technology",
+          "sector": "Information Technology",
+          "sector_emoji": "💻",
+          "classification": "Information Technology (excluding semiconductor overlay names)"
+        },
+        {
+          "ticker": "0277",
+          "name": "Cloudpoint Technology Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "technology",
+          "sector": "Information Technology",
+          "sector_emoji": "💻",
+          "classification": "Information Technology (excluding semiconductor overlay names)"
+        },
+        {
+          "ticker": "0259",
+          "name": "SNS Network Technology Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "technology",
+          "sector": "Information Technology",
+          "sector_emoji": "💻",
+          "classification": "Information Technology (excluding semiconductor overlay names)"
+        }
+      ]
+    },
+    {
+      "key": "semiconductors",
+      "label": "Semiconductors",
+      "emoji": "🔬",
+      "role": "industry_overlay",
+      "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA Corporation",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "semiconductors",
+          "sector": "Semiconductors",
+          "sector_emoji": "🔬",
+          "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle"
+        },
+        {
+          "ticker": "TSM",
+          "name": "Taiwan Semiconductor Manufacturing Company Limited ADR",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "semiconductors",
+          "sector": "Semiconductors",
+          "sector_emoji": "🔬",
+          "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle"
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "semiconductors",
+          "sector": "Semiconductors",
+          "sector_emoji": "🔬",
+          "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle"
+        },
+        {
+          "ticker": "0166",
+          "name": "Inari Amertron Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "semiconductors",
+          "sector": "Semiconductors",
+          "sector_emoji": "🔬",
+          "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle"
+        },
+        {
+          "ticker": "0097",
+          "name": "ViTrox Corporation Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "semiconductors",
+          "sector": "Semiconductors",
+          "sector_emoji": "🔬",
+          "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle"
+        }
+      ]
+    },
+    {
+      "key": "healthcare",
+      "label": "Healthcare",
+      "emoji": "🩺",
+      "role": "sector",
+      "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "LLY",
+          "name": "Eli Lilly and Company",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "healthcare",
+          "sector": "Healthcare",
+          "sector_emoji": "🩺",
+          "classification": "Healthcare (including pharmaceuticals, providers, devices and services)"
+        },
+        {
+          "ticker": "JNJ",
+          "name": "Johnson & Johnson",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "healthcare",
+          "sector": "Healthcare",
+          "sector_emoji": "🩺",
+          "classification": "Healthcare (including pharmaceuticals, providers, devices and services)"
+        },
+        {
+          "ticker": "ABT",
+          "name": "Abbott Laboratories",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "healthcare",
+          "sector": "Healthcare",
+          "sector_emoji": "🩺",
+          "classification": "Healthcare (including pharmaceuticals, providers, devices and services)"
+        },
+        {
+          "ticker": "5225",
+          "name": "IHH Healthcare Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "healthcare",
+          "sector": "Healthcare",
+          "sector_emoji": "🩺",
+          "classification": "Healthcare (including pharmaceuticals, providers, devices and services)"
+        },
+        {
+          "ticker": "5878",
+          "name": "KPJ Healthcare Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "healthcare",
+          "sector": "Healthcare",
+          "sector_emoji": "🩺",
+          "classification": "Healthcare (including pharmaceuticals, providers, devices and services)"
+        }
+      ]
+    },
+    {
+      "key": "consumer-staples",
+      "label": "Consumer Staples",
+      "emoji": "🛒",
+      "role": "sector",
+      "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "WMT",
+          "name": "Walmart Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "consumer-staples",
+          "sector": "Consumer Staples",
+          "sector_emoji": "🛒",
+          "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        },
+        {
+          "ticker": "PG",
+          "name": "The Procter & Gamble Company",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "consumer-staples",
+          "sector": "Consumer Staples",
+          "sector_emoji": "🛒",
+          "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        },
+        {
+          "ticker": "KO",
+          "name": "The Coca-Cola Company",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "consumer-staples",
+          "sector": "Consumer Staples",
+          "sector_emoji": "🛒",
+          "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        },
+        {
+          "ticker": "4707",
+          "name": "Nestlé (Malaysia) Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "consumer-staples",
+          "sector": "Consumer Staples",
+          "sector_emoji": "🛒",
+          "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        },
+        {
+          "ticker": "3689",
+          "name": "Fraser & Neave Holdings Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "consumer-staples",
+          "sector": "Consumer Staples",
+          "sector_emoji": "🛒",
+          "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        }
+      ]
+    },
+    {
+      "key": "consumer-discretionary",
+      "label": "Consumer Discretionary",
+      "emoji": "🛍️",
+      "role": "sector",
+      "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "TSLA",
+          "name": "Tesla, Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "consumer-discretionary",
+          "sector": "Consumer Discretionary",
+          "sector_emoji": "🛍️",
+          "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        },
+        {
+          "ticker": "HD",
+          "name": "The Home Depot, Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "consumer-discretionary",
+          "sector": "Consumer Discretionary",
+          "sector_emoji": "🛍️",
+          "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        },
+        {
+          "ticker": "MCD",
+          "name": "McDonald's Corporation",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "consumer-discretionary",
+          "sector": "Consumer Discretionary",
+          "sector_emoji": "🛍️",
+          "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        },
+        {
+          "ticker": "5296",
+          "name": "MR D.I.Y. Group (M) Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "consumer-discretionary",
+          "sector": "Consumer Discretionary",
+          "sector_emoji": "🛍️",
+          "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        },
+        {
+          "ticker": "4715",
+          "name": "Genting Malaysia Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "consumer-discretionary",
+          "sector": "Consumer Discretionary",
+          "sector_emoji": "🛍️",
+          "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+        }
+      ]
+    },
+    {
+      "key": "energy",
+      "label": "Energy",
+      "emoji": "⚡",
+      "role": "sector",
+      "classification": "Energy",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "XOM",
+          "name": "Exxon Mobil Corporation",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "energy",
+          "sector": "Energy",
+          "sector_emoji": "⚡",
+          "classification": "Energy"
+        },
+        {
+          "ticker": "COP",
+          "name": "ConocoPhillips",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "energy",
+          "sector": "Energy",
+          "sector_emoji": "⚡",
+          "classification": "Energy"
+        },
+        {
+          "ticker": "SLB",
+          "name": "SLB Limited",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "energy",
+          "sector": "Energy",
+          "sector_emoji": "⚡",
+          "classification": "Energy"
+        },
+        {
+          "ticker": "6033",
+          "name": "Petronas Gas Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "energy",
+          "sector": "Energy",
+          "sector_emoji": "⚡",
+          "classification": "Energy"
+        },
+        {
+          "ticker": "5681",
+          "name": "Petronas Dagangan Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "energy",
+          "sector": "Energy",
+          "sector_emoji": "⚡",
+          "classification": "Energy"
+        }
+      ]
+    },
+    {
+      "key": "industrials-transport-logistics",
+      "label": "Industrials, Transport & Logistics",
+      "emoji": "🚚",
+      "role": "sector_group",
+      "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "CAT",
+          "name": "Caterpillar Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "industrials-transport-logistics",
+          "sector": "Industrials, Transport & Logistics",
+          "sector_emoji": "🚚",
+          "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure"
+        },
+        {
+          "ticker": "GE",
+          "name": "GE Aerospace",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "industrials-transport-logistics",
+          "sector": "Industrials, Transport & Logistics",
+          "sector_emoji": "🚚",
+          "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure"
+        },
+        {
+          "ticker": "UPS",
+          "name": "United Parcel Service, Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "industrials-transport-logistics",
+          "sector": "Industrials, Transport & Logistics",
+          "sector_emoji": "🚚",
+          "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure"
+        },
+        {
+          "ticker": "5246",
+          "name": "Westports Holdings Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "industrials-transport-logistics",
+          "sector": "Industrials, Transport & Logistics",
+          "sector_emoji": "🚚",
+          "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure"
+        },
+        {
+          "ticker": "3816",
+          "name": "MISC Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "industrials-transport-logistics",
+          "sector": "Industrials, Transport & Logistics",
+          "sector_emoji": "🚚",
+          "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure"
+        }
+      ]
+    },
+    {
+      "key": "materials-plantation",
+      "label": "Materials & Plantation",
+      "emoji": "🌱",
+      "role": "sector_group",
+      "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
+      "count": 5,
+      "instruments": [
+        {
+          "ticker": "LIN",
+          "name": "Linde plc",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "materials-plantation",
+          "sector": "Materials & Plantation",
+          "sector_emoji": "🌱",
+          "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry"
+        },
+        {
+          "ticker": "FCX",
+          "name": "Freeport-McMoRan Inc.",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "materials-plantation",
+          "sector": "Materials & Plantation",
+          "sector_emoji": "🌱",
+          "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry"
+        },
+        {
+          "ticker": "NEM",
+          "name": "Newmont Corporation",
+          "country": "us",
+          "market": "US",
+          "currency": "USD",
+          "asset_type": "equity",
+          "sector_category": "materials-plantation",
+          "sector": "Materials & Plantation",
+          "sector_emoji": "🌱",
+          "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry"
+        },
+        {
+          "ticker": "1961",
+          "name": "IOI Corporation Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "materials-plantation",
+          "sector": "Materials & Plantation",
+          "sector_emoji": "🌱",
+          "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry"
+        },
+        {
+          "ticker": "5285",
+          "name": "SD Guthrie Berhad",
+          "country": "my",
+          "market": "MY",
+          "currency": "MYR",
+          "asset_type": "equity",
+          "sector_category": "materials-plantation",
+          "sector": "Materials & Plantation",
+          "sector_emoji": "🌱",
+          "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry"
+        }
+      ]
+    }
+  ]
+}

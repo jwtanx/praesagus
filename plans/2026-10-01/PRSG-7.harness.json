@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-7",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend",
+      "financial-data",
+      "skills"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-7-daily-report-workflow.md",
+  "objective": "Restore report navigation and separate monthly calendar with compact confidence-aware coverage.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "801279aaab78d41a5cf69d59086f84a23fd95c35",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/",
+    "artifacts/financial-calendar/",
+    "scripts/daily-market-brief/",
+    "tests/test_monthly_calendar.py",
+    "tests/test_daily_report.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "skills/daily-market-brief/SKILL.md",
+    "AGENTS.md",
+    "plans/README.md",
+    "plans/2026-10-01/PRSG-7-daily-report-workflow.md",
+    "plans/2026-10-01/PRSG-7.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "infra/",
+    "harness/"
+  ],
+  "checks": [
+    {
+      "id": "python",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT pre-release worktree: python3 -m pytest -q — 122 passed, five existing Python3.9 Boto3 deprecation warnings."
+      ]
+    },
+    {
+      "id": "report",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: python3 scripts/daily-market-brief/validate_report_json.py — legacy60/schema3 50 forecasts and shared14 calendar revisions passed; frozen pre-migration snapshot cmp equals base801279a."
+      ]
+    },
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs — passed date switching, confidence, as-of cancellation/revisions, stale/error/missing-month contracts. Engineer actual browser1280x720 and390x844: Sept30/Oct1 content/URL/title switch, no mobile overflow, struck-through fixture reasons/source links."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed all15 ticket-owned paths against801279a, preserved .DS_Store, schema/calendar invariants and skill-creator validation. Consultant read-only behavioral replay passed missing/cancelled events and quote-only unavailable confidence; clarified availability and offline-scoring wording. Automation prompt updated, unchanged08:01MYT schedule. Publication pending separate remote CI/Pages checks."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-7-D1",
+      "description": "Date navigation",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs — passed date switching, confidence, as-of cancellation/revisions, stale/error/missing-month contracts. Engineer actual browser1280x720 and390x844: Sept30/Oct1 content/URL/title switch, no mobile overflow, struck-through fixture reasons/source links."
+      ]
+    },
+    {
+      "id": "PRSG-7-D2",
+      "description": "Append-only monthly calendar",
+      "check_ids": [
+        "python",
+        "report"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT pre-release worktree: python3 -m pytest -q — 122 passed, five existing Python3.9 Boto3 deprecation warnings.",
+        "2026-10-01 MYT: python3 scripts/daily-market-brief/validate_report_json.py — legacy60/schema3 50 forecasts and shared14 calendar revisions passed; frozen pre-migration snapshot cmp equals base801279a."
+      ]
+    },
+    {
+      "id": "PRSG-7-D3",
+      "description": "Five-name confidence-aware coverage",
+      "check_ids": [
+        "python",
+        "report"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT pre-release worktree: python3 -m pytest -q — 122 passed, five existing Python3.9 Boto3 deprecation warnings.",
+        "2026-10-01 MYT: python3 scripts/daily-market-brief/validate_report_json.py — legacy60/schema3 50 forecasts and shared14 calendar revisions passed; frozen pre-migration snapshot cmp equals base801279a."
+      ]
+    },
+    {
+      "id": "PRSG-7-D4",
+      "description": "Validation and Lead review",
+      "check_ids": [
+        "python",
+        "report",
+        "viewer",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT pre-release worktree: python3 -m pytest -q — 122 passed, five existing Python3.9 Boto3 deprecation warnings.",
+        "2026-10-01 MYT: python3 scripts/daily-market-brief/validate_report_json.py — legacy60/schema3 50 forecasts and shared14 calendar revisions passed; frozen pre-migration snapshot cmp equals base801279a.",
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs — passed date switching, confidence, as-of cancellation/revisions, stale/error/missing-month contracts. Engineer actual browser1280x720 and390x844: Sept30/Oct1 content/URL/title switch, no mobile overflow, struck-through fixture reasons/source links.",
+        "Lead reviewed all15 ticket-owned paths against801279a, preserved .DS_Store, schema/calendar invariants and skill-creator validation. Consultant read-only behavioral replay passed missing/cancelled events and quote-only unavailable confidence; clarified availability and offline-scoring wording. Automation prompt updated, unchanged08:01MYT schedule. Publication pending separate remote CI/Pages checks."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewed all15 ticket-owned paths against801279a, preserved .DS_Store, schema/calendar invariants and skill-creator validation. Consultant read-only behavioral replay passed missing/cancelled events and quote-only unavailable confidence; clarified availability and offline-scoring wording. Automation prompt updated, unchanged08:01MYT schedule. Publication pending separate remote CI/Pages checks."
+    ]
+  }
+}
