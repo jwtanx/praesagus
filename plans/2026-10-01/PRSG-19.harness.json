@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-19",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.05,
+      "high": 0.15
+    },
+    "impact": "low"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-19-sunday-first-calendar.md",
+  "objective": "Sunday-first financial calendar with weekdays centered.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "9054b571e3d554e9de6d1d165ad6f397f8148fc9",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-01/PRSG-19-sunday-first-calendar.md",
+    "plans/2026-10-01/PRSG-19.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "skills/",
+    "artifacts/financial-calendar/"
+  ],
+  "checks": [
+    {
+      "id": "dom",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed desktop/mobile replay with Sun–Sat labels and October1 Thursday offset4; git diff --check passed. Lead reviewed four-file scope, data unchanged. Actual browser visual QA and remote deployment not verified."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed desktop/mobile replay with Sun–Sat labels and October1 Thursday offset4; git diff --check passed. Lead reviewed four-file scope, data unchanged. Actual browser visual QA and remote deployment not verified."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-19-D1",
+      "description": "Sunday-first labels and matching day offsets pass review.",
+      "check_ids": [
+        "dom",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed desktop/mobile replay with Sun–Sat labels and October1 Thursday offset4; git diff --check passed. Lead reviewed four-file scope, data unchanged. Actual browser visual QA and remote deployment not verified."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-01 MYT: node tests/daily_report_viewer_checks.cjs passed desktop/mobile replay with Sun–Sat labels and October1 Thursday offset4; git diff --check passed. Lead reviewed four-file scope, data unchanged. Actual browser visual QA and remote deployment not verified."
+    ]
+  }
+}

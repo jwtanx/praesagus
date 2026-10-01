@@ -65,6 +65,8 @@ async function countryFiltersAndLatest() {
 async function navigation(width) {
   const t = mount({ width }); await settle();
   assert.equal(t.$('.day.today').dataset.date,'2026-10-01');
+  assert.deepEqual([...t.w.document.querySelectorAll('#calendar-grid .weekday')].map(x=>x.textContent),['Sun','Mon','Tue','Wed','Thu','Fri','Sat']);
+  assert.equal(t.w.document.querySelectorAll('#calendar-grid .day:disabled').length,4,'October 1 Thursday in fifth column');
   const Clock=t.w.Date;
   t.w.Date=class extends Clock {constructor(){super('2026-09-30T16:30:00Z')}};
   assert.equal(t.w.todayMYT(),'2026-10-01','MYT date crosses UTC midnight boundary');

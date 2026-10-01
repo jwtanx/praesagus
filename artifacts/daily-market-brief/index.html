@@ -90,8 +90,8 @@ function drawCalendar(){
   $('#calendar-grid').innerHTML='';$('#event-details').innerHTML='';
   $('#calendar-notes').innerHTML=calendarError?`<p class="disclaimer" role="alert">${esc(calendarError)}</p>`:!calendarData?'<p class="muted">Loading calendar…</p>':`<p class="small">Calendar timezone: ${esc(calendarData.timezone)} · ${$('#calendar-schedule').value==='report'?'Revisions known as of '+esc(reportData.metadata.as_of):'Latest stored schedule (independent of report timestamp)'} · US and Malaysia only. Unclassified legacy events are excluded. No tracked event does not imply no release.</p>`+(calendarData.notes||[]).map(n=>`<p class="footnote">${richText(n)}</p>`).join('');
   if(!calendarData)return;
-  let h=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="weekday" role="columnheader">${x}</div>`).join('');
-  const offset=(new Date(y,m-1,1).getDay()+6)%7,n=new Date(y,m,0).getDate();
+  let h=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<div class="weekday" role="columnheader">${x}</div>`).join('');
+  const offset=new Date(y,m-1,1).getDay(),n=new Date(y,m,0).getDate();
   for(let i=0;i<offset;i++)h+='<button class="day" disabled aria-hidden="true"></button>';
   for(let day=1;day<=n;day++){
     const iso=`${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`,ev=eventsFor(iso),active=ev.filter(e=>!e.historical),cls=active.some(x=>x.kind==='market-closure')?'has-closure':active.length?'has-event':'',title=ev.map(x=>`${x.historical?x.history_label+': ':''}${x.title}`).join('; ');
