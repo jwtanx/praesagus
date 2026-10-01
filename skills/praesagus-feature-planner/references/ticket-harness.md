@@ -35,6 +35,8 @@ Paths are repository-relative exact files or trailing `/` directory prefixes. No
 
 ## Working loop
 
+Commit progress checkpoints in the dated spec and manifest; all relevant status/checklist/check/review evidence changes must be committed to enter the audit. At completion synchronize done checkboxes, passed checks/evidence and accepted Lead review before the delivery commit. Run `python3 scripts/planning/build_ticket_audit.py` after committing to inspect the resulting commit links and completion snapshot. Pages generates `artifacts/tickets/audit.json` from full first-parent Git history on every main push; do not commit generated audit JSON or manually insert a commit's own unknown hash. `/tickets/` provides search/filter/sort/history and CSV export; JSON/Git preserve nested audit evidence, while CSV is only a flat export. Uncommitted progress is not recorded. A PRSG delivery commit does not by itself close a ticket; retained historical snapshots are review evidence, not proof that tests or deployment succeeded. Preserve source history and never remove failed checkpoints to improve apparent results.
+
 1. Inspect existing changes and allocate the next unused PRSG key globally. Keep creation folder stable across sessions. Freeze an accepted base and small scope; record dirty-work ownership separately in the handoff.
 2. Delegate spec + manifest + relevant role skill. Agents update only permitted progress/evidence; changes to acceptance definitions, file scope, checks or base require Lead review. Do not relax gates just to pass.
 3. Run meaningful tests/manual fixtures. Record pass/failure with provenance; leave unrun checks pending. Synchronize Markdown checkboxes and acceptance IDs in the same update.

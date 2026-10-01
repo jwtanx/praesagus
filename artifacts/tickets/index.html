@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Praesagus · Ticket audit</title>
+<style>
+:root{color-scheme:dark;--bg:#0c1118;--panel:#141e2b;--ink:#e8eef5;--muted:#acbbcd;--line:#354456;--blue:#9bcaff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}header,main,footer{max-width:1160px;margin:auto;padding:24px}h1{font-size:clamp(1.8rem,5vw,2.8rem);margin:8px 0}h2,h3{margin:8px 0}p{margin:8px 0}a{color:var(--blue);overflow-wrap:anywhere}button,input,select{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:44px}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}.skip{position:absolute;top:-100px;left:12px}.skip:focus{top:12px;background:var(--panel);padding:10px;z-index:1}.muted,small{color:var(--muted)}.notice,.empty{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--panel)}.filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-block:20px}.filters label{display:flex;flex-direction:column;gap:5px;font-size:.9rem}.filters .search{grid-column:span 2}input,select{width:100%;min-width:0}.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:16px 0}.actions p{margin:0;margin-right:auto}.actions a{display:inline-flex;align-items:center;min-height:44px;padding:10px}.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:860px}caption{padding:12px;text-align:left;color:var(--muted)}th,td{text-align:left;padding:12px;vertical-align:top;border-bottom:1px solid var(--line)}th{font-size:.8rem;color:var(--muted)}td{max-width:360px;overflow-wrap:anywhere}.ticket-button{text-align:left;width:100%;color:var(--blue)}.status{font-size:.85rem;display:block;color:var(--muted)}#detail{scroll-margin-top:16px;margin-top:30px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow-wrap:anywhere}dl{display:grid;grid-template-columns:160px minmax(0,1fr);gap:8px}dt{color:var(--muted)}dd{margin:0}.timeline{list-style:none;padding:0;border-left:2px solid var(--line);margin-left:8px}.timeline>li{margin:20px 0;padding:0 16px}.sha{font: .82rem/1.6 ui-monospace,monospace;overflow-wrap:anywhere}.evidence{white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0}.check-list{padding-left:20px}.check-list>li{margin:10px 0}details{margin:10px 0}summary{cursor:pointer;min-height:44px;padding:8px 0}.hidden,[hidden]{display:none!important}footer{color:var(--muted);font-size:.85rem}@media(max-width:650px){header,main,footer{padding:16px}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.filters .search{grid-column:1/-1}dl{grid-template-columns:1fr;gap:4px}dd{margin-bottom:10px}.actions button{flex:1}#detail{padding:12px}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to ticket audit</a>
+<header><a href="../daily-market-brief/">← Daily market brief</a><h1>Ticket audit</h1><p class="muted">Search delivery plans and inspect their committed progress.</p><p class="notice">Read-only audit of committed Git history. Uncommitted work is excluded. Commit associations and recorded check results are audit evidence, not independent proof that tests passed or acceptance was completed. PRSG-0 prefix-only history is labelled activity-only.</p><p id="provenance" class="muted"></p></header>
+<main id="main">
+<div id="load-status" role="status">Loading committed ticket audit…</div>
+<section id="dashboard" hidden aria-label="Ticket search and results">
+<div class="filters">
+<label class="search">Search key, title or description<input id="search" type="search" placeholder="Search tickets" autocomplete="off"></label>
+<label>Status<select id="status-filter"><option value="">All statuses</option></select></label>
+<label>Type<select id="type-filter"><option value="">All types</option></select></label>
+<label>Module<select id="module-filter"><option value="">All modules</option></select></label>
+<label>Owner<select id="owner-filter"><option value="">All owners</option></select></label>
+<label>Sort by<select id="sort"><option value="key">Ticket key</option><option value="created">Created date</option><option value="updated">Updated date</option><option value="priority">Priority</option><option value="effort">Effort</option><option value="impact">Impact</option><option value="title">Title</option></select></label>
+<label>Order<select id="order"><option value="asc">Ascending</option><option value="desc">Descending</option></select></label>
+</div>
+<div class="actions"><p id="result-count" role="status" aria-live="polite"></p><button id="reset" type="button">Reset filters</button><button id="export" type="button">Export filtered CSV</button><a id="full-audit" href="./audit.json" download="praesagus-ticket-audit.json">Full JSON audit</a></div>
+<p id="empty" class="empty" hidden>No tickets match these filters.</p>
+<div class="table-scroll" id="table-wrap" role="region" aria-label="Ticket results table" tabindex="0"><table><caption>Completion and commit activity are separate. Select a ticket to inspect its evidence.</caption><thead><tr><th scope="col">Ticket / title</th><th scope="col">Declared status</th><th scope="col">Acceptance progress</th><th scope="col">Owner / modules</th><th scope="col">Priority / effort / impact</th><th scope="col">Updated</th></tr></thead><tbody id="ticket-rows"></tbody></table></div>
+</section>
+<section id="detail" hidden tabindex="-1" aria-labelledby="detail-title"></section>
+</main>
+<footer>Markdown specs and harness manifests committed to Git are the source of truth. CSV is a flat convenience export; the timeline retains the recorded snapshots.</footer>
+<script>
+const $=selector=>document.querySelector(selector);
+let audit=null,filtered=[],selectedKey=null;
+function text(value){if(value===null||value===undefined)return '';return typeof value==='object'?JSON.stringify(value,null,2):String(value)}
+function node(tag,value,cls){const el=document.createElement(tag);if(value!==undefined)el.textContent=text(value);if(cls)el.className=cls;return el}
+function safeGithubUrl(value){
+  try{if(typeof value!=='string'||/[\s\\]/.test(value))return null;const u=new URL(value);return u.protocol==='https:'&&u.hostname==='github.com'&&!u.username&&!u.password&&!u.port?u.href:null}catch{return null}
+}
+function link(value,label,cls){const url=safeGithubUrl(value);if(!url)return node('span',label,cls);const a=node('a',label,cls);a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a}
+function progress(value){return value&&Number.isInteger(value.done)&&Number.isInteger(value.total)&&value.done>=0&&value.total>=value.done?`${value.done} / ${value.total}`:'Not recorded'}
+function label(value){return text(value).replaceAll('_',' ')||'Not recorded'}
+function modules(ticket){return Array.isArray(ticket.tags?.modules)?ticket.tags.modules:[]}
+function owner(ticket){return ticket.tags?.owner_role||ticket.owner||''}
+function isComplete(ticket){return ['complete','completed'].includes(ticket.status)}
+function activity(ticket){return ticket.status==='activity_only'}
+function commitLink(commit){if(!commit)return node('span','Not recorded');const sha=text(commit.sha);return link(/^[a-f0-9]{40}$/i.test(sha)&&safeGithubUrl(commit.url)&&new URL(commit.url).pathname.endsWith(`/commit/${sha}`)?commit.url:null,sha||'Commit SHA unavailable','sha')}
+function listEvidence(values){const list=node('ul');for(const value of Array.isArray(values)?values:values==null?[]:[values])list.append(node('li',value,'evidence'));if(!list.children.length)list.append(node('li','No evidence recorded.','muted'));return list}
+function evidenceSection(title,records){
+  const section=node('details'),heading=node('summary',title);section.append(heading);
+  if(!Array.isArray(records)||!records.length){section.append(node('p','No entries recorded.','muted'));return section}
+  const list=node('ul',undefined,'check-list');
+  for(const record of records){const item=node('li');item.append(node('strong',`${record.id||'Entry'} · ${label(record.status)}`));if(record.description)item.append(node('p',record.description));if(record.argv)item.append(node('p',text(record.argv),'sha'));if(record.cwd)item.append(node('p',`Working directory: ${record.cwd}`,'muted'));item.append(listEvidence(record.evidence));list.append(item)}
+  section.append(list);return section;
+}
+function reviewSection(review){const section=node('details');section.append(node('summary',`Review · ${label(review?.status)}`),listEvidence(review?.evidence));return section}
+function renderDetail(key,focus=false){
+  const ticket=audit.tickets.find(t=>t.ticket_key===key);if(!ticket)return;
+  selectedKey=key;const detail=$('#detail');detail.replaceChildren();detail.hidden=false;
+  detail.append(node('h2',`${ticket.ticket_key} · ${ticket.title||'Untitled'}`));detail.firstChild.id='detail-title';
+  if(activity(ticket))detail.append(node('p',`${ticket.ticket_key} activity-only: commit activity has no accepted ticket completion attached.`,'notice'));
+  detail.append(node('p',ticket.description||'No description recorded.'));
+  if(ticket.validation_error||ticket.status==='inconsistent'){const error=node('p',`Checkpoint validation failed: ${ticket.validation_error||'Committed metadata is inconsistent; completion is not accepted.'}`,'notice validation-error');error.setAttribute('role','alert');detail.append(error)}
+  const dl=node('dl');
+  for(const [name,value] of [['Declared status',label(ticket.status)],['Acceptance progress',progress(ticket.progress)],['Completion',ticket.status==='inconsistent'?'Checkpoint validation failed; completion is not accepted':isComplete(ticket)?'Declared complete in committed metadata':'Acceptance completion has not been declared'],['Created',ticket.created_on||'Not recorded'],['Updated',ticket.updated_at||'Not recorded'],['Owner',owner(ticket)||'Not recorded'],['Modules',modules(ticket).join(', ')||'Not recorded']])dl.append(node('dt',name),node('dd',value));
+  const completion=node('dd');completion.append(commitLink(ticket.completion_commit));dl.append(node('dt','Completion commit'),completion);
+  const specification=node('dd');specification.append(safeGithubUrl(ticket.spec_url)?link(ticket.spec_url,'Committed specification'):node('span','Not recorded or unsafe link omitted'));dl.append(node('dt','Specification'),specification);detail.append(dl);
+  detail.append(evidenceSection('Current checks',ticket.checks),evidenceSection('Current acceptance',ticket.acceptance),reviewSection(ticket.review));
+  const history=Array.isArray(ticket.history)?ticket.history:[];
+  detail.append(node('p',`Code delivery commits: ${history.filter(e=>e.kind==='delivery_commit').length}. Recorded separately from acceptance completion.`,'muted'));
+  detail.append(node('h3','Committed progress timeline'),node('p',`${history.length} commit associations. Code/activity commits do not establish acceptance completion.`,'muted'));
+  const timeline=node('ol',undefined,'timeline');
+  for(const entry of history){
+    const item=node('li');item.append(node('h4',`${label(entry.kind)} · ${entry.commit?.committed_at||'Date unavailable'}`),commitLink(entry.commit),node('p',entry.commit?.subject||'Subject unavailable'),node('p',`Recorded status: ${label(entry.status)} · Acceptance progress: ${progress(entry.progress)}`));
+    if(safeGithubUrl(entry.spec_url))item.append(link(entry.spec_url,'Specification at this commit'));
+    if(entry.validation_error)item.append(node('p',`Checkpoint validation failed: ${entry.validation_error}`,'notice validation-error'));
+    const paths=node('details');paths.append(node('summary','Commit context paths'),node('p','These are the entire commit context, not proven ticket-owned scope.','muted'),listEvidence(entry.paths));
+    item.append(paths,evidenceSection('Checks at this commit',entry.checks),evidenceSection('Acceptance at this commit',entry.acceptance),reviewSection(entry.review));timeline.append(item);
+  }
+  if(!history.length)detail.append(node('p','No committed snapshots recorded.','muted'));else detail.append(timeline);
+  if(focus){detail.focus();detail.scrollIntoView({behavior:'smooth',block:'start'})}
+}
+function sortValue(ticket,mode){
+  if(mode==='key')return Number(ticket.ticket_key.split('-')[1]);
+  if(mode==='created'||mode==='updated'){const value=mode==='created'?ticket.created_on:ticket.updated_at;const parsed=Date.parse(value);return Number.isFinite(parsed)?parsed:null}
+  if(mode==='priority')return /^P[0-3]$/.test(ticket.tags?.priority)?Number(ticket.tags.priority.slice(1)):null;
+  if(mode==='effort')return {XS:0,S:1,M:2,L:3,XL:4}[ticket.tags?.effort_size]??null;
+  if(mode==='impact')return {low:0,medium:1,'medium-high':2,high:3}[ticket.tags?.impact]??null;
+  return text(ticket.title).toLowerCase();
+}
+function renderResults(){
+  const query=$('#search').value.trim().toLowerCase();
+  filtered=audit.tickets.filter(t=>(!query||`${t.ticket_key} ${t.title||''} ${t.description||''}`.toLowerCase().includes(query))&&(!$('#status-filter').value||t.status===$('#status-filter').value)&&(!$('#type-filter').value||t.tags?.type===$('#type-filter').value)&&(!$('#module-filter').value||modules(t).includes($('#module-filter').value))&&(!$('#owner-filter').value||owner(t)===$('#owner-filter').value));
+  const mode=$('#sort').value,direction=$('#order').value==='desc'?-1:1;
+  filtered.sort((a,b)=>{const av=sortValue(a,mode),bv=sortValue(b,mode);if((av===null)!==(bv===null))return av===null?1:-1;const compare=av===null?0:typeof av==='number'?av-bv:av<bv?-1:av>bv?1:0;return compare*direction||Number(a.ticket_key.split('-')[1])-Number(b.ticket_key.split('-')[1])});
+  $('#result-count').textContent=`${filtered.length} of ${audit.tickets.length} tickets · ${filtered.filter(isComplete).length} declared complete · ${filtered.filter(t=>t.completion_commit).length} completion commits recorded`;
+  $('#empty').hidden=filtered.length>0;$('#table-wrap').hidden=!filtered.length;$('#export').disabled=!filtered.length;
+  const body=$('#ticket-rows');body.replaceChildren();
+  for(const ticket of filtered){
+    const row=node('tr'),title=node('td'),button=node('button',`${ticket.ticket_key} · ${ticket.title||'Untitled'}`,'ticket-button');button.type='button';button.dataset.key=ticket.ticket_key;button.setAttribute('aria-controls','detail');title.append(button);
+    const state=node('td',label(ticket.status));state.append(node('span',activity(ticket)?'Activity-only; no completed ticket':ticket.completion_commit?'Completion commit recorded':'No completion commit recorded','status'));
+    row.append(title,state,node('td',progress(ticket.progress)),node('td',`${owner(ticket)||'Not recorded'} · ${modules(ticket).join(', ')||'No modules'}`),node('td',`${ticket.tags?.priority||'—'} · ${ticket.tags?.effort_size||'—'} · ${ticket.tags?.impact||'—'}`),node('td',ticket.updated_at||'Not recorded'));body.append(row);
+  }
+  if(selectedKey&&!filtered.some(t=>t.ticket_key===selectedKey)){$('#detail').hidden=true;selectedKey=null}
+}
+function csvCell(value){let str=text(value);if(/^[\s\u0000-\u001f]*[=+@-]/.test(str))str="'"+str;return '"'+str.replaceAll('"','""')+'"'}
+function filteredCsv(){const rows=[['ticket_key','title','description','status','modules','owner','priority','effort','impact','created_on','updated_at','acceptance_done','acceptance_total','completion_sha','commit_associations']];for(const t of filtered)rows.push([t.ticket_key,t.title,t.description,t.status,modules(t).join('; '),owner(t),t.tags?.priority,t.tags?.effort_size,t.tags?.impact,t.created_on,t.updated_at,t.progress?.done,t.progress?.total,t.completion_commit?.sha,t.history?.length||0]);return rows.map(row=>row.map(csvCell).join(',')).join('\r\n')+'\r\n'}
+function populateFilter(id,values){const select=$(id);for(const value of [...new Set(values.filter(v=>typeof v==='string'&&v))].sort()){const option=node('option',label(value));option.value=value;select.append(option)}}
+async function init(){
+  try{
+    const response=await fetch('./audit.json',{cache:'no-cache'});if(!response.ok)throw Error(`Audit unavailable (HTTP ${response.status})`);
+    const data=await response.json();
+    if(data.schema_version!==1||!['committed-history','committed first-parent Git history; excludes uncommitted work and hidden branch-only progress','committed first-parent manifest checkpoints and recognized PRSG commit activity'].includes(data.generated_from)||!Array.isArray(data.tickets)||data.tickets.some(t=>!t||!/^PRSG-\d+$/.test(t.ticket_key))||new Set(data.tickets.map(t=>t.ticket_key)).size!==data.tickets.length)throw Error('Invalid committed audit format');
+    audit=data;
+    $('#provenance').append(node('span',`Source: ${data.generated_from} · Head `),commitLink({sha:data.head_sha,url:safeGithubUrl(data.repository_url)?`${data.repository_url.replace(/\/$/,'')}/commit/${data.head_sha}`:null}));
+    const limitations=node('details');limitations.append(node('summary','Audit coverage and limitations'),node('p','Full first-parent manifest checkpoints and recognized PRSG commit activity are included. Uncommitted work, side-branch intermediate progress and unassigned legacy code activity are excluded. Entire event paths are commit context, not proven ticket-owned scope.'),listEvidence(data.limitations));$('#provenance').after(limitations);
+    populateFilter('#status-filter',audit.tickets.map(t=>t.status));populateFilter('#type-filter',audit.tickets.map(t=>t.tags?.type));populateFilter('#module-filter',audit.tickets.flatMap(modules));populateFilter('#owner-filter',audit.tickets.map(owner));
+    $('#load-status').hidden=true;$('#dashboard').hidden=false;renderResults();
+  }catch(e){$('#load-status').textContent=`Unable to load ticket audit: ${e.message}`;$('#load-status').setAttribute('role','alert');$('#dashboard').hidden=true;$('#detail').hidden=true}
+}
+$('#search').addEventListener('input',()=>{if(audit)renderResults()});
+for(const id of ['status-filter','type-filter','module-filter','owner-filter','sort','order'])$('#'+id).addEventListener('change',()=>{if(audit)renderResults()});
+$('#reset').onclick=()=>{$('#search').value='';for(const id of ['status-filter','type-filter','module-filter','owner-filter'])$('#'+id).value='';$('#sort').value='key';$('#order').value='asc';renderResults()};
+$('#ticket-rows').addEventListener('click',e=>{const button=e.target.closest('button[data-key]');if(button)renderDetail(button.dataset.key,true)});
+$('#export').onclick=()=>{const url=URL.createObjectURL(new Blob(['\uFEFF',filteredCsv()],{type:'text/csv;charset=utf-8'}));const a=node('a');a.href=url;a.download='praesagus-ticket-audit.csv';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+init();
+</script>
+</body></html>

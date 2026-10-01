@@ -1,11 +1,8 @@
-name: Deploy daily market briefs to GitHub Pages
+name: Deploy reports and ticket audit to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'artifacts/**'
-      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -28,8 +25,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - name: Validate daily report JSON
         run: python3 scripts/daily-market-brief/validate_report_json.py
+      - name: Build committed ticket audit
+        run: python3 scripts/planning/build_ticket_audit.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload reports and templates

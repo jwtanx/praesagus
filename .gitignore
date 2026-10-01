@@ -8,3 +8,4 @@ frontend/pnpm-lock.yaml
 frontend/pnpm-workspace.yaml
 .localstack/
 localstack/
+artifacts/tickets/audit.json

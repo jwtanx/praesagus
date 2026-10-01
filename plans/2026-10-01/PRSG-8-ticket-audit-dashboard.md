@@ -18,8 +18,11 @@ Deterministic temporary Git repositories test creation/update/completion/prefix 
 
 ## When it's considered done
 
-- [ ] PRSG-8-D1: Committed progress and completion audit links preserve history and reject incomplete history.
-- [ ] PRSG-8-D2: Search/filter/sort/detail/CSV work with safe text and links on desktop/mobile.
-- [ ] PRSG-8-D3: Pages generates audit from full history on relevant pushes; workflow/instructions documented.
-- [ ] PRSG-8-D4: Focused/full tests and Lead review recorded; remote deployment state checked separately.
+- [x] PRSG-8-D1: Committed progress and completion audit links preserve history and reject incomplete history.
+- [x] PRSG-8-D2: Search/filter/sort/detail/CSV work with safe text and links on desktop/mobile.
+- [x] PRSG-8-D3: Pages generates audit from full history on relevant pushes; workflow/instructions documented.
+- [x] PRSG-8-D4: Focused/full tests and Lead review recorded; remote deployment state checked separately.
 
+## Delivery evidence
+
+Local functional delivery accepted2026-10-01 MYT. Full pytest146passed (five existing Python3.9/Boto3 deprecation warnings);23 focused Git-history cases validate progress/completion/base ancestry/Markdown evidence, shallow clones, invalid metadata, deletion/reopen/recovery and first-parent merge limits. DOM replay passes search/filter/sort/detail/CSV safety/JSON download against8 current records. Engineer actual browser1280x720 and390x844 confirms interactions, retained failed checkpoints and no mobile body overflow. Researcher independently reviewed completion integrity fixes and coverage labels. Source audit starts with committed scopecheckpoint bc06bc1; final commit's completion link is generated after commit, never self-inserted. Pages YAML/full-history checkout and planner skill validated. Git/specs/manifests are canonical; JSON is a generated downloadable view and CSV a flat convenience export. Invalid checkpoints remain visible as inconsistent and later fixes preserve history; shallow/corrupt Git reads fail. Remote deployment confirmation follows publication separately.

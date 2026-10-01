@@ -36,6 +36,12 @@ This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATI
 
 ## Ticket convention and harness
 
+### Searchable audit and completion history
+
+Open the [ticket dashboard](https://jwtanx.github.io/praesagus/tickets/) to search title/description/key, filter tags/status/owner, sort records and review each committed progress snapshot with its commit link. CSV download is for spreadsheet sorting/export; JSON preserves nested checks, acceptance evidence and the full timeline. Keep progress in the ticket spec and `.harness.json`, commit checkpoints, and mark complete only after accepted evidence/review. PRSG-prefixed delivery commits are linked without silently changing acceptance state; PRSG-0 without a manifest is activity-only. Deleted manifests remain in the audit.
+
+Build locally with `python3 scripts/planning/build_ticket_audit.py`, then serve `artifacts/` via `python3 -m http.server 8000 --directory artifacts` and open `/tickets/`. The generated audit is `artifacts/tickets/audit.json` (Git-ignored, downloadable from Pages). It is rebuilt from full first-parent history in every main-branch Pages deployment; committed specs/manifests and Git are the source of truth, not a manually synchronized spreadsheet. Every committed checkpoint is recorded; uncommitted activity and hidden branch-only history are not. A deployment snapshot is not a tamper-proof compliance archive, and declared test evidence still needs review. Shallow checkouts fail rather than publish incomplete history.
+
 Commit titles: `PRSG-N Description`; shared harness changes use `PRSG-0`. Commits with nonempty staged changes exclusively within `artifacts/daily-market-brief/` are exempt. Mixed changes, empty commits and moves crossing that boundary still require a ticket title. Reports remain tracked. Enable the title check in each checkout with `sh scripts/install_git_hooks.sh`. The local hook is not a server-side policy and can be bypassed; review titles before pushing.
 
 Create plans under `plans/YYYY-MM-DD/` using the planning date in Asia/Kuala_Lumpur. Allocate the next unused repository-wide `PRSG-N` key; never restart numbering for a new day or reuse a completed key. Filename: `PRSG-N-short-title.md`, with matching `PRSG-N.harness.json`. Preserve creation date when resuming work. Each plan has a "When it's considered done" checklist whose stable IDs match JSON acceptance items. Mark a box only when evidence is recorded; pending reviews and measurements stay unchecked.
