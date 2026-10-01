@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-22",
+  "tags": {
+    "type": "docs",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.3,
+      "high": 0.5
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-22-market-learning-program.md",
+  "objective": "Overall market-learning plan",
+  "status": "review",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "bb0d302bd4384482e628e5e1e58630e0d68396f4",
+  "allowed_paths": [
+    "plans/2026-10-01/PRSG-22-market-learning-program.md",
+    "plans/2026-10-01/PRSG-22.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "infra/",
+    "artifacts/",
+    "scripts/",
+    "skills/",
+    ".githooks/"
+  ],
+  "checks": [
+    {
+      "id": "findings",
+      "kind": "manual",
+      "description": "Overall phased plan, risks and role assignments reviewed by Lead",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "metadata",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-01/PRSG-22.harness.json"
+      ],
+      "cwd": ".",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-22-D1",
+      "description": "Overall phased plan, risks and role assignments reviewed by Lead",
+      "check_ids": [
+        "findings",
+        "metadata"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
