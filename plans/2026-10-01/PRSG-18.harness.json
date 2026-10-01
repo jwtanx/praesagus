@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-18",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.3
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-18-ticket-default-descending.md",
+  "objective": "Default ticket-key descending sort including reset.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "43ff724f717b92daea2adfd05f27369601a0094c",
+  "allowed_paths": [
+    "artifacts/tickets/index.html",
+    "tests/ticket_dashboard_checks.cjs",
+    "plans/2026-10-01/PRSG-18-ticket-default-descending.md",
+    "plans/2026-10-01/PRSG-18.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "skills/",
+    "artifacts/financial-calendar/"
+  ],
+  "checks": [
+    {
+      "id": "dom",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/ticket_dashboard_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: node tests/ticket_dashboard_checks.cjs passed desktop/mobile DOM regressions. Lead reviewed exact four-file diff; no data/backend modifications. git diff --check passed. Actual rendered-browser visual QA not run."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: node tests/ticket_dashboard_checks.cjs passed desktop/mobile DOM regressions. Lead reviewed exact four-file diff; no data/backend modifications. git diff --check passed. Actual rendered-browser visual QA not run."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-18-D1",
+      "description": "Requested UI behavior passes regression and Lead review.",
+      "check_ids": [
+        "dom",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT: node tests/ticket_dashboard_checks.cjs passed desktop/mobile DOM regressions. Lead reviewed exact four-file diff; no data/backend modifications. git diff --check passed. Actual rendered-browser visual QA not run."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-01 MYT: node tests/ticket_dashboard_checks.cjs passed desktop/mobile DOM regressions. Lead reviewed exact four-file diff; no data/backend modifications. git diff --check passed. Actual rendered-browser visual QA not run."
+    ]
+  }
+}

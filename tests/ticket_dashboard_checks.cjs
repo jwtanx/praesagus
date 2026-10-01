@@ -51,7 +51,8 @@ function mount({ width = 1280, data = fixture, failure = null, deferred = false 
 async function controls(width) {
   const t = mount({ width }); await settle();
   assert.deepEqual(t.requested, ['./audit.json']); assert.equal(t.$('#full-audit').getAttribute('href'), './audit.json'); assert.equal(t.$('#full-audit').download, 'praesagus-ticket-audit.json'); assert.equal(t.$('#dashboard').hidden, false);
-  assert.deepEqual(t.rows(), ['PRSG-0', 'PRSG-1', 'PRSG-2', 'PRSG-3', 'PRSG-10']);
+  assert.deepEqual(t.rows(), ['PRSG-10', 'PRSG-3', 'PRSG-2', 'PRSG-1', 'PRSG-0']);
+  assert.equal(t.$('#order').value,'desc');
   assert.deepEqual([...t.w.document.querySelectorAll('thead th')].slice(0,2).map(el=>el.textContent), ['Ticket','Title']);
   const row=t.$('button[data-key="PRSG-1"]').closest('tr');assert.equal(row.children[0].textContent,'PRSG-1');assert.equal(row.children[1].textContent,'Catalyst inbox');assert.equal(row.children.length,7);assert.match(row.children[6].textContent,/MYT/);assert.equal(row.children[6].querySelector('time').dateTime,fixture.tickets[1].updated_at);
   for(const [key,emoji,color] of [['PRSG-10','✅','complete'],['PRSG-1','🔄','progress'],['PRSG-2','📝','planned']]){const badge=t.$(`button[data-key="${key}"]`).closest('tr').querySelector('.status-badge');assert.ok(badge.classList.contains(`status-${color}`));assert.equal(badge.firstChild.textContent,emoji);assert.equal(badge.firstChild.getAttribute('aria-hidden'),'true');assert.ok(badge.lastChild.textContent);}
@@ -62,10 +63,12 @@ async function controls(width) {
   t.change('#search', 'Catalyst inbox', 'input'); assert.deepEqual(t.rows(), ['PRSG-1']);
   t.change('#search', 'prsg-2', 'input'); assert.deepEqual(t.rows(), ['PRSG-2']);
   t.$('#reset').click();
-  for (const [id, value, expected] of [['#status-filter', 'activity_only', ['PRSG-0']], ['#type-filter', 'bug', ['PRSG-3']], ['#module-filter', 'frontend', ['PRSG-1']], ['#owner-filter', 'Engineer', ['PRSG-1', 'PRSG-3']]]) { t.change(id, value); assert.deepEqual(t.rows(), expected); t.$('#reset').click(); }
+  assert.equal(t.$('#order').value,'desc');
+  for (const [id, value, expected] of [['#status-filter', 'activity_only', ['PRSG-0']], ['#type-filter', 'bug', ['PRSG-3']], ['#module-filter', 'frontend', ['PRSG-1']], ['#owner-filter', 'Engineer', ['PRSG-3', 'PRSG-1']]]) { t.change(id, value); assert.deepEqual(t.rows(), expected); t.$('#reset').click(); }
   t.change('#owner-filter', 'Engineer'); t.change('#module-filter', 'frontend'); t.change('#status-filter', 'in_progress'); assert.deepEqual(t.rows(), ['PRSG-1']);
   t.change('#search', 'no match', 'input'); assert.equal(t.$('#empty').hidden, false); assert.equal(t.$('#export').disabled, true); assert.equal(t.$('#table-wrap').hidden, true);
   t.$('#reset').click();
+  t.change('#order','asc');
   for (const [mode, expected] of [['key', ['PRSG-0', 'PRSG-1', 'PRSG-2', 'PRSG-3', 'PRSG-10']], ['created', ['PRSG-3', 'PRSG-10', 'PRSG-2', 'PRSG-1', 'PRSG-0']], ['updated', ['PRSG-10', 'PRSG-2', 'PRSG-1', 'PRSG-3', 'PRSG-0']], ['priority', ['PRSG-3', 'PRSG-1', 'PRSG-2', 'PRSG-10', 'PRSG-0']], ['effort', ['PRSG-10', 'PRSG-2', 'PRSG-1', 'PRSG-3', 'PRSG-0']], ['impact', ['PRSG-10', 'PRSG-3', 'PRSG-2', 'PRSG-1', 'PRSG-0']], ['title', ['PRSG-2', 'PRSG-1', 'PRSG-3', 'PRSG-0', 'PRSG-10']]]) { t.change('#sort', mode); assert.deepEqual(t.rows(), expected, mode); }
   t.change('#sort', 'priority'); t.change('#order', 'desc'); assert.deepEqual(t.rows(), ['PRSG-10', 'PRSG-2', 'PRSG-1', 'PRSG-3', 'PRSG-0']);
   t.$('button[data-key="PRSG-1"]').click(); assert.equal(t.w.document.activeElement.id, 'detail');

@@ -20,7 +20,7 @@
 <label>Module<select id="module-filter"><option value="">All modules</option></select></label>
 <label>Owner<select id="owner-filter"><option value="">All owners</option></select></label>
 <label>Sort by<select id="sort"><option value="key">Ticket key</option><option value="created">Created date</option><option value="updated">Updated date</option><option value="priority">Priority</option><option value="effort">Effort</option><option value="impact">Impact</option><option value="title">Title</option></select></label>
-<label>Order<select id="order"><option value="asc">Ascending</option><option value="desc">Descending</option></select></label>
+<label>Order<select id="order"><option value="asc">Ascending</option><option value="desc" selected>Descending</option></select></label>
 </div>
 <div class="actions"><p id="result-count" role="status" aria-live="polite"></p><button id="reset" type="button">Reset filters</button><button id="export" type="button">Export filtered CSV</button><a id="full-audit" href="./audit.json" download="praesagus-ticket-audit.json">Full JSON audit</a></div>
 <p id="empty" class="empty" hidden>No tickets match these filters.</p>
@@ -131,7 +131,7 @@ async function init(){
 }
 $('#search').addEventListener('input',()=>{if(audit)renderResults()});
 for(const id of ['status-filter','type-filter','module-filter','owner-filter','sort','order'])$('#'+id).addEventListener('change',()=>{if(audit)renderResults()});
-$('#reset').onclick=()=>{$('#search').value='';for(const id of ['status-filter','type-filter','module-filter','owner-filter'])$('#'+id).value='';$('#sort').value='key';$('#order').value='asc';renderResults()};
+$('#reset').onclick=()=>{$('#search').value='';for(const id of ['status-filter','type-filter','module-filter','owner-filter'])$('#'+id).value='';$('#sort').value='key';$('#order').value='desc';renderResults()};
 $('#ticket-rows').addEventListener('click',e=>{const button=e.target.closest('button[data-key]');if(button)renderDetail(button.dataset.key,true)});
 $('#export').onclick=()=>{const url=URL.createObjectURL(new Blob(['\uFEFF',filteredCsv()],{type:'text/csv;charset=utf-8'}));const a=node('a');a.href=url;a.download='praesagus-ticket-audit.csv';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 init();
