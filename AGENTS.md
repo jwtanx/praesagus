@@ -40,6 +40,7 @@ Treat `docs/`, scripts, configuration, and tests as evidence of implemented beha
 | Role / contribution | Reuse these skills | When |
 |---|---|---|
 | Lead — created | `skills/praesagus-feature-planner/SKILL.md`, `skills/praesagus-project-lead/SKILL.md` | Prioritization, dated ticket specs, scope/evidence review and established-session delegation |
+| Lead — resource workflow | `skills/lead/SKILL.md` | `/lead` resource checks, approved schedule coordination and human-requested restoration; Lead chat only, not a runtime access-control boundary |
 | Engineer — created | `skills/praesagus-implementation/SKILL.md` | Accepted code changes, focused test harnesses, implementation handoff |
 | Researcher — created | `skills/research-brief/SKILL.md` | Market/product/API/technical research, sourced options and tradeoffs |
 | Consultant — created; Researcher also maintains reports | `skills/daily-market-brief/SKILL.md`, `skills/technical-trend-analysis/SKILL.md` | Timestamped news/catalyst briefs and data-supported technical trend review |

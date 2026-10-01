@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lead"
+  short_description: "Lead resource guards and backlog scheduling"
+  default_prompt: "Use $lead to check resources and coordinate the Praesagus backlog."

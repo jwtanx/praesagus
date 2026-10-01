@@ -1,0 +1,60 @@
+---
+name: lead
+description: Lead-only Praesagus backlog coordination, resource checks, schedule creation, checkpointing and schedule restoration. Use for /lead, $lead or a Lead scheduling request; not for specialist sessions.
+license: MIT
+metadata:
+  author: praesagus
+  version: "1.2"
+---
+
+# Lead control
+
+## Ownership and invocation
+
+Only Lead chat `01a058ad-4f81-7522-aea8-0c6434ccbfc2` may mutate its schedules through this workflow. In another chat, stop and ask the human to invoke Lead. Role restriction is an instruction, not an access-control sandbox. `/lead` is a natural-language trigger; native explicit invocation is `$lead`, depending on app discovery. Read the repo project-lead skill for delegation and feature-planner plus ticket-harness reference when creating tickets.
+
+Modes: `check`, `start` (requires human schedule approval), `checkpoint`, `restore`. A bare human `/lead` or `$lead` first checks for `/Users/jwtan/.codex/lead-state/lead-schedules-backup.md`. If present, the user's invocation authorizes restoring those previously saved schedules under the restore checks below; otherwise default to read-only check. An explicit `check` never restores. An invocation without a backup does not authorize activating a new schedule. User approved the daily 09:00–06:00 next-day cadence on 2026-10-01; the two complementary Lead heartbeat IDs are recorded in the private registry.
+
+## Cheap check first
+
+1. Query the app get_usage_limits tool once. Select the relevant rateLimitsByLimitId bucket, falling back to rateLimits; only a windowDurationMins=300 window counts as five-hour usage. Return a sanitized object with only usedPercent, windowDurationMins, resetsAt, sampled_at (UTC). Do not scrape authentication files, private endpoints or shell session logs. Usage is shared across the account, not Lead's token budget. Missing data is unknown, not 100% remaining.
+2. Run `sh skills/lead/scripts/status.sh`. It reads macOS pmset, not credentials. Supply sanitized usage JSON via `--usage-json PATH` to include both checks; otherwise usage is explicitly unavailable. Snapshot must be under five minutes old; stale/future samples or invalid fields become unknown.
+3. Act on the compact JSON action. Battery <=8% takes precedence even when charging; usage <=2% requires checkpoint/reset handling. Unknown readings stop new delegation and require attention. At <=5% usage proactively checkpoint before the hard <=2% stop, to leave enough budget. Weekly/exhausted-other-bucket limits may block continuation despite a five-hour reset. Threshold constants live in scripts/status.py; current percentages/reset times must always be fetched live, never hardcoded from a prior reading.
+
+## Approved daily coordination
+
+Use two complementary heartbeats attached to Lead with the automation tool, not shell cron. Use Asia/Kuala_Lumpur, every 15 minutes from 09:00 through 06:00 the following day inclusive: quarter-hours within 09:00–23:45 and 00:00–05:45, plus one 06:00 check. This is 85 checks per day; 06:15–08:45 is inactive. One quarter-hour rule plus a daily 06:00 companion avoids extra wakes at 06:15/30/45. Confirm returned schedule/timezone; never silently approximate it. Keep both Lead schedule IDs and full current tool-view configuration in private local registry `/Users/jwtan/.codex/lead-state/schedules.md`; do not put prompts/context in public artifacts or Git. This registry is not a scheduler.
+
+On each run: resource checks first; exit quietly if no actionable change. Check collaborator status via one compact wait_threads snapshot, never interrupt busy sessions or reassign an in-flight ticket. Inspect committed specs/manifests and dirty-work ownership; generated audit may lag. Review completed handoffs before marking done. Choose one bounded ready task: Researcher feasibility/source comparisons; Consultant market/news interpretation; Engineer accepted implementation; Lead integration/review. Delegate disjoint paths with explicit deliverable/checks and authorized return handoff. Spikes do not become implementation tickets. Respect existing model preferences. If all backlog is genuinely complete, run feature-planner for a small evidence-backed opportunity; no endless ticket generation, purchases, live data, deployment or trades beyond existing authority. Handle blockers explicitly and continue only independent permitted work. Do not optimize activity counts instead of useful completion.
+
+## Same-run continuation, not one action per tick
+
+The quarter-hour schedule is a recovery/reconciliation trigger, not a work quota. "Choose one bounded ready task" means one task at a time, not one task per run. Pending review, dirty delivery and an outstanding authorized push are actionable even if nothing changed since the previous tick. While resources and authorization permit, continue the current workstream in the same turn: review returned evidence, resolve bounded findings, synchronize acceptance, validate owned scope, commit each reviewed ticket separately under existing user authorization, verify push, then dispatch the next accepted task. A passing test or collaborator handoff is a checkpoint, not an automatic stopping point. Do not defer a ready local step merely because the next scheduled check is15 minutes away.
+
+After every milestone ask: what safe, useful step can I do now? Prioritize pending review/integration and delivery obligations before creating more backlog. While collaborators work, advance disjoint Lead reviews/planning; when their result is the only dependency, use a bounded wait (at most60 seconds per call) rather than rapid polling. Continue on a returned result; if still blocked and no independent useful step exists, save context and yield to the existing heartbeat. Do not busy-loop, create duplicate wake schedules or invent tasks to remain active.
+
+Allowed stopping conditions: resource checkpoint/removal, outside the approved working window, explicit human pause, required new authority, unresolved material decision, all useful independent work blocked on an external result, or completion of the authorized objective. Record the concrete reason and next dependency in private context; status commentary is not completion. Recheck resources before costly steps and at least every5 minutes during a long turn. The06:00 wrap-up remains report-only and may stop after reporting. These instructions do not provide background execution between turns or guarantee a session stays running.
+
+Replay cases: returned handoff+passing tests+pending acceptance -> inspect evidence then accept or identify gaps, not stop at tests; accepted ticket+authorized push -> separate commit/push verification before claiming delivered; busy Engineer+independent Lead review -> review locally, no duplicate delegation; all dependencies busy/no independent task -> checkpoint/yield, no polling loop; battery8% -> save/remove takes precedence;06:00 -> report only. Human requested this behavioral correction; validate through actual delivery and independent read-only replay, not wording checks alone.
+
+## Daily 06:00 wrap-up
+
+The 06:00 companion is a daily project report, not another delegation run. Report the previous09:00–current06:00 MYT work period with dated cutoff, accepted completed tickets and verified commit links, tests, work per owner, pending reviews, blockers and next three09:00 priorities. Distinguish reported/verified, committed/pushed/deployed and missed/delayed execution. Provide a brief report even on unchanged days; do not start new work. Save private dated wrap-up and restart context, keep resource guards, and never interrupt collaborators for reporting.
+
+## Checkpoint and five-hour reset
+
+At low usage, stop new work and preserve files. Request bounded collaborator checkpoints only if active and authorization permits; do not discard their edits. Save private `/Users/jwtan/.codex/lead-state/context.md` using apply_patch: current objective, revision, dirty ownership, ticket states, exact commands/results, pending reviews/decisions, collaborators/cursors and next safe step. Save is not commit acceptance: commit only independently reviewed changes ticket-by-ticket under existing authorization; otherwise retain uncommitted work and record it. Never reset/stash blindly or expose secrets.
+
+At <=2%: inventory and save all Lead schedule configs; pause recurring Lead work with the automation tool while preserving original statuses. Use the tool-reported reset epoch, never assume now+5h. Create exactly one Lead heartbeat wake at reset+60 seconds, with count=1; inspect returned next time. Anchored schedules may require suggested_create/user confirmation: report pending approval, do not claim active or create a daily substitute. Reuse an existing matching wake, avoid duplicates. At wake, recheck battery and all limiting windows, read checkpoint, resume eligible prior schedules within their time guards, and pick up the recorded next step. Do not repeatedly reschedule when weekly limits or other blockers remain; ask the human. Sleep/offline app can delay or miss wakes; no guaranteed execution.
+
+## Low battery save/remove and human restore
+
+At battery <=8%: checkpoint first, then inventory Lead-owned schedules only. Include pending reset wakes. Never touch Researcher's 08:01 daily brief or another chat's tasks. Read each registry entry through automation view, and inspect local automation.toml metadata where available. Ownership requires exact target_thread_id equal to Lead. If complete inventory/ownership cannot be established, report the gap and do not delete an unverifiable task.
+
+Before deleting anything, use apply_patch to write `/Users/jwtan/.codex/lead-state/lead-schedules-backup.md` with full restorable configuration (ID, name, kind, target, prompt, rule/timezone, status, notification policy and any model/project/execution fields), backup time, reason, checksum and per-entry removal/restoration progress. Read back and validate every entry. Append/merge an existing unfinished backup; never overwrite it. Then remove the exact confirmed Lead schedules using automation_update delete, record success/failure immediately. Backup before deletion; if save/readback fails, delete nothing. No automatic restore while battery-low. Removal is recoverable by recreating saved configurations, though IDs may change.
+
+On human `restore the schedule`, `/lead restore`, or bare `/lead` with a saved backup: check battery/usage first. If battery is <=8%, usage <=5%, another account limit is exhausted, or either reading is unknown, retain the backup and stop restoration; ask the human to charge/wait/recheck. Otherwise verify saved ownership/config integrity, view any surviving schedules and reconcile recorded new IDs. Recreate only removed recurring schedules with original settings/status; paused stays paused. Expired one-time wakes are recorded skipped, not replayed. Preserve future one-time anchors only if exact scheduling is supported. Record each new ID before the next operation; if a crash left ambiguous progress, inventory/match before retry, never blindly duplicate. Stop on partial failure and retain backup. Refresh registry. Read back all restored configs before deleting the exact temporary backup via apply_patch; keep context and a small restoration receipt. Tell the human which schedules were removed/restored/skipped and whether confirmation is still required.
+
+## Evidence boundaries
+
+This skill guides an agent using app tools. The status script only diagnoses; it does not schedule, delete, restore, fetch Codex usage or interrupt agents. Fifteen-minute sampling does not guarantee catching battery/usage exhaustion between ticks or during lengthy work: recheck before costly work and at bounded checkpoints. Save/restore mutations must be tested with mocks before production use. Initial implementation provides tested threshold logic, not an end-to-end live delete/restore guarantee.
