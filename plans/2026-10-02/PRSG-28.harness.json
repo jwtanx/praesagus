@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-28",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-28-ticket-decision-details.md",
+  "objective": "Explain each ticket's purpose, approach, options and tradeoffs in a collapsible detail section",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "9ba5bcf1cf29b8da35a150ecf8eb5859493a371c",
+  "allowed_paths": [
+    "plans/2026-10-02/PRSG-28-ticket-decision-details.md",
+    "plans/2026-10-02/PRSG-28.harness.json",
+    "scripts/planning/build_ticket_audit.py",
+    "artifacts/tickets/index.html",
+    "tests/test_ticket_audit.py",
+    "tests/ticket_dashboard_checks.cjs"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "skills/",
+    "infra/",
+    "harness/",
+    "artifacts/daily-market-brief/",
+    ".DS_Store",
+    "pyproject.toml"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_ticket_audit.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "python3 -m pytest -q tests/test_ticket_audit.py: 45 passed in 8.36s. Real temporary Git commits cover explicit context, committed-only exclusion, conservative named sections, Markdown-only refresh/history, missing context, malformed optional input, stale-context suppression, unsafe references and PRSG-27 boundary/limits.",
+        "2026-10-02 MYT Lead inspected complete six-path diff and independently reran45 audit tests (6.44s), dashboard DOM checks at1280/390 plus committed27-ticket replay, and fullsuite405passed (16.16s,5 existingBoto3/Python3.9 warnings). Closed disclosures preserve nested evidence; visible excerpts and missing fields are explicit; no HTML injection or inferred decisions. Browser visual QA and Pages deployment not verified."
+      ]
+    },
+    {
+      "id": "dom",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/ticket_dashboard_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/ticket_dashboard_checks.cjs: passed. Visible overview outside details; <=240-character labelled source excerpts; closed/toggleable Why and Technical details & audit history, retained nested checks/timeline, 1280/390 fixtures, fallbacks, XSS/link safety and existing search/filter/sort/history/CSV regressions.",
+        "Additional committed HEAD integration replay: python3 scripts/planning/build_ticket_audit.py --output /tmp/prsg28-ticket-audit.json generated 27 tickets at frozen 9ba5bcf; node tests/ticket_dashboard_checks.cjs --audit-json /tmp/prsg28-ticket-audit.json passed. No repository audit JSON written.",
+        "2026-10-02 MYT Lead inspected complete six-path diff and independently reran45 audit tests (6.44s), dashboard DOM checks at1280/390 plus committed27-ticket replay, and fullsuite405passed (16.16s,5 existingBoto3/Python3.9 warnings). Closed disclosures preserve nested evidence; visible excerpts and missing fields are explicit; no HTML injection or inferred decisions. Browser visual QA and Pages deployment not verified."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews committed-only provenance, safe links, clear fallback and accessible disclosure",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02 MYT Lead inspected complete six-path diff and independently reran45 audit tests (6.44s), dashboard DOM checks at1280/390 plus committed27-ticket replay, and fullsuite405passed (16.16s,5 existingBoto3/Python3.9 warnings). Closed disclosures preserve nested evidence; visible excerpts and missing fields are explicit; no HTML injection or inferred decisions. Browser visual QA and Pages deployment not verified."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-28-D1",
+      "description": "Ticket disclosure explains committed reasons and decisions with safe references or explicit missing-evidence states",
+      "check_ids": [
+        "tests",
+        "dom",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-02 MYT Lead inspected complete six-path diff and independently reran45 audit tests (6.44s), dashboard DOM checks at1280/390 plus committed27-ticket replay, and fullsuite405passed (16.16s,5 existingBoto3/Python3.9 warnings). Closed disclosures preserve nested evidence; visible excerpts and missing fields are explicit; no HTML injection or inferred decisions. Browser visual QA and Pages deployment not verified."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-02 MYT Lead inspected complete six-path diff and independently reran45 audit tests (6.44s), dashboard DOM checks at1280/390 plus committed27-ticket replay, and fullsuite405passed (16.16s,5 existingBoto3/Python3.9 warnings). Closed disclosures preserve nested evidence; visible excerpts and missing fields are explicit; no HTML injection or inferred decisions. Browser visual QA and Pages deployment not verified."
+    ]
+  },
+  "decision_context": {
+    "purpose": "Ticket details were dominated by test logs, making it hard to see why the work mattered.",
+    "approach": "Show five short explanations first; keep full reasoning and technical audit records in separate expandable sections.",
+    "choices": [
+      "Use built-in browser dropdowns without adding dependencies.",
+      "Keep only an external specification link: rejected because it is harder to scan.",
+      "Generate reasons with an LLM: rejected because it could invent decisions."
+    ],
+    "findings": "The existing committed plans already contain useful reasoning. Reading those Git snapshots keeps explanations tied to auditable evidence.",
+    "tradeoffs": "Older tickets with missing or unrecognized sections say Not recorded. We preserve full source wording instead of pretending every ticket has a documented decision.",
+    "references": []
+  }
+}

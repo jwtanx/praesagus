@@ -245,3 +245,111 @@ def test_shallow_history_rejected(repo, tmp_path_factory):
 def test_unsafe_repository_link(url):
     with pytest.raises(ValueError):
         audit.repository_url(url)
+
+
+def test_explicit_decision_context_is_committed_only(repo):
+    path = write_ticket(repo)
+    data = json.loads(path.read_text())
+    data['decision_context'] = {'purpose': 'User needs a readable explanation.',
+        'approach': ['Use existing native disclosure.'], 'choices': ['Native details; external viewer.'],
+        'findings': 'Recorded fixture finding.', 'tradeoffs': 'No dependency versus rich rendering.',
+        'references': [{'label': 'Primary source', 'url': 'https://example.org/research'}]}
+    path.write_text(json.dumps(data))
+    sha = commit(repo, 'PRSG-1 Record decision context')
+    data['decision_context']['purpose'] = 'Uncommitted reason must not appear'
+    path.write_text(json.dumps(data))
+    row = audit.build_audit(repo)['tickets'][0]
+    context = row['decision_context']
+    assert context['fields']['purpose'] == {'text': ['User needs a readable explanation.'], 'source': 'manifest'}
+    assert context['references'] == [{'label': 'Primary source', 'url': 'https://example.org/research'}]
+    assert context['spec_url'].startswith('https://github.com/jwtanx/praesagus/blob/'+sha+'/')
+    assert 'Uncommitted reason' not in json.dumps(row)
+
+
+def test_legacy_named_sections_and_markdown_only_update(repo):
+    path = write_ticket(repo)
+    md = path.with_name('PRSG-1-fixture.md')
+    md.write_text(md.read_text()+'\n## Why the ticket is created?\nOriginal reason.\n\n## Approach\nRecorded proposal.\n\n## Choices and tradeoffs\nNative details over invented summaries.\n\n## Findings\nOfficial [source](https://example.org/primary).\n')
+    first = commit(repo, 'PRSG-1 Explain legacy plan')
+    before = audit.build_audit(repo)['tickets'][0]
+    assert before['decision_context']['fields']['purpose']['text'] == ['Original reason.']
+    md.write_text(md.read_text().replace('Original reason.', 'New committed reason.'))
+    second = commit(repo, 'Update Markdown explanation only')
+    md.write_text(md.read_text().replace('New committed reason.', 'Dirty explanation.'))
+    row = audit.build_audit(repo)['tickets'][0]
+    assert row['decision_context']['fields']['purpose']['text'] == ['New committed reason.']
+    assert row['decision_context']['fields']['choices']['text'] == row['decision_context']['fields']['tradeoffs']['text']
+    assert row['decision_context']['references'] == [{'label': 'source', 'url': 'https://example.org/primary'}]
+    assert row['spec_url'].startswith('https://github.com/jwtanx/praesagus/blob/'+second+'/')
+    assert row['history'][0]['commit']['sha'] == first
+    assert row['history'][0]['decision_context']['fields']['purpose']['text'] == ['Original reason.']
+    assert row['history'][-1]['decision_context'] == row['decision_context']
+
+
+def test_missing_context_does_not_invent_objective_reason(repo):
+    write_ticket(repo)
+    commit(repo, 'Create plan')
+    context = audit.build_audit(repo)['tickets'][0]['decision_context']
+    assert all(value['text'] == [] for value in context['fields'].values())
+
+
+@pytest.mark.parametrize('bad', [None, 'rationale', {'purpose': 1}, {'choices': ['valid', None]},
+                                      {'references': 'url'}, {'references': [{'label': 'bad', 'url': None}]}])
+def test_malformed_context_fails_visibly_and_clears_stale_current_context(repo, bad):
+    path = write_ticket(repo)
+    data = json.loads(path.read_text())
+    data['decision_context'] = {'purpose': 'Old accepted wording'}
+    path.write_text(json.dumps(data))
+    commit(repo, 'Create context')
+    data['decision_context'] = bad
+    path.write_text(json.dumps(data))
+    commit(repo, 'PRSG-1 Invalid context')
+    row = audit.build_audit(repo)['tickets'][0]
+    assert row['status'] == 'inconsistent'
+    assert 'decision_context' not in row
+    assert row['history'][0]['decision_context']['fields']['purpose']['text'] == ['Old accepted wording']
+
+
+def test_removal_clears_current_context(repo):
+    path = write_ticket(repo)
+    data = json.loads(path.read_text()); data['decision_context'] = {'purpose': 'Historical reason'}
+    path.write_text(json.dumps(data)); commit(repo, 'Create plan')
+    path.unlink(); commit(repo, 'Remove metadata')
+    row = audit.build_audit(repo)['tickets'][0]
+    assert row['status'] == 'removed' and 'decision_context' not in row
+
+
+@pytest.mark.parametrize('url', ['javascript:alert(1)', 'http://example.org', 'https://user:secret@example.org',
+    'https://example.org/\nunsafe', 'https://example.org/%0Aunsafe', 'https://example.org/%7Funsafe',
+    'https://example.org/back\\slash', 'https://[invalid'])
+def test_decision_reference_safety(url):
+    assert audit.safe_reference(url) is None
+
+
+def test_prsg27_legacy_boundary_and_limits_are_preserved():
+    root = Path(__file__).resolve().parents[1]
+    manifest = json.loads(audit.read_blob(root, 'HEAD', 'plans/2026-10-01/PRSG-27.harness.json'))
+    context = audit.extract_context(manifest, audit.read_blob(root, 'HEAD', manifest['spec_path']), 'https://github.com/jwtanx/praesagus')
+    purpose = '\n'.join(context['fields']['purpose']['text'])
+    assert 'pure standard-library calculations' in purpose
+    assert 'No return forecasts' in purpose
+    assert 'caller' in '\n'.join(context['fields']['findings']['text'])
+
+
+
+def test_explicit_fields_override_legacy_without_erasing_unspecified_fields(repo):
+    path = write_ticket(repo)
+    data = json.loads(path.read_text());data['decision_context'] = {'purpose': 'Explicit authored reason.',
+        'references': [{'label': 'Unsafe', 'url': 'https://user:secret@example.org'}, {'label': 'Safe', 'url': 'https://example.org/source'}]}
+    path.write_text(json.dumps(data))
+    md = path.with_name('PRSG-1-fixture.md');md.write_text(md.read_text()+'\n## Why the ticket is created?\nLegacy reason.\n\n## Approach\nLegacy proposal.\n')
+    commit(repo, 'PRSG-1 Record hybrid context')
+    context = audit.build_audit(repo)['tickets'][0]['decision_context']
+    assert context['fields']['purpose']['text'] == ['Explicit authored reason.']
+    assert context['fields']['approach']['text'] == ['Legacy proposal.']
+    assert context['references'] == [{'label': 'Safe', 'url': 'https://example.org/source'}]
+
+
+@pytest.mark.parametrize('url', ['https://@example.org', 'https://example.org:bad'])
+def test_empty_userinfo_or_invalid_port_reference_rejected(url):
+    assert audit.safe_reference(url) is None

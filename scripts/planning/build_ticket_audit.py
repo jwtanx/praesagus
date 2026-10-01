@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
-from urllib.parse import quote, urlsplit
+from urllib.parse import quote, unquote, urlsplit
 
 PLAN = re.compile(r'^plans/\d{4}-\d{2}-\d{2}/(PRSG-[1-9][0-9]*)\.harness\.json$')
 KEY = re.compile(r'^(PRSG-(?:0|[1-9][0-9]*)) ')
@@ -24,6 +24,83 @@ def git(root, *args, optional=False):
             return None
         raise ValueError('Git audit read failed: ' + result.stderr.decode(errors='replace').strip())
     return result.stdout.decode('utf-8')
+
+
+CONTEXT_FIELDS = ('purpose', 'approach', 'choices', 'findings', 'tradeoffs')
+SECTION_NAMES = {
+    'purpose': {'why the ticket is created?', 'objective', 'objective and boundary', 'objective and interfaces', 'problem', 'user need'},
+    'approach': {'approach', 'decision', 'scope and decision', 'accepted scope', 'implementation plan'},
+    'choices': {'choices', 'options', 'choices and tradeoffs'},
+    'findings': {'findings', 'research findings', 'decision and research review', 'evidence and limits', 'evidence and limitations', 'limitations', 'engineer handoff evidence'},
+    'tradeoffs': {'tradeoffs', 'choices and tradeoffs', 'scope and non-goals', 'safety and scope', 'frozen scope and handoff'},
+}
+
+
+def safe_reference(value):
+    if not isinstance(value, str) or re.search(r'[\s\\\x00-\x1f\x7f]', unquote(value)):
+        return None
+    try:
+        parsed = urlsplit(value)
+        if parsed.scheme == 'https' and parsed.hostname and parsed.username is None and parsed.password is None:
+            parsed.port  # Reject malformed ports without restricting valid HTTPS ports.
+            return value
+    except ValueError:
+        pass
+    return None
+
+
+def context_values(value):
+    values = [value] if isinstance(value, str) else value
+    if not isinstance(values, list) or any(not isinstance(item, str) or not item.strip() for item in values):
+        raise ValueError('Decision context requires text or a list of nonblank text')
+    return values
+
+
+def extract_context(manifest, spec_text, spec_url):
+    """Preserve named source sections verbatim; never infer unrecorded decisions."""
+    sections = []
+    heading, body = None, []
+    fenced = False
+    for line in spec_text.splitlines():
+        if re.match(r'^\s*(```|~~~)', line):
+            fenced = not fenced
+        match = re.match(r'^#{2,6}\s+(.+?)\s*#*$', line) if not fenced else None
+        if match:
+            if heading is not None:
+                sections.append((heading, '\n'.join(body).strip()))
+            heading, body = match[1].strip().lower(), []
+        elif heading is not None:
+            body.append(line)
+    if heading is not None:
+        sections.append((heading, '\n'.join(body).strip()))
+    explicit = manifest.get('decision_context', {})
+    if not isinstance(explicit, dict):
+        raise ValueError('decision_context must be an object')
+    result = {'fields': {}, 'references': [], 'spec_url': spec_url,
+              'review_status': manifest['review'].get('status'),
+              'scope_status': manifest.get('scope_status')}
+    for field in CONTEXT_FIELDS:
+        if field in explicit:
+            values, source = context_values(explicit[field]), 'manifest'
+        else:
+            values = [content for name, content in sections if name in SECTION_NAMES[field] and content]
+            source = 'named specification sections'
+        result['fields'][field] = {'text': values, 'source': source if values else None}
+    refs = explicit.get('references', [])
+    if not isinstance(refs, list) or any(not isinstance(ref, dict) or not isinstance(ref.get('label'), str) or not ref['label'].strip() or not isinstance(ref.get('url'), str) for ref in refs):
+        raise ValueError('decision references require label and URL')
+    candidates = list(refs)
+    for field in result['fields'].values():
+        for value in field['text']:
+            candidates.extend({'label': label, 'url': url} for label, url in re.findall(r'\[([^\]\n]+)\]\((https://[^\s<>]+?)\)', value))
+            candidates.extend({'label': 'Recorded source', 'url': url.rstrip('.,;')} for url in re.findall(r'https://[^\s<>\)]+', value))
+    seen = set()
+    for ref in candidates:
+        url = safe_reference(ref['url'])
+        if url and url not in seen:
+            seen.add(url)
+            result['references'].append({'label': ref['label'], 'url': url})
+    return result
 
 
 def progress(manifest):
@@ -96,6 +173,7 @@ def invalid_checkpoint(records, key, commit, paths, error, manifest_path=None):
     row = records[key]
     row.update(status='inconsistent', updated_at=commit['committed_at'], completion_commit=None,
                progress={'done': 0, 'total': 0}, checks=[], acceptance=[], review={}, validation_error=error)
+    row.pop('decision_context', None)
     if manifest_path:
         row['manifest_path'] = manifest_path
     row['history'].append({'commit': commit, 'kind': 'validation_failed', 'paths': paths,
@@ -137,6 +215,7 @@ def build_audit(root, url='https://github.com/jwtanx/praesagus', ref='HEAD'):
             previous = records.get(key)
             if raw is None:
                 if previous:
+                    previous.pop('decision_context', None)
                     previous['status'] = 'removed'
                     previous['completion_commit'] = None
                     previous['updated_at'] = committed_at
@@ -157,6 +236,7 @@ def build_audit(root, url='https://github.com/jwtanx/praesagus', ref='HEAD'):
                 if spec_text is None:
                     raise ValueError('Specification missing at checkpoint: '+manifest['spec_path'])
                 validate_committed_contract(root, manifest, spec_text, sha)
+                context = extract_context(manifest, spec_text, url+'/blob/'+sha+'/'+quote(manifest['spec_path'], safe='/'))
             except (ValueError, TypeError, KeyError) as exc:
                 invalid_checkpoint(records, key, commit, paths, str(exc), path)
                 touched.add(key)
@@ -168,14 +248,14 @@ def build_audit(root, url='https://github.com/jwtanx/praesagus', ref='HEAD'):
             kind = 'completed' if complete and (not previous or previous['status'] != 'complete') else ('progress_updated' if previous else 'plan_created')
             snapshot = {'commit': commit, 'kind': kind, 'paths': paths, 'status': manifest['status'],
                 'progress': progress(manifest), 'checks': manifest['checks'], 'acceptance': manifest['acceptance'],
-                'review': manifest['review'], 'manifest': manifest,
+                'review': manifest['review'], 'manifest': manifest, 'decision_context': context,
                 'spec_url': url+'/blob/'+sha+'/'+quote(manifest['spec_path'], safe='/')}
             history.append(copy.deepcopy(snapshot))
             records[key] = {'ticket_key': key, 'title': title, 'description': manifest['objective'],
                 'status': manifest['status'], 'tags': manifest['tags'], 'created_on': manifest.get('created_on', ''),
                 'updated_at': committed_at, 'spec_url': url+'/blob/'+sha+'/'+quote(manifest['spec_path'], safe='/'),
                 'manifest_path': path, 'progress': progress(manifest), 'checks': manifest['checks'],
-                'acceptance': manifest['acceptance'], 'review': manifest['review'], 'history': history,
+                'acceptance': manifest['acceptance'], 'review': manifest['review'], 'history': history, 'decision_context': context,
                 'completion_commit': commit if kind == 'completed' else (previous.get('completion_commit') if previous and complete else None)}
             touched.add(key)
         # Committed Markdown progress is auditable even without a JSON state change.
@@ -198,6 +278,7 @@ def build_audit(root, url='https://github.com/jwtanx/praesagus', ref='HEAD'):
                                 raise ValueError('Current manifest missing')
                             last_manifest = validate_snapshot(json.loads(current_raw), key)
                             validate_committed_contract(root, last_manifest, text, sha)
+                            ticket['decision_context'] = extract_context(last_manifest, text, url+'/blob/'+sha+'/'+quote(spec_path, safe='/'))
                         except (ValueError, TypeError, KeyError) as exc:
                             invalid_checkpoint(records, key, commit, paths, str(exc))
                             touched.add(key)
@@ -217,7 +298,8 @@ def build_audit(root, url='https://github.com/jwtanx/praesagus', ref='HEAD'):
                 kind = ('completed' if recovered and ticket['status'] == 'complete' else 'progress_recovered' if recovered else 'spec_updated') if text is not None else 'spec_removed'
                 ticket['history'].append({'commit': commit, 'kind': kind, 'paths': paths,
                     'status': ticket['status'], 'progress': ticket['progress'], 'checks': ticket['checks'],
-                    'acceptance': ticket['acceptance'], 'review': ticket['review'], 'spec_url': ticket['spec_url']})
+                    'acceptance': ticket['acceptance'], 'review': ticket['review'], 'spec_url': ticket['spec_url'],
+                    'decision_context': ticket.get('decision_context')})
                 touched.add(key)
         if prefix and prefix[1] not in touched:
             key = prefix[1]
