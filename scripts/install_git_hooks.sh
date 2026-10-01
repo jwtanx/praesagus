@@ -18,4 +18,4 @@ if [ -z "$current" ]; then
 fi
 chmod +x "$root/.githooks/commit-msg"
 git config --local core.hooksPath .githooks
-echo 'Enabled PRSG commit-title validation for this checkout.'
+echo 'Enabled commit-title and staged harness-filename validation for this checkout.'

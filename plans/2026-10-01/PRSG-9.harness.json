@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-9",
+  "tags": {
+    "type": "chore",
+    "modules": [
+      "skills",
+      "harness",
+      "docs"
+    ],
+    "owner_role": "Researcher",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.3
+    },
+    "impact": "low"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-9-report-commit-titles.md",
+  "objective": "Require structured report commit dates and consistent dashed ticket identifiers.",
+  "status": "complete",
+  "owner": "Researcher",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "427f1d746ca5bc92785dd1d0d3533b6bf2a4bcd7",
+  "allowed_paths": [
+    ".githooks/commit-msg",
+    "skills/daily-market-brief/SKILL.md",
+    "AGENTS.md",
+    "plans/2026-10-01/PRSG-9-report-commit-titles.md",
+    "plans/2026-10-01/PRSG-9.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "artifacts/",
+    "tests/"
+  ],
+  "checks": [
+    {
+      "id": "hook-regressions",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_commit_hook.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    },
+    {
+      "id": "skill-metadata",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "/Users/jwtan/.codex/skills/.system/skill-creator/scripts/quick_validate.py",
+        "skills/daily-market-brief"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: quick_validate.py skills/daily-market-brief reported Skill is valid; structural check only."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-9-D1",
+      "description": "Hook behavior and compatible regressions",
+      "check_ids": [
+        "hook-regressions"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    },
+    {
+      "id": "PRSG-9-D2",
+      "description": "Skill and instruction consistency",
+      "check_ids": [
+        "skill-metadata",
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    },
+    {
+      "id": "PRSG-9-D3",
+      "description": "Lead accepted scoped delivery",
+      "check_ids": [
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+    ]
+  }
+}

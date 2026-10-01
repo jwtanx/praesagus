@@ -1,13 +1,16 @@
 #!/bin/sh
-# Require a ticket key and a nonblank description on the subject line.
+# Require a dated report prefix or a dashed ticket key on the subject line.
 if [ "$#" -ne 1 ] || [ ! -r "$1" ]; then
     echo 'Cannot read commit message file.' >&2
     exit 1
 fi
 subject=$(sed -n '1p' "$1")
-# Exempt nonempty report-only changes. Disable rename detection so moves
+# Classify nonempty report-only changes. Disable rename detection so moves
 # across the folder boundary count both their deletion and addition.
 root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 1
+# Read added/modified harnesses from the index, not unstaged working-tree files.
+hook_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd) || exit 1
+python3 "$hook_dir/../scripts/planning/check_staged_harness.py" --repo-root "$root" || exit 1
 git -C "$root" diff --cached --quiet --no-renames
 staged_status=$?
 if [ "$staged_status" -gt 1 ]; then
@@ -15,7 +18,23 @@ if [ "$staged_status" -gt 1 ]; then
     exit 1
 fi
 if [ "$staged_status" -eq 1 ] && git -C "$root" diff --cached --quiet --no-renames -- . ':(exclude)artifacts/daily-market-brief/**'; then
-    exit 0
+    if printf '%s\n' "$subject" | LC_ALL=C grep -Eq '^\[REPORT\] [0-9]{8}( [^[:space:]].*)?$'; then
+        report_date=${subject#'[REPORT] '}
+        report_date=${report_date%% *}
+        if LC_ALL=C awk -v stamp="$report_date" 'BEGIN {
+            year = substr(stamp, 1, 4) + 0
+            month = substr(stamp, 5, 2) + 0
+            day = substr(stamp, 7, 2) + 0
+            split("31 28 31 30 31 30 31 31 30 31 30 31", days, " ")
+            if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)) days[2] = 29
+            exit !(year >= 1 && month >= 1 && month <= 12 && day >= 1 && day <= days[month])
+        }'; then
+            exit 0
+        fi
+    fi
+    echo 'Daily report commit title must be: [REPORT] YYYYMMDD [optional description]' >&2
+    echo 'Example: [REPORT] 20261001 Refresh morning market report' >&2
+    exit 1
 fi
 if ! printf '%s\n' "$subject" | LC_ALL=C grep -Eq '^PRSG-(0|[1-9][0-9]*) [^[:space:]].*$'; then
     echo 'Commit title must be: PRSG-<number> <description>' >&2

@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-14",
+  "tags": {
+    "type": "chore",
+    "modules": [
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-14-harness-filename-guard.md",
+  "objective": "Precommit harness filename validation",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "76db469b5a3fde5519be956db54a597f8858f0df",
+  "allowed_paths": [
+    ".githooks/commit-msg",
+    "tests/test_commit_hook.py",
+    "scripts/planning/check_staged_harness.py",
+    "scripts/install_git_hooks.sh",
+    "plans/2026-10-01/PRSG-14-harness-filename-guard.md",
+    "plans/2026-10-01/PRSG-14.harness.json",
+    "AGENTS.md"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "infra/",
+    "data/",
+    "artifacts/"
+  ],
+  "checks": [
+    {
+      "id": "hook",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_commit_hook.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "python3 -m pytest -q tests/test_commit_hook.py: 43 passed; staged filename, ticket_key, JSON, rename/deletion, index-vs-working-tree and report-title regressions.",
+        "python3 -m pytest -q: 173 passed, 5 existing Python 3.9 deprecation warnings."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews scoped findings or implementation",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-14-D1",
+      "description": "Staged-index naming guard and focused regressions pass, with Lead review",
+      "check_ids": [
+        "hook",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-01 MYT Lead integration: focused hook suite43 passed; ticket dashboard DOM replay passed; daily skill metadata valid. Lead independently reviewed shared PRSG-9/PRSG-14 hook and staged guard, revised UI source and Engineer desktop/mobile handoff. No live provider or ROI claims."
+    ]
+  }
+}

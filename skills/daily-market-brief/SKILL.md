@@ -7,7 +7,7 @@ description: >-
 license: MIT
 metadata:
   author: praesagus
-  version: "1.4"
+  version: "1.5"
   category: market-research
   tags: [daily-brief, catalysts, news, provenance, market-research]
 ---
@@ -77,6 +77,8 @@ Each prediction must have `confidence` (`low`, `medium`, `high`, `unavailable`) 
 At each new report, check the prior report for forecasts whose target date has matured. Append actuals and scoring fields to `harness/engineering/price-prediction/forecast-ledger.csv`; never rewrite the original forecast or score an unexpired horizon. If there is no eligible forecast or actual data is missing, state that and do not invent a success rate. `harness/forecast_review.py` implements offline deterministic ledger validation/outcome scoring at an explicit review time. Evidence collection and forecast judgment remain manual; no scheduler or answer-quality runtime is implied. Preserve report snapshots/source provenance so scoring uses only forecast-time information.
 
 ### GitHub Pages publishing
+
+Daily-report-only commits must start with `[REPORT] YYYYMMDD`, using the report's MYT date, for example `[REPORT] 20261001` or `[REPORT] 20261001 Refresh morning market report`. The `commit-msg` hook enforces the prefix and a valid calendar date for nonempty staged changes confined to `artifacts/daily-market-brief/`. Mixed changes, empty commits and renames crossing that boundary require `PRSG-<number> <description>`. Always write ticket identifiers with the dash in titles, messages and handoffs (for example `PRSG-8`, never `PRSG8`). Install the versioned hook with `sh scripts/install_git_hooks.sh` when needed; preserve existing hooks. Do not rewrite previously published commit titles.
 
 The shared report viewer is `artifacts/daily-market-brief/index.html`; it renders structured dated JSON from the same directory and uses `reports.json` to populate a calendar date picker that disables dates without reports. Its main navigation includes a Financial Calendar with event and market-closure markers, keyboard/mouse details, and tap-to-open event notes on mobile. The Pages workflow runs the JSON validator before deployment and publishes the `artifacts` tree. Update the shared `artifacts/index.html` landing page as needed, keep JSON/index paths relative and same-origin, and verify both a current report and the date picker in the deployed mobile view. A successful push or commit does not itself prove deployment; verify the GitHub Pages Actions run and the live URL before reporting it.
 

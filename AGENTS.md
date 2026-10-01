@@ -20,7 +20,7 @@ Treat `docs/`, scripts, configuration, and tests as evidence of implemented beha
 
 ## Engineering practice
 
-- Commit-title exemption: nonempty staged changes only within `artifacts/daily-market-brief/` do not need a PRSG prefix. Mixed changes, empty commits and renames crossing the folder boundary still need one. This is a title-hook exemption, not a Git tracking exclusion; report files remain tracked.
+- Report commit titles: nonempty staged changes only within `artifacts/daily-market-brief/` require `[REPORT] YYYYMMDD` with a valid report date and optional description (for example `[REPORT] 20261001 Refresh morning market report`). Mixed changes, empty commits and renames crossing the folder boundary require `PRSG-<number> <description>`; shared monthly-calendar changes are outside that report-only boundary. Always retain the dash in ticket identifiers in titles, messages and handoffs (for example `PRSG-9`). Report files remain tracked.
 
 - Commit titles must be `PRSG-<number> <description>` (for example `PRSG-1 Add catalyst inbox`). Reserve `PRSG-0` for shared harness/workflow infrastructure. Install the versioned commit-msg hook once per checkout with `sh scripts/install_git_hooks.sh`; Git clones do not enable hooks automatically. Existing hooks are preserved by the installer. Local hooks can be bypassed, so Lead must also review commit titles before pushing. User-required ticket titles supersede Conventional Commits skill defaults.
 
@@ -50,6 +50,8 @@ Before an applicable assignment, reuse and read the relevant role skill rather t
 ### Ticket tags and delivery contract
 
 - Ticket audit: commit progress/evidence updates in the dated spec and harness manifest; complete only after checklist evidence and Lead review. `scripts/planning/build_ticket_audit.py` derives the JSON audit and commit URLs from full first-parent Git history, excluding uncommitted work. Pages rebuilds `artifacts/tickets/audit.json` on each main push; the read-only `/tickets/` page supports keyword search, filtering, sorting, timeline details and CSV export. Generated audit JSON is not tracked (avoids self-referential hashes); committed specs/manifests/Git history are canonical. Code commits alone do not prove ticket completion or test success; preserve history, never rewrite it to conceal failed progress.
+
+- Harness JSON filenames must be exactly `PRSG-N.harness.json`; descriptive slugs belong only in Markdown filenames. The commit-msg hook checks staged harness filenames, JSON validity and matching `ticket_key` before commit-title validation, including rename destinations. It reads staged content, not unstaged edits; existing full ticket validation remains a separate review gate.
 
 - Store specs under `plans/YYYY-MM-DD/PRSG-N-title.md` with matching `.harness.json`; date is MYT creation date and PRSG numbers are globally unique. Keep stable checklist IDs in "When it's considered done" synchronized with JSON evidence/status.
 - Quick-glance tags in Markdown and JSON: type (`feature`, `bug`, `spike`, `refactor`, `chore`, `docs`, `test`, `skill`); modules (`backend`, `frontend`, `connectors`, `financial-data`, `market-research`, `alerting`, `observability`, `harness`, `skills`, `infra`, `docs`); one owner role; priority (`P0` actual critical incident, `P1` next committed, `P2` planned, `P3` later); effort (`XS` <0.5, `S` 0.5–2, `M` >2–7, `L` >7–15, `XL` >15 person-days plus range); impact (`low`, `medium`, `medium-high`, `high` with rationale).
