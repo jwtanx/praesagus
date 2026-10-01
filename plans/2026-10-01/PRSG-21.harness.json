@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-21",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "Researcher",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-21-jev-classification-research.md",
+  "objective": "Compare Jev alternatives and plan input-specific market classification with Consultant",
+  "status": "review",
+  "owner": "Researcher",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "bb0d302bd4384482e628e5e1e58630e0d68396f4",
+  "allowed_paths": [
+    "docs/research/PRSG-21-jev-classification.md",
+    "plans/2026-10-01/PRSG-21-jev-classification-research.md",
+    "plans/2026-10-01/PRSG-21.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "infra/",
+    "artifacts/",
+    "scripts/",
+    "skills/",
+    ".githooks/"
+  ],
+  "checks": [
+    {
+      "id": "findings",
+      "kind": "manual",
+      "description": "Researcher reviews primary-source shortlist and incorporates completed Consultant input-model findings",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 20:11 MYT: compiled docs/research/PRSG-21-jev-classification.md from official TypeSafe docs, maintainer repositories/model cards and public GitHub API snapshots, plus Consultant completed brief. Self-review only; no benchmark, model training or implementation executed."
+      ]
+    },
+    {
+      "id": "metadata",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-01/PRSG-21.harness.json",
+        "--changed-file",
+        "docs/research/PRSG-21-jev-classification.md",
+        "--changed-file",
+        "plans/2026-10-01/PRSG-21-jev-classification-research.md",
+        "--changed-file",
+        "plans/2026-10-01/PRSG-21.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT: exact argv in this check executed from repository root, exit0: PRSG-21 manifest and supplied paths valid (evidence still requires review). Only three new ticket-owned files in git status; base unchanged. Metadata validation is not a benchmark or Lead acceptance."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead independently reviews sources, scope, Consultant integration and pilot decision",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-21-D1",
+      "description": "Primary-source top-three comparison, integrated Consultant model plan and evaluation/data decision brief reviewed by Lead",
+      "check_ids": [
+        "findings",
+        "metadata",
+        "lead-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  },
+  "research_evidence": {
+    "reviewed_at": "2026-10-01T20:11:39+08:00",
+    "timebox_hours": 3,
+    "connector": "web search/open; public GitHub API via research agents; Codex Consultant thread read",
+    "source_timing_limit": "Mutable sources retrieved 2026-10-01; exact per-web-request/publication times unavailable except documented dates. API snapshots approximately12:07-12:10UTC. No local benchmark.",
+    "consultant_thread_id": "01a0f21f-8fee-7ed2-aa49-04a7c7a8645b",
+    "source_urls": [
+      "https://docs.typesafe.ai/models",
+      "https://docs.typesafe.ai/model-jaggedness/jev-1.13",
+      "https://github.com/NandhaKishorM/laya",
+      "https://github.com/jaredpalmer/kev",
+      "https://github.com/TheoLeeCJ/SemIf-OpenJev",
+      "https://huggingface.co/convaiinnovations/laya",
+      "https://huggingface.co/jaredpalmer/kev-4b",
+      "https://github.com/huggingface/setfit",
+      "https://scikit-learn.org/stable/modules/calibration.html"
+    ]
+  }
+}
