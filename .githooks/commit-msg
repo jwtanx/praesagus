@@ -5,6 +5,18 @@ if [ "$#" -ne 1 ] || [ ! -r "$1" ]; then
     exit 1
 fi
 subject=$(sed -n '1p' "$1")
+# Exempt nonempty report-only changes. Disable rename detection so moves
+# across the folder boundary count both their deletion and addition.
+root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 1
+git -C "$root" diff --cached --quiet --no-renames
+staged_status=$?
+if [ "$staged_status" -gt 1 ]; then
+    echo 'Cannot inspect staged changes.' >&2
+    exit 1
+fi
+if [ "$staged_status" -eq 1 ] && git -C "$root" diff --cached --quiet --no-renames -- . ':(exclude)artifacts/daily-market-brief/**'; then
+    exit 0
+fi
 if ! printf '%s\n' "$subject" | LC_ALL=C grep -Eq '^PRSG-(0|[1-9][0-9]*) [^[:space:]].*$'; then
     echo 'Commit title must be: PRSG-<number> <description>' >&2
     echo 'Example: PRSG-0 Add ticket harness and commit hooks' >&2

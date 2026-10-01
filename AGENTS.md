@@ -19,6 +19,8 @@ Treat `docs/`, scripts, configuration, and tests as evidence of implemented beha
 
 ## Engineering practice
 
+- Commit-title exemption: nonempty staged changes only within `artifacts/daily-market-brief/` do not need a PRSG prefix. Mixed changes, empty commits and renames crossing the folder boundary still need one. This is a title-hook exemption, not a Git tracking exclusion; report files remain tracked.
+
 - Commit titles must be `PRSG-<number> <description>` (for example `PRSG-1 Add catalyst inbox`). Reserve `PRSG-0` for shared harness/workflow infrastructure. Install the versioned commit-msg hook once per checkout with `sh scripts/install_git_hooks.sh`; Git clones do not enable hooks automatically. Existing hooks are preserved by the installer. Local hooks can be bypassed, so Lead must also review commit titles before pushing. User-required ticket titles supersede Conventional Commits skill defaults.
 
 - Inspect the relevant implementation and tests before changing behavior. Make the smallest coherent change and preserve unrelated working-tree changes.
