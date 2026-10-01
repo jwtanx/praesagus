@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-30",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-30-hosted-tradingview.md",
+  "objective": "Add a TA chart view using date-selected report tickers as horizontal rounded keyboard/touch chips with explicit direction emoji/text. Clicking a mapped US symbol remounts the official hosted Advanced Chart; no OHLCV ingestion. Preserve TradingView attribution, distinguish current/delayed chart from historical watchlist, and use explicit Bursa external-link fallback instead of claiming unsupported embed coverage.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "775e8a151a620644caa0d21dae765072069f4f24",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/tradingview.js",
+    "tests/tradingview_checks.cjs",
+    "plans/2026-10-02/PRSG-30-hosted-tradingview.md",
+    "plans/2026-10-02/PRSG-30.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "connectors/",
+    "skills/",
+    "infra/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/tradingview_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/tradingview_checks.cjs: passed; 1280/390 DOM fixtures, all four report direction styles, date/race switching, curated mapping rejection, Bursa external fallback, attribution, blocked-script/15-second no-frame timeout, detached stale callbacks, navigation cleanup, missing local module/report/watchlist, keyboard traversal, touch sizing, reduced motion and unsafe input. External scripts/frames/network mocked; test also replays tests/daily_report_viewer_checks.cjs successfully.",
+        "Lead independently inspected implementation and reran node tests/tradingview_checks.cjs (including existing viewer replay), node tests/pages_branding_checks.cjs and node tests/ticket_dashboard_checks.cjs: all passed. PRSG29 independent review identified skip stacking and anchor offsets; fixed single final skip rule z30 and measured ResizeObserver offset, regressions pass. PRSG30 external scripts mocked; live rendering/entitlements and visual browser QA not verified. No credentials/private data/backend changed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Date changes replace the watchlist without stale loads; up/down/flat/unrated chips are accessible; safe curated exchange mapping rejects unknown symbols; rapid switching cleans up embeds; missing/failed external widget always has a safe link; reduced-motion and mobile overflow covered. Mock scripts/network; never include private portfolio or secrets.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently inspected implementation and reran node tests/tradingview_checks.cjs (including existing viewer replay), node tests/pages_branding_checks.cjs and node tests/ticket_dashboard_checks.cjs: all passed. PRSG29 independent review identified skip stacking and anchor offsets; fixed single final skip rule z30 and measured ResizeObserver offset, regressions pass. PRSG30 external scripts mocked; live rendering/entitlements and visual browser QA not verified. No credentials/private data/backend changed."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-30-D1",
+      "description": "Date changes replace the watchlist without stale loads; up/down/flat/unrated chips are accessible; safe curated exchange mapping rejects unknown symbols; rapid switching cleans up embeds; missing/failed external widget always has a safe link; reduced-motion and mobile overflow covered. Mock scripts/network; never include private portfolio or secrets.",
+      "check_ids": [
+        "tests",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently inspected implementation and reran node tests/tradingview_checks.cjs (including existing viewer replay), node tests/pages_branding_checks.cjs and node tests/ticket_dashboard_checks.cjs: all passed. PRSG29 independent review identified skip stacking and anchor offsets; fixed single final skip rule z30 and measured ResizeObserver offset, regressions pass. PRSG30 external scripts mocked; live rendering/entitlements and visual browser QA not verified. No credentials/private data/backend changed."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead independently inspected implementation and reran node tests/tradingview_checks.cjs (including existing viewer replay), node tests/pages_branding_checks.cjs and node tests/ticket_dashboard_checks.cjs: all passed. PRSG29 independent review identified skip stacking and anchor offsets; fixed single final skip rule z30 and measured ResizeObserver offset, regressions pass. PRSG30 external scripts mocked; live rendering/entitlements and visual browser QA not verified. No credentials/private data/backend changed."
+    ]
+  }
+}
