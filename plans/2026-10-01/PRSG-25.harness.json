@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-25",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-25-offline-evidence-foundation.md",
+  "objective": "Implement synthetic-only private immutable raw and SQLite evidence storage",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "bb0d302bd4384482e628e5e1e58630e0d68396f4",
+  "allowed_paths": [
+    "plans/2026-10-01/PRSG-25-offline-evidence-foundation.md",
+    "plans/2026-10-01/PRSG-25.harness.json",
+    "harness/evidence_store.py",
+    "tests/test_evidence_store.py",
+    "harness/EVIDENCE_STORE.md"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "infra/",
+    "harness/forecast_review.py",
+    "harness/verification_policy.json",
+    "pyproject.toml",
+    "requirements.txt",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_evidence_store.py",
+        "tests/test_forecast_review.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "python3 -m pytest -q tests/test_evidence_store.py tests/test_forecast_review.py: 90 passed in 0.57s. Synthetic-only raw/SQLite versions and observations, exact replay, US/MY fixture sessions, missing/future/contradictory timestamps, malformed OHLCV, late backfill, run outcomes, mixed-batch rejection, transactional rollback, bounded lock, schema/columns, raw corruption/missing/symlink and CLI/documentation replays covered. Existing forecast scorer unchanged.",
+        "Follow-up: python3 -m pytest -q tests/test_evidence_store.py tests/test_forecast_review.py: 92 passed in 0.63s. Two parameterized bar/news cases ingest source-v2 before a late source-v1 backfill; both eligible versions and exact raw are preserved, earlier cutoffs exclude late knowledge, exact replay adds nothing, and greatest ingestion revision selects the older source vintage. Documentation explicitly forbids assuming max(revision) is newest source truth; source-vintage resolution remains future consumer responsibility. No API change.",
+        "2026-10-01 MYT Lead independently inspected full implementation, tests/docs and incremental source-vintage diff; frozen92-testcommand rerun92passed in0.53s. Earlier fullsuite312passed/5 existingwarnings before two added regressions. Consultant independent temporal replay found no blocking synthetic-scope issue. Out-of-order vintage regression/doc follow-up reviewed. No live-provider, calendar, rights, forecast-performance or OS-immutability claim accepted."
+      ]
+    },
+    {
+      "id": "metadata",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-01/PRSG-25.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "python3 scripts/planning/validate_ticket.py plans/2026-10-01/PRSG-25.harness.json with all five exact --changed-file paths: manifest and supplied paths valid. Acceptance definitions, allowed/protected paths, base and Lead-review gates retained."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead reviews full owned diff, temporal/failure cases and private synthetic-only boundary",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 MYT Lead independently inspected full implementation, tests/docs and incremental source-vintage diff; frozen92-testcommand rerun92passed in0.53s. Earlier fullsuite312passed/5 existingwarnings before two added regressions. Consultant independent temporal replay found no blocking synthetic-scope issue. Out-of-order vintage regression/doc follow-up reviewed. No live-provider, calendar, rights, forecast-performance or OS-immutability claim accepted."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-25-D1",
+      "description": "Synthetic batches and append-only bar/news/run storage preserve raw hashes and revision provenance with idempotent replay.",
+      "check_ids": [
+        "tests",
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Engineer implementation/test evidence recorded; acceptance remains pending independent Lead review.",
+        "2026-10-01 MYT Lead independently inspected full implementation, tests/docs and incremental source-vintage diff; frozen92-testcommand rerun92passed in0.53s. Earlier fullsuite312passed/5 existingwarnings before two added regressions. Consultant independent temporal replay found no blocking synthetic-scope issue. Out-of-order vintage regression/doc follow-up reviewed. No live-provider, calendar, rights, forecast-performance or OS-immutability claim accepted."
+      ]
+    },
+    {
+      "id": "PRSG-25-D2",
+      "description": "As-of eligibility and failure distinctions reject temporal leakage, malformed data and corrupted evidence using deterministic offline regressions.",
+      "check_ids": [
+        "tests",
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Engineer implementation/test evidence recorded; acceptance remains pending independent Lead review.",
+        "2026-10-01 MYT Lead independently inspected full implementation, tests/docs and incremental source-vintage diff; frozen92-testcommand rerun92passed in0.53s. Earlier fullsuite312passed/5 existingwarnings before two added regressions. Consultant independent temporal replay found no blocking synthetic-scope issue. Out-of-order vintage regression/doc follow-up reviewed. No live-provider, calendar, rights, forecast-performance or OS-immutability claim accepted."
+      ]
+    },
+    {
+      "id": "PRSG-25-D3",
+      "description": "Usage/errors/private storage documented, frozen scope validated, forecast regressions pass and Lead independently reviews.",
+      "check_ids": [
+        "tests",
+        "metadata",
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Engineer implementation/test evidence recorded; acceptance remains pending independent Lead review.",
+        "2026-10-01 MYT Lead independently inspected full implementation, tests/docs and incremental source-vintage diff; frozen92-testcommand rerun92passed in0.53s. Earlier fullsuite312passed/5 existingwarnings before two added regressions. Consultant independent temporal replay found no blocking synthetic-scope issue. Out-of-order vintage regression/doc follow-up reviewed. No live-provider, calendar, rights, forecast-performance or OS-immutability claim accepted."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-01 MYT Lead independently inspected full implementation, tests/docs and incremental source-vintage diff; frozen92-testcommand rerun92passed in0.53s. Earlier fullsuite312passed/5 existingwarnings before two added regressions. Consultant independent temporal replay found no blocking synthetic-scope issue. Out-of-order vintage regression/doc follow-up reviewed. No live-provider, calendar, rights, forecast-performance or OS-immutability claim accepted."
+    ]
+  }
+}
