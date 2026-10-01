@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-31",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "connectors",
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-31-offline-rest-read-adapter.md",
+  "objective": "Offline injectable read-only Moomoo REST protocol adapter without credential or live-network access",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "9c5821fb90fa878f17f8a689781c95a9d564209c",
+  "allowed_paths": [
+    "connectors/moomoo_rest.py",
+    "tests/test_moomoo_rest.py",
+    "docs/MOOMOO_REST.md",
+    "plans/2026-10-02/PRSG-31-offline-rest-read-adapter.md",
+    "plans/2026-10-02/PRSG-31.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "artifacts/",
+    "skills/",
+    "infra/",
+    "connectors/moomoo_opend.py",
+    "pyproject.toml",
+    "requirements.txt",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_moomoo_rest.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02 MYT: python3 -m pytest -q tests/test_moomoo_rest.py — 126 passed in 0.13s; synthetic signer/transport/clock/nonce only, no broker calls or credentials.",
+        "Lead independently reviewed all connector functions and docs, reran python3 -m pytest -q tests/test_moomoo_rest.py:126passed0.09s; full python3 -m pytest -q:531passed16.78s with5 existingBoto3/Python3.9warnings. Five-path scope validated. Explicit injected semanticreads, exact canonical/wirebytes, controlled errors and no transport/credential loading/persistence/mutations. Strict funds schema may reject extra provider metadata; caller transport is trusted, not sandboxed. No live cryptographic/auth/entitlement/Keychain/MY coverage proof."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews exact signed wire bytes, fail-closed read-only surfaces, secret suppression and no-live/no-private writes",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed all connector functions and docs, reran python3 -m pytest -q tests/test_moomoo_rest.py:126passed0.09s; full python3 -m pytest -q:531passed16.78s with5 existingBoto3/Python3.9warnings. Five-path scope validated. Explicit injected semanticreads, exact canonical/wirebytes, controlled errors and no transport/credential loading/persistence/mutations. Strict funds schema may reject extra provider metadata; caller transport is trusted, not sandboxed. No live cryptographic/auth/entitlement/Keychain/MY coverage proof."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-31-D1",
+      "description": "Offline read contracts/safety regressions pass with documented live gates",
+      "check_ids": [
+        "tests",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed all connector functions and docs, reran python3 -m pytest -q tests/test_moomoo_rest.py:126passed0.09s; full python3 -m pytest -q:531passed16.78s with5 existingBoto3/Python3.9warnings. Five-path scope validated. Explicit injected semanticreads, exact canonical/wirebytes, controlled errors and no transport/credential loading/persistence/mutations. Strict funds schema may reject extra provider metadata; caller transport is trusted, not sandboxed. No live cryptographic/auth/entitlement/Keychain/MY coverage proof."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead independently reviewed all connector functions and docs, reran python3 -m pytest -q tests/test_moomoo_rest.py:126passed0.09s; full python3 -m pytest -q:531passed16.78s with5 existingBoto3/Python3.9warnings. Five-path scope validated. Explicit injected semanticreads, exact canonical/wirebytes, controlled errors and no transport/credential loading/persistence/mutations. Strict funds schema may reject extra provider metadata; caller transport is trusted, not sandboxed. No live cryptographic/auth/entitlement/Keychain/MY coverage proof."
+    ]
+  }
+}
