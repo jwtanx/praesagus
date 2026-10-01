@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-13",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "market-research",
+      "frontend"
+    ],
+    "owner_role": "Researcher",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-13-competitor-dashboard-research.md",
+  "objective": "Competitor dashboard and feature research",
+  "status": "review",
+  "owner": "Researcher",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "76db469b5a3fde5519be956db54a597f8858f0df",
+  "allowed_paths": [
+    "docs/research/PRSG-13-competitor-dashboards.md",
+    "plans/2026-10-01/PRSG-13-competitor-dashboard-research.md",
+    "plans/2026-10-01/PRSG-13.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "infra/",
+    "data/",
+    "artifacts/",
+    ".githooks/",
+    "scripts/"
+  ],
+  "checks": [
+    {
+      "id": "findings",
+      "kind": "manual",
+      "description": "Review sourced competitor matrix and MVP hypotheses",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 18:44:18 MYT: Researcher completed bounded official-source research in docs/research/PRSG-13-competitor-dashboards.md; self-review of claims/limitations, not Lead acceptance. No implementation, benchmark or usability experiment executed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews scoped findings or implementation",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-13-D1",
+      "description": "Sourced competitor gap matrix and reviewed feature priorities",
+      "check_ids": [
+        "findings",
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  },
+  "research_evidence": {
+    "reviewed_at": "2026-10-01T18:44:18+08:00",
+    "connector": "web.run search/open/find",
+    "source_timing_limit": "Individual request times not instrumented. URLs opened on 2026-10-01 before review cutoff; exact publication/update times unknown except documented versions explicitly noted in findings.",
+    "timebox_hours": 3,
+    "implementation_baseline": "76db469b5a3fde5519be956db54a597f8858f0df",
+    "sources": [
+      {
+        "source_url": "https://finviz.com/elite",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://help.seekingalpha.com/premium/seeking-alpha-premium-feature-list",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://stockanalysis.com/help/tools-and-tutorials/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://stockanalysis.com/tutorials/watchlist/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.koyfin.com/features/financial-analysis/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.koyfin.com/features/stock-screener/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.koyfin.com/features/watchlists/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.tikr.com/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.tradingview.com/features/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      }
+    ]
+  }
+}

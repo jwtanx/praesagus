@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-12",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "frontend",
+      "market-research"
+    ],
+    "owner_role": "Researcher",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-01/PRSG-12-lightweight-charting-research.md",
+  "objective": "Lightweight technical charting research",
+  "status": "review",
+  "owner": "Researcher",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "76db469b5a3fde5519be956db54a597f8858f0df",
+  "allowed_paths": [
+    "docs/research/PRSG-12-lightweight-charting.md",
+    "plans/2026-10-01/PRSG-12-lightweight-charting-research.md",
+    "plans/2026-10-01/PRSG-12.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "infra/",
+    "data/",
+    "artifacts/",
+    ".githooks/",
+    "scripts/"
+  ],
+  "checks": [
+    {
+      "id": "findings",
+      "kind": "manual",
+      "description": "Review primary-source charting comparison and proposed performance experiment",
+      "status": "passed",
+      "evidence": [
+        "2026-10-01 18:44:18 MYT: Researcher completed bounded official-source research in docs/research/PRSG-12-lightweight-charting.md; self-review of claims/limitations, not Lead acceptance. No implementation, benchmark or usability experiment executed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews scoped findings or implementation",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-12-D1",
+      "description": "Sourced top-three comparison and reviewed MVP decision",
+      "check_ids": [
+        "findings",
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  },
+  "research_evidence": {
+    "reviewed_at": "2026-10-01T18:44:18+08:00",
+    "connector": "web.run search/open/find",
+    "source_timing_limit": "Individual request times not instrumented. URLs opened on 2026-10-01 before review cutoff; exact publication/update times unknown except documented versions explicitly noted in findings.",
+    "timebox_hours": 3,
+    "implementation_baseline": "76db469b5a3fde5519be956db54a597f8858f0df",
+    "sources": [
+      {
+        "source_url": "https://api.highcharts.com/highstock/series.ohlc.data",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://echarts.apache.org/handbook/en/basics/import/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://echarts.apache.org/handbook/en/best-practices/aria/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://echarts.apache.org/handbook/en/best-practices/canvas-vs-svg/",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/apache/echarts-doc/master/en/api/echarts.md",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/apache/echarts-doc/master/en/option/series/candlestick.md",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/apache/echarts-doc/master/en/option/series/heatmap.md",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/apache/echarts/master/LICENSE",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/tradingview/lightweight-charts/master/LICENSE",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://tradingview.github.io/lightweight-charts/docs",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://tradingview.github.io/lightweight-charts/tutorials/analysis-indicators",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://tradingview.github.io/lightweight-charts/tutorials/how_to/panes",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://tradingview.github.io/lightweight-charts/tutorials/how_to/set-crosshair-position",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://tradingview.github.io/lightweight-charts/tutorials/react/simple",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.highcharts.com/demo/highcharts/synchronized-charts",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.highcharts.com/docs/accessibility/accessibility-module",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.highcharts.com/docs/advanced-chart-features/boost-module",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.highcharts.com/docs/getting-started/frequently-asked-questions",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.highcharts.com/docs/react/getting-started",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.highcharts.com/docs/stock/data-grouping",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.highcharts.com/docs/stock/technical-indicator-series",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      },
+      {
+        "source_url": "https://www.highcharts.com/docs/stock/understanding-highcharts-stock",
+        "source_tier": "official maintainer/product documentation",
+        "retrieved_on": "2026-10-01",
+        "published_at": null,
+        "retrieved_at": null,
+        "limitation": "Current mutable page; exact request/publication time not recorded. Vendor feature claims not independently verified."
+      }
+    ]
+  }
+}
