@@ -1,0 +1,471 @@
+[
+  {
+    "ticker": "SPY",
+    "price": 762.63,
+    "quote_time": "Wednesday, September 30, 23:47:54 UTC",
+    "raw": "\ue200cite\ue202turn46finance0\ue201 SPDR S&P 500 ETF Trust (SPY) is a fund in the USA market. The price is 762.63 USD currently with a change of -1.55000 (-0.20283%) from the previous close. The intraday high is 769.32 USD and the intraday low is 761.85 USD. The latest open price was 766.48 USD and the intraday volume is 62097129. The market cap is 675,295,226,125. The latest trade time is Wednesday, September 30, 23:47:54 UTC."
+  },
+  {
+    "ticker": "QQQ",
+    "price": 739.77,
+    "quote_time": "Wednesday, September 30, 23:47:55 UTC",
+    "raw": "\ue200cite\ue202turn46finance1\ue201 Invesco QQQ Trust Series 1 (QQQ) is a fund in the USA market. The price is 739.77 USD currently with a change of 1.94000 (0.26290%) from the previous close. The intraday high is 745.06 USD and the intraday low is 735.67 USD. The latest open price was 740.19 USD and the intraday volume is 29808154. The market cap is 352,685,347,500. The latest trade time is Wednesday, September 30, 23:47:55 UTC."
+  },
+  {
+    "ticker": "VTI",
+    "price": 374.24,
+    "quote_time": "Wednesday, September 30, 23:37:55 UTC",
+    "raw": "\ue200cite\ue202turn46finance2\ue201 Vanguard Morningstar Total Stock Market ETF (VTI) is a fund in the USA market. The price is 374.24 USD currently with a change of -0.85000 (-0.22651%) from the previous close. The intraday high is 377.68 USD and the intraday low is 374.22 USD. The latest open price was 376.31 USD and the intraday volume is 4449840. The market cap is 305,527,955,210. The latest trade time is Wednesday, September 30, 23:37:55 UTC."
+  },
+  {
+    "ticker": "DIA",
+    "price": 508.55,
+    "quote_time": "Wednesday, September 30, 23:37:19 UTC",
+    "raw": "\ue200cite\ue202turn46finance3\ue201 Spdr Dow Jones Industrial Average ETF Trust (DIA) is a fund in the USA market. The price is 508.55 USD currently with a change of -4.37000 (-0.85205%) from the previous close. The intraday high is 515.34 USD and the intraday low is 508.12 USD. The latest open price was 514.07 USD and the intraday volume is 2694989. The market cap is 42,155,167,513. The latest trade time is Wednesday, September 30, 23:37:19 UTC."
+  },
+  {
+    "ticker": "IWM",
+    "price": 277.89,
+    "quote_time": "Wednesday, September 30, 23:46:55 UTC",
+    "raw": "\ue200cite\ue202turn46finance4\ue201 iShares Russell 2000 Index Fund (IWM) is a fund in the USA market. The price is 277.89 USD currently with a change of -1.03000 (-0.36916%) from the previous close. The intraday high is 281.44 USD and the intraday low is 277.51 USD. The latest open price was 280.14 USD and the intraday volume is 21122003. The market cap is 72,223,611,000. The latest trade time is Wednesday, September 30, 23:46:55 UTC."
+  },
+  {
+    "ticker": "RSP",
+    "price": 208.02,
+    "quote_time": "Wednesday, September 30, 22:55:00 UTC",
+    "raw": "\ue200cite\ue202turn46finance5\ue201 Invesco S&P 500 Equal Weight ETF (RSP) is a fund in the USA market. The price is 208.02 USD currently with a change of -1.45500 (-0.69451%) from the previous close. The intraday high is 210.45 USD and the intraday low is 207.75 USD. The latest open price was 209.9 USD and the intraday volume is 7360856. The market cap is 24,557,314,957. The latest trade time is Wednesday, September 30, 22:55:00 UTC."
+  },
+  {
+    "ticker": "VXUS",
+    "price": 84.96,
+    "quote_time": "Wednesday, September 30, 23:47:39 UTC",
+    "raw": "\ue200cite\ue202turn46finance6\ue201 Vanguard Total International Stock ETF (VXUS) is a fund in the USA market. The price is 84.96 USD currently with a change of -0.56000 (-0.65486%) from the previous close. The intraday high is 85.9 USD and the intraday low is 84.9 USD. The latest open price was 85.72 USD and the intraday volume is 4727850. The latest trade time is Wednesday, September 30, 23:47:39 UTC."
+  },
+  {
+    "ticker": "MCHI",
+    "price": 52.19,
+    "quote_time": "Wednesday, September 30, 21:35:00 UTC",
+    "raw": "\ue200cite\ue202turn46finance7\ue201 iShares MSCI China ETF (MCHI) is a fund in the USA market. The price is 52.19 USD currently with a change of 0.14000 (0.26871%) from the previous close. The intraday high is 52.51 USD and the intraday low is 52.185 USD. The latest open price was 52.49 USD and the intraday volume is 2912852. The latest trade time is Wednesday, September 30, 21:35:00 UTC."
+  },
+  {
+    "ticker": "JPM",
+    "price": 330.83,
+    "quote_time": "Wednesday, September 30, 23:48:11 UTC",
+    "raw": "\ue200cite\ue202turn46finance8\ue201 JPMorgan Chase & Co. (JPM) is a equity in the USA market. The price is 330.83 USD currently with a change of -3.83000 (-1.14335%) from the previous close. The intraday high is 336.78 USD and the intraday low is 330.66 USD. The latest open price was 334.89 USD and the intraday volume is 9120994. The market cap is 891,322,186,000. The PE ratio is 14.168308351177728. The EPS ratio is 23.35. The latest trade time is Wednesday, September 30, 23:48:11 UTC."
+  },
+  {
+    "ticker": "BAC",
+    "price": 54.43,
+    "quote_time": "Wednesday, September 30, 23:47:26 UTC",
+    "raw": "\ue200cite\ue202turn46finance9\ue201 Bank Of America Corp. (BAC) is a equity in the USA market. The price is 54.43 USD currently with a change of -0.51000 (-0.92795%) from the previous close. The intraday high is 55.17 USD and the intraday low is 54.36 USD. The latest open price was 54.96 USD and the intraday volume is 34021650. The market cap is 397,023,306,000. The PE ratio is 12.54147465437788. The EPS ratio is 4.34. The latest trade time is Wednesday, September 30, 23:47:26 UTC."
+  },
+  {
+    "ticker": "WFC",
+    "price": 80.05,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn46finance10\ue201 Wells Fargo & Co. (WFC) is a equity in the USA market. The price is 80.05 USD currently with a change of -0.37000 (-0.45974%) from the previous close. The intraday high is 80.86 USD and the intraday low is 79.82 USD. The latest open price was 80.35 USD and the intraday volume is 17824158. The market cap is 246,121,730,000. The PE ratio is 11.652110625909751. The EPS ratio is 6.87. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "GS",
+    "price": 900.36,
+    "quote_time": "Wednesday, September 30, 23:36:30 UTC",
+    "raw": "\ue200cite\ue202turn46finance11\ue201 Goldman Sachs Group, Inc. (GS) is a equity in the USA market. The price is 900.36 USD currently with a change of -14.77000 (-1.61202%) from the previous close. The intraday high is 920.5 USD and the intraday low is 901.0 USD. The latest open price was 915.0 USD and the intraday volume is 1824581. The market cap is 274,519,764,000. The PE ratio is 13.890157358839867. The EPS ratio is 64.82. The latest trade time is Wednesday, September 30, 23:36:30 UTC."
+  },
+  {
+    "ticker": "MS",
+    "price": 188.08,
+    "quote_time": "Wednesday, September 30, 23:43:48 UTC",
+    "raw": "\ue200cite\ue202turn46finance12\ue201 Morgan Stanley (MS) is a equity in the USA market. The price is 188.08 USD currently with a change of -4.63000 (-2.40195%) from the previous close. The intraday high is 193.82 USD and the intraday low is 187.87 USD. The latest open price was 191.23 USD and the intraday volume is 6910935. The market cap is 295,097,520,000. The PE ratio is 15.204527081649154. The EPS ratio is 12.37. The latest trade time is Wednesday, September 30, 23:43:48 UTC."
+  },
+  {
+    "ticker": "C",
+    "price": 129.48,
+    "quote_time": "Wednesday, September 30, 23:45:15 UTC",
+    "raw": "\ue200cite\ue202turn46finance13\ue201 Citigroup Inc (C) is a equity in the USA market. The price is 129.48 USD currently with a change of -1.29000 (-0.98624%) from the previous close. The intraday high is 131.22 USD and the intraday low is 129.48 USD. The latest open price was 130.56 USD and the intraday volume is 9799928. The market cap is 224,725,488,000. The PE ratio is 13.952586206896552. The EPS ratio is 9.28. The latest trade time is Wednesday, September 30, 23:45:15 UTC."
+  },
+  {
+    "ticker": "V",
+    "price": 359.33,
+    "quote_time": "Wednesday, September 30, 23:41:45 UTC",
+    "raw": "\ue200cite\ue202turn46finance14\ue201 Visa Inc (V) is a equity in the USA market. The price is 359.33 USD currently with a change of -6.26000 (-1.71094%) from the previous close. The intraday high is 367.0 USD and the intraday low is 359.35 USD. The latest open price was 363.88 USD and the intraday volume is 7417275. The market cap is 682,008,340,000. The PE ratio is 30.58127659574468. The EPS ratio is 11.75. The latest trade time is Wednesday, September 30, 23:41:45 UTC."
+  },
+  {
+    "ticker": "MA",
+    "price": 551.47,
+    "quote_time": "Wednesday, September 30, 23:43:47 UTC",
+    "raw": "\ue200cite\ue202turn46finance15\ue201 Mastercard Incorporated (MA) is a equity in the USA market. The price is 551.47 USD currently with a change of -12.08500 (-2.14433%) from the previous close. The intraday high is 565.89 USD and the intraday low is 551.25 USD. The latest open price was 562.26 USD and the intraday volume is 5035477. The market cap is 486,948,010,000. The PE ratio is 30.333883388338837. The EPS ratio is 18.18. The latest trade time is Wednesday, September 30, 23:43:47 UTC."
+  },
+  {
+    "ticker": "AAPL",
+    "price": 333.02,
+    "quote_time": "Wednesday, September 30, 23:47:39 UTC",
+    "raw": "\ue200cite\ue202turn46finance16\ue201 Apple Inc (AAPL) is a equity in the USA market. The price is 333.02 USD currently with a change of 3.74500 (1.13692%) from the previous close. The intraday high is 339.39 USD and the intraday low is 328.76 USD. The latest open price was 330.43 USD and the intraday volume is 49984221. The market cap is 4,900,281,401,520. The PE ratio is 38.23421354764638. The EPS ratio is 8.71. The latest trade time is Wednesday, September 30, 23:47:39 UTC."
+  },
+  {
+    "ticker": "MSFT",
+    "price": 512.9,
+    "quote_time": "Wednesday, September 30, 23:43:38 UTC",
+    "raw": "\ue200cite\ue202turn46finance17\ue201 Microsoft Corporation (MSFT) is a equity in the USA market. The price is 512.9 USD currently with a change of 3.99000 (0.78395%) from the previous close. The intraday high is 519.67 USD and the intraday low is 507.06 USD. The latest open price was 511.83 USD and the intraday volume is 27219464. The market cap is 3,818,540,500,000. The PE ratio is 30.5297619047619. The EPS ratio is 16.8. The latest trade time is Wednesday, September 30, 23:43:38 UTC."
+  },
+  {
+    "ticker": "GOOGL",
+    "price": 344.08,
+    "quote_time": "Wednesday, September 30, 23:48:37 UTC",
+    "raw": "\ue200cite\ue202turn46finance18\ue201 Alphabet Inc (GOOGL) is a equity in the USA market. The price is 344.08 USD currently with a change of 3.23000 (0.94744%) from the previous close. The intraday high is 359.38 USD and the intraday low is 341.34 USD. The latest open price was 344.3 USD and the intraday volume is 37334974. The market cap is 4,208,098,400,000. The PE ratio is 17.281767955801104. The EPS ratio is 19.91. The latest trade time is Wednesday, September 30, 23:48:37 UTC."
+  },
+  {
+    "ticker": "META",
+    "price": 725.18,
+    "quote_time": "Wednesday, September 30, 23:48:24 UTC",
+    "raw": "\ue200cite\ue202turn46finance19\ue201 Meta Platforms Inc (META) is a equity in the USA market. The price is 725.18 USD currently with a change of -13.43000 (-1.81784%) from the previous close. The intraday high is 739.35 USD and the intraday low is 721.705 USD. The latest open price was 728.57 USD and the intraday volume is 19287764. The market cap is 1,860,811,880,000. The PE ratio is 27.324039186134137. The EPS ratio is 26.54. The latest trade time is Wednesday, September 30, 23:48:24 UTC."
+  },
+  {
+    "ticker": "ORCL",
+    "price": 137.3,
+    "quote_time": "Wednesday, September 30, 23:43:48 UTC",
+    "raw": "\ue200cite\ue202turn46finance20\ue201 Oracle Corp. (ORCL) is a equity in the USA market. The price is 137.3 USD currently with a change of -0.49000 (-0.35561%) from the previous close. The intraday high is 139.18 USD and the intraday low is 134.84 USD. The latest open price was 137.0 USD and the intraday volume is 22314062. The market cap is 411,900,000,000. The PE ratio is 21.52037617554859. The EPS ratio is 6.38. The latest trade time is Wednesday, September 30, 23:43:48 UTC."
+  },
+  {
+    "ticker": "CRM",
+    "price": 229.57,
+    "quote_time": "Wednesday, September 30, 23:38:15 UTC",
+    "raw": "\ue200cite\ue202turn46finance21\ue201 Salesforce Inc (CRM) is a equity in the USA market. The price is 229.57 USD currently with a change of 4.28000 (1.89960%) from the previous close. The intraday high is 233.77 USD and the intraday low is 224.0 USD. The latest open price was 225.29 USD and the intraday volume is 11230876. The market cap is 188,476,970,000. The PE ratio is 20.946167883211675. The EPS ratio is 10.96. The latest trade time is Wednesday, September 30, 23:38:15 UTC."
+  },
+  {
+    "ticker": "IBM",
+    "price": 219.93,
+    "quote_time": "Wednesday, September 30, 23:36:08 UTC",
+    "raw": "\ue200cite\ue202turn46finance22\ue201 International Business Machines Corp. (IBM) is a equity in the USA market. The price is 219.93 USD currently with a change of -0.05000 (-0.02273%) from the previous close. The intraday high is 222.29 USD and the intraday low is 218.62 USD. The latest open price was 220.7 USD and the intraday volume is 4568979. The market cap is 209,651,249,033. The PE ratio is 19.480070859167405. The EPS ratio is 11.29. The latest trade time is Wednesday, September 30, 23:36:08 UTC."
+  },
+  {
+    "ticker": "NOW",
+    "price": 134.01,
+    "quote_time": "Wednesday, September 30, 23:43:48 UTC",
+    "raw": "\ue200cite\ue202turn46finance23\ue201 ServiceNow Inc (NOW) is a equity in the USA market. The price is 134.01 USD currently with a change of 4.09000 (3.14761%) from the previous close. The intraday high is 134.99 USD and the intraday low is 128.84 USD. The latest open price was 129.75 USD and the intraday volume is 9031453. The market cap is 138,611,099,340. The PE ratio is 82.72222222222221. The EPS ratio is 1.62. The latest trade time is Wednesday, September 30, 23:43:48 UTC."
+  },
+  {
+    "ticker": "NVDA",
+    "price": 228.38,
+    "quote_time": "Wednesday, September 30, 23:46:58 UTC",
+    "raw": "\ue200cite\ue202turn46finance24\ue201 NVIDIA Corp (NVDA) is a equity in the USA market. The price is 228.38 USD currently with a change of 1.23500 (0.54355%) from the previous close. The intraday high is 232.3 USD and the intraday low is 227.24 USD. The latest open price was 229.03 USD and the intraday volume is 121696038. The market cap is 5,546,208,300,000. The PE ratio is 28.65495608531995. The EPS ratio is 7.97. The latest trade time is Wednesday, September 30, 23:46:58 UTC."
+  },
+  {
+    "ticker": "TSM",
+    "price": 456.19,
+    "quote_time": "Wednesday, September 30, 23:47:45 UTC",
+    "raw": "\ue200cite\ue202turn46finance25\ue201 Taiwan Semiconductor Manufacturing (TSM) is a equity in the USA market. The price is 456.19 USD currently with a change of -0.77000 (-0.16851%) from the previous close. The intraday high is 461.81 USD and the intraday low is 453.27 USD. The latest open price was 457.0 USD and the intraday volume is 8982004. The market cap is 11,830,662,213,510. The latest trade time is Wednesday, September 30, 23:47:45 UTC."
+  },
+  {
+    "ticker": "AVGO",
+    "price": 351.19,
+    "quote_time": "Wednesday, September 30, 23:48:47 UTC",
+    "raw": "\ue200cite\ue202turn46finance26\ue201 Broadcom Inc (AVGO) is a equity in the USA market. The price is 351.19 USD currently with a change of -3.91000 (-1.10110%) from the previous close. The intraday high is 359.09 USD and the intraday low is 350.73 USD. The latest open price was 356.67 USD and the intraday volume is 19756052. The market cap is 1,676,451,072,289. The PE ratio is 43.78927680798005. The EPS ratio is 8.02. The latest trade time is Wednesday, September 30, 23:48:47 UTC."
+  },
+  {
+    "ticker": "AMD",
+    "price": 611.76,
+    "quote_time": "Wednesday, September 30, 23:48:59 UTC",
+    "raw": "\ue200cite\ue202turn46finance27\ue201 Advanced Micro Devices Inc. (AMD) is a equity in the USA market. The price is 611.76 USD currently with a change of 4.36000 (0.71761%) from the previous close. The intraday high is 614.92 USD and the intraday low is 600.14 USD. The latest open price was 609.48 USD and the intraday volume is 16743194. The market cap is 1,014,909,840,000. The PE ratio is 157.26478149100257. The EPS ratio is 3.89. The latest trade time is Wednesday, September 30, 23:48:59 UTC."
+  },
+  {
+    "ticker": "QCOM",
+    "price": 184.04,
+    "quote_time": "Wednesday, September 30, 23:47:19 UTC",
+    "raw": "\ue200cite\ue202turn46finance28\ue201 Qualcomm, Inc. (QCOM) is a equity in the USA market. The price is 184.04 USD currently with a change of 0.01000 (0.00543%) from the previous close. The intraday high is 188.12 USD and the intraday low is 182.37 USD. The latest open price was 184.93 USD and the intraday volume is 7416014. The market cap is 196,738,760,000. The PE ratio is 21.009132420091323. The EPS ratio is 8.76. The latest trade time is Wednesday, September 30, 23:47:19 UTC."
+  },
+  {
+    "ticker": "LLY",
+    "price": 1157.08,
+    "quote_time": "Wednesday, September 30, 23:42:00 UTC",
+    "raw": "\ue200cite\ue202turn46finance29\ue201 Lilly(Eli) & Co (LLY) is a equity in the USA market. The price is 1157.08 USD currently with a change of -25.18000 (-2.12556%) from the previous close. The intraday high is 1212.66 USD and the intraday low is 1155.82 USD. The latest open price was 1186.49 USD and the intraday volume is 3409842. The market cap is 1,034,082,396,000. The PE ratio is 38.82818791946308. The EPS ratio is 29.8. The latest trade time is Wednesday, September 30, 23:42:00 UTC."
+  },
+  {
+    "ticker": "JNJ",
+    "price": 264.74,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn46finance30\ue201 Johnson & Johnson (JNJ) is a equity in the USA market. The price is 264.74 USD currently with a change of -2.48000 (-0.92686%) from the previous close. The intraday high is 268.54 USD and the intraday low is 264.59 USD. The latest open price was 267.91 USD and the intraday volume is 6341819. The market cap is 645,992,074,000. The PE ratio is 30.7479674796748. The EPS ratio is 8.61. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "ABBV",
+    "price": 261.59,
+    "quote_time": "Wednesday, September 30, 23:23:56 UTC",
+    "raw": "\ue200cite\ue202turn46finance31\ue201 Abbvie Inc (ABBV) is a equity in the USA market. The price is 261.59 USD currently with a change of -1.53000 (-0.58111%) from the previous close. The intraday high is 266.63 USD and the intraday low is 261.75 USD. The latest open price was 264.6 USD and the intraday volume is 4388670. The market cap is 463,275,890,000. The PE ratio is 73.89548022598869. The EPS ratio is 3.54. The latest trade time is Wednesday, September 30, 23:23:56 UTC."
+  },
+  {
+    "ticker": "MRK",
+    "price": 145.31,
+    "quote_time": "Wednesday, September 30, 23:43:47 UTC",
+    "raw": "\ue200cite\ue202turn46finance32\ue201 Merck & Co Inc (MRK) is a equity in the USA market. The price is 145.31 USD currently with a change of -3.87000 (-2.59244%) from the previous close. The intraday high is 149.87 USD and the intraday low is 145.3 USD. The latest open price was 149.13 USD and the intraday volume is 10227577. The market cap is 358,504,710,718. The PE ratio is 116.248. The EPS ratio is 1.25. The latest trade time is Wednesday, September 30, 23:43:47 UTC."
+  },
+  {
+    "ticker": "ABT",
+    "price": 98.83,
+    "quote_time": "Wednesday, September 30, 23:43:48 UTC",
+    "raw": "\ue200cite\ue202turn46finance33\ue201 Abbott Laboratories (ABT) is a equity in the USA market. The price is 98.83 USD currently with a change of -2.13000 (-2.10996%) from the previous close. The intraday high is 101.25 USD and the intraday low is 98.75 USD. The latest open price was 100.57 USD and the intraday volume is 7571442. The market cap is 172,258,812,230. The PE ratio is 31.983818770226538. The EPS ratio is 3.09. The latest trade time is Wednesday, September 30, 23:43:48 UTC."
+  },
+  {
+    "ticker": "UNH",
+    "price": 367.08,
+    "quote_time": "Wednesday, September 30, 23:46:40 UTC",
+    "raw": "\ue200cite\ue202turn46finance34\ue201 Unitedhealth Group Inc (UNH) is a equity in the USA market. The price is 367.08 USD currently with a change of -7.55000 (-2.01366%) from the previous close. The intraday high is 375.95 USD and the intraday low is 365.73 USD. The latest open price was 374.05 USD and the intraday volume is 4793619. The market cap is 332,574,480,000. The PE ratio is 23.560975609756095. The EPS ratio is 15.58. The latest trade time is Wednesday, September 30, 23:46:40 UTC."
+  },
+  {
+    "ticker": "ISRG",
+    "price": 406.63,
+    "quote_time": "Wednesday, September 30, 23:43:47 UTC",
+    "raw": "\ue200cite\ue202turn46finance35\ue201 Intuitive Surgical Inc (ISRG) is a equity in the USA market. The price is 406.63 USD currently with a change of -5.53000 (-1.34165%) from the previous close. The intraday high is 413.5 USD and the intraday low is 405.74 USD. The latest open price was 409.06 USD and the intraday volume is 1658872. The market cap is 145,288,899,000. The PE ratio is 46.68541905855338. The EPS ratio is 8.71. The latest trade time is Wednesday, September 30, 23:43:47 UTC."
+  },
+  {
+    "ticker": "TMO",
+    "price": 675.05,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn46finance36\ue201 Thermo Fisher Scientific Inc. (TMO) is a equity in the USA market. The price is 675.05 USD currently with a change of -4.25000 (-0.62536%) from the previous close. The intraday high is 683.57 USD and the intraday low is 672.0 USD. The latest open price was 678.06 USD and the intraday volume is 2323562. The market cap is 250,443,550,000. The PE ratio is 36.31253362022593. The EPS ratio is 18.59. The latest trade time is Wednesday, September 30, 23:15:00 UTC.\n\ue200cite\ue202turn45finance0\ue201 Walmart Inc (WMT) is a equity in the USA market. The price is 103.92 USD currently with a change of -2.85500 (-2.67322%) from the previous close. The intraday high is 107.2 USD and the intraday low is 103.945 USD. The latest open price was 106.88 USD and the intraday volume is 28148245. The market cap is 829,073,760,000. The PE ratio is 37.38129496402878. The EPS ratio is 2.78. The latest trade time is Wednesday, September 30, 23:41:08 UTC."
+  },
+  {
+    "ticker": "COST",
+    "price": 910.34,
+    "quote_time": "Wednesday, September 30, 23:23:53 UTC",
+    "raw": "\ue200cite\ue202turn45finance1\ue201 Costco Wholesale Corp (COST) is a equity in the USA market. The price is 910.34 USD currently with a change of -14.16000 (-1.53149%) from the previous close. The intraday high is 927.0 USD and the intraday low is 910.0 USD. The latest open price was 925.47 USD and the intraday volume is 2219094. The market cap is 404,582,406,200. The PE ratio is 45.791750503018115. The EPS ratio is 19.88. The latest trade time is Wednesday, September 30, 23:23:53 UTC."
+  },
+  {
+    "ticker": "PG",
+    "price": 145.28,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance2\ue201 Procter & Gamble Co. (PG) is a equity in the USA market. The price is 145.28 USD currently with a change of -2.99000 (-2.01591%) from the previous close. The intraday high is 149.01 USD and the intraday low is 145.33 USD. The latest open price was 148.97 USD and the intraday volume is 8581625. The market cap is 338,298,859,524. The PE ratio is 21.239766081871345. The EPS ratio is 6.84. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "KO",
+    "price": 86.08,
+    "quote_time": "Wednesday, September 30, 23:36:30 UTC",
+    "raw": "\ue200cite\ue202turn45finance3\ue201 Coca-Cola Co (KO) is a equity in the USA market. The price is 86.08 USD currently with a change of -0.77000 (-0.88669%) from the previous close. The intraday high is 87.5 USD and the intraday low is 86.07 USD. The latest open price was 87.35 USD and the intraday volume is 15841057. The market cap is 371,263,040,000. The PE ratio is 25.84984984984985. The EPS ratio is 3.33. The latest trade time is Wednesday, September 30, 23:36:30 UTC."
+  },
+  {
+    "ticker": "PEP",
+    "price": 126.72,
+    "quote_time": "Wednesday, September 30, 23:45:49 UTC",
+    "raw": "\ue200cite\ue202turn45finance4\ue201 PepsiCo Inc (PEP) is a equity in the USA market. The price is 126.72 USD currently with a change of -1.89000 (-1.46865%) from the previous close. The intraday high is 129.95 USD and the intraday low is 126.6 USD. The latest open price was 129.15 USD and the intraday volume is 9811783. The market cap is 173,479,680,000. The PE ratio is 16.608125819134994. The EPS ratio is 7.63. The latest trade time is Wednesday, September 30, 23:45:49 UTC."
+  },
+  {
+    "ticker": "CL",
+    "price": 85.32,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance5\ue201 Colgate-Palmolive Co. (CL) is a equity in the USA market. The price is 85.32 USD currently with a change of -1.14000 (-1.31853%) from the previous close. The intraday high is 87.16 USD and the intraday low is 85.28 USD. The latest open price was 86.96 USD and the intraday volume is 4684483. The market cap is 68,014,785,770. The PE ratio is 33.723320158102766. The EPS ratio is 2.53. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "MDLZ",
+    "price": 57.82,
+    "quote_time": "Wednesday, September 30, 21:35:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance6\ue201 Mondelez International Inc. (MDLZ) is a equity in the USA market. The price is 57.82 USD currently with a change of -1.50000 (-2.52866%) from the previous close. The intraday high is 59.1 USD and the intraday low is 57.82 USD. The latest open price was 58.89 USD and the intraday volume is 9931777. The market cap is 73,796,131,856. The PE ratio is 21.17948717948718. The EPS ratio is 2.73. The latest trade time is Wednesday, September 30, 21:35:00 UTC."
+  },
+  {
+    "ticker": "PM",
+    "price": 190.82,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance7\ue201 Philip Morris International Inc (PM) is a equity in the USA market. The price is 190.82 USD currently with a change of -2.91000 (-1.50077%) from the previous close. The intraday high is 195.19 USD and the intraday low is 190.62 USD. The latest open price was 194.64 USD and the intraday volume is 4355410. The market cap is 297,414,616,430. The PE ratio is 27.456115107913668. The EPS ratio is 6.95. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "TSLA",
+    "price": 354.81,
+    "quote_time": "Wednesday, September 30, 23:48:34 UTC",
+    "raw": "\ue200cite\ue202turn45finance8\ue201 Tesla Inc (TSLA) is a equity in the USA market. The price is 354.81 USD currently with a change of 1.92000 (0.54416%) from the previous close. The intraday high is 355.37 USD and the intraday low is 346.1 USD. The latest open price was 351.73 USD and the intraday volume is 39223531. The market cap is 1,256,027,400,000. The PE ratio is 328.52777777777777. The EPS ratio is 1.08. The latest trade time is Wednesday, September 30, 23:48:34 UTC."
+  },
+  {
+    "ticker": "HD",
+    "price": 284.49,
+    "quote_time": "Wednesday, September 30, 23:35:36 UTC",
+    "raw": "\ue200cite\ue202turn45finance9\ue201 Home Depot, Inc. (HD) is a equity in the USA market. The price is 284.49 USD currently with a change of -3.54000 (-1.22900%) from the previous close. The intraday high is 290.46 USD and the intraday low is 284.04 USD. The latest open price was 290.25 USD and the intraday volume is 5774275. The market cap is 283,352,040,000. The PE ratio is 19.908327501749476. The EPS ratio is 14.29. The latest trade time is Wednesday, September 30, 23:35:36 UTC."
+  },
+  {
+    "ticker": "MCD",
+    "price": 230.94,
+    "quote_time": "Wednesday, September 30, 23:46:06 UTC",
+    "raw": "\ue200cite\ue202turn45finance10\ue201 McDonald`s Corp (MCD) is a equity in the USA market. The price is 230.94 USD currently with a change of -2.93000 (-1.25224%) from the previous close. The intraday high is 235.01 USD and the intraday low is 230.9 USD. The latest open price was 234.47 USD and the intraday volume is 5573983. The market cap is 164,221,434,000. The PE ratio is 18.760357432981316. The EPS ratio is 12.31. The latest trade time is Wednesday, September 30, 23:46:06 UTC."
+  },
+  {
+    "ticker": "BKNG",
+    "price": 162.91,
+    "quote_time": "Wednesday, September 30, 23:45:35 UTC",
+    "raw": "\ue200cite\ue202turn45finance11\ue201 Booking Holdings Inc (BKNG) is a equity in the USA market. The price is 162.91 USD currently with a change of 0.46000 (0.28336%) from the previous close. The intraday high is 165.945 USD and the intraday low is 161.0 USD. The latest open price was 163.02 USD and the intraday volume is 8391669. The market cap is 125,440,700,000. The PE ratio is 17.3493077742279. The EPS ratio is 9.39. The latest trade time is Wednesday, September 30, 23:45:35 UTC."
+  },
+  {
+    "ticker": "TJX",
+    "price": 132.31,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance12\ue201 TJX Companies, Inc. (TJX) is a equity in the USA market. The price is 132.31 USD currently with a change of -1.38000 (-1.03139%) from the previous close. The intraday high is 134.58 USD and the intraday low is 132.05 USD. The latest open price was 134.48 USD and the intraday volume is 7763576. The market cap is 147,790,270,000. The PE ratio is 24.50185185185185. The EPS ratio is 5.4. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "NKE",
+    "price": 35.4,
+    "quote_time": "Wednesday, September 30, 23:46:17 UTC",
+    "raw": "\ue200cite\ue202turn45finance13\ue201 Nike, Inc. (NKE) is a equity in the USA market. The price is 35.4 USD currently with a change of -0.45000 (-1.25558%) from the previous close. The intraday high is 36.005 USD and the intraday low is 35.16 USD. The latest open price was 35.86 USD and the intraday volume is 38123681. The market cap is 52,448,640,000. The PE ratio is 23.44370860927152. The EPS ratio is 1.51. The latest trade time is Wednesday, September 30, 23:46:17 UTC."
+  },
+  {
+    "ticker": "LOW",
+    "price": 184.29,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance14\ue201 Lowe`s Cos., Inc. (LOW) is a equity in the USA market. The price is 184.29 USD currently with a change of -2.95000 (-1.57535%) from the previous close. The intraday high is 188.99 USD and the intraday low is 184.23 USD. The latest open price was 189.06 USD and the intraday volume is 3694595. The market cap is 103,202,400,000. The PE ratio is 15.5781910397295. The EPS ratio is 11.83. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "SBUX",
+    "price": 93.96,
+    "quote_time": "Wednesday, September 30, 22:56:40 UTC",
+    "raw": "\ue200cite\ue202turn45finance15\ue201 Starbucks Corp. (SBUX) is a equity in the USA market. The price is 93.96 USD currently with a change of -1.47500 (-1.54564%) from the previous close. The intraday high is 95.89 USD and the intraday low is 93.9 USD. The latest open price was 95.55 USD and the intraday volume is 5735528. The market cap is 107,471,448,000. The PE ratio is 54.312138728323696. The EPS ratio is 1.73. The latest trade time is Wednesday, September 30, 22:56:40 UTC."
+  },
+  {
+    "ticker": "XOM",
+    "price": 162.75,
+    "quote_time": "Wednesday, September 30, 23:18:51 UTC",
+    "raw": "\ue200cite\ue202turn45finance16\ue201 ExxonMobil Holdings Corp. (XOM) is a equity in the USA market. The price is 162.75 USD currently with a change of 1.50000 (0.92966%) from the previous close. The intraday high is 164.35 USD and the intraday low is 161.29 USD. The latest open price was 162.23 USD and the intraday volume is 13099841. The market cap is 730,084,737,732. The PE ratio is 23.380471380471377. The latest trade time is Wednesday, September 30, 23:18:51 UTC."
+  },
+  {
+    "ticker": "CVX",
+    "price": 204.21,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance17\ue201 Chevron Corp. (CVX) is a equity in the USA market. The price is 204.21 USD currently with a change of 0.11000 (0.05382%) from the previous close. The intraday high is 206.82 USD and the intraday low is 204.16 USD. The latest open price was 204.97 USD and the intraday volume is 6392518. The market cap is 403,332,516,270. The PE ratio is 19.635576923076922. The EPS ratio is 10.4. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "COP",
+    "price": 125.15,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance18\ue201 Conoco Phillips (COP) is a equity in the USA market. The price is 125.15 USD currently with a change of -0.20500 (-0.16342%) from the previous close. The intraday high is 126.52 USD and the intraday low is 124.95 USD. The latest open price was 125.93 USD and the intraday volume is 6491041. The market cap is 151,964,013,250. The PE ratio is 16.532364597093792. The EPS ratio is 7.57. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "SLB",
+    "price": 48.72,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance19\ue201 SLB Ltd. (SLB) is a equity in the USA market. The price is 48.72 USD currently with a change of -1.13000 (-2.26589%) from the previous close. The intraday high is 50.23 USD and the intraday low is 48.705 USD. The latest open price was 49.69 USD and the intraday volume is 13232297. The market cap is 73,372,320,000. The PE ratio is 23.765853658536585. The EPS ratio is 2.05. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "EOG",
+    "price": 137.76,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance20\ue201 EOG Resources, Inc. (EOG) is a equity in the USA market. The price is 137.76 USD currently with a change of -1.88000 (-1.34613%) from the previous close. The intraday high is 141.0 USD and the intraday low is 137.36 USD. The latest open price was 139.91 USD and the intraday volume is 3582528. The market cap is 72,875,040,000. The PE ratio is 10.712286158631414. The EPS ratio is 12.86. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "OXY",
+    "price": 55.32,
+    "quote_time": "Wednesday, September 30, 23:43:48 UTC",
+    "raw": "\ue200cite\ue202turn45finance21\ue201 Occidental Petroleum Corp. (OXY) is a equity in the USA market. The price is 55.32 USD currently with a change of 0.38000 (0.69166%) from the previous close. The intraday high is 55.645 USD and the intraday low is 54.77 USD. The latest open price was 55.05 USD and the intraday volume is 10168286. The market cap is 55,299,939,364. The PE ratio is 8.563467492260061. The EPS ratio is 6.46. The latest trade time is Wednesday, September 30, 23:43:48 UTC."
+  },
+  {
+    "ticker": "PSX",
+    "price": 255.31,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance22\ue201 Phillips 66 (PSX) is a equity in the USA market. The price is 255.31 USD currently with a change of 3.08000 (1.22101%) from the previous close. The intraday high is 260.28 USD and the intraday low is 252.97 USD. The latest open price was 256.92 USD and the intraday volume is 2521775. The market cap is 102,792,401,580. The PE ratio is 14.572488584474886. The EPS ratio is 17.52. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "VLO",
+    "price": 387.61,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance23\ue201 Valero Energy Corp. (VLO) is a equity in the USA market. The price is 387.61 USD currently with a change of 0.16000 (0.04127%) from the previous close. The intraday high is 398.79 USD and the intraday low is 385.89 USD. The latest open price was 393.19 USD and the intraday volume is 2536951. The market cap is 113,957,340,000. The PE ratio is 16.130253849354972. The EPS ratio is 24.03. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "CAT",
+    "price": 810.79,
+    "quote_time": "Wednesday, September 30, 23:48:40 UTC",
+    "raw": "\ue200cite\ue202turn45finance24\ue201 Caterpillar Inc. (CAT) is a equity in the USA market. The price is 810.79 USD currently with a change of -15.86000 (-1.91861%) from the previous close. The intraday high is 834.0 USD and the intraday low is 810.43 USD. The latest open price was 828.5 USD and the intraday volume is 1962719. The market cap is 374,990,375,000. The PE ratio is 34.90271201033146. The EPS ratio is 23.23. The latest trade time is Wednesday, September 30, 23:48:40 UTC."
+  },
+  {
+    "ticker": "GE",
+    "price": 312.29,
+    "quote_time": "Wednesday, September 30, 23:43:47 UTC",
+    "raw": "\ue200cite\ue202turn45finance25\ue201 GE Aerospace (GE) is a equity in the USA market. The price is 312.29 USD currently with a change of -5.54000 (-1.74274%) from the previous close. The intraday high is 320.0 USD and the intraday low is 312.3 USD. The latest open price was 317.89 USD and the intraday volume is 4187494. The market cap is 324,020,397,185. The PE ratio is 36.10289017341041. The EPS ratio is 8.65. The latest trade time is Wednesday, September 30, 23:43:47 UTC."
+  },
+  {
+    "ticker": "RTX",
+    "price": 185.65,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance26\ue201 RTX Corp (RTX) is a equity in the USA market. The price is 185.65 USD currently with a change of -1.28000 (-0.68471%) from the previous close. The intraday high is 187.75 USD and the intraday low is 184.56 USD. The latest open price was 185.83 USD and the intraday volume is 4743191. The market cap is 250,211,299,434. The PE ratio is 32.68485915492958. The EPS ratio is 5.68. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "HON",
+    "price": 210.94,
+    "quote_time": "Wednesday, September 30, 23:36:30 UTC",
+    "raw": "\ue200cite\ue202turn45finance27\ue201 Honeywell International Inc (HON) is a equity in the USA market. The price is 210.94 USD currently with a change of 0.82000 (0.39023%) from the previous close. The intraday high is 211.92 USD and the intraday low is 209.49 USD. The latest open price was 210.81 USD and the intraday volume is 1901148. The market cap is 66,855,325,709. The PE ratio is 8.141258201466615. The EPS ratio is 25.91. The latest trade time is Wednesday, September 30, 23:36:30 UTC."
+  },
+  {
+    "ticker": "UPS",
+    "price": 93.44,
+    "quote_time": "Wednesday, September 30, 23:43:47 UTC",
+    "raw": "\ue200cite\ue202turn45finance28\ue201 United Parcel Service, Inc. (UPS) is a equity in the USA market. The price is 93.44 USD currently with a change of -0.49000 (-0.52167%) from the previous close. The intraday high is 94.5 USD and the intraday low is 93.27 USD. The latest open price was 94.01 USD and the intraday volume is 3858552. The market cap is 79,497,031,022. The PE ratio is 17.36802973977695. The EPS ratio is 5.38. The latest trade time is Wednesday, September 30, 23:43:47 UTC."
+  },
+  {
+    "ticker": "ETN",
+    "price": 429.71,
+    "quote_time": "Wednesday, September 30, 23:43:48 UTC",
+    "raw": "\ue200cite\ue202turn45finance29\ue201 Eaton Corporation plc (ETN) is a equity in the USA market. The price is 429.71 USD currently with a change of -3.56000 (-0.82166%) from the previous close. The intraday high is 436.5 USD and the intraday low is 428.27 USD. The latest open price was 434.0 USD and the intraday volume is 1862411. The market cap is 167,372,045,000. The PE ratio is 43.75865580448065. The EPS ratio is 9.82. The latest trade time is Wednesday, September 30, 23:43:48 UTC."
+  },
+  {
+    "ticker": "DE",
+    "price": 671.55,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance30\ue201 Deere & Co. (DE) is a equity in the USA market. The price is 671.55 USD currently with a change of -9.06000 (-1.33137%) from the previous close. The intraday high is 685.18 USD and the intraday low is 668.57 USD. The latest open price was 675.11 USD and the intraday volume is 1736839. The market cap is 181,788,585,000. The PE ratio is 37.32907170650361. The EPS ratio is 17.99. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "FDX",
+    "price": 285.09,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance31\ue201 Fedex Corp (FDX) is a equity in the USA market. The price is 285.09 USD currently with a change of -2.25000 (-0.78269%) from the previous close. The intraday high is 289.99 USD and the intraday low is 284.52 USD. The latest open price was 286.75 USD and the intraday volume is 1722843. The market cap is 68,024,400,068. The PE ratio is 15.229166666666666. The EPS ratio is 18.72. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "LIN",
+    "price": 474.65,
+    "quote_time": "Wednesday, September 30, 23:43:47 UTC",
+    "raw": "\ue200cite\ue202turn45finance32\ue201 Linde Plc. (LIN) is a equity in the USA market. The price is 474.65 USD currently with a change of 1.35000 (0.28519%) from the previous close. The intraday high is 480.5 USD and the intraday low is 472.04 USD. The latest open price was 476.19 USD and the intraday volume is 2640853. The market cap is 220,485,841,950. The PE ratio is 30.62258064516129. The EPS ratio is 15.5. The latest trade time is Wednesday, September 30, 23:43:47 UTC."
+  },
+  {
+    "ticker": "FCX",
+    "price": 70,
+    "quote_time": "Wednesday, September 30, 23:35:08 UTC",
+    "raw": "\ue200cite\ue202turn45finance33\ue201 Freeport-McMoRan Inc (FCX) is a equity in the USA market. The price is 70.0 USD currently with a change of -0.77500 (-1.09479%) from the previous close. The intraday high is 74.11 USD and the intraday low is 69.8 USD. The latest open price was 71.27 USD and the intraday volume is 16659756. The market cap is 101,010,000,000. The PE ratio is 30.6246. The latest trade time is Wednesday, September 30, 23:35:08 UTC."
+  },
+  {
+    "ticker": "SHW",
+    "price": 323.27,
+    "quote_time": "Wednesday, September 30, 23:36:30 UTC",
+    "raw": "\ue200cite\ue202turn45finance34\ue201 Sherwin-Williams Co. (SHW) is a equity in the USA market. The price is 323.27 USD currently with a change of -7.06500 (-2.13806%) from the previous close. The intraday high is 331.19 USD and the intraday low is 322.4 USD. The latest open price was 331.1 USD and the intraday volume is 1403525. The market cap is 79,524,420,000. The PE ratio is 29.821955719557195. The EPS ratio is 10.84. The latest trade time is Wednesday, September 30, 23:36:30 UTC."
+  },
+  {
+    "ticker": "NEM",
+    "price": 115.34,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance35\ue201 Newmont Corp (NEM) is a equity in the USA market. The price is 115.34 USD currently with a change of -1.74000 (-1.48604%) from the previous close. The intraday high is 119.0 USD and the intraday low is 115.31 USD. The latest open price was 117.64 USD and the intraday volume is 5840952. The market cap is 123,067,780,000. The PE ratio is 14.563131313131313. The EPS ratio is 7.92. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "NUE",
+    "price": 233.75,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance36\ue201 Nucor Corp. (NUE) is a equity in the USA market. The price is 233.75 USD currently with a change of -2.34000 (-0.99052%) from the previous close. The intraday high is 239.22 USD and the intraday low is 233.67 USD. The latest open price was 236.48 USD and the intraday volume is 1495040. The market cap is 53,411,875,000. The PE ratio is 18.670127795527158. The EPS ratio is 12.52. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "ECL",
+    "price": 274.58,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance37\ue201 Ecolab, Inc. (ECL) is a equity in the USA market. The price is 274.58 USD currently with a change of -3.04000 (-1.09404%) from the previous close. The intraday high is 278.0 USD and the intraday low is 274.83 USD. The latest open price was 278.13 USD and the intraday volume is 1509265. The market cap is 77,486,476,000. The PE ratio is 36.85637583892617. The EPS ratio is 7.45. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "APD",
+    "price": 278.23,
+    "quote_time": "Wednesday, September 30, 23:47:24 UTC",
+    "raw": "\ue200cite\ue202turn45finance38\ue201 Air Products & Chemicals Inc. (APD) is a equity in the USA market. The price is 278.23 USD currently with a change of -0.91000 (-0.32594%) from the previous close. The intraday high is 282.5 USD and the intraday low is 278.05 USD. The latest open price was 281.11 USD and the intraday volume is 988382. The market cap is 61,989,644,000. The PE ratio is -1324.9047619047622. The EPS ratio is -0.21. The latest trade time is Wednesday, September 30, 23:47:24 UTC."
+  },
+  {
+    "ticker": "CTVA",
+    "price": 77.65,
+    "quote_time": "Wednesday, September 30, 23:15:00 UTC",
+    "raw": "\ue200cite\ue202turn45finance39\ue201 Corteva Inc (CTVA) is a equity in the USA market. The price is 77.65 USD currently with a change of -0.20000 (-0.25684%) from the previous close. The intraday high is 78.81 USD and the intraday low is 77.34 USD. The latest open price was 77.91 USD and the intraday volume is 4034787. The market cap is 51,807,784,930. The PE ratio is 50.751633986928105. The EPS ratio is 1.53. The latest trade time is Wednesday, September 30, 23:15:00 UTC."
+  },
+  {
+    "ticker": "AMZN",
+    "price": 249.15,
+    "quote_time": "Wednesday, September 30, 23:46:04 UTC",
+    "raw": "\ue200cite\ue202turn45finance40\ue201 Amazon.com Inc. (AMZN) is a equity in the USA market. The price is 249.15 USD currently with a change of 2.61000 (1.05809%) from the previous close. The intraday high is 252.43 USD and the intraday low is 245.71 USD. The latest open price was 246.76 USD and the intraday volume is 41898197. The market cap is 2,716,482,450,000. The PE ratio is 20.04424778761062. The EPS ratio is 12.43. The latest trade time is Wednesday, September 30, 23:46:04 UTC."
+  },
+  {
+    "ticker": "WMT",
+    "price": 103.92,
+    "quote_time": "Wednesday, September 30, 23:51:10 UTC",
+    "raw": "Walmart Inc (WMT) is a equity in the USA market. The price is 103.92 USD currently. The latest trade time is Wednesday, September 30, 23:51:10 UTC.",
+    "limitation": "Vendor-reported price 103.92 is slightly below reported regular-session low 103.945; extended-hours price need not fall within regular-session range."
+  }
+]

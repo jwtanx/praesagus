@@ -1,0 +1,812 @@
+{
+  "as_of": "2026-10-01T08:02:26+08:00",
+  "valid": true,
+  "errors": [],
+  "warnings": [
+    {
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "1023",
+      "horizon_type": "week_end",
+      "forecast_target_date": "2026-10-09",
+      "issuance_count": 2,
+      "warning": "repeated instrument-target forecast vintages are correlated"
+    },
+    {
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "1155",
+      "horizon_type": "week_end",
+      "forecast_target_date": "2026-10-09",
+      "issuance_count": 2,
+      "warning": "repeated instrument-target forecast vintages are correlated"
+    },
+    {
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "5347",
+      "horizon_type": "week_end",
+      "forecast_target_date": "2026-10-09",
+      "issuance_count": 2,
+      "warning": "repeated instrument-target forecast vintages are correlated"
+    }
+  ],
+  "aggregation_policy": "all issuances, correlated vintages; not independent samples",
+  "summary": {
+    "total": 70,
+    "unique_instrument_targets": 67,
+    "counts": {
+      "scored": 0,
+      "pending": 70,
+      "not_scored": 0,
+      "abstain": 0,
+      "data_unavailable": 0,
+      "invalid": 0
+    },
+    "coverage": {
+      "scored": 0,
+      "mature_eligible": 0,
+      "fraction": null
+    },
+    "direction": {
+      "hits": 0,
+      "denominator": 0,
+      "hit_rate": null
+    },
+    "range": {
+      "hits": 0,
+      "denominator": 0,
+      "hit_rate": null
+    },
+    "brier": {
+      "denominator": 0,
+      "mean": null
+    }
+  },
+  "by_horizon": {
+    "week_end": {
+      "total": 70,
+      "unique_instrument_targets": 67,
+      "counts": {
+        "scored": 0,
+        "pending": 70,
+        "not_scored": 0,
+        "abstain": 0,
+        "data_unavailable": 0,
+        "invalid": 0
+      },
+      "coverage": {
+        "scored": 0,
+        "mature_eligible": 0,
+        "fraction": null
+      },
+      "direction": {
+        "hits": 0,
+        "denominator": 0,
+        "hit_rate": null
+      },
+      "range": {
+        "hits": 0,
+        "denominator": 0,
+        "hit_rate": null
+      },
+      "brier": {
+        "denominator": 0,
+        "mean": null
+      }
+    }
+  },
+  "rows": [
+    {
+      "forecast_id": "2026-09-30-us-aapl-weekly",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ",
+      "ticker": "AAPL",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-us-nvda-weekly",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ",
+      "ticker": "NVDA",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-us-msft-weekly",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ",
+      "ticker": "MSFT",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-us-meta-weekly",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ",
+      "ticker": "META",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-us-spy-weekly",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NYSE Arca",
+      "ticker": "SPY",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-us-qqq-weekly",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ",
+      "ticker": "QQQ",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-us-xle-weekly",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NYSE Arca",
+      "ticker": "XLE",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-my-tenaga-weekly",
+      "horizon_type": "week_end",
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "5347",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-my-maybank-weekly",
+      "horizon_type": "week_end",
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "1155",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-my-cimb-weekly",
+      "horizon_type": "week_end",
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "1023",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-aapl",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "AAPL",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-msft",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "MSFT",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-googl",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "GOOGL",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-meta",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "META",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-amzn",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "AMZN",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-orcl",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "ORCL",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-crm",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "CRM",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-ibm",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "IBM",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-now",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "NOW",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-technology-pltr",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "PLTR",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-nvda",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "NVDA",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-tsm",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "TSM",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-avgo",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "AVGO",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-amd",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "AMD",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-qcom",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "QCOM",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-txn",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "TXN",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-mu",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "MU",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-amat",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "AMAT",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-lrcx",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "LRCX",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-semiconductors-klac",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "KLAC",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-jpm",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "JPM",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-bac",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "BAC",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-wfc",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "WFC",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-gs",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "GS",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-ms",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "MS",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-c",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "C",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-v",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "V",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-ma",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "MA",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-1155",
+      "horizon_type": "week_end",
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "1155",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-financials-1023",
+      "horizon_type": "week_end",
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "1023",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-xom",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "XOM",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-cvx",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "CVX",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-cop",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "COP",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-slb",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "SLB",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-eog",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "EOG",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-oxy",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "OXY",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-psx",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "PSX",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-vlo",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "VLO",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-fang",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "FANG",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-energy-xle",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "XLE",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-nee",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "NEE",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-so",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "SO",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-duk",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "DUK",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-ceg",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "CEG",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-aep",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "AEP",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-exc",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "EXC",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-xel",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "XEL",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-sre",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "SRE",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-d",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "D",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-utilities-5347",
+      "horizon_type": "week_end",
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "5347",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-spy",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "SPY",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-qqq",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "QQQ",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-vti",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "VTI",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-dia",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "DIA",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-iwm",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "IWM",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-rsp",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "RSP",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-vxus",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "VXUS",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-efa",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "EFA",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-fxi",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "FXI",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    },
+    {
+      "forecast_id": "2026-09-30-watchlist-v2-broad-market-mchi",
+      "horizon_type": "week_end",
+      "market": "US",
+      "venue": "NASDAQ/NYSE",
+      "ticker": "MCHI",
+      "forecast_target_date": "2026-10-09",
+      "status": "pending",
+      "reason": "target has not matured"
+    }
+  ],
+  "assumptions": [
+    "Offline review uses supplied source references; it does not verify or fetch prices.",
+    "Target maturity without actual data uses the review timezone calendar date. Scoring requires a supplied aware actual_available_at no later than review as_of.",
+    "Corporate-action adjustment, currency, venue and session consistency require human/provider validation; no exchange calendar engine is used.",
+    "Ranges and forecasts are assumed frozen before outcomes; CSV history is not independently verified.",
+    "Direction scoring covers up/down only; zero return misses. Range bounds are inclusive.",
+    "Brier scoring uses a positive-return outcome and excludes zero returns.",
+    "Coverage is scored / (scored + mature not_scored); invalid and abstention rows are excluded.",
+    "Stored status and derived hit/return cells do not establish outcomes; actual inputs determine maturity and scoring.",
+    "Small or correlated samples do not establish trading skill or guarantee returns."
+  ]
+}

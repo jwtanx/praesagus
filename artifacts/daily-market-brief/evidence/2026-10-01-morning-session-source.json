@@ -1,0 +1,20 @@
+{
+  "provider": "Associated Press",
+  "source_tier": "secondary reporting",
+  "source_url": "https://apnews.com/article/1ee73f14dc23f6139eeb12c7397f543e",
+  "syndicated_reference": "https://abcnews.com/amp/Business/wireStory/major-us-stock-indexes-fared-wednesday-9302026-136901112",
+  "title": "How major US stock indexes fared Wednesday 9/30/2026",
+  "published_at": "2026-09-30T20:16:13+00:00",
+  "retrieved_at": "2026-10-01T08:04:38+08:00",
+  "connector": "web.search_query",
+  "data_period": "2026-09-30 US regular-session close",
+  "timezone": "America/New_York",
+  "verbatim_excerpt": "The S&P 500 fell 19.30 points, or 0.3%, to 7,651.54.",
+  "extracted_facts": {
+    "SP500": {"close": 7651.54, "change_percent_rounded": -0.3},
+    "DJIA": {"close": 50906.05, "change_percent_rounded": -0.9},
+    "NasdaqComposite": {"close": 26861.06, "change_percent_rounded": 0.2},
+    "Russell2000": {"close": 2796.86, "change_percent_rounded": -0.4}
+  },
+  "limitations": "Frozen facts and short excerpt from web search result passage, not downloaded publisher HTML. Direct AP and ABC page opens failed. Search returned the AP article text and ABC syndicated copy with matching numbers; both share the AP source lineage and count as one source. This is reported market data, not exchange-verified closes."
+}
