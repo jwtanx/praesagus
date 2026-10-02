@@ -21,7 +21,7 @@
     {
       "label": "Evidence limits",
       "title": "6/50 quotes observed; all targets Unrated",
-      "summary": "Six approved US names have non-synchronous vendor snapshots; AMZN and GOOGL supplemental. Other 44 quotes unavailable. No validated numeric forecasts."
+      "summary": "Six approved US names have non-synchronous vendor snapshots; AMZN and META supplemental. Other 44 quotes unavailable. No validated numeric forecasts."
     }
   ],
   "sections": {
@@ -289,7 +289,7 @@
           ]
         },
         {
-          "text": "Issuer-specific catalysts for AAPL, MSFT, NVDA, TSLA, AMZN, META, GOOGL and JPM are not freshly verified. AAPL/MSFT: hardware/cloud demand and financing sensitivity; NVDA: AI orders/export restrictions; TSLA/AMZN: consumer demand/margins; META/GOOGL: advertising and AI costs; JPM: credit/funding. These are research questions, not observed developments. AMZN and GOOGL are supplemental to the approved 50 names.",
+          "text": "Issuer-specific catalysts for AAPL, MSFT, NVDA, TSLA, AMZN, META, GOOGL and JPM are not freshly verified. AAPL/MSFT: hardware/cloud demand and financing sensitivity; NVDA: AI orders/export restrictions; TSLA/AMZN: consumer demand/margins; META/GOOGL: advertising and AI costs; JPM: credit/funding. These are research questions, not observed developments. AMZN and META are supplemental to the approved 50 names.",
           "sources": []
         }
       ],
@@ -2801,7 +2801,7 @@
       }
     }
   ],
-  "footer": "Cutoff 2026-10-02T08:05:37+08:00. Partial ad hoc vendor quotes: 6 approved US names plus supplemental AMZN and GOOGL; 24 US and 20 MY quotes missing. No configured recurring quote provider used. All weekly targets Unrated. AP is secondary session reporting; ISM and BLS are primary survey/schedule sources. Exact source publication times unavailable where null. Shared October calendar retained without duplicate ingestion; BLS payroll schedule freshly rechecked unchanged, other inherited event/closure records not freshly verified; Shenzhen primary fetch failed, no cancellation inferred. Current crude/yields/FX and issuer-specific catalyst audits remain gaps. Research only / watchlist; NO TRADE.",
+  "footer": "Cutoff 2026-10-02T08:05:37+08:00. Partial ad hoc vendor quotes: 6 approved US names plus supplemental AMZN and META; 24 US and 20 MY quotes missing. No configured recurring quote provider used. All weekly targets Unrated. AP is secondary session reporting; ISM and BLS are primary survey/schedule sources. Exact source publication times unavailable where null. Shared October calendar retained without duplicate ingestion; BLS payroll schedule freshly rechecked unchanged, other inherited event/closure records not freshly verified; Shenzhen primary fetch failed, no cancellation inferred. Current crude/yields/FX and issuer-specific catalyst audits remain gaps. Research only / watchlist; NO TRADE.",
   "watchlist_config": {
     "taxonomy_id": "praesagus-daily-coverage-v2-five",
     "count_per_group": 5,
