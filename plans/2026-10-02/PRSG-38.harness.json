@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-38",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-38-complete-snapshot-selection.md",
+  "objective": "Complete cutoff-safe private run snapshot selection with explicit coverage and conflict withholding",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "4ba12997e2016257c066918013b59424039340eb",
+  "allowed_paths": [
+    "ingest/private_market_store.py",
+    "tests/test_private_market_selection.py",
+    "docs/PRIVATE_MARKET_STORE.md",
+    "plans/2026-10-02/PRSG-38-complete-snapshot-selection.md",
+    "plans/2026-10-02/PRSG-38.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "ingest/market_collector.py",
+    "scripts/",
+    "artifacts/",
+    "skills/",
+    "harness/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_private_market_selection.py",
+        "tests/test_private_market_store.py",
+        "tests/test_market_collector.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02: exact manifest argv/cwd replayed offline on isolated Python 3.12.14 / cryptography 50.0.2: 189 passed in 4.44s. Transcript /tmp/PRSG-38-tests.txt; no live calls/credentials/public output."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead independent scope/integrity/coverage review",
+      "status": "passed",
+      "evidence": ["Lead reviewed all five paths and independently replayed 189 tests in 4.41s; Researcher independently replayed 189 in 4.47s with no reproducible blockers. Exact scope and whitespace checks passed; offline synthetic evidence only, no live entitlement or publication validation."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-38-D1",
+      "description": "Selection and shared regressions pass",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-02: exact manifest argv/cwd replayed offline on isolated Python 3.12.14 / cryptography 50.0.2: 189 passed in 4.44s. Transcript /tmp/PRSG-38-tests.txt; no live calls/credentials/public output.",
+        "Complete run streams >1000 own/other-run observations, all400 codes, exact universe, failed/empty/partial coverage, source/cutoff eligibility, conflicts/replays, hash-consistent metadata and raw/ordinal/source/count/run-provider corruption, read-only bytes/schema invariance."
+      ]
+    },
+    {
+      "id": "PRSG-38-D2",
+      "description": "Independent Lead review accepted",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": ["Lead accepts complete as-of run selection, conflict withholding and integrity checks after full scoped review and independent replay. Unknown reference metadata/rights, no hard CPU/I/O deadline, and caller-declared authenticity remain documented; no scheduler, projection or live collection claimed."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Lead full five-path review and 189-test replay accepted; Researcher corroborated 189 tests and no reproducible blockers. Unrelated .DS_Store preserved."]
+  }
+}

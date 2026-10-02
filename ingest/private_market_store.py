@@ -424,6 +424,120 @@ class PrivateMarketStore:
         return safe(read)
 
 
+    def select_snapshots(self, run_id, cutoff, expected_codes):
+        """Complete as-of run view, bounded selection; not a run completion claim."""
+        def select():
+            need(isinstance(run_id, str) and re.fullmatch(r'[A-Za-z0-9_-]{1,128}', run_id))
+            stamp = aware_ms(cutoff)
+            request = ReadRequest('POST', '/api/v1.0/quote/snapshot', '',
+                                  canonical({'code_list': expected_codes}).encode(), {}, 1)
+            _, universe, _ = request_meta(request)
+            codes = universe['codes'];expected = set(codes)
+            requested, returned, eligible = set(), set(), set()
+            statuses = dict.fromkeys(('success', 'partial', 'all-missing', 'failed'), 0)
+            quality = ['currency_unknown', 'session_unknown', 'adjustment_unknown',
+                       'prior_close_unknown', 'point_observation_not_bar']
+            states = {code: {'candidate': None, 'excluded': {}} for code in codes}
+            with self._connection(readonly=True) as db:
+                db.execute('BEGIN')
+                attempts = db.execute("SELECT * FROM attempts WHERE run_id=? AND kind='snapshot' AND known_ms<=? ORDER BY known_ms,id", (run_id, stamp))
+                run_checked = False
+                for attempt in attempts:
+                    if not run_checked:
+                        run = db.execute('SELECT provider FROM runs WHERE id=?', (run_id,)).fetchone()
+                        need(run is not None and run['provider'] == 'moomoo-rest', 'database-integrity-failed')
+                        run_checked = True
+                    meta = self._meta(attempt)
+                    need(isinstance(meta['query'], dict) and set(meta['query']) == {'codes'},
+                         'database-integrity-failed')
+                    _, query, _ = request_meta(ReadRequest('POST', '/api/v1.0/quote/snapshot', '',
+                        canonical({'code_list': meta['query']['codes']}).encode(), {}, 1))
+                    need(set(query['codes']) == expected, 'universe-mismatch')
+                    need(meta['ingested_ms'] >= meta['observed_ms']
+                         and parse_aware(meta['ingested_at']) >= parse_aware(meta['observed_at'])
+                         and meta['origin'] in ('synthetic', 'trusted-capture')
+                         and meta['capture_authenticity'] == 'caller-supplied-unverified'
+                         and meta['rights_status'] == 'unconfirmed'
+                         and meta['provider'] == 'moomoo-rest'
+                         and meta['connector'] == 'moomoo-rest-capture'
+                         and meta['endpoint'] == '/api/v1.0/quote/snapshot', 'database-integrity-failed')
+                    requested.update(query['codes'])
+                    records = [] if meta['raw_hash'] is None else normalized(self.raw(meta['raw_hash']), 'snapshot', query)
+                    count = len(records)
+                    status = ('failed' if meta['raw_hash'] is None else 'all-missing' if not count
+                              else 'success' if count == len(codes) else 'partial')
+                    returned_codes = {json.loads(r[1])['code'] for r in records}
+                    missing = [code for code in query['codes'] if code not in returned_codes]
+                    need(type(meta['record_count']) is int and meta['record_count'] == count
+                         and meta['status'] == status and meta['missing_codes'] == missing
+                         and (meta['reason'] in ('transport-failed', 'http-failed', 'invalid-response')
+                              if status == 'failed' else meta['reason'] is None),
+                         'database-integrity-failed')
+                    statuses[status] += 1
+                    observations = db.execute("""SELECT o.ordinal,v.* FROM observations o
+                        LEFT JOIN versions v ON v.id=o.version_id WHERE o.attempt_id=? ORDER BY o.ordinal""", (attempt['id'],))
+                    seen = 0
+                    for row in observations:
+                        need(seen < count and row['ordinal'] == seen and row['kind'] == 'snapshot'
+                             and row['semantic_hash'] == digest(row['payload'].encode())
+                             and records[seen] == (row['identity'], row['payload'], row['source_ms']),
+                             'database-integrity-failed')
+                        seen += 1
+                        record = json.loads(row['payload']);code = record['code'];source = row['source_ms']
+                        returned.add(code)
+                        reasons = []
+                        if source is None:reasons.append('source_time_unknown')
+                        else:
+                            if source > stamp:reasons.append('source_time_after_cutoff')
+                            if source > aware_ms(meta['observed_at']):reasons.append('source_time_after_observation')
+                        if record['price'] <= 0:reasons.append('price_unusable')
+                        state = states[code]
+                        if reasons:
+                            for reason in reasons:state['excluded'][reason] = state['excluded'].get(reason, 0) + 1
+                            continue
+                        eligible.add(code)
+                        provenance = {key: meta[key] for key in ('raw_hash', 'observed_at', 'ingested_at',
+                            'known_ms', 'origin', 'capture_authenticity', 'rights_status', 'provider', 'connector')}
+                        provenance.update(attempt_id=attempt['id'], semantic_hash=row['semantic_hash'], source_ms=source)
+                        candidate = state['candidate']
+                        if candidate is None or source > candidate['source_ms']:
+                            state['candidate'] = dict(source_ms=source, record=record, provenance=provenance,
+                                semantic_hash=row['semantic_hash'], count=1, conflict=None)
+                        elif source == candidate['source_ms']:
+                            candidate['count'] += 1
+                            if row['semantic_hash'] != candidate['semantic_hash'] and candidate['conflict'] is None:
+                                candidate['conflict'] = provenance
+                    need(seen == count, 'database-integrity-failed')
+            selected, conflicted, quotes = set(), set(), {}
+            for code in codes:
+                state = states[code];candidate = state['candidate']
+                gaps = list(quality[:4])
+                entry = dict(quote=None, provenance=None, quality=list(quality), gap_reasons=gaps,
+                             excluded_counts=state['excluded'], latest_observation_count=0,
+                             replay_count=0, conflict_provenance=[])
+                if candidate is None:
+                    gaps.append('no_eligible_quote' if code in returned else
+                                'no_returned_quote' if requested else 'no_available_attempts')
+                else:
+                    entry['latest_observation_count'] = candidate['count']
+                    if candidate['conflict'] is not None:
+                        conflicted.add(code);gaps.append('same_time_conflict');entry['replay_count'] = None
+                        entry['conflict_provenance'] = [candidate['provenance'], candidate['conflict']]
+                    else:
+                        selected.add(code)
+                        entry.update(quote={**candidate['record'], 'prior_close': None},
+                                     provenance=candidate['provenance'], replay_count=candidate['count']-1)
+                quotes[code] = entry
+            groups = dict(expected=expected, requested=requested, returned=returned, eligible=eligible,
+                          selected=selected, missing=expected-returned, conflicted=conflicted)
+            return dict(run_id=run_id, cutoff=cutoff, view_complete=True,
+                        status='available' if requested else 'no_available_attempts',
+                        coverage={name: {'codes': [code for code in codes if code in group], 'count': len(group)}
+                                  for name, group in groups.items()},
+                        attempt_status_counts=statuses, quotes=quotes)
+        return safe(select)
+
+
 class CaptureTransport:
     """Explicit trusted-response capture before core decode; no default transport."""
     def __init__(self, store, transport, *, run_id, observed_clock, ingestion_clock, origin='trusted-capture'):

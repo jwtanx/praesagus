@@ -139,6 +139,84 @@ Readers use SQLite URI mode=ro and query_only; queries never create stores,
 initialize schema, repair journals or write SQL. Hash/schema checks detect damage,
 not authenticated tamper-proof storage against an owner able to rewrite everything.
 
+## Complete run-specific snapshot selection (PRSG-38)
+
+`select_snapshots(run_id, cutoff, expected_codes)` returns a private bounded
+selection envelope for one explicit run and a unique US universe of 1–400 names.
+The universe is supplied by the caller; it is not inferred from available data.
+No schema, collector, CLI, schedule or public report changes are introduced.
+
+The method streams **every available snapshot attempt** for that run in one
+read-only database transaction, with no 1000-row limit. Every available attempt's
+requested code set must equal the supplied universe, regardless of code order;
+mismatch fails closed. Other runs and news attempts cannot supply missing quotes.
+A missing run and a run with only post-cutoff attempts both return
+`status: no_available_attempts`; the result does not disclose future existence.
+`view_complete: true` means all matching as-of attempts were examined, never that
+the collector finished or supplied a complete useful dataset.
+
+The envelope contains `run_id`, `cutoff`, `view_complete`, `status`,
+`attempt_status_counts`, `coverage`, and `quotes`. Each coverage group has a bounded
+`codes` list in caller order and a `count`:
+
+| Group | Meaning |
+| --- | --- |
+| expected | Explicit caller universe |
+| requested | Codes requested by available attempts, including failed ones |
+| returned | Codes actually present in validated successful raw responses |
+| eligible | Codes with at least one positive-price, temporally eligible point |
+| selected | Codes with an unambiguous latest eligible point |
+| missing | Expected codes never returned; excludes returned-but-ineligible codes |
+| conflicted | Codes whose latest eligible timestamp has differing semantic values |
+
+Attempt counts distinguish `success`, `partial`, `all-missing`, and `failed`.
+Failure is not an empty successful response. Metadata/raw hashes, normalization,
+semantic hashes, ordinal bindings, source times, record/observation counts and
+coverage consistency are checked. Missing or damaged raw/observation data stops
+selection; it is not silently treated as missing coverage. Failed attempts must
+have no observations. Existing query methods retain their previous interfaces
+and bounded behavior.
+
+Eligibility requires known source time at/before cutoff and observation, plus
+positive price. Known time includes ingestion and must be at/before cutoff, using
+the same conservative millisecond fences and strict timestamp parser. Unknown
+source time, future time and zero prices remain visible through bounded per-code
+`excluded_counts`; they do not become selected evidence. Provider validity flags
+are retained literally without inventing their interpretation.
+
+Selection uses greatest eligible provider time, not greatest revision or latest
+ingestion. Same code/time and same normalized semantic hash is a replay. Different
+hashes at that latest eligible timestamp withhold the quote as
+`same_time_conflict`; neither last-write nor an older point resolves that conflict.
+A later eligible timestamp can supersede an earlier conflicted timestamp. A later
+capture unavailable at cutoff cannot change an earlier selection.
+
+Each code has a `quote` or null, selected `provenance` or null, quality/gap reasons,
+exclusion counts, `latest_observation_count`, `replay_count`, and at most two
+`conflict_provenance` representatives. Identical latest points have replay count
+`observation_count - 1`; conflicts have replay count null rather than an invented
+distinct-value count. Representatives use deterministic as-of attempt order;
+output does not expand into unbounded historical provenance. Processing time is
+proportional to matching run history; the API supplies no hard CPU/I/O deadline.
+
+Selected provenance includes attempt ID, raw/semantic hashes, observed/ingested
+and source times, provider/connector, origin, unverified capture authenticity and
+unconfirmed rights. Synthetic origin remains synthetic. Hashes validate integrity,
+not source authentication. The selected point adds `prior_close: null` to the
+normalized quote; currency, session and adjustment remain null, each with explicit
+gaps. Dropped provider fields are not recovered through a raw-data bypass.
+
+This is quote evidence, not freshness/session acceptance, a completed bar,
+verified prior close, change, RVOL, prediction or publication authorization.
+Downstream report projection still needs a separately accepted freshness,
+reference-metadata and rights policy. No unsupported forecast is invented.
+
+Offline regression command:
+
+```sh
+python3 -m pytest -q tests/test_private_market_selection.py tests/test_private_market_store.py tests/test_market_collector.py
+```
+
 ## Offline CLI
 
 ```sh
