@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-35",
+  "tags": {
+    "type": "docs",
+    "modules": [
+      "docs",
+      "connectors"
+    ],
+    "owner_role": "Lead",
+    "priority": "P2",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.2,
+      "high": 0.4
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-35-moomoo-credential-runbook.md",
+  "objective": "Reproducible secure Moomoo AppKey and macOS login Keychain developer onboarding",
+  "status": "planned",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "provisional",
+  "base_sha": null,
+  "allowed_paths": [
+    "docs/MOOMOO_CREDENTIAL_SETUP.md",
+    "docs/MOOMOO_REST.md",
+    "README.md",
+    "plans/2026-10-02/PRSG-35-moomoo-credential-runbook.md",
+    "plans/2026-10-02/PRSG-35.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "skills/",
+    "artifacts/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "docs-review",
+      "kind": "manual",
+      "description": "Review links, placeholders, scope instructions, secure commands and revocation against delivered PRSG-34",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "onboarding-replay",
+      "kind": "manual",
+      "description": "Replay deterministic missing-Keychain-item and wrong-passphrase behavior with synthetic credentials; no real secret output",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-35-D1",
+      "description": "Complete linked secure onboarding guide",
+      "check_ids": [
+        "docs-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-35-D2",
+      "description": "Reviewed loader compatibility and safe failure replay",
+      "check_ids": [
+        "docs-review",
+        "onboarding-replay"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "reviewer": "Lead",
+    "evidence": []
+  }
+}
