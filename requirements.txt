@@ -6,6 +6,7 @@ prometheus-client
 praw
 pyarrow
 requests
+cryptography>=50.0.2,<51
 pytest
 moto
 pytest-mock

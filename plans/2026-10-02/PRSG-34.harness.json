@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-34",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "connectors",
+      "financial-data"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-34-secure-live-moomoo-transport.md",
+  "objective": "Secure private live Moomoo REST signer and transport for bounded quote/news reads",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "52c60bb78e5d890b052151990a393aa581c3b4b1",
+  "allowed_paths": [
+    "pyproject.toml",
+    "requirements.txt",
+    "connectors/moomoo_rest_live.py",
+    "tests/test_moomoo_rest_live.py",
+    "docs/MOOMOO_REST.md",
+    "plans/2026-10-02/PRSG-34-secure-live-moomoo-transport.md",
+    "plans/2026-10-02/PRSG-34.harness.json"
+  ],
+  "protected_paths": [
+    "skills/",
+    "artifacts/daily-market-brief/2026-10-02.json",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_moomoo_rest_live.py",
+        "tests/test_moomoo_rest.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02 MYT delegated Engineer offline run: python3 -m pytest -q tests/test_moomoo_rest_live.py tests/test_moomoo_rest.py — 198 passed in 0.32s, no skips; Python3.9.6/available cryptography49.0.0. All credential/process/network dependencies mocked; synthetic crypto generated only in memory. No real Keychain/broker/private credential files accessed.",
+        "Final 2026-10-02 MYT run: exact frozen command passed 202 tests in 0.29s, no skips; added wrong-owner/TLS/chunk-deadline and HOME-independent exact-login Keychain regressions. Scope/owned whitespace validation passed; dependency/Python3.11/live checks not performed.",
+        "2026-10-02 MYT accepted dependency amendment: cryptography>=50.0.2,<51 declared consistently in pyproject.toml and requirements.txt; current official PyPI metadata verified50.0.2/Python>=3.9. Isolated Python3.12.14/cryptography50.0.2/pytest8.4.2 executed exact frozen argv with venv-first PATH:202 passed in0.89s/no skips. pip check passed, TOML parse/equal-range validation passed. Python3.11 unavailable at standard explicit locations/project venv; full Poetry resolution not run. No global installs, model packages or live calls by Engineer."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Offline security regressions pass, private bounded live quote probe outcome recorded without secrets, entitlement and data-rights limitations explicit.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed signer/transport, independently ran202 tests in0.27s on isolatedPython3.12/cryptography50.0.2, and verified private US.SPY price/volume snapshot. Accepted manual reads only; DNS/header cancellation, Python3.11/fullPoetry, MY/news and public rights remain gates."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-34-D1",
+      "description": "Offline security regressions pass, private bounded live quote probe outcome recorded without secrets, entitlement and data-rights limitations explicit.",
+      "check_ids": [
+        "tests",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed signer/transport, independently ran202 tests in0.27s on isolatedPython3.12/cryptography50.0.2, and verified private US.SPY price/volume snapshot. Accepted manual reads only; DNS/header cancellation, Python3.11/fullPoetry, MY/news and public rights remain gates."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead reviewed signer/transport, independently ran202 tests in0.27s on isolatedPython3.12/cryptography50.0.2, and verified private US.SPY price/volume snapshot. Accepted manual reads only; DNS/header cancellation, Python3.11/fullPoetry, MY/news and public rights remain gates."
+    ]
+  }
+}
