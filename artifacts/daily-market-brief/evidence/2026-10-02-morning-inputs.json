@@ -1,0 +1,103 @@
+{
+  "as_of": "2026-10-02T08:05:37+08:00",
+  "quotes": [
+    {
+      "ticker": "AAPL",
+      "price": 330.32,
+      "currency": "USD",
+      "quote_time": "2026-10-01T23:47:22Z",
+      "provider": "web.finance",
+      "retrieved_at": "2026-10-02T08:05:37+08:00"
+    },
+    {
+      "ticker": "MSFT",
+      "price": 512.8,
+      "currency": "USD",
+      "quote_time": "2026-10-01T23:46:50Z",
+      "provider": "web.finance",
+      "retrieved_at": "2026-10-02T08:05:37+08:00"
+    },
+    {
+      "ticker": "NVDA",
+      "price": 230.86,
+      "currency": "USD",
+      "quote_time": "2026-10-01T23:48:01Z",
+      "provider": "web.finance",
+      "retrieved_at": "2026-10-02T08:05:37+08:00"
+    },
+    {
+      "ticker": "TSLA",
+      "price": 354.11,
+      "currency": "USD",
+      "quote_time": "2026-10-01T23:48:39Z",
+      "provider": "web.finance",
+      "retrieved_at": "2026-10-02T08:05:37+08:00"
+    },
+    {
+      "ticker": "AMZN",
+      "price": 248.23,
+      "currency": "USD",
+      "quote_time": "2026-10-01T23:45:37Z",
+      "provider": "web.finance",
+      "retrieved_at": "2026-10-02T08:05:37+08:00"
+    },
+    {
+      "ticker": "META",
+      "price": 725.93,
+      "currency": "USD",
+      "quote_time": "2026-10-01T23:45:46Z",
+      "provider": "web.finance",
+      "retrieved_at": "2026-10-02T08:05:37+08:00"
+    },
+    {
+      "ticker": "GOOGL",
+      "price": 338.24,
+      "currency": "USD",
+      "quote_time": "2026-10-01T23:45:37Z",
+      "provider": "web.finance",
+      "retrieved_at": "2026-10-02T08:05:37+08:00"
+    },
+    {
+      "ticker": "JPM",
+      "price": 333.18,
+      "currency": "USD",
+      "quote_time": "2026-10-01T23:15:00Z",
+      "provider": "web.finance",
+      "retrieved_at": "2026-10-02T08:05:37+08:00"
+    }
+  ],
+  "sources": [
+    {
+      "label": "AP October 1 close review",
+      "url": "https://apnews.com/article/c367e6e87c621f06078ea223ab7ce6d1",
+      "provider": "Associated Press (secondary)",
+      "published_at": "2026-10-01T20:20:18+00:00",
+      "retrieved_at": "2026-10-02T08:05:37+08:00",
+      "data_period": "2026-10-01 US regular session",
+      "limitation": "Exact publication time unavailable where null; retrieval is actual workflow availability."
+    },
+    {
+      "label": "ISM September manufacturing",
+      "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/september/",
+      "provider": "ISM (primary)",
+      "published_at": "2026-10-01",
+      "retrieved_at": "2026-10-02T08:05:37+08:00",
+      "data_period": "September 2026",
+      "limitation": "Exact publication time unavailable where null; retrieval is actual workflow availability."
+    },
+    {
+      "label": "BLS release schedule",
+      "url": "https://www.bls.gov/schedule/news_release/empsit.htm",
+      "provider": "BLS (primary)",
+      "published_at": null,
+      "retrieved_at": "2026-10-02T08:05:37+08:00",
+      "data_period": "September employment, scheduled October 2",
+      "limitation": "Exact publication time unavailable where null; retrieval is actual workflow availability."
+    }
+  ],
+  "source_extraction_notes": [
+    "AP source excerpt and ISM/BLS public pages read with web tool; prices are tool snapshots, not official close.",
+    "ISM PMI54.5 orders55.3 prices77.9; BLS October2 08:30ET schedule unchanged.",
+    "Shenzhen page retrieval failed; retained inherited calendar without fresh verification."
+  ]
+}
