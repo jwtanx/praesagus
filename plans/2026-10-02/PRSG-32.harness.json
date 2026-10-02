@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-32",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.2
+    },
+    "impact": "low"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-32-compact-chart-chips.md",
+  "objective": "Slightly smaller chart ticker chips retaining accessible touch targets",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "b11f8903d883f6df90e60f8eae54b01606d09a25",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "plans/2026-10-02/PRSG-32-compact-chart-chips.md",
+    "plans/2026-10-02/PRSG-32.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "connectors/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/tradingview_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead reduced chip typography to14px and padding8px12px, preserving44px minimum touch height. node tests/tradingview_checks.cjs passed including existing viewer replay; external scripts mocked, visual QA not performed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews compact typography and unchanged touch target",
+      "status": "passed",
+      "evidence": [
+        "Lead reduced chip typography to14px and padding8px12px, preserving44px minimum touch height. node tests/tradingview_checks.cjs passed including existing viewer replay; external scripts mocked, visual QA not performed."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-32-D1",
+      "description": "Compact chips preserve touch targets and regression behavior",
+      "check_ids": [
+        "tests",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reduced chip typography to14px and padding8px12px, preserving44px minimum touch height. node tests/tradingview_checks.cjs passed including existing viewer replay; external scripts mocked, visual QA not performed."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead reduced chip typography to14px and padding8px12px, preserving44px minimum touch height. node tests/tradingview_checks.cjs passed including existing viewer replay; external scripts mocked, visual QA not performed."
+    ]
+  }
+}
