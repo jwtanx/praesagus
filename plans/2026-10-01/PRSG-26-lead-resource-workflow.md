@@ -12,10 +12,22 @@ Approved cadence: daily MYT quarter-hours09:00–23:45 and00:00–05:45 plus06:0
 
 ## When it's considered done
 
-- [ ] PRSG-26-D1: Resource checks and Lead-only recovery workflow validated; human activation decision recorded.
+## Accepted amendment — 2026-10-02
+
+Lead adds docs/LEAD_WORKFLOW.md to scope for the approved four-agent/resource overview; original base retained. Weekly guards now require script alignment, not just instruction text. Engineer may edit only skills/lead/scripts/status.py and tests/test_lead_status.py; Lead owns skill/docs/metadata and schedule configuration. Existing26-test evidence is historical, not proof of new weekly behavior.
+
+Accept sanitized schema2 input: shared fresh aware sampled_at and windows.five_hour (300 minutes), windows.weekly (10080 minutes), each usedPercent/resetsAt. Parse percentages independently of reset metadata. Legacy flat input remains readable as five-hour only with weekly unknown; never overall ready. Reject mixed/unknown schemas, wrong/bool durations, nonfinite/bool percentages, stale/future/naive samples. Known low usage must remain visible with missing/invalid reset.
+
+Battery<=8 overrides. Any known remaining<=2 checkpoints/pauses; otherwise any<=5 checkpoints; missing/incomplete metadata blocks new work. Recovery is blocked with unknown battery/window/reset, else ceil(latest reset of windows<=2)+60. Retain existing five_hour_remaining_percent/reset_epoch keys, add weekly remaining, constraining windows, recovery epoch/status and blockers. Script diagnoses only, no schedule or network mutations. Deterministic replay covers both windows, thresholds, unknown resets, legacy input, fractional reset ceiling and battery precedence. New script checks stay pending until implemented; Lead independently reviews before completion.
+
+- [x] PRSG-26-D1: Resource checks and Lead-only recovery workflow validated; human activation decision recorded.
 
 ## Evidence and limits
 
 22 pytest cases passed. Skill quick validator and diff whitespace check passed. Live battery29% then28%; app usage89% remaining, reset2026-10-02 03:50:20 MYT. Independent real delete/restore and scheduler roundtrip not exercised; no live schedule mutation performed. Shell alone reports usageunknown correctly; supported app tool supplies five-hour data. Native skill discovery may require chat refresh; /lead is a text trigger, $lead explicit skill invocation.
 
 No commit/push in this pass. Keep pending human review/activation distinct from future runtime enforcement.
+
+## Lead acceptance — 2026-10-02
+
+Historical statements above describe earlier passes. Lead reviewed the complete current script/tests/skill/docs changes; independent84 tests passed0.08s, Researcher84passed0.06s plus synthetic edge cases found no blocker. Skillv1.4 metadata validation passed. Both Lead schedule prompts now include weekly safeguards, updated through the app tool and read back ACTIVE with original cadence/Lead target. Full configurations saved privately. Accept diagnostic guards and approved workflow instructions only: script does not mutate schedules, full battery backup/delete/restore is not end-to-end proven. Git records separate delivery; never treat this acceptance as live market-data or forecast validation.

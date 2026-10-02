@@ -20,7 +20,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-01/PRSG-26-lead-resource-workflow.md",
   "objective": "Lead-only resource probe, proactive coordination and schedule recovery instructions",
-  "status": "review",
+  "status": "complete",
   "owner": "Lead",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -28,6 +28,7 @@
   "allowed_paths": [
     "skills/lead/",
     "tests/test_lead_status.py",
+    "docs/LEAD_WORKFLOW.md",
     "AGENTS.md",
     "plans/2026-10-01/PRSG-26-lead-resource-workflow.md",
     "plans/2026-10-01/PRSG-26.harness.json"
@@ -55,7 +56,8 @@
       "status": "passed",
       "evidence": [
         "2026-10-01 MYT: 22 deterministic tests passed in0.02s; missing/stale/invalid usage and battery fail closed, battery5 precedence, remaining2 stop and remaining5 checkpoint cases. No real schedule deletion/restoration exercised.",
-        "2026-10-01 MYT follow-up:26 tests passed; battery stop raised to8%, live usage stays tool-sourced. No live delete/restore rehearsal."
+        "2026-10-01 MYT follow-up:26 tests passed; battery stop raised to8%, live usage stays tool-sourced. No live delete/restore rehearsal.",
+        "2026-10-02 Lead independent84tests passed0.08s; Researcher84passed0.06s and extra synthetic recovery cases found no blocker. Schema2 dual windows, legacy unknown weekly, low usage with unknown reset, latest reset ceiling and battery precedence covered."
       ]
     },
     {
@@ -86,12 +88,13 @@
         "skill",
         "human"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": ["Lead source/full-test/diff review and independent84-test replay accepted. Skillv1.4 quick validator passed; Researcher independent replay passed. Both confirmed Lead schedules updated via app and read back ACTIVE with unchanged targets/cadence; full configs saved privately. Battery removal/full restore remains procedural, not end-to-end proven."]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Accept tested diagnostic dual-window guards and human-approved workflow instructions; no automatic mutation runtime or end-to-end battery restoration claim. All current ticket-owned paths reviewed, unrelated edits preserved."]
   }
 }

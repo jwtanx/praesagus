@@ -4,7 +4,7 @@ description: Lead-only Praesagus backlog coordination, resource checks, schedule
 license: MIT
 metadata:
   author: praesagus
-  version: "1.2"
+  version: "1.4"
 ---
 
 # Lead control
@@ -17,7 +17,7 @@ Modes: `check`, `start` (requires human schedule approval), `checkpoint`, `resto
 
 ## Cheap check first
 
-1. Query the app get_usage_limits tool once. Select the relevant rateLimitsByLimitId bucket, falling back to rateLimits; only a windowDurationMins=300 window counts as five-hour usage. Return a sanitized object with only usedPercent, windowDurationMins, resetsAt, sampled_at (UTC). Do not scrape authentication files, private endpoints or shell session logs. Usage is shared across the account, not Lead's token budget. Missing data is unknown, not 100% remaining.
+1. Query the app get_usage_limits tool once. Select one relevant rateLimitsByLimitId bucket, falling back to rateLimits; do not combine buckets. Sanitize both windows from that response into schema2: `{schema_version:2,sampled_at:<aware UTC ISO>,windows:{five_hour:{usedPercent,windowDurationMins:300,resetsAt},weekly:{usedPercent,windowDurationMins:10080,resetsAt}}}`. Preserve missing values as unknown, never infer duration/reset/remaining. Do not scrape authentication files, private endpoints or shell session logs. Usage is shared across the account, not Lead's token budget.
 2. Run `sh skills/lead/scripts/status.sh`. It reads macOS pmset, not credentials. Supply sanitized usage JSON via `--usage-json PATH` to include both checks; otherwise usage is explicitly unavailable. Snapshot must be under five minutes old; stale/future samples or invalid fields become unknown.
 3. Act on the compact JSON action. Battery <=8% takes precedence even when charging; usage <=2% requires checkpoint/reset handling. Unknown readings stop new delegation and require attention. At <=5% usage proactively checkpoint before the hard <=2% stop, to leave enough budget. Weekly/exhausted-other-bucket limits may block continuation despite a five-hour reset. Threshold constants live in scripts/status.py; current percentages/reset times must always be fetched live, never hardcoded from a prior reading.
 
@@ -42,6 +42,14 @@ Replay cases: returned handoff+passing tests+pending acceptance -> inspect evide
 The 06:00 companion is a daily project report, not another delegation run. Report the previous09:00–current06:00 MYT work period with dated cutoff, accepted completed tickets and verified commit links, tests, work per owner, pending reviews, blockers and next three09:00 priorities. Distinguish reported/verified, committed/pushed/deployed and missed/delayed execution. Provide a brief report even on unchanged days; do not start new work. Save private dated wrap-up and restart context, keep resource guards, and never interrupt collaborators for reporting.
 
 ## Checkpoint and five-hour reset
+
+### Weekly window safeguard (human approved 2026-10-02)
+
+Read both the five-hour and weekly windows from the same supported usage-limit response. Weekly means the reported seven-day window (10080 minutes), not an inferred balance or the user's earlier percentage. `scripts/status.py` evaluates both windows independently: known low remaining survives an unknown reset, but recovery stays blocked. Legacy flat input supplies five-hour only; weekly remains unknown and cannot yield ready. Inspect blockers even with a checkpoint action; unknown metadata stops new work. Only `recovery_status=ready` provides a candidate `recovery_epoch`, calculated as ceil(latest constraining reset)+60; it does not create a schedule. Other exhausted account buckets still override continuation.
+
+At weekly remaining <=5%, checkpoint proactively. At <=2%, stop new delegation and expensive work, save exact dirty ownership/context, and commit/push only independently reviewed changes ticket-by-ticket; preserve unfinished files without claiming acceptance. Pause only confirmed Lead recurring schedules using the existing inventory workflow. For one recovery wake, use the latest reported reset among all windows currently <=2% (plus60 seconds); a five-hour reset alone cannot recover a constrained weekly window. If any required reset is unknown, save and report the blocker instead of creating a guessed wake. Recheck all windows/battery at wake; do not start work merely because one reset occurred. Human already authorizes pausing/recovery scheduling without repeat approval. Existing low-battery backup/removal takes precedence. No duplicate wakes or edits to specialist schedules.
+
+Read [the four-agent workflow overview](../../docs/LEAD_WORKFLOW.md) when onboarding or explaining the operating model. Replay before delivery: five-hour80%/weekly2% -> checkpoint and weekly recovery, not ready; both2% with later weekly reset -> one wake at later reset+60s; missing weekly reset -> checkpoint, no guessed wake; battery8% with weekly2% -> backup/remove Lead schedules first. Script regressions cover diagnostic decisions; schedule ownership, backup/readback and mutations remain agent procedures, not script enforcement.
 
 At low usage, stop new work and preserve files. Request bounded collaborator checkpoints only if active and authorization permits; do not discard their edits. Save private `/Users/jwtan/.codex/lead-state/context.md` using apply_patch: current objective, revision, dirty ownership, ticket states, exact commands/results, pending reviews/decisions, collaborators/cursors and next safe step. Save is not commit acceptance: commit only independently reviewed changes ticket-by-ticket under existing authorization; otherwise retain uncommitted work and record it. Never reset/stash blindly or expose secrets.
 
