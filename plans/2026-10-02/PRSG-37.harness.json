@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-37",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "connectors",
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-37-bounded-private-collector.md",
+  "objective": "Manually invoked private quote/news collector with bounded process deadlines and parent-owned immutable storage",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "21211aea0d9b54d692c0c7f26dbeae8d2a5b1e64",
+  "allowed_paths": [
+    "ingest/market_collector.py",
+    "scripts/market_collect.py",
+    "tests/test_market_collector.py",
+    "docs/PRIVATE_MARKET_COLLECTOR.md",
+    "plans/2026-10-02/PRSG-37-bounded-private-collector.md",
+    "plans/2026-10-02/PRSG-37.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "ingest/private_market_store.py",
+    "scripts/market_ingest.py",
+    "harness/",
+    "skills/",
+    "artifacts/",
+    "docs/LEAD_WORKFLOW.md",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_market_collector.py",
+        "tests/test_private_market_store.py",
+        "tests/test_moomoo_rest.py",
+        "tests/test_moomoo_rest_live.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02: exact manifest pytest argv/cwd replayed offline with isolated Python 3.12.14 and cryptography 50.0.2: 343 passed in 2.35s; transcript /tmp/PRSG-37-tests.txt. Python 3.11 unavailable; no live credentials/Keychain/provider requests."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews scope, bounded subprocess cleanup, secret exclusion and private storage integration",
+      "status": "passed",
+      "evidence": ["2026-10-02 Lead read all six scoped files; independent Python3.12/crypto50 replay343passed2.41s. Researcher read-only review found no reproducible blocker. Accept manual US-only collector, not live connectivity, scheduler/projection or hard storage deadline."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-37-D1",
+      "description": "Offline collector and shared regressions pass",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-02: exact manifest pytest argv/cwd replayed offline with isolated Python 3.12.14 and cryptography 50.0.2: 343 passed in 2.35s; transcript /tmp/PRSG-37-tests.txt. Python 3.11 unavailable; no live credentials/Keychain/provider requests.",
+        "72 focused collector cases include real synthetic worker/descendant termination, TERM resistance/KILL, IPC rejection, child and parent screening, coverage and cutoff storage, clock rollback, storage failure and budget overrun."
+      ]
+    },
+    {
+      "id": "PRSG-37-D2",
+      "description": "Independent Lead review accepts bounded collector only",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": ["Lead independently inspected implementation/tests/docs/scope and343-test replay; retained storage-budget, incomplete coverage, provenance and live-validation limitations."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Lead accepts bounded manual private collector after independent343-test replay and six-path review; Researcher corroborated no reproducible blocker. No real collection or deployment claimed."]
+  }
+}
