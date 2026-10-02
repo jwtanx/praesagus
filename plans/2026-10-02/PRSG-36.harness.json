@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-36",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-36-private-market-store.md",
+  "objective": "Private immutable market snapshot/news evidence with point-in-time read-only queries",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "068e679362c3391717d9237bcaa7e492d6be76ab",
+  "allowed_paths": [
+    "ingest/private_market_store.py",
+    "scripts/market_ingest.py",
+    "docs/PRIVATE_MARKET_STORE.md",
+    "tests/test_private_market_store.py",
+    "plans/2026-10-02/PRSG-36-private-market-store.md",
+    "plans/2026-10-02/PRSG-36.harness.json"
+  ],
+  "protected_paths": [
+    "harness/",
+    "connectors/",
+    "skills/",
+    "artifacts/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_private_market_store.py",
+        "tests/test_evidence_store.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02 MYT: python3 -m pytest -q tests/test_private_market_store.py tests/test_evidence_store.py — 132 passed, synthetic/offline only. Exact response bytes, private permissions/schema/read-only behavior, raw/normalized tampering, orphan transaction, coverage/dedup/revisions, secrets, cutoff/source/backfill/sub-millisecond regressions and fixture CLI covered. Existing harness/evidence_store.py and tests/test_evidence_store.py unchanged against frozen base.",
+        "2026-10-02 MYT independent Lead review BLOCKER: Python3.12 fromisoformat truncates >6 fractional digits, permitting 800ns cutoff leakage and reversed submicrosecond ingestion order. Prior132-test Python3.9 pass did not cover this. Acceptance held pending shared lexical parser and modern-runtime regressions.",
+        "Modern Python3.12.14 pre-fix new regression run:13 failed/134 passed in0.85s, confirming unsupported nano/fractional-offset/other ISO acceptance. Output /tmp/PRSG-36-before-parser-fix.txt. Failures preserved; parser correction follows.",
+        "2026-10-02 MYT correction: shared explicit timestamp lexical parser rejects >6digits/fractional offsets/unsupported forms before all datetime parses/comparisons. Exact frozen argv with isolated Python3.12.14 venv-first PATH passed150 tests in0.75s. Nano cutoff/reversed ingestion/offset precision, six-digit aware offsets, strict eligibility and bounded-coverage regressions pass; synthetic guards unchanged. Prior failed13/134 review run remains recorded."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews raw integrity/private permissions/cutoff/read-only contracts and unchanged synthetic safeguards",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed store/capture/CLI/schema/raw binding/cutoff implementation and Researcher blocker reproduction. Shared explicit timestamp gate fixes modern-Python truncation; independent Python3.12 replay150passed0.70s. Synthetic safeguards unchanged. Accept offline private foundation only; real retention/collection/scheduling/public rights and currency/session completeness remain gates."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-36-D1",
+      "description": "Deterministic store/capture/query tests pass",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Focused frozen tests passed132; deterministic behavior documented in docs/PRIVATE_MARKET_STORE.md. Independent Lead review remains PRSG-36-D2/pending.",
+        "Post-review correction modernPython3.12 frozen replay150passed0.75s; D2/manual independent acceptance still pending.",
+        "Lead reviewed store/capture/CLI/schema/raw binding/cutoff implementation and Researcher blocker reproduction. Shared explicit timestamp gate fixes modern-Python truncation; independent Python3.12 replay150passed0.70s. Synthetic safeguards unchanged. Accept offline private foundation only; real retention/collection/scheduling/public rights and currency/session completeness remain gates."
+      ]
+    },
+    {
+      "id": "PRSG-36-D2",
+      "description": "Independent Lead review accepted",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed store/capture/CLI/schema/raw binding/cutoff implementation and Researcher blocker reproduction. Shared explicit timestamp gate fixes modern-Python truncation; independent Python3.12 replay150passed0.70s. Synthetic safeguards unchanged. Accept offline private foundation only; real retention/collection/scheduling/public rights and currency/session completeness remain gates."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead reviewed store/capture/CLI/schema/raw binding/cutoff implementation and Researcher blocker reproduction. Shared explicit timestamp gate fixes modern-Python truncation; independent Python3.12 replay150passed0.70s. Synthetic safeguards unchanged. Accept offline private foundation only; real retention/collection/scheduling/public rights and currency/session completeness remain gates."
+    ]
+  }
+}
