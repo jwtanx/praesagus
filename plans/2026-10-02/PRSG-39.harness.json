@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-39",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-39-observed-quote-report.md",
+  "objective": "Render explicitly unverified observed quote points from cutoff-safe private projection without invented forecasts",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "e743fe6ed608990a72e1f28f3512303dd86fb12e",
+  "allowed_paths": [
+    "ingest/daily_report_projection.py",
+    "scripts/daily-market-brief/project_private_quotes.py",
+    "tests/test_daily_report_projection.py",
+    "docs/PRIVATE_REPORT_PROJECTION.md",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "tests/test_daily_report.py",
+    "artifacts/daily-market-brief/index.html",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-02/PRSG-39-observed-quote-report.md",
+    "plans/2026-10-02/PRSG-39.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "ingest/private_market_store.py",
+    "ingest/market_collector.py",
+    "skills/",
+    "harness/",
+    "artifacts/daily-market-brief/reports/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_daily_report_projection.py",
+        "tests/test_daily_report.py",
+        "tests/test_private_market_selection.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02 offline exact manifest pytest argv/cwd, isolated Python3.12.14 / cryptography50.0.2:103 passed in2.69s. Transcript /tmp/PRSG-39-python-tests.txt; no live requests or dependency installation."
+      ]
+    },
+    {
+      "id": "ui",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02 exact node tests/daily_report_viewer_checks.cjs passed with existing /tmp/praesagus-viewer-test-deps jsdom runtime; transcript /tmp/PRSG-39-ui-tests.txt. Observed point frozen age60s, zero volume, unknown units/session/gaps, escaped hostile gap text, unsortability/unrated direction and legacy checked-in reports replayed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead scope, temporal, private-output and rendered gap review",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02 Lead reviewed all ten scoped paths and independently replayed exact focused Python suite:103 passed in2.75s on existing Python3.12.14/crypto50; node DOM checks passed. Private-only/no-clobber, cutoff/reference gaps, escaped unsortable point display and legacy compatibility accepted. Offline only; no live publication/scheduler or visual browser QA claimed."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-39-D1",
+      "description": "Deterministic private projection and validator regressions pass",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-02 offline exact manifest pytest argv/cwd, isolated Python3.12.14 / cryptography50.0.2:103 passed in2.69s. Transcript /tmp/PRSG-39-python-tests.txt; no live requests or dependency installation."
+      ]
+    },
+    {
+      "id": "PRSG-39-D2",
+      "description": "Observed quote units/time/gaps render safely with legacy compatibility",
+      "check_ids": [
+        "ui"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-02 exact node tests/daily_report_viewer_checks.cjs passed with existing /tmp/praesagus-viewer-test-deps jsdom runtime; transcript /tmp/PRSG-39-ui-tests.txt. Observed point frozen age60s, zero volume, unknown units/session/gaps, escaped hostile gap text, unsortability/unrated direction and legacy checked-in reports replayed."
+      ]
+    },
+    {
+      "id": "PRSG-39-D3",
+      "description": "Lead independently accepts scope and evidence",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-02 Lead reviewed all ten scoped paths and independently replayed exact focused Python suite:103 passed in2.75s on existing Python3.12.14/crypto50; node DOM checks passed. Private-only/no-clobber, cutoff/reference gaps, escaped unsortable point display and legacy compatibility accepted. Offline only; no live publication/scheduler or visual browser QA claimed."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "2026-10-02 Lead reviewed all ten scoped paths and independently replayed exact focused Python suite:103 passed in2.75s on existing Python3.12.14/crypto50; node DOM checks passed. Private-only/no-clobber, cutoff/reference gaps, escaped unsortable point display and legacy compatibility accepted. Offline only; no live publication/scheduler or visual browser QA claimed."
+    ]
+  }
+}

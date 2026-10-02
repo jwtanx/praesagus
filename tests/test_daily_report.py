@@ -68,3 +68,35 @@ def test_reject_bad_contract(report, change):
         (path.parent / data['calendar_ref']).unlink()
     with pytest.raises(ValueError):
         validator.validate_report(path, data)
+
+
+def observed_point(cutoff):
+    return dict(price=10,volume=0,source_at='2026-09-30T23:59:00Z',observed_at='2026-09-30T23:59:00Z',
+        ingested_at='2026-10-01T00:00:00Z',known_at='2026-10-01T00:00:00Z',cutoff=cutoff,
+        origin='synthetic',currency=None,session=None,adjustment=None,prior_close=None,
+        gaps=['currency_unknown','session_unknown','adjustment_unknown','prior_close_unknown'],
+        provenance=dict(provider='moomoo-rest',connector='moomoo-rest-capture',capture_authenticity='caller-supplied-unverified',
+            rights_status='unconfirmed',attempt_id='a'*64,raw_hash='b'*64,semantic_hash='c'*64,run_id='synthetic'))
+
+
+def test_optional_observed_quote_preserves_legacy_contract(report):
+    path,data=report;row=data['forecasts'][0]
+    row.update(observed_quote=observed_point(data['metadata']['as_of']),current_price_value=None,quote_status='missing')
+    assert validator.validate_report(path,data)[:2]==(10,0)
+
+
+@pytest.mark.parametrize('change',['sortable','currency','forecast','precision','future','raw','account','missing-gap','known-order'])
+def test_invalid_observed_quote_rejected(report,change):
+    path,data=report;row=data['forecasts'][0]
+    row.update(observed_quote=observed_point(data['metadata']['as_of']),current_price_value=None,quote_status='missing')
+    q=row['observed_quote']
+    if change=='sortable':row['current_price_value']=10
+    elif change=='currency':q['currency']='USD'
+    elif change=='forecast':row['direction']='up'
+    elif change=='precision':q['source_at']='2026-09-30T23:59:00.1234567Z'
+    elif change=='future':q['ingested_at']='2026-10-01T00:00:01Z'
+    elif change=='raw':q['raw_body']='private'
+    elif change=='account':q['provenance']['account_id']='private'
+    elif change=='missing-gap':q['gaps']=[]
+    else:q['known_at']='2026-09-30T23:59:00Z'
+    with pytest.raises(ValueError):validator.validate_report(path,data)

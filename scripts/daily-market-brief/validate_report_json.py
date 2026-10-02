@@ -9,7 +9,12 @@ import sys
 from datetime import date, datetime
 from pathlib import Path
 from urllib.parse import urlparse
-from monthly_calendar import validate_calendar
+try:
+    from .monthly_calendar import validate_calendar
+except ImportError:
+    from monthly_calendar import validate_calendar
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from ingest.daily_report_projection import validate_observed_quote
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
@@ -179,6 +184,16 @@ def validate_report(path: Path, d, universe_data=None):
             if not isinstance(f.get('confidence_reason'),str) or not f['confidence_reason'].strip():fail(path,f'forecasts[{i}] confidence_reason required')
             if f.get('forecast_status')=='unavailable' and (f['confidence']!='unavailable' or f['direction']!='unknown' or any(f.get(k) is not None for k in ('estimated_mid_case_value','range_low_value','range_high_value'))):fail(path,f'forecasts[{i}] unavailable forecast must be unknown/unrated with null targets')
         if f['ticker'] in symbols:fail(path,f'duplicate ticker: {f["ticker"]}')
+        if f.get('observed_quote') is not None:
+            if not modern:fail(path,'observed_quote requires schema3')
+            try:
+                validate_observed_quote(f['observed_quote'], meta['as_of'])
+            except (ValueError, TypeError, KeyError, OverflowError):
+                fail(path,f'forecasts[{i}].observed_quote invalid')
+            if f['market']!='US' or f.get('current_price_value') is not None or f.get('quote_status')!='missing':
+                fail(path,f'forecasts[{i}] observed units must remain unsortable')
+            if f.get('direction')!='unknown' or f.get('forecast_status')!='unavailable' or f.get('confidence')!='unavailable':
+                fail(path,f'forecasts[{i}] observed quote cannot imply forecast')
         symbols.add(f['ticker']);validate_sources(f.get('sources',[]),path,f'forecasts[{i}]')
     for key,count in sector_counts.items():
         if count!=(5 if modern else 10):fail(path,f'watchlist group {key} has {count} tickers; expected {5 if modern else 10}')
