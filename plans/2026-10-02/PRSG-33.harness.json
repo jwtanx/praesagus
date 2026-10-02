@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-33",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-02/PRSG-33-compact-motion-ticker-tape.md",
+  "objective": "Compact accessible TA ticker tape with controlled slow scrolling; no invented forecast colors",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "52c60bb78e5d890b052151990a393aa581c3b4b1",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/tradingview.js",
+    "tests/tradingview_checks.cjs",
+    "plans/2026-10-02/PRSG-33-compact-motion-ticker-tape.md",
+    "plans/2026-10-02/PRSG-33.harness.json"
+  ],
+  "protected_paths": [
+    "skills/",
+    "artifacts/daily-market-brief/2026-10-02.json",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/tradingview_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-02 MYT: node tests/tradingview_checks.cjs passed offline real-DOM checks, deterministic animation/pause/visibility/lifecycle regressions and existing daily_report_viewer_checks.cjs replay; no external scripts/network loaded.",
+        "2026-10-02 MYT human amendment: node tests/tradingview_checks.cjs passed with computed 2px outer padding/4px gap/44px targets, removed-button check, resettable five-second guarded idle resume, idle timer cleanup and persistent Escape stop across date/view changes; existing daily viewer replay passed.",
+        "2026-10-02 MYT Lead-accepted held-contact corrective guard: node tests/tradingview_checks.cjs passed deterministic stationary pointer/touch >5s, multi-contact/dual-family releases, document/window release/cancel, date idle cleanup with held protection, window-blur cancellation and destroy/global listener cleanup, plus existing viewer replay. No external scripts/network loaded."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "2026-10-02 human amendment: compact spacing/no visible motion row; guarded five-second idle resume, persistent Escape stop and viewer regressions pass; Lead reviews mobile/desktop rendering.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently replayed node TradingView checks successfully including held-contact guards; source reviewed with independent Researcher. Real local HTTP browser screenshots at1280desktop and390mobile verified compact spacing, removed motionbutton, contained horizontal tape and loaded hosted chart. Actual hardware heldtouch not tested; deterministic regressions cover state."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-33-D1",
+      "description": "2026-10-02 human amendment: compact spacing/no visible motion row; guarded five-second idle resume, persistent Escape stop and viewer regressions pass; Lead reviews mobile/desktop rendering.",
+      "check_ids": [
+        "tests",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently replayed node TradingView checks successfully including held-contact guards; source reviewed with independent Researcher. Real local HTTP browser screenshots at1280desktop and390mobile verified compact spacing, removed motionbutton, contained horizontal tape and loaded hosted chart. Actual hardware heldtouch not tested; deterministic regressions cover state."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead independently replayed node TradingView checks successfully including held-contact guards; source reviewed with independent Researcher. Real local HTTP browser screenshots at1280desktop and390mobile verified compact spacing, removed motionbutton, contained horizontal tape and loaded hosted chart. Actual hardware heldtouch not tested; deterministic regressions cover state."
+    ]
+  }
+}
