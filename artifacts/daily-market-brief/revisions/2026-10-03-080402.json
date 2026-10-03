@@ -1,0 +1,2886 @@
+{
+  "schema_version": 3,
+  "metadata": {
+    "title": "Daily Market Brief",
+    "date": "2026-10-03",
+    "as_of": "2026-10-03T08:04:02+08:00",
+    "subtitle": "Saturday 3 October 2026 · October 2 US session · Employment slowdown · 50 names / 10 groups · Partial vendor quotes",
+    "disclaimer": "Research only. Targets Unrated; partial quote coverage and calendar recheck limitations are explicit."
+  },
+  "summary": [
+    {
+      "label": "US session",
+      "title": "Stocks gain; weekly breadth mixed",
+      "summary": "S&P 500 +0.7%, Nasdaq +1.2% Friday; S&P down 0.3% for the week. Secondary AP session evidence."
+    },
+    {
+      "label": "Primary macro",
+      "title": "Hiring slows; revisions lower",
+      "summary": "BLS September payrolls +29,000; unemployment 4.2%; hourly earnings +0.1% month / +3.0% year. Watch growth versus rates."
+    },
+    {
+      "label": "Evidence limits",
+      "title": "6/50 quotes; all targets Unrated",
+      "summary": "Six approved US names observed, plus AMZN/META supplemental. Remaining 44 unavailable; weekly numeric forecasts withheld."
+    }
+  ],
+  "sections": {
+    "outlook": {
+      "title": "Weekly sector watch triggers",
+      "kicker": "OUTLOOK",
+      "description": [
+        {
+          "text": "Observed primary data: September payrolls +29,000; unemployment 4.2%; average hourly earnings +0.1% month and +3.0% year; July/August revisions total -60,000. Bull scenario: softer wage pressure eases financing concerns. Bear scenario: weaker hiring undermines demand. Disconfirmation: issuer demand deterioration or renewed cost inflation; verify yields and earnings rather than infer a price target.",
+          "sources": [
+            {
+              "label": "BLS September employment",
+              "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+              "provider": "BLS (primary)",
+              "published_at": "2026-10-02T08:30:00-04:00",
+              "retrieved_at": "2026-10-03T08:04:02+08:00",
+              "data_period": "September 2026",
+              "limitation": "Actual workflow retrieval by cutoff; publication time unknown where null."
+            }
+          ]
+        },
+        {
+          "text": "Secondary session evidence: S&P 500 7,722.72 (+0.7%); Dow 51,176.96 (+0.5%); Nasdaq 27,190.86 (+1.2%); Russell 2000 2,832.90 (+0.9%). Week: S&P -0.3%, Dow -1.3%, Nasdaq +0.5%, Russell -0.2%. AP attributes the rally to employment news; that is a reported causal account.",
+          "sources": [
+            {
+              "label": "AP October 2 close review",
+              "url": "https://apnews.com/article/48e9066481cba91a5d7c6688aa74a5cd",
+              "provider": "Associated Press (secondary)",
+              "published_at": "2026-10-02T20:17:21Z",
+              "retrieved_at": "2026-10-03T08:04:02+08:00",
+              "data_period": "October 2 US regular session",
+              "limitation": "Search-returned article text; direct open failed. Secondary account; causal interpretation not independently established."
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "columns": [
+            "Group",
+            "Bull / bear evidence to watch",
+            "Confidence"
+          ],
+          "rows": [
+            [
+              {
+                "text": "📊 Market Benchmarks & ETFs",
+                "sources": []
+              },
+              {
+                "text": "Watch SPY versus RSP and IWM for breadth confirmation. Rising yields and weaker equal-weight participation disconfirm a broad rebound. MCHI also faces mainland closure and reopening gaps.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "🏦 Financials",
+                "sources": []
+              },
+              {
+                "text": "Watch yield-curve changes, funding costs and issuer credit disclosures. A steeper curve can support margins; weak credit demand or rising losses can offset it.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "💻 Information Technology",
+                "sources": []
+              },
+              {
+                "text": "Watch whether yield relief persists and gains broaden beyond the largest issuers. Higher yields or weak company guidance disconfirm the constructive duration-sensitive scenario.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "🔬 Semiconductors",
+                "sources": []
+              },
+              {
+                "text": "Watch verified AI demand, shipment and export-policy disclosures, and relative performance versus the broad index. Customer concentration, restrictions and weaker demand are bear triggers.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "🩺 Healthcare",
+                "sources": []
+              },
+              {
+                "text": "Watch company trial, regulatory and reimbursement announcements. Defensive demand may support relative resilience; adverse trial or coverage decisions override the sector narrative.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "🛒 Consumer Staples",
+                "sources": []
+              },
+              {
+                "text": "Watch volumes, pricing, input costs and issuer guidance. Stable demand is the bull case; margin compression or trading-down pressure is the bear case. PepsiCo has an upcoming results event that requires rechecking issuer timing.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "🛍️ Consumer Discretionary",
+                "sources": []
+              },
+              {
+                "text": "Watch employment follow-through, wages and financing conditions. Resilient employment supports spending; weakening demand or higher borrowing costs disconfirms it.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "⚡ Energy",
+                "sources": []
+              },
+              {
+                "text": "Watch official inventory data, crude prices and issuer supply updates. Higher realized prices can support producers; falling crude and margin pressure disconfirm. Midstream and retail fuel companies have different exposures.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "🚚 Industrials, Transport & Logistics",
+                "sources": []
+              },
+              {
+                "text": "Watch orders, freight demand and fuel costs. Firm activity supports utilization; weaker volumes and higher input costs undermine it. US industrials and Malaysian logistics are distinct sub-industries.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "🌱 Materials & Plantation",
+                "sources": []
+              },
+              {
+                "text": "Watch metal and palm-oil prices, industrial demand and issuer operating disclosures. Stronger demand supports pricing; weak volumes or costs rising faster than realized prices disconfirm. Metals and plantations require separate analysis.",
+                "sources": []
+              },
+              {
+                "text": "Unavailable: scenario watch triggers, no validated forecast",
+                "sources": []
+              }
+            ]
+          ]
+        }
+      ],
+      "items": [],
+      "notes": [
+        {
+          "text": "Group triggers are conditional monitoring hypotheses, not fresh issuer-specific forecasts. Current yields, FX, crude, Malaysian close and company filings are not independently audited.",
+          "sources": []
+        }
+      ]
+    },
+    "top10": {
+      "title": "Five-name watchlist in each group",
+      "kicker": "TOP10",
+      "description": [
+        {
+          "text": "Research only. Review through Friday 9 October 2026; check new disclosures and complete daily prices before assigning direction or target.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [],
+      "notes": []
+    },
+    "swing": {
+      "title": "Swing research gates",
+      "kicker": "SWING",
+      "description": [
+        {
+          "text": "NO TRADE: adjusted price history, executable rules, costs, liquidity and risk limits are not validated. Collect these before paper-trade evaluation.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [],
+      "notes": []
+    },
+    "etfs": {
+      "title": "ETF benchmark watch",
+      "kicker": "ETFS",
+      "description": [
+        {
+          "text": "Consistent session prices are missing for benchmark ETFs; do not infer breadth from eight stock snapshots. Shared October calendar retained unchanged. BLS and NYSE schedules rechecked; other inherited events remain unverified today, and Shenzhen exchange fetch failed. No cancellation inferred.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [],
+      "notes": []
+    },
+    "news": {
+      "title": "Employment release and watchlist evidence",
+      "kicker": "NEWS",
+      "description": [
+        {
+          "text": "BLS employment release is available by cutoff. Hiring slowdown and lower wage growth support a rates-relief scenario; weakening demand is the offsetting risk. Survey revisions matter. No calibrated probability, consensus surprise or week-ahead return prediction is asserted.",
+          "sources": [
+            {
+              "label": "BLS September employment",
+              "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+              "provider": "BLS (primary)",
+              "published_at": "2026-10-02T08:30:00-04:00",
+              "retrieved_at": "2026-10-03T08:04:02+08:00",
+              "data_period": "September 2026",
+              "limitation": "Actual workflow retrieval by cutoff; publication time unknown where null."
+            }
+          ]
+        },
+        {
+          "text": "AAPL/MSFT: hardware/cloud demand and financing; NVDA: AI orders/export policy; TSLA/AMZN: consumer demand/margins; META/GOOGL: advertising and AI costs; JPM: credit/funding. These are research questions, not verified new issuer catalysts. All eight have ad hoc vendor snapshots; AMZN and META are supplemental to the approved universe.",
+          "sources": []
+        }
+      ],
+      "tables": [
+        {
+          "columns": [
+            "Repository watchlist",
+            "Vendor snapshot USD",
+            "Quote time UTC",
+            "Limit"
+          ],
+          "rows": [
+            [
+              {
+                "text": "AAPL",
+                "sources": []
+              },
+              {
+                "text": "333.69",
+                "sources": []
+              },
+              {
+                "text": "2026-10-02T23:47:05Z",
+                "sources": []
+              },
+              {
+                "text": "Extended hours; non-synchronous, not official close",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "MSFT",
+                "sources": []
+              },
+              {
+                "text": "517.53",
+                "sources": []
+              },
+              {
+                "text": "2026-10-02T23:47:43Z",
+                "sources": []
+              },
+              {
+                "text": "Extended hours; non-synchronous, not official close",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "NVDA",
+                "sources": []
+              },
+              {
+                "text": "233.95",
+                "sources": []
+              },
+              {
+                "text": "2026-10-02T23:48:06Z",
+                "sources": []
+              },
+              {
+                "text": "Extended hours; non-synchronous, not official close",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "TSLA",
+                "sources": []
+              },
+              {
+                "text": "370.59",
+                "sources": []
+              },
+              {
+                "text": "2026-10-02T23:48:11Z",
+                "sources": []
+              },
+              {
+                "text": "Extended hours; non-synchronous, not official close",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "AMZN",
+                "sources": []
+              },
+              {
+                "text": "251.52",
+                "sources": []
+              },
+              {
+                "text": "2026-10-02T23:48:04Z",
+                "sources": []
+              },
+              {
+                "text": "Extended hours; non-synchronous, not official close",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "META",
+                "sources": []
+              },
+              {
+                "text": "728.08",
+                "sources": []
+              },
+              {
+                "text": "2026-10-02T23:47:43Z",
+                "sources": []
+              },
+              {
+                "text": "Extended hours; non-synchronous, not official close",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "GOOGL",
+                "sources": []
+              },
+              {
+                "text": "343.5",
+                "sources": []
+              },
+              {
+                "text": "2026-10-02T23:46:20Z",
+                "sources": []
+              },
+              {
+                "text": "Extended hours; non-synchronous, not official close",
+                "sources": []
+              }
+            ],
+            [
+              {
+                "text": "JPM",
+                "sources": []
+              },
+              {
+                "text": "332.38",
+                "sources": []
+              },
+              {
+                "text": "2026-10-02T23:46:29Z",
+                "sources": []
+              },
+              {
+                "text": "Extended hours; non-synchronous, not official close",
+                "sources": []
+              }
+            ]
+          ]
+        }
+      ],
+      "items": [],
+      "notes": [
+        {
+          "text": "Quote inputs are ad hoc web.finance vendor snapshots, not an operational configured recurring provider. Upstream attribution and adjustment basis are unverified; Yahoo links are references only, not evidence that Yahoo supplied the tool response.",
+          "sources": []
+        }
+      ]
+    },
+    "trends": {
+      "title": "Themes and disconfirmation",
+      "kicker": "TRENDS",
+      "description": [
+        {
+          "text": "A rates-driven rebound remains conditional. Breadth, credit, issuer guidance and commodity costs can disconfirm it. Quote moves alone do not establish causality or a week-ahead trend.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [],
+      "notes": []
+    },
+    "score": {
+      "title": "Forecast scorecard",
+      "kicker": "SCORE",
+      "description": [
+        {
+          "text": "Offline ledger review at 2026-10-03T08:02:56+08:00: 70 issuances, 67 unique instrument/target pairs, zero matured eligible outcomes and zero scored. Three repeated pairs are correlated vintages. No actuals or unsupported pending forecasts appended. Week-end October 9 remains separate from next-session horizons.",
+          "sources": []
+        }
+      ],
+      "tables": [],
+      "items": [],
+      "notes": [
+        {
+          "text": "Scoring cannot establish a hit rate before maturity and verified actuals. Original ledger forecasts and historical reports preserved.",
+          "sources": []
+        }
+      ]
+    }
+  },
+  "forecasts": [
+    {
+      "ticker": "SPY",
+      "name": "SPDR S&P 500 ETF Trust",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "etf",
+      "sector_category": "benchmarks",
+      "sector": "Market Benchmarks & ETFs",
+      "sector_emoji": "📊",
+      "classification": "Market benchmarks; not a sector",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch SPY versus RSP and IWM for breadth confirmation. Rising yields and weaker equal-weight participation disconfirm a broad rebound. MCHI also faces mainland closure and reopening gaps. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "QQQ",
+      "name": "Invesco QQQ Trust",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "etf",
+      "sector_category": "benchmarks",
+      "sector": "Market Benchmarks & ETFs",
+      "sector_emoji": "📊",
+      "classification": "Market benchmarks; not a sector",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch SPY versus RSP and IWM for breadth confirmation. Rising yields and weaker equal-weight participation disconfirm a broad rebound. MCHI also faces mainland closure and reopening gaps. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "IWM",
+      "name": "iShares Russell 2000 ETF",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "etf",
+      "sector_category": "benchmarks",
+      "sector": "Market Benchmarks & ETFs",
+      "sector_emoji": "📊",
+      "classification": "Market benchmarks; not a sector",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch SPY versus RSP and IWM for breadth confirmation. Rising yields and weaker equal-weight participation disconfirm a broad rebound. MCHI also faces mainland closure and reopening gaps. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "0820EA",
+      "name": "FTSE4Good Bursa Malaysia ETF",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "etf",
+      "sector_category": "benchmarks",
+      "sector": "Market Benchmarks & ETFs",
+      "sector_emoji": "📊",
+      "classification": "Market benchmarks; not a sector",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch SPY versus RSP and IWM for breadth confirmation. Rising yields and weaker equal-weight participation disconfirm a broad rebound. MCHI also faces mainland closure and reopening gaps. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "0800EA",
+      "name": "ABF Malaysia Bond Index Fund",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "etf",
+      "sector_category": "benchmarks",
+      "sector": "Market Benchmarks & ETFs",
+      "sector_emoji": "📊",
+      "classification": "Market benchmarks; not a sector",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch SPY versus RSP and IWM for breadth confirmation. Rising yields and weaker equal-weight participation disconfirm a broad rebound. MCHI also faces mainland closure and reopening gaps. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase & Co.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "financials",
+      "sector": "Financials",
+      "sector_emoji": "🏦",
+      "classification": "Financials",
+      "current_price": "USD 332.38",
+      "current_price_value": 332.38,
+      "price_as_of": "2026-10-02T23:46:29Z",
+      "quote_status": "observed",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch yield-curve changes, funding costs and issuer credit disclosures. A steeper curve can support margins; weak credit demand or rising losses can offset it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [
+        {
+          "label": "Quote reference (not tool supplier attribution)",
+          "url": "https://finance.yahoo.com/quote/JPM/",
+          "provider": "Reference website only",
+          "published_at": null,
+          "retrieved_at": "2026-10-03T08:04:02+08:00",
+          "data_period": "October 2 vendor snapshot",
+          "limitation": "Actual workflow retrieval by cutoff; publication time unknown where null."
+        }
+      ],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "Ad hoc extended-hours quote; not official close; adjustment basis and upstream attribution unverified."
+      ],
+      "quote_provenance": {
+        "provider": "web.finance vendor snapshot (upstream unverified)",
+        "connector": "web.finance",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": "2026-10-02T23:46:29Z",
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "Ad hoc extended-hours snapshot, not official close. Non-synchronous; adjustment basis and upstream attribution unknown."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "GS",
+      "name": "The Goldman Sachs Group, Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "financials",
+      "sector": "Financials",
+      "sector_emoji": "🏦",
+      "classification": "Financials",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch yield-curve changes, funding costs and issuer credit disclosures. A steeper curve can support margins; weak credit demand or rising losses can offset it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "V",
+      "name": "Visa Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "financials",
+      "sector": "Financials",
+      "sector_emoji": "🏦",
+      "classification": "Financials",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch yield-curve changes, funding costs and issuer credit disclosures. A steeper curve can support margins; weak credit demand or rising losses can offset it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "1155",
+      "name": "Malayan Banking Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "financials",
+      "sector": "Financials",
+      "sector_emoji": "🏦",
+      "classification": "Financials",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch yield-curve changes, funding costs and issuer credit disclosures. A steeper curve can support margins; weak credit demand or rising losses can offset it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "1023",
+      "name": "CIMB Group Holdings Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "financials",
+      "sector": "Financials",
+      "sector_emoji": "🏦",
+      "classification": "Financials",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch yield-curve changes, funding costs and issuer credit disclosures. A steeper curve can support margins; weak credit demand or rising losses can offset it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "technology",
+      "sector": "Information Technology",
+      "sector_emoji": "💻",
+      "classification": "Information Technology (excluding semiconductor overlay names)",
+      "current_price": "USD 333.69",
+      "current_price_value": 333.69,
+      "price_as_of": "2026-10-02T23:47:05Z",
+      "quote_status": "observed",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch whether yield relief persists and gains broaden beyond the largest issuers. Higher yields or weak company guidance disconfirm the constructive duration-sensitive scenario. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [
+        {
+          "label": "Quote reference (not tool supplier attribution)",
+          "url": "https://finance.yahoo.com/quote/AAPL/",
+          "provider": "Reference website only",
+          "published_at": null,
+          "retrieved_at": "2026-10-03T08:04:02+08:00",
+          "data_period": "October 2 vendor snapshot",
+          "limitation": "Actual workflow retrieval by cutoff; publication time unknown where null."
+        }
+      ],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "Ad hoc extended-hours quote; not official close; adjustment basis and upstream attribution unverified."
+      ],
+      "quote_provenance": {
+        "provider": "web.finance vendor snapshot (upstream unverified)",
+        "connector": "web.finance",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": "2026-10-02T23:47:05Z",
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "Ad hoc extended-hours snapshot, not official close. Non-synchronous; adjustment basis and upstream attribution unknown."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "technology",
+      "sector": "Information Technology",
+      "sector_emoji": "💻",
+      "classification": "Information Technology (excluding semiconductor overlay names)",
+      "current_price": "USD 517.53",
+      "current_price_value": 517.53,
+      "price_as_of": "2026-10-02T23:47:43Z",
+      "quote_status": "observed",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch whether yield relief persists and gains broaden beyond the largest issuers. Higher yields or weak company guidance disconfirm the constructive duration-sensitive scenario. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [
+        {
+          "label": "Quote reference (not tool supplier attribution)",
+          "url": "https://finance.yahoo.com/quote/MSFT/",
+          "provider": "Reference website only",
+          "published_at": null,
+          "retrieved_at": "2026-10-03T08:04:02+08:00",
+          "data_period": "October 2 vendor snapshot",
+          "limitation": "Actual workflow retrieval by cutoff; publication time unknown where null."
+        }
+      ],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "Ad hoc extended-hours quote; not official close; adjustment basis and upstream attribution unverified."
+      ],
+      "quote_provenance": {
+        "provider": "web.finance vendor snapshot (upstream unverified)",
+        "connector": "web.finance",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": "2026-10-02T23:47:43Z",
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "Ad hoc extended-hours snapshot, not official close. Non-synchronous; adjustment basis and upstream attribution unknown."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "Alphabet Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "technology",
+      "sector": "Information Technology",
+      "sector_emoji": "💻",
+      "classification": "Information Technology (excluding semiconductor overlay names)",
+      "current_price": "USD 343.50",
+      "current_price_value": 343.5,
+      "price_as_of": "2026-10-02T23:46:20Z",
+      "quote_status": "observed",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch whether yield relief persists and gains broaden beyond the largest issuers. Higher yields or weak company guidance disconfirm the constructive duration-sensitive scenario. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [
+        {
+          "label": "Quote reference (not tool supplier attribution)",
+          "url": "https://finance.yahoo.com/quote/GOOGL/",
+          "provider": "Reference website only",
+          "published_at": null,
+          "retrieved_at": "2026-10-03T08:04:02+08:00",
+          "data_period": "October 2 vendor snapshot",
+          "limitation": "Actual workflow retrieval by cutoff; publication time unknown where null."
+        }
+      ],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "Ad hoc extended-hours quote; not official close; adjustment basis and upstream attribution unverified."
+      ],
+      "quote_provenance": {
+        "provider": "web.finance vendor snapshot (upstream unverified)",
+        "connector": "web.finance",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": "2026-10-02T23:46:20Z",
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "Ad hoc extended-hours snapshot, not official close. Non-synchronous; adjustment basis and upstream attribution unknown."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "0277",
+      "name": "Cloudpoint Technology Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "technology",
+      "sector": "Information Technology",
+      "sector_emoji": "💻",
+      "classification": "Information Technology (excluding semiconductor overlay names)",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch whether yield relief persists and gains broaden beyond the largest issuers. Higher yields or weak company guidance disconfirm the constructive duration-sensitive scenario. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "0259",
+      "name": "SNS Network Technology Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "technology",
+      "sector": "Information Technology",
+      "sector_emoji": "💻",
+      "classification": "Information Technology (excluding semiconductor overlay names)",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch whether yield relief persists and gains broaden beyond the largest issuers. Higher yields or weak company guidance disconfirm the constructive duration-sensitive scenario. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "semiconductors",
+      "sector": "Semiconductors",
+      "sector_emoji": "🔬",
+      "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
+      "current_price": "USD 233.95",
+      "current_price_value": 233.95,
+      "price_as_of": "2026-10-02T23:48:06Z",
+      "quote_status": "observed",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch verified AI demand, shipment and export-policy disclosures, and relative performance versus the broad index. Customer concentration, restrictions and weaker demand are bear triggers. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [
+        {
+          "label": "Quote reference (not tool supplier attribution)",
+          "url": "https://finance.yahoo.com/quote/NVDA/",
+          "provider": "Reference website only",
+          "published_at": null,
+          "retrieved_at": "2026-10-03T08:04:02+08:00",
+          "data_period": "October 2 vendor snapshot",
+          "limitation": "Actual workflow retrieval by cutoff; publication time unknown where null."
+        }
+      ],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "Ad hoc extended-hours quote; not official close; adjustment basis and upstream attribution unverified."
+      ],
+      "quote_provenance": {
+        "provider": "web.finance vendor snapshot (upstream unverified)",
+        "connector": "web.finance",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": "2026-10-02T23:48:06Z",
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "Ad hoc extended-hours snapshot, not official close. Non-synchronous; adjustment basis and upstream attribution unknown."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "TSM",
+      "name": "Taiwan Semiconductor Manufacturing Company Limited ADR",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "semiconductors",
+      "sector": "Semiconductors",
+      "sector_emoji": "🔬",
+      "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch verified AI demand, shipment and export-policy disclosures, and relative performance versus the broad index. Customer concentration, restrictions and weaker demand are bear triggers. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "semiconductors",
+      "sector": "Semiconductors",
+      "sector_emoji": "🔬",
+      "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch verified AI demand, shipment and export-policy disclosures, and relative performance versus the broad index. Customer concentration, restrictions and weaker demand are bear triggers. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "0166",
+      "name": "Inari Amertron Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "semiconductors",
+      "sector": "Semiconductors",
+      "sector_emoji": "🔬",
+      "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch verified AI demand, shipment and export-policy disclosures, and relative performance versus the broad index. Customer concentration, restrictions and weaker demand are bear triggers. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "0097",
+      "name": "ViTrox Corporation Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "semiconductors",
+      "sector": "Semiconductors",
+      "sector_emoji": "🔬",
+      "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch verified AI demand, shipment and export-policy disclosures, and relative performance versus the broad index. Customer concentration, restrictions and weaker demand are bear triggers. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "LLY",
+      "name": "Eli Lilly and Company",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "healthcare",
+      "sector": "Healthcare",
+      "sector_emoji": "🩺",
+      "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch company trial, regulatory and reimbursement announcements. Defensive demand may support relative resilience; adverse trial or coverage decisions override the sector narrative. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "JNJ",
+      "name": "Johnson & Johnson",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "healthcare",
+      "sector": "Healthcare",
+      "sector_emoji": "🩺",
+      "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch company trial, regulatory and reimbursement announcements. Defensive demand may support relative resilience; adverse trial or coverage decisions override the sector narrative. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "ABT",
+      "name": "Abbott Laboratories",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "healthcare",
+      "sector": "Healthcare",
+      "sector_emoji": "🩺",
+      "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch company trial, regulatory and reimbursement announcements. Defensive demand may support relative resilience; adverse trial or coverage decisions override the sector narrative. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "5225",
+      "name": "IHH Healthcare Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "healthcare",
+      "sector": "Healthcare",
+      "sector_emoji": "🩺",
+      "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch company trial, regulatory and reimbursement announcements. Defensive demand may support relative resilience; adverse trial or coverage decisions override the sector narrative. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "5878",
+      "name": "KPJ Healthcare Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "healthcare",
+      "sector": "Healthcare",
+      "sector_emoji": "🩺",
+      "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch company trial, regulatory and reimbursement announcements. Defensive demand may support relative resilience; adverse trial or coverage decisions override the sector narrative. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "WMT",
+      "name": "Walmart Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "consumer-staples",
+      "sector": "Consumer Staples",
+      "sector_emoji": "🛒",
+      "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch volumes, pricing, input costs and issuer guidance. Stable demand is the bull case; margin compression or trading-down pressure is the bear case. PepsiCo has an upcoming results event that requires rechecking issuer timing. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "PG",
+      "name": "The Procter & Gamble Company",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "consumer-staples",
+      "sector": "Consumer Staples",
+      "sector_emoji": "🛒",
+      "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch volumes, pricing, input costs and issuer guidance. Stable demand is the bull case; margin compression or trading-down pressure is the bear case. PepsiCo has an upcoming results event that requires rechecking issuer timing. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "KO",
+      "name": "The Coca-Cola Company",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "consumer-staples",
+      "sector": "Consumer Staples",
+      "sector_emoji": "🛒",
+      "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch volumes, pricing, input costs and issuer guidance. Stable demand is the bull case; margin compression or trading-down pressure is the bear case. PepsiCo has an upcoming results event that requires rechecking issuer timing. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "4707",
+      "name": "Nestlé (Malaysia) Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "consumer-staples",
+      "sector": "Consumer Staples",
+      "sector_emoji": "🛒",
+      "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch volumes, pricing, input costs and issuer guidance. Stable demand is the bull case; margin compression or trading-down pressure is the bear case. PepsiCo has an upcoming results event that requires rechecking issuer timing. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "3689",
+      "name": "Fraser & Neave Holdings Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "consumer-staples",
+      "sector": "Consumer Staples",
+      "sector_emoji": "🛒",
+      "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch volumes, pricing, input costs and issuer guidance. Stable demand is the bull case; margin compression or trading-down pressure is the bear case. PepsiCo has an upcoming results event that requires rechecking issuer timing. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "TSLA",
+      "name": "Tesla, Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "consumer-discretionary",
+      "sector": "Consumer Discretionary",
+      "sector_emoji": "🛍️",
+      "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "USD 370.59",
+      "current_price_value": 370.59,
+      "price_as_of": "2026-10-02T23:48:11Z",
+      "quote_status": "observed",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch follow-through in employment, wages and financing conditions. Resilient employment supports spending; weakening demand or higher borrowing costs disconfirms it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [
+        {
+          "label": "Quote reference (not tool supplier attribution)",
+          "url": "https://finance.yahoo.com/quote/TSLA/",
+          "provider": "Reference website only",
+          "published_at": null,
+          "retrieved_at": "2026-10-03T08:04:02+08:00",
+          "data_period": "October 2 vendor snapshot",
+          "limitation": "Actual workflow retrieval by cutoff; publication time unknown where null."
+        }
+      ],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "Ad hoc extended-hours quote; not official close; adjustment basis and upstream attribution unverified."
+      ],
+      "quote_provenance": {
+        "provider": "web.finance vendor snapshot (upstream unverified)",
+        "connector": "web.finance",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": "2026-10-02T23:48:11Z",
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "Ad hoc extended-hours snapshot, not official close. Non-synchronous; adjustment basis and upstream attribution unknown."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "HD",
+      "name": "The Home Depot, Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "consumer-discretionary",
+      "sector": "Consumer Discretionary",
+      "sector_emoji": "🛍️",
+      "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch follow-through in employment, wages and financing conditions. Resilient employment supports spending; weakening demand or higher borrowing costs disconfirms it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "MCD",
+      "name": "McDonald's Corporation",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "consumer-discretionary",
+      "sector": "Consumer Discretionary",
+      "sector_emoji": "🛍️",
+      "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch follow-through in employment, wages and financing conditions. Resilient employment supports spending; weakening demand or higher borrowing costs disconfirms it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "5296",
+      "name": "MR D.I.Y. Group (M) Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "consumer-discretionary",
+      "sector": "Consumer Discretionary",
+      "sector_emoji": "🛍️",
+      "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch follow-through in employment, wages and financing conditions. Resilient employment supports spending; weakening demand or higher borrowing costs disconfirms it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "4715",
+      "name": "Genting Malaysia Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "consumer-discretionary",
+      "sector": "Consumer Discretionary",
+      "sector_emoji": "🛍️",
+      "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch follow-through in employment, wages and financing conditions. Resilient employment supports spending; weakening demand or higher borrowing costs disconfirms it. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "XOM",
+      "name": "Exxon Mobil Corporation",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "energy",
+      "sector": "Energy",
+      "sector_emoji": "⚡",
+      "classification": "Energy",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch official inventory data, crude prices and issuer supply updates. Higher realized prices can support producers; falling crude and margin pressure disconfirm. Midstream and retail fuel companies have different exposures. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "COP",
+      "name": "ConocoPhillips",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "energy",
+      "sector": "Energy",
+      "sector_emoji": "⚡",
+      "classification": "Energy",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch official inventory data, crude prices and issuer supply updates. Higher realized prices can support producers; falling crude and margin pressure disconfirm. Midstream and retail fuel companies have different exposures. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "SLB",
+      "name": "SLB Limited",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "energy",
+      "sector": "Energy",
+      "sector_emoji": "⚡",
+      "classification": "Energy",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch official inventory data, crude prices and issuer supply updates. Higher realized prices can support producers; falling crude and margin pressure disconfirm. Midstream and retail fuel companies have different exposures. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "6033",
+      "name": "Petronas Gas Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "energy",
+      "sector": "Energy",
+      "sector_emoji": "⚡",
+      "classification": "Energy",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch official inventory data, crude prices and issuer supply updates. Higher realized prices can support producers; falling crude and margin pressure disconfirm. Midstream and retail fuel companies have different exposures. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "5681",
+      "name": "Petronas Dagangan Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "energy",
+      "sector": "Energy",
+      "sector_emoji": "⚡",
+      "classification": "Energy",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch official inventory data, crude prices and issuer supply updates. Higher realized prices can support producers; falling crude and margin pressure disconfirm. Midstream and retail fuel companies have different exposures. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "CAT",
+      "name": "Caterpillar Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "industrials-transport-logistics",
+      "sector": "Industrials, Transport & Logistics",
+      "sector_emoji": "🚚",
+      "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch orders, freight demand and fuel costs. Firm activity supports utilization; weaker volumes and higher input costs undermine it. US industrials and Malaysian logistics are distinct sub-industries. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "GE",
+      "name": "GE Aerospace",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "industrials-transport-logistics",
+      "sector": "Industrials, Transport & Logistics",
+      "sector_emoji": "🚚",
+      "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch orders, freight demand and fuel costs. Firm activity supports utilization; weaker volumes and higher input costs undermine it. US industrials and Malaysian logistics are distinct sub-industries. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "UPS",
+      "name": "United Parcel Service, Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "industrials-transport-logistics",
+      "sector": "Industrials, Transport & Logistics",
+      "sector_emoji": "🚚",
+      "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch orders, freight demand and fuel costs. Firm activity supports utilization; weaker volumes and higher input costs undermine it. US industrials and Malaysian logistics are distinct sub-industries. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "5246",
+      "name": "Westports Holdings Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "industrials-transport-logistics",
+      "sector": "Industrials, Transport & Logistics",
+      "sector_emoji": "🚚",
+      "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch orders, freight demand and fuel costs. Firm activity supports utilization; weaker volumes and higher input costs undermine it. US industrials and Malaysian logistics are distinct sub-industries. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "3816",
+      "name": "MISC Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "industrials-transport-logistics",
+      "sector": "Industrials, Transport & Logistics",
+      "sector_emoji": "🚚",
+      "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch orders, freight demand and fuel costs. Firm activity supports utilization; weaker volumes and higher input costs undermine it. US industrials and Malaysian logistics are distinct sub-industries. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "LIN",
+      "name": "Linde plc",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "materials-plantation",
+      "sector": "Materials & Plantation",
+      "sector_emoji": "🌱",
+      "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch metal and palm-oil prices, industrial demand and issuer operating disclosures. Stronger demand supports pricing; weak volumes or costs rising faster than realized prices disconfirm. Metals and plantations require separate analysis. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "FCX",
+      "name": "Freeport-McMoRan Inc.",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "materials-plantation",
+      "sector": "Materials & Plantation",
+      "sector_emoji": "🌱",
+      "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch metal and palm-oil prices, industrial demand and issuer operating disclosures. Stronger demand supports pricing; weak volumes or costs rising faster than realized prices disconfirm. Metals and plantations require separate analysis. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "NEM",
+      "name": "Newmont Corporation",
+      "country": "us",
+      "market": "US",
+      "currency": "USD",
+      "asset_type": "equity",
+      "sector_category": "materials-plantation",
+      "sector": "Materials & Plantation",
+      "sector_emoji": "🌱",
+      "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch metal and palm-oil prices, industrial demand and issuer operating disclosures. Stronger demand supports pricing; weak volumes or costs rising faster than realized prices disconfirm. Metals and plantations require separate analysis. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      },
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target."
+    },
+    {
+      "ticker": "1961",
+      "name": "IOI Corporation Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "materials-plantation",
+      "sector": "Materials & Plantation",
+      "sector_emoji": "🌱",
+      "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch metal and palm-oil prices, industrial demand and issuer operating disclosures. Stronger demand supports pricing; weak volumes or costs rising faster than realized prices disconfirm. Metals and plantations require separate analysis. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    },
+    {
+      "ticker": "5285",
+      "name": "SD Guthrie Berhad",
+      "country": "my",
+      "market": "MY",
+      "currency": "MYR",
+      "asset_type": "equity",
+      "sector_category": "materials-plantation",
+      "sector": "Materials & Plantation",
+      "sector_emoji": "🌱",
+      "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No verified current quote collected",
+      "quote_status": "missing",
+      "forecast_status": "unavailable",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_range": "Insufficient evidence",
+      "estimated_mid_case_value": null,
+      "range_low_value": null,
+      "range_high_value": null,
+      "confidence": "unavailable",
+      "scenario": "Watch metal and palm-oil prices, industrial demand and issuer operating disclosures. Stronger demand supports pricing; weak volumes or costs rising faster than realized prices disconfirm. Metals and plantations require separate analysis. Weekly price prediction withheld pending validated evidence. Review Oct 9 close; NO TRADE if prices or risk inputs remain missing.",
+      "target_date": "2026-10-09",
+      "forecast_as_of": "2026-10-03T08:04:02+08:00",
+      "classification_action": "watchlist",
+      "sources": [],
+      "data_gaps": [
+        "Adjusted OHLCV, calibrated target method and issuer-specific catalyst audit unavailable.",
+        "No verified current quote collected for this instrument."
+      ],
+      "confidence_reason": "Directional and magnitude evidence insufficient; macro survey and snapshot alone do not validate a weekly price target.",
+      "quote_provenance": {
+        "provider": "not configured",
+        "connector": "none",
+        "retrieved_at": "2026-10-03T08:04:02+08:00",
+        "ingested_at": "2026-10-03T08:04:02+08:00",
+        "quote_time": null,
+        "data_period": "2026-10-02 session sought",
+        "timezone": "UTC",
+        "limitation": "No verified new quote; historical quotes not carried forward as current."
+      }
+    }
+  ],
+  "footer": "Cutoff 2026-10-03T08:04:02+08:00. Research only / watchlist; NO TRADE. Partial ad hoc web.finance extended-hours vendor snapshots: six approved US names plus supplemental AMZN/META; 24 US and 20 MY quotes missing. No private captures published. All targets Unrated. BLS primary employment evidence; AP secondary session account from search text (direct open failed). Global overnight coverage limited: current yields/crude/FX, MY close and issuer filings not verified. October calendar unchanged; BLS/NYSE schedules rechecked without verified changes; remaining events inherited, Shenzhen fetch failed. No later correction or absent feed treated as cancellation.",
+  "watchlist_config": {
+    "taxonomy_id": "praesagus-daily-coverage-v2-five",
+    "count_per_group": 5,
+    "selection_method": "Stable curated coverage: three US listings and two Malaysian listings per group, selected for monitoring diversity; not a performance ranking or recommendation.",
+    "groups": [
+      {
+        "key": "benchmarks",
+        "label": "Market Benchmarks & ETFs",
+        "emoji": "📊",
+        "role": "benchmark",
+        "classification": "Market benchmarks; not a sector"
+      },
+      {
+        "key": "financials",
+        "label": "Financials",
+        "emoji": "🏦",
+        "role": "sector",
+        "classification": "Financials"
+      },
+      {
+        "key": "technology",
+        "label": "Information Technology",
+        "emoji": "💻",
+        "role": "sector",
+        "classification": "Information Technology (excluding semiconductor overlay names)"
+      },
+      {
+        "key": "semiconductors",
+        "label": "Semiconductors",
+        "emoji": "🔬",
+        "role": "industry_overlay",
+        "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle"
+      },
+      {
+        "key": "healthcare",
+        "label": "Healthcare",
+        "emoji": "🩺",
+        "role": "sector",
+        "classification": "Healthcare (including pharmaceuticals, providers, devices and services)"
+      },
+      {
+        "key": "consumer-staples",
+        "label": "Consumer Staples",
+        "emoji": "🛒",
+        "role": "sector",
+        "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+      },
+      {
+        "key": "consumer-discretionary",
+        "label": "Consumer Discretionary",
+        "emoji": "🛍️",
+        "role": "sector",
+        "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant"
+      },
+      {
+        "key": "energy",
+        "label": "Energy",
+        "emoji": "⚡",
+        "role": "sector",
+        "classification": "Energy"
+      },
+      {
+        "key": "industrials-transport-logistics",
+        "label": "Industrials, Transport & Logistics",
+        "emoji": "🚚",
+        "role": "sector_group",
+        "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure"
+      },
+      {
+        "key": "materials-plantation",
+        "label": "Materials & Plantation",
+        "emoji": "🌱",
+        "role": "sector_group",
+        "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry"
+      }
+    ]
+  },
+  "collection": {
+    "cutoff": "2026-10-03T08:04:02+08:00",
+    "retrieved_at": "2026-10-03T08:04:02+08:00",
+    "ingested_at": "2026-10-03T08:04:02+08:00",
+    "quote_provider": "ad hoc web.finance vendor; upstream unverified",
+    "quote_connector": "web.finance",
+    "observed_us": 6,
+    "missing_us": 24,
+    "missing_my": 20,
+    "supplemental_quote_count": 2,
+    "forecast_status": "unavailable",
+    "source_timing_limit": "Actual retrieval recorded; publication times null when unverified; future outcomes excluded.",
+    "evidence_paths": [
+      "evidence/2026-10-03-quotes.json",
+      "evidence/2026-10-03-ledger-review.json"
+    ]
+  },
+  "calendar_ref": "../financial-calendar/2026-10.json"
+}
