@@ -205,7 +205,9 @@ def normalized(raw, kind, request, secrets=()):
             for key, item in row.items():
                 if key.endswith('_valid'):
                     need(type(item) is bool, 'invalid-response')
-                if key.endswith('_price') or key in ('volume', 'turnover', 'turnover_rate'):
+                # Historical/auxiliary prices are not consumed as current quotes.
+                if key in ('last_price', 'open_price', 'high_price', 'low_price',
+                           'prev_close_price', 'volume', 'turnover', 'turnover_rate'):
                     need(type(item) in (int, float) and math.isfinite(item) and item >= 0, 'invalid-response')
             need('last_price' in row and 'volume' in row and type(row['volume']) is int, 'invalid-response')
             stamp = source_ms(row.get('update_time'), 1)

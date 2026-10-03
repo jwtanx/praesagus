@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-43",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "connectors",
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-03",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-03/PRSG-43-snapshot-core-field-validation.md",
+  "objective": "Validate consumed quote fields explicitly without imposing current-price constraints on unconsumed historical metadata",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "f10ee70f36521b01b9e200894a952f11c693b2cf",
+  "allowed_paths": [
+    "ingest/private_market_store.py",
+    "tests/test_private_market_store.py",
+    "plans/2026-10-03/PRSG-43-snapshot-core-field-validation.md",
+    "plans/2026-10-03/PRSG-43.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "scripts/"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_private_market_store.py",
+        "tests/test_market_collector.py",
+        "tests/test_moomoo_rest.py",
+        "tests/test_moomoo_rest_live.py",
+        "tests/test_private_market_selection.py",
+        "tests/test_daily_report_projection.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Engineer exact declared offline replay: 479 passed in 5.24s; isolated Python3.12.14/cryptography50.0.2; /tmp/PRSG-43-tests.txt. First replay 2 failed/477 passed due new test using nonexistent StoredAttempt attribute, corrected to persisted metadata; /tmp/PRSG-43-tests-first-replay.txt. No live call or credential access; Python3.11 not replayed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead scope and failure sanitization review",
+      "status": "passed",
+      "evidence": ["Lead reviewed all four paths; independent exact declared suite 479 passed in 4.86s on Python3.12.14. Secure supervisor live exact30US: HTTP200,30 accepted rows,0 missing,failure null,cleanup true. No body/credentials emitted; MY coverage and forecasts not proven."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-43-D1",
+      "description": "Failure distinction and existing regressions pass",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Engineer exact declared offline replay: 479 passed in 5.24s; isolated Python3.12.14/cryptography50.0.2; /tmp/PRSG-43-tests.txt. First replay 2 failed/477 passed due new test using nonexistent StoredAttempt attribute, corrected to persisted metadata; /tmp/PRSG-43-tests-first-replay.txt. No live call or credential access; Python3.11 not replayed."
+      ]
+    },
+    {
+      "id": "PRSG-43-D2",
+      "description": "Lead independently accepts exact scope",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": ["Lead independent scope review,479-test replay and live30US supervisor accepted; no economic claim about auxiliary historical values."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Lead independently reviewed four-path diff;479 tests passed4.86s;live30US HTTP200 accepted30 missing0 cleanuptrue. Report regeneration remains separate."]
+  }
+}

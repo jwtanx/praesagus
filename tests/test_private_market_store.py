@@ -410,3 +410,37 @@ def test_bounded_limits_are_not_complete_coverage(store):
     assert len(store.query('snapshot',ING,limit=1))==1
     assert len(store.query('snapshot',ING))==2
     assert len(store.attempts(ING,limit=1))==1 and len(store.attempts(ING))==2
+
+
+@pytest.mark.parametrize('count',[1,30])
+def test_finite_auxiliary_history_preserves_complete_core_quotes(store,count):
+    codes=[f'US.SYN{i}' for i in range(count)]
+    rows=[snap(code=code,lowest_history_price=-0.5,highest_history_price=20.5) for code in codes]
+    original=response(rows)
+    attempt=ingest(store,req=request(codes=codes),resp=original)
+    assert attempt.status=='success' and store.attempts(ING)[0]['missing_codes']==[]
+    assert store.raw(attempt.raw_hash)==original.body
+    records=store.query('snapshot',ING)
+    assert len(records)==count and {r['record']['code'] for r in records}==set(codes)
+    assert all(r['record']['price']==10.5 and r['record']['adjustment'] is None for r in records)
+
+
+@pytest.mark.parametrize('field',['last_price','open_price','high_price','low_price',
+                                 'prev_close_price','volume','turnover','turnover_rate'])
+@pytest.mark.parametrize('bad',[-1,True,None,'invalid'])
+def test_auxiliary_history_never_relaxes_core_field_validation(store,field,bad):
+    attempt=ingest(store,resp=response([snap(lowest_history_price=-0.5,**{field:bad})]))
+    assert attempt.status=='failed' and attempt.raw_hash is None
+    assert store.query('snapshot',ING)==[] and list(store.raw_dir.iterdir())==[]
+
+
+@pytest.mark.parametrize('extra',[{'lowest_history_price':float('nan')},
+                                  {'lowest_history_price':float('inf')},
+                                  {'extra':{'historical_price':float('-inf')}},
+                                  {'extra':{'api_key':'synthetic-private'}},
+                                  {'lowest_history_price':'synthetic-api-key'}])
+def test_auxiliary_history_retains_recursive_finite_and_secret_screening(store,extra):
+    headers={'X-Api-Key':'synthetic-api-key'}
+    attempt=ingest(store,req=request(headers=headers),resp=response([snap(**extra)]))
+    assert attempt.status=='failed' and attempt.raw_hash is None
+    assert store.query('snapshot',ING)==[] and list(store.raw_dir.iterdir())==[]
