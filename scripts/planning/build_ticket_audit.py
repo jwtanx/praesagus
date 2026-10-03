@@ -17,6 +17,16 @@ _validator = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_validator)
 
 
+
+def normalize_title(value, key):
+    """Remove matching leading key repetitions from display titles, never Git subjects."""
+    pattern=r'^'+re.escape(key)+r'(?:\s*[·—–:|-]\s*|\s+|$)'
+    title=value.strip()
+    while True:
+        trimmed=re.sub(pattern,'',title,count=1).strip()
+        if trimmed==title:return title or 'Untitled'
+        title=trimmed
+
 def git(root, *args, optional=False):
     result = subprocess.run(['git', '-C', str(root), *args], capture_output=True)
     if result.returncode:
@@ -242,7 +252,7 @@ def build_audit(root, url='https://github.com/jwtanx/praesagus', ref='HEAD'):
                 touched.add(key)
                 continue
             heading = re.search(r'^#\s+(.+)$', spec_text, re.M)
-            title = re.sub(r'^'+re.escape(key)+r'\s*[—–-]\s*', '', heading[1]) if heading else manifest['objective']
+            title = normalize_title(heading[1] if heading else manifest['objective'], key)
             history = previous['history'] if previous else []
             complete = manifest['status'] == 'complete'
             kind = 'completed' if complete and (not previous or previous['status'] != 'complete') else ('progress_updated' if previous else 'plan_created')
@@ -285,7 +295,7 @@ def build_audit(root, url='https://github.com/jwtanx/praesagus', ref='HEAD'):
                             continue
                     heading = re.search(r'^#\s+(.+)$', text, re.M)
                     if heading:
-                        ticket['title'] = re.sub(r'^'+re.escape(key)+r'\s*[—–-]\s*', '', heading[1])
+                        ticket['title'] = normalize_title(heading[1], key)
                     ticket['spec_url'] = url+'/blob/'+sha+'/'+quote(spec_path, safe='/')
                     recovered = ticket['status'] == 'inconsistent' and last_manifest is not None
                     if recovered:

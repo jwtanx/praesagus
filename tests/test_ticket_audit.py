@@ -365,3 +365,31 @@ def test_explicit_fields_override_legacy_without_erasing_unspecified_fields(repo
 @pytest.mark.parametrize('url', ['https://@example.org', 'https://example.org:bad'])
 def test_empty_userinfo_or_invalid_port_reference_rejected(url):
     assert audit.safe_reference(url) is None
+
+
+@pytest.mark.parametrize('key',['PRSG-1','PRSG-29','PRSG-45'])
+@pytest.mark.parametrize('separator',[' · ',' — ',' – ',' - ',': ',' '])
+def test_matching_leading_key_repetitions_normalize_title_only(repo,key,separator):
+    path=write_ticket(repo,key=key);meta=json.loads(path.read_text());md=repo/meta['spec_path']
+    heading=key+separator+key+separator+'Readable title mentioning '+key
+    md.write_text(md.read_text().replace(key+' — Fixture ticket',heading))
+    subject=key+' Preserve original subject '+key
+    original=commit(repo,subject)
+    row=audit.build_audit(repo)['tickets'][0]
+    assert row['title']=='Readable title mentioning '+key
+    assert row['history'][0]['commit']['subject']==subject
+    assert git(repo,'rev-parse','HEAD')==original
+    md.write_text(md.read_text().replace(heading,key+separator+'Markdown-only update'))
+    commit(repo,key+' Update specification')
+    assert audit.build_audit(repo)['tickets'][0]['title']=='Markdown-only update'
+
+
+@pytest.mark.parametrize('value,expected',[
+    ('PRSG-290 · Different key','PRSG-290 · Different key'),
+    ('PRSG-28 · Other key','PRSG-28 · Other key'),
+    ('Title mentions PRSG-29','Title mentions PRSG-29'),
+    ('PRSG-29','Untitled'),
+    ('PRSG-29 · PRSG-29 · Title','Title')])
+def test_title_normalization_preserves_nonleading_and_distinct_keys(value,expected):
+    assert audit.normalize_title(value,'PRSG-29')==expected
+    assert audit.normalize_title(expected,'PRSG-29')==expected

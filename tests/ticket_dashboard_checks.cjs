@@ -104,25 +104,29 @@ async function safetyAndCsv() {
 }
 async function decisionOverviewAndDisclosures(width) {
   const data=clone(fixture),row=data.tickets[1];
-  const long='Authored source wording '+ 'readable evidence '.repeat(45);
-  row.decision_context={fields:{purpose:{text:['User needs readable reasons.'],source:'manifest'},approach:{text:['Recorded proposal using native details.'],source:'manifest'},choices:{text:['Native disclosure; external viewer.'],source:'manifest'},findings:{text:[long],source:'named specification sections'},tradeoffs:{text:['No dependency; no generated rationale.'],source:'manifest'}},references:[{label:'Official research',url:'https://example.org/research'},{label:'Unsafe credentials',url:'https://user:secret@example.org'},{label:'Unsafe protocol',url:'javascript:alert(1)'},{label:'Unsafe encoded control',url:'https://example.org/%0aunsafe'}]};
+  const long='Authored source wording '+ 'readable evidence '.repeat(45)+'\n\nFinal recorded paragraph.';
+  row.decision_context={fields:{purpose:{text:['User needs readable reasons.','Second full purpose block.'],source:'manifest'},approach:{text:['Recorded proposal using native details.'],source:'manifest'},choices:{text:['Native disclosure; external viewer.'],source:'manifest'},findings:{text:[long],source:'named specification sections'},tradeoffs:{text:['No dependency; no generated rationale.'],source:'manifest'}},references:[{label:'Official research',url:'https://example.org/research'},{label:'Unsafe credentials',url:'https://user:secret@example.org'},{label:'Unsafe protocol',url:'javascript:alert(1)'},{label:'Unsafe encoded control',url:'https://example.org/%0aunsafe'}]};
   const t=mount({width,data});await settle();t.$('button[data-key="PRSG-1"]').click();
-  const overview=t.$('#detail .decision-overview'),why=t.$('#detail .decision-context'),technical=t.$('#detail .technical-details');
+  const overview=t.$('#detail .decision-overview'),references=t.$('#detail .decision-references'),technical=t.$('#detail .technical-details');
   assert.equal(overview.closest('details'),null,'Overview visible outside disclosures');
   assert.deepEqual([...overview.querySelectorAll('h3')].map(el=>el.textContent),['Why','Approach','Options','Findings','Tradeoffs / decision']);
-  assert.match(overview.textContent,/User needs readable reasons/);assert.match(overview.textContent,/Source excerpt/);
-  assert.ok([...overview.querySelectorAll('p')].every(el=>el.textContent.length<=240));
-  assert.equal(why.querySelector('summary').textContent,'Why the ticket is created?');assert.equal(why.open,false);
+  assert.match(overview.textContent,/Second full purpose block/);assert.match(overview.textContent,/User needs readable reasons/);assert.ok(overview.textContent.includes(long));
+  assert.equal(t.$('#detail .decision-context'),null);
+  assert.ok([...overview.querySelectorAll('p')].some(el=>el.textContent.length>240));
+  assert.ok(overview.compareDocumentPosition(references)&t.w.Node.DOCUMENT_POSITION_FOLLOWING);
   assert.equal(technical.querySelector('summary').textContent,'Technical details & audit history');assert.equal(technical.open,false);
   assert.ok(overview.compareDocumentPosition(technical)&t.w.Node.DOCUMENT_POSITION_FOLLOWING);
   assert.equal(technical.querySelector('.timeline').children.length,2);
   assert.match(technical.textContent,/16 passed/);assert.match(technical.textContent,/Current acceptance/);assert.ok(technical.querySelector('dl'));
   assert.equal(t.$('#detail-title').closest('details'),null);
-  why.querySelector('summary').click();assert.equal(why.open,true);assert.match(why.textContent,/source wording alone does not establish acceptance/);assert.ok(why.textContent.includes(long));
+  assert.match(overview.textContent,/source wording alone does not establish acceptance/);
+  const borderRule=[...t.w.document.styleSheets].flatMap(sheet=>[...sheet.cssRules]).find(rule=>rule.selectorText==='.technical-details');
+  assert.match(borderRule.style.getPropertyValue('border'),/^1px solid/); // jsdom cannot resolve var() inside border shorthand.
+  assert.equal(t.w.getComputedStyle(technical).padding,'12px');
   technical.querySelector('summary').click();assert.equal(technical.open,true);
   const checks=[...technical.querySelectorAll('details')].find(el=>el.querySelector('summary')?.textContent==='Current checks');assert.equal(checks.open,false);checks.querySelector('summary').click();assert.equal(checks.open,true);
-  const source=why.querySelector('a[href="https://example.org/research"]');assert.ok(source);assert.equal(source.rel,'noopener noreferrer');assert.equal(why.querySelectorAll('a').length,2);
-  assert.equal(t.w.getComputedStyle(why.querySelector('.decision-text')).overflowWrap,'anywhere');
+  const source=references.querySelector('a[href="https://example.org/research"]');assert.ok(source);assert.equal(source.rel,'noopener noreferrer');assert.equal(references.querySelectorAll('a').length,1);
+  assert.equal(t.w.getComputedStyle(overview.querySelector('.decision-text')).overflowWrap,'anywhere');
   for(const url of ['javascript:alert(1)','http://example.org','https://u:p@example.org','https://example.org/\nunsafe','https://example.org/%00unsafe','https://example.org/%7funsafe','https://example.org/back\\slash'])assert.equal(t.w.safeReferenceUrl(url),null,url);
   t.dom.window.close();
 }
@@ -132,9 +136,9 @@ async function decisionFallbackAndSafety() {
   for(const row of data.tickets.filter(row=>['removed','activity_only'].includes(row.status)))row.decision_context=context;
   data.tickets.push(ticket('PRSG-8',{status:'inconsistent',decision_context:context}));
   const t=mount({data});await settle();
-  t.$('button[data-key="PRSG-1"]').click();assert.equal(t.$('#detail').querySelector('img'),null);assert.equal(t.$('#detail').querySelector('script'),null);assert.match(t.$('.decision-context').textContent,/<img src=x/);assert.match(t.$('.decision-overview').textContent,/Not recorded/);
-  for(const key of ['PRSG-0','PRSG-3','PRSG-8']){t.$(`button[data-key="${key}"]`).click();assert.doesNotMatch(t.$('.decision-context').textContent,/<img|evil/);assert.match(t.$('.decision-context').textContent,/Current decision context unavailable/);assert.equal(t.$('.decision-overview').querySelectorAll('p').length,5);}
-  t.$('button[data-key="PRSG-2"]').click();assert.match(t.$('.decision-context').textContent,/Recorded objective: Harness maintenance/);assert.equal(t.$('.decision-overview').querySelectorAll('p').length,5);assert.ok([...t.$('.decision-overview').querySelectorAll('p')].every(el=>el.textContent==='Not recorded.'));
+  t.$('button[data-key="PRSG-1"]').click();assert.equal(t.$('#detail').querySelector('img'),null);assert.equal(t.$('#detail').querySelector('script'),null);assert.match(t.$('.decision-overview').textContent,/<img src=x/);assert.match(t.$('.decision-overview').textContent,/Not recorded/);
+  for(const key of ['PRSG-0','PRSG-3','PRSG-8']){t.change('#search',key,'input');t.$(`button[data-key="${key}"]`).click();assert.doesNotMatch(t.$('.decision-overview').textContent,/<img|evil/);assert.match(t.$('.decision-overview').textContent,/Current decision context unavailable/);assert.equal(t.$('.decision-overview').querySelectorAll('p').length,5);}
+  t.change('#search','PRSG-2','input');t.$('button[data-key="PRSG-2"]').click();assert.match(t.$('#detail').textContent,/Harness maintenance/);assert.equal(t.$('.decision-overview').querySelectorAll('p').length,5);assert.ok([...t.$('.decision-overview').querySelectorAll('p')].every(el=>el.textContent==='Not recorded.'));
   assert.equal(t.errors.length,0);t.dom.window.close();
 }
 async function loadingAndFailure() {
@@ -184,11 +188,11 @@ function landingChecks(){
   const products=doc.querySelector('section[aria-label="Research dashboards"]');
   assert.deepEqual([...products.querySelectorAll('h2')].map(el=>el.textContent),['Report dashboard','Technical analysis']);
   assert.equal(products.querySelector('a').getAttribute('href'),'daily-market-brief/');
-  assert.equal(doc.querySelector('#technical-analysis .coming-soon').textContent,'Coming soon');
-  assert.equal(doc.querySelector('#technical-analysis a'),null);
+  assert.equal(doc.querySelector('#technical-analysis .coming-soon'),null);
+  assert.equal(doc.querySelector('#technical-analysis a').getAttribute('href'),'daily-market-brief/?view=technical');
   assert.equal(products.querySelector('a[href="tickets/"]'),null);
   assert.equal(doc.querySelector('footer nav[aria-label="Project utilities"] a').getAttribute('href'),'tickets/');
-  for(const link of doc.querySelectorAll('a'))assert.ok(fs.existsSync(path.join(root,'artifacts',link.getAttribute('href'),'index.html')));
+  for(const link of doc.querySelectorAll('a'))assert.ok(fs.existsSync(path.join(root,'artifacts',link.getAttribute('href').split(/[?#]/)[0],'index.html')));
   dom.window.close();
 }
 async function generatedAudit() {
@@ -196,14 +200,44 @@ async function generatedAudit() {
   const data = JSON.parse(fs.readFileSync(process.argv[option + 1], 'utf8'));
   const t = mount({ data }); await settle();
   assert.equal(t.$('#dashboard').hidden, false, 'Generated audit loads');
-  assert.equal(t.rows().length, data.tickets.length);
+  assert.equal(t.rows().length, Math.min(5,data.tickets.length));
   for (const ticket of data.tickets) {
+    t.change('#search',ticket.ticket_key,'input');
+    while(!t.$(`button[data-key="${ticket.ticket_key}"]`)){const next=t.$('#ticket-pages-top button:last-child');assert.equal(next.disabled,false);next.click()}
     t.$(`button[data-key="${ticket.ticket_key}"]`).click();
     assert.equal(t.$('#detail .timeline')?.children.length || 0, ticket.history?.length || 0);
   }
   assert.equal(t.errors.length, 0); t.dom.window.close();
 }
+async function paginationAndTitleNormalization(width) {
+  const data=clone(fixture);data.tickets=Array.from({length:12},(_,i)=>ticket(`PRSG-${i+20}`,{title:`PRSG-${i+20} · PRSG-${i+20} — Title ${i+20}`,description:'Pagination fixture',history:[{commit:commit('a',`PRSG-${i+20} Original repeated subject PRSG-${i+20}`),kind:'delivery_commit',paths:[]}]}));
+  const t=mount({width,data});await settle();
+  assert.deepEqual(t.rows(),['PRSG-31','PRSG-30','PRSG-29','PRSG-28','PRSG-27']);
+  assert.equal(t.$('button[data-key="PRSG-29"]').closest('tr').children[1].textContent,'Title 29');
+  t.$('button[data-key="PRSG-29"]').click();assert.equal(t.$('#detail-title').textContent,'PRSG-29 · Title 29');
+  assert.match(t.$('.timeline').textContent,/PRSG-29 Original repeated subject PRSG-29/);
+  assert.equal(t.w.normalizeTitle('PRSG-290 · Other','PRSG-29'),'PRSG-290 · Other');
+  assert.equal(t.w.normalizeTitle('Mentions PRSG-29','PRSG-29'),'Mentions PRSG-29');
+  assert.match(t.$('#result-count').textContent,/12 of 12 tickets.*showing 1–5/);
+  const top=t.$('#ticket-pages-top');assert.equal(top.getAttribute('aria-label'),'Ticket pages above results');
+  assert.equal(top.firstChild.disabled,true);assert.equal(top.querySelector('[aria-current="page"]').textContent,'1');
+  assert.ok([...top.querySelectorAll('button')].every(button=>button.getAttribute('aria-controls')==='ticket-rows'));
+  top.lastChild.click();assert.deepEqual(t.rows(),['PRSG-26','PRSG-25','PRSG-24','PRSG-23','PRSG-22']);
+  assert.equal(t.w.document.activeElement.textContent,'2');assert.match(t.$('#result-count').textContent,/showing 6–10/);
+  const csv=t.w.filteredCsv();assert.equal(csv.trim().split('\r\n').length,13);assert.match(csv,/'?Title 31/);assert.match(csv,/Title 20/);
+  t.$('#ticket-pages-bottom button:last-child').click();assert.deepEqual(t.rows(),['PRSG-21','PRSG-20']);
+  assert.equal(t.$('#ticket-pages-bottom button:last-child').disabled,true);
+  t.change('#search','Title 31','input');assert.deepEqual(t.rows(),['PRSG-31']);assert.match(t.$('#result-count').textContent,/showing 1–1/);
+  assert.equal(t.$('#ticket-pages-top').hidden,true);
+  t.$('#reset').click();t.$('#ticket-pages-top button:last-child').click();
+  t.change('#order','asc');assert.deepEqual(t.rows(),['PRSG-20','PRSG-21','PRSG-22','PRSG-23','PRSG-24']);
+  t.$('#ticket-pages-top button:last-child').click();t.change('#owner-filter','Engineer');assert.equal(t.$('#ticket-pages-top [aria-current="page"]').textContent,'1');
+  t.w.eval('currentPage=99;renderResults()');assert.equal(t.$('#ticket-pages-top [aria-current="page"]').textContent,'3');
+  t.change('#search','nonexistent','input');assert.equal(t.rows().length,0);assert.equal(t.$('#export').disabled,true);assert.equal(t.$('#ticket-pages-top').hidden,true);
+  t.$('#reset').click();assert.equal(t.$('#order').value,'desc');assert.deepEqual(t.rows(),['PRSG-31','PRSG-30','PRSG-29','PRSG-28','PRSG-27']);
+  assert.equal(t.errors.length,0);t.dom.window.close();
+}
 if (process.argv.includes('--write-browser-fixture')) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'praesagus-ticket-fixture-'));
   fs.mkdirSync(path.join(dir, 'tickets')); fs.writeFileSync(path.join(dir, 'tickets/index.html'), html); fs.writeFileSync(path.join(dir, 'tickets/audit.json'), JSON.stringify(inconsistentFixture(), null, 2)); console.log(dir);
-} else (async () => { landingChecks(); await controls(1280); await controls(390); await safetyAndCsv(); await loadingAndFailure(); await inconsistentAndRecovery(); await historicalSpecification(); await decisionOverviewAndDisclosures(1280); await decisionOverviewAndDisclosures(390); await decisionFallbackAndSafety(); await generatedAudit(); console.log('Ticket dashboard DOM checks passed: search, all filters/sorts, committed evidence timeline, completion/activity separation, safe links/text, CSV neutralization/export, loading/error/empty, inconsistent checkpoints and recovery.'); })().catch(error => { console.error(error); process.exitCode = 1; });
+} else (async () => { landingChecks(); await paginationAndTitleNormalization(1280); await paginationAndTitleNormalization(390); await controls(1280); await controls(390); await safetyAndCsv(); await loadingAndFailure(); await inconsistentAndRecovery(); await historicalSpecification(); await decisionOverviewAndDisclosures(1280); await decisionOverviewAndDisclosures(390); await decisionFallbackAndSafety(); await generatedAudit(); console.log('Ticket dashboard DOM checks passed: search, all filters/sorts, committed evidence timeline, completion/activity separation, safe links/text, CSV neutralization/export, loading/error/empty, inconsistent checkpoints and recovery, normalized titles, full overview and five-ticket pagination with all-filtered CSV.'); })().catch(error => { console.error(error); process.exitCode = 1; });

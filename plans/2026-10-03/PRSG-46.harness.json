@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-46",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-03",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-03/PRSG-46-ticket-dashboard-overview-pagination.md",
+  "objective": "Make ticket titles and decision overviews readable and paginate five tickets without hiding audit evidence",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "5e7ccc14eb368c14f349d78f6ee50e1324705da2",
+  "allowed_paths": [
+    "artifacts/tickets/index.html",
+    "scripts/planning/build_ticket_audit.py",
+    "tests/test_ticket_audit.py",
+    "tests/ticket_dashboard_checks.cjs",
+    "plans/2026-10-03/PRSG-46-ticket-dashboard-overview-pagination.md",
+    "plans/2026-10-03/PRSG-46.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "skills/",
+    "artifacts/daily-market-brief/",
+    "artifacts/index.html"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_ticket_audit.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Engineer exact declared pytest: 70 passed in 14.91s on isolated Python3.12.14; transcript /tmp/PRSG-46-tests.txt. Python3.11 not replayed.",
+        "Lead independent replay with existing isolated Python3.12.14: tests/test_ticket_audit.py, 70 passed in 14.69s. Default system Python and Python3.11 not replayed."
+      ]
+    },
+    {
+      "id": "dom",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/ticket_dashboard_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/ticket_dashboard_checks.cjs passed using existing jsdom26 dependency runtime; /tmp/PRSG-46-dom.txt. Additional full-history audit generated outside repository at /tmp/PRSG-46-audit.json (45 committed tickets, base5e7ccc14); node tests/ticket_dashboard_checks.cjs --audit-json /tmp/PRSG-46-audit.json passed, /tmp/PRSG-46-generated-dom.txt. All45 titles verified no repeated leading key, historical subjects unchanged. Desktop/mobile full overview, safe references, border/disclosure, page reset/clamp/focus and all-filtered CSV regressions pass."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead complete six-path review",
+      "status": "passed",
+      "evidence": ["Lead reviewed all six tracked/new paths against frozen base5e7ccc14. Independent 70-test replay passed in14.69s; dashboard DOM replay and generated45-ticket full-history DOM replay passed. Display-only normalization preserves Git subjects; full text stays textContent-safe; five-row pagination retains all-filtered CSV and history. Landing assertion correction matches unchanged checked-in landing. No protected-path edits. Live Pages delivery remains separately unverified at acceptance."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-46-D1",
+      "description": "Dashboard and historical audit regressions pass",
+      "check_ids": [
+        "tests",
+        "dom"
+      ],
+      "status": "done",
+      "evidence": [
+        "Engineer exact declared pytest: 70 passed in 14.91s on isolated Python3.12.14; transcript /tmp/PRSG-46-tests.txt. Python3.11 not replayed.",
+        "node tests/ticket_dashboard_checks.cjs passed using existing jsdom26 dependency runtime; /tmp/PRSG-46-dom.txt. Additional full-history audit generated outside repository at /tmp/PRSG-46-audit.json (45 committed tickets, base5e7ccc14); node tests/ticket_dashboard_checks.cjs --audit-json /tmp/PRSG-46-audit.json passed, /tmp/PRSG-46-generated-dom.txt. All45 titles verified no repeated leading key, historical subjects unchanged. Desktop/mobile full overview, safe references, border/disclosure, page reset/clamp/focus and all-filtered CSV regressions pass."
+      ]
+    },
+    {
+      "id": "PRSG-46-D2",
+      "description": "Lead independently accepts exact scope",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": ["Lead independently accepted exact six-path implementation after70 tests14.69s and fixture/full-history DOM passes; public deployment is a separate follow-up."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Complete six-path diff independently reviewed; focused pytest70 passed14.69s, desktop/mobile fixture and generated45-ticket DOM checks passed. No ingestion, report, landing, TA, skill or schedule changes. Python3.11 and live browser deployment not verified by this acceptance."]
+  }
+}
