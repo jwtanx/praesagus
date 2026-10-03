@@ -49,6 +49,61 @@ def validate_observed_quote(quote, cutoff):
     check_secrets(quote)
 
 
+PUBLIC_REFERENCE_URL = 'https://open.moomoo.com/mcp-docs/available-tools'
+PUBLIC_TIMES = ('source_at','observed_at','ingested_at','known_at','cutoff')
+PUBLIC_GAPS = ['provider_currency_unknown','session_unknown','adjustment_unknown','prior_close_unknown','rights_unconfirmed']
+PUBLIC_KEYS = {'price',*PUBLIC_TIMES,'provider','reference_url','listing_currency',
+               'provider_currency','session','adjustment','prior_close','rights_status',
+               'capture_authenticity','gaps'}
+PRIVATE_PUBLIC_KEYS = {'private_draft','observed_quote','quote_provenance','attempt_id',
+                       'raw_hash','semantic_hash','run_id','raw_body','raw_response',
+                       'credential_directory','credential_path','account_id','account',
+                       'private_path','private_store','provenance'}
+
+
+def validate_public_report_boundary(value):
+    """Reject private structures anywhere in a clean public report, not just rows."""
+    check_secrets(value)
+    def walk(item):
+        if isinstance(item,dict):
+            need(all(isinstance(key,str) and key.lower() not in PRIVATE_PUBLIC_KEYS for key in item))
+            for child in item.values():walk(child)
+        elif isinstance(item,list):
+            for child in item:walk(child)
+    walk(value)
+
+
+def validate_public_snapshot(snapshot, cutoff, *, listing_currency):
+    need(isinstance(snapshot,dict) and set(snapshot)==PUBLIC_KEYS)
+    price=snapshot['price']
+    need(type(price) in (int,float) and math.isfinite(price) and price>0)
+    need(listing_currency=='USD' and snapshot['listing_currency']==listing_currency)
+    need(all(snapshot[k] is None for k in ('provider_currency','session','adjustment','prior_close')))
+    need(snapshot['provider']=='moomoo-rest' and snapshot['reference_url']==PUBLIC_REFERENCE_URL
+         and snapshot['rights_status']=='unconfirmed'
+         and snapshot['capture_authenticity']=='caller-supplied-unverified'
+         and snapshot['gaps']==PUBLIC_GAPS)
+    times={key:parse_aware(snapshot[key]) for key in PUBLIC_TIMES}
+    need(times['cutoff']==parse_aware(cutoff)
+         and times['source_at']<=times['observed_at']<=times['ingested_at']<=times['known_at']<=times['cutoff'])
+    validate_public_report_boundary(snapshot)
+
+
+def map_public_snapshot(quote, cutoff, *, listing_currency):
+    """Price-only allowlist; input IDs/volume never copied, no report or writer I/O."""
+    def project():
+        validate_observed_quote(quote,cutoff)
+        need(quote['origin']=='trusted-capture')
+        result={key:quote[key] for key in ('price',*PUBLIC_TIMES)}
+        result.update(provider='moomoo-rest',reference_url=PUBLIC_REFERENCE_URL,
+                      listing_currency=listing_currency,provider_currency=None,session=None,
+                      adjustment=None,prior_close=None,rights_status='unconfirmed',
+                      capture_authenticity='caller-supplied-unverified',gaps=list(PUBLIC_GAPS))
+        validate_public_snapshot(result,cutoff,listing_currency=listing_currency)
+        return result
+    return safe(project,category='public-snapshot-failed')
+
+
 def project_report(store,template,universe,*,run_id,cutoff,expected_codes):
     """Pure mapping of an accepted template and explicit store selection."""
     def project():

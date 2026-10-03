@@ -194,3 +194,51 @@ def test_private_path_in_selection_gaps_rejected(inputs):
     class FakeStore:
         def select_snapshots(self,*args):return selection
     with pytest.raises(MarketStoreError):project_report(FakeStore(),template,universe,run_id='synthetic',cutoff=CUTOFF,expected_codes=codes)
+
+
+def public_input(inputs):
+    quote=deepcopy(next(r['observed_quote'] for r in project(inputs)['forecasts'] if r['observed_quote']))
+    quote['origin']='trusted-capture'  # Synthetic fixture of the caller-declared capture contract.
+    return quote
+
+
+def test_public_mapper_price_only_input_unchanged(inputs):
+    from ingest.daily_report_projection import map_public_snapshot,validate_public_snapshot,PUBLIC_KEYS
+    quote=public_input(inputs);before=deepcopy(quote)
+    point=map_public_snapshot(quote,CUTOFF,listing_currency='USD')
+    assert quote==before and set(point)==PUBLIC_KEYS and point['price']==10
+    assert point['listing_currency']=='USD' and point['provider_currency'] is None
+    assert point['rights_status']=='unconfirmed' and point['capture_authenticity']=='caller-supplied-unverified'
+    assert all(point[k]==quote[k] for k in ('source_at','observed_at','ingested_at','known_at','cutoff'))
+    raw=json.dumps(point)
+    assert all(key not in raw for key in ('volume','attempt_id','raw_hash','semantic_hash','run_id','private_draft'))
+    assert all(value not in raw for value in quote['provenance'].values() if isinstance(value,str) and len(value)==64)
+    validate_public_snapshot(point,CUTOFF,listing_currency='USD')
+    point['gaps'].append('mutated');assert quote==before
+
+
+@pytest.mark.parametrize('change',['synthetic','zero','negative','bool','nan','future','precision','known-order','extra','private-path','secret','MYR'])
+def test_public_mapper_rejects_invalid_or_private_input(inputs,change):
+    from ingest.daily_report_projection import map_public_snapshot
+    quote=public_input(inputs);currency='USD'
+    if change=='synthetic':quote['origin']='synthetic'
+    elif change in ('zero','negative','bool','nan'):quote['price']={'zero':0,'negative':-1,'bool':True,'nan':float('nan')}[change]
+    elif change=='future':quote['source_at']='2026-10-03T00:00:00Z'
+    elif change=='precision':quote['source_at']='2026-10-01T23:59:00.1234567Z'
+    elif change=='known-order':quote['known_at']='2026-10-01T23:00:00Z'
+    elif change=='extra':quote['extra']='private'
+    elif change=='private-path':quote['provenance']['credential_path']='/private/fixture'
+    elif change=='secret':quote['provenance']['api_key']='synthetic-secret'
+    else:currency='MYR'
+    with pytest.raises(ValueError):map_public_snapshot(quote,CUTOFF,listing_currency=currency)
+
+
+def test_clean_public_overlay_preserves_independent_template(inputs):
+    from ingest.daily_report_projection import map_public_snapshot
+    template=deepcopy(inputs[1]);before=deepcopy(template)
+    template['forecasts'][0]['public_snapshot']=map_public_snapshot(public_input(inputs),CUTOFF,listing_currency='USD')
+    assert inputs[1]==before and len(template['forecasts'])==50
+    assert 'private_draft' not in template['metadata']
+    for original,row in zip(before['forecasts'],template['forecasts']):
+        assert {k:v for k,v in row.items() if k!='public_snapshot'}==original
+    assert all('public_snapshot' not in row for row in template['forecasts'] if row['market']=='MY')

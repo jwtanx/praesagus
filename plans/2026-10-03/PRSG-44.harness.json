@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-44",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "frontend",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-03",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-03/PRSG-44-public-price-snapshot.md",
+  "objective": "Expose only allowed daily price snapshot with honest units, provenance and a strict public validation boundary",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "298a18f8de97b95fd7771c23ff640cb3a81b081c",
+  "allowed_paths": [
+    "ingest/daily_report_projection.py",
+    "tests/test_daily_report_projection.py",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "tests/test_daily_report.py",
+    "artifacts/daily-market-brief/index.html",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-03/PRSG-44-public-price-snapshot.md",
+    "plans/2026-10-03/PRSG-44.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "skills/",
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py",
+    "scripts/daily-market-brief/project_private_quotes.py",
+    "scripts/daily-market-brief/run_private_quote_report.py",
+    "artifacts/daily-market-brief/reports.json",
+    "artifacts/daily-market-brief/2026-10-03.json"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_daily_report_projection.py",
+        "tests/test_daily_report.py",
+        "tests/test_daily_quote_report.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Engineer exact declared pytest: 130 passed in 0.70s, isolated Python3.12.14/cryptography50.0.2; transcript /tmp/PRSG-44-tests.txt. Python3.11 not replayed."
+      ]
+    },
+    {
+      "id": "dom",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/daily_report_viewer_checks.cjs passed with existing /tmp/praesagus-viewer-test-deps jsdom26; transcript /tmp/PRSG-44-dom.txt. Public price-only display, fixed reference, safe escaping, no private IDs or volume rendered, sorting excludes unknown provider units, independent forecast and prior private/schema2/3 regressions."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead eight-path boundary and integration review",
+      "status": "passed",
+      "evidence": ["Lead independently reviewed all eight paths; exact Python suite130 passed0.73s on Python3.12.14 and existingjsdom DOM suite passed. Public enforcement is explicit --public, not automatic CI enforcement; capture/license authenticity and sensitive prose remain manual review limits. No live report deployment claimed."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-44-D1",
+      "description": "Public mapping, validation and existing regressions pass",
+      "check_ids": [
+        "tests",
+        "dom"
+      ],
+      "status": "done",
+      "evidence": [
+        "Engineer exact declared pytest: 130 passed in 0.70s, isolated Python3.12.14/cryptography50.0.2; transcript /tmp/PRSG-44-tests.txt. Python3.11 not replayed.",
+        "node tests/daily_report_viewer_checks.cjs passed with existing /tmp/praesagus-viewer-test-deps jsdom26; transcript /tmp/PRSG-44-dom.txt. Public price-only display, fixed reference, safe escaping, no private IDs or volume rendered, sorting excludes unknown provider units, independent forecast and prior private/schema2/3 regressions."
+      ]
+    },
+    {
+      "id": "PRSG-44-D2",
+      "description": "Lead independently accepts exact scope",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": ["Lead full eight-path review and independent Python/DOM replay accepted; clean authored report integration remains separate."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Lead reviewed all eight paths,130 tests passed0.73s and DOM checks passed; optional --public validation must be explicitly used before publishing. No claim of licensing or deployment."]
+  }
+}

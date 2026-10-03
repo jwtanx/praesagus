@@ -100,3 +100,69 @@ def test_invalid_observed_quote_rejected(report,change):
     elif change=='missing-gap':q['gaps']=[]
     else:q['known_at']='2026-09-30T23:59:00Z'
     with pytest.raises(ValueError):validator.validate_report(path,data)
+
+
+def public_point(cutoff):
+    from ingest.daily_report_projection import map_public_snapshot
+    quote=observed_point(cutoff);quote['origin']='trusted-capture'
+    return map_public_snapshot(quote,cutoff,listing_currency='USD')
+
+
+def add_public_point(data):
+    row=data['forecasts'][0]
+    row.update(public_snapshot=public_point(data['metadata']['as_of']),current_price_value=None,quote_status='missing')
+    return row
+
+
+def test_public_point_and_independent_forecast(report):
+    path,data=report;row=add_public_point(data)
+    row.update(direction='up',direction_label='Up',forecast_status='available',confidence='low',
+               estimated_mid_case_value=12,range_low_value=9,range_high_value=14)
+    assert validator.validate_report(path,data,public=True)[:2]==(10,0)
+
+
+@pytest.mark.parametrize('change',['unknown-key','volume','private-id','units','rights','reference','future','sortable','MY','wrong-listing'])
+def test_public_snapshot_rejects_bad_contract(report,change):
+    path,data=report;row=add_public_point(data);q=row['public_snapshot']
+    if change=='unknown-key':q['extra']='private'
+    elif change=='volume':q['volume']=0
+    elif change=='private-id':q['attempt_id']='a'*64
+    elif change=='units':q['provider_currency']='USD'
+    elif change=='rights':q['rights_status']='licensed'
+    elif change=='reference':q['reference_url']='https://example.invalid/response'
+    elif change=='future':q['source_at']='2026-10-03T00:00:00Z'
+    elif change=='sortable':row['current_price_value']=10
+    elif change=='MY':row['market']='MY'
+    else:row['currency']='MYR'
+    with pytest.raises(ValueError):validator.validate_report(path,data,public=True)
+
+
+@pytest.mark.parametrize('key',['private_draft','observed_quote','attempt_id','raw_hash','semantic_hash','run_id',
+                               'credential_path','account_id','raw_body','quote_provenance','provenance','api_key'])
+def test_public_report_recursively_rejects_private_keys(report,key):
+    path,data=report;add_public_point(data)
+    data['sections']['news']['notes'].append({'nested':[{'deeper':{key:'synthetic-private'}}]})
+    with pytest.raises(ValueError):validator.validate_report(path,data,public=True)
+
+
+def test_public_mode_rejects_private_draft_but_private_validation_unchanged(report):
+    path,data=report;row=data['forecasts'][0]
+    data['metadata']['private_draft']=True
+    row.update(observed_quote=observed_point(data['metadata']['as_of']),current_price_value=None,quote_status='missing')
+    assert validator.validate_report(path,data)[:2]==(10,0)
+    with pytest.raises(ValueError):validator.validate_report(path,data,public=True)
+
+
+def test_public_cli_selects_boundary(report,monkeypatch):
+    path,data=report;calls=[]
+    universe={'effective_from':'2026-10-01','taxonomy_id':'fixture','groups':[]}
+    data['watchlist_config']['taxonomy_id']='fixture'
+    monkeypatch.setattr(sys,'argv',['validate_report_json.py','--public','--date','2026-10-01',
+                                  '--reports-dir',str(path.parent),'--universe',str(path.parent/'universe.json')])
+    monkeypatch.setattr(validator,'read_json',lambda p:universe if p.name=='universe.json' else {'reports':[]} if p.name=='reports.json' else data)
+    monkeypatch.setattr(validator,'validate_universe',lambda *args:([],{}))
+    def checked(path,report,context,*,public=False):
+        calls.append(public);return 10,0,{}
+    monkeypatch.setattr(validator,'validate_report',checked)
+    monkeypatch.setattr(validator,'validate_index',lambda *args:None)
+    validator.main();assert calls==[True]

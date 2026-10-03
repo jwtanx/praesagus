@@ -225,6 +225,28 @@ async function observedQuoteDisplay() {
   assert.equal(t.$('#forecast-rows tr').dataset.universeOrder,'1','Unknown-unit point excluded from nominal sorting');
   assert.equal(t.errors.length,0);t.dom.window.close();
 }
+async function publicSnapshotDisplay() {
+  const data=report('2026-10-01');
+  data.forecasts[0].current_price_value=1234;
+  data.forecasts[0].direction='up';data.forecasts[0].direction_label='Independent forecast';
+  data.forecasts[0].public_snapshot={price:10,volume:999,source_at:'2026-09-30T23:59:00Z',observed_at:'2026-09-30T23:59:00Z',ingested_at:'2026-10-01T00:00:00Z',known_at:'2026-10-01T00:00:00Z',cutoff:'2026-10-01T00:00:00Z',listing_currency:'USD',reference_url:'javascript:alert(1)',attempt_id:'private-attempt',provider:'<img src=x>',rights_status:'licensed'};
+  data.forecasts[0].data_gaps=['provider_currency_unknown','<img src=x onerror=alert(1)>'];
+  data.forecasts[1].current_price_value=9;
+  const t=mount({routes:{'./2026-10-01.json':data}});await settle();
+  const row=t.$('#forecast-rows tr');
+  assert.equal(row.dataset.price,'');assert.match(row.textContent,/Provider: moomoo-rest/);
+  assert.match(row.textContent,/Listing currency: USD.*provider currency unverified/);
+  assert.match(row.textContent,/rights unconfirmed/);assert.match(row.textContent,/60 seconds before report cutoff/);
+  assert.match(row.textContent,/Observed:.*Ingested:.*Known:.*Report cutoff:/s);
+  assert.match(row.textContent,/Independent forecast/);assert.equal(row.querySelector('img'),null);
+  assert.doesNotMatch(row.textContent,/999|volume|private-attempt|USD 10|licensed/);
+  const reference=row.querySelector('.public-snapshot a');
+  assert.equal(reference.href,'https://open.moomoo.com/mcp-docs/available-tools');
+  assert.match(reference.textContent,/not response source/);
+  t.$('#forecast-sort').value='price-desc';t.$('#forecast-sort').dispatchEvent(new t.w.Event('change'));
+  assert.equal(t.$('#forecast-rows tr').dataset.universeOrder,'1');
+  assert.equal(t.errors.length,0);t.dom.window.close();
+}
 if (process.argv.includes('--write-browser-fixture')) {
   const dir = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'praesagus-report-fixture-'));
   fs.mkdirSync(path.join(dir, 'daily-market-brief')); fs.mkdirSync(path.join(dir, 'financial-calendar'));
@@ -236,8 +258,9 @@ if (process.argv.includes('--write-browser-fixture')) {
   write('financial-calendar/2026-10.json', calendar('2026-10', [revision(1), revision(2, { recorded_at: '2026-09-30T00:00:00Z', status: 'cancelled', change_reason: 'Official cancellation; retained for audit' })]));
   console.log(dir);
 } else (async () => {
+  await publicSnapshotDisplay();
   await observedQuoteDisplay();
   await countryFiltersAndLatest();
   await navigation(1280); await navigation(390); await historyAndSafety(); await activeRevisionsAndReportCalendarRace(); await staleAndFailures(); await calendarStaleAndInvalid(); await checkedInReports();
-  console.log('Daily report DOM checks passed: desktop/mobile date switching, schema2/3, confidence, as-of revisions/cancellations, safe sources, missing months, stale/error handling, observed quote frozen age/units/gaps/unsortability.');
+  console.log('Daily report DOM checks passed: desktop/mobile date switching, schema2/3, confidence, as-of revisions/cancellations, safe sources, missing months, stale/error handling, private/public quote frozen age/units/gaps/unsortability and price-only public reference safety.');
 })().catch(e => { console.error(e); process.exitCode = 1; });

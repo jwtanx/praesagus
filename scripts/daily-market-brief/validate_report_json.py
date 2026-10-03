@@ -14,7 +14,7 @@ try:
 except ImportError:
     from monthly_calendar import validate_calendar
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from ingest.daily_report_projection import validate_observed_quote
+from ingest.daily_report_projection import validate_observed_quote, validate_public_snapshot, validate_public_report_boundary
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
@@ -93,7 +93,10 @@ def validate_universe(path: Path, d):
     if set(keys)!=expected: fail(path,f'groups must cover exactly {sorted(expected)}')
     return keys,universe
 
-def validate_report(path: Path, d, universe_data=None):
+def validate_report(path: Path, d, universe_data=None, *, public=False):
+    if public:
+        try:validate_public_report_boundary(d)
+        except (ValueError, TypeError, KeyError, OverflowError):fail(path,"public report contains private or invalid structures")
     if not isinstance(d,dict) or d.get('schema_version') not in {2,3}: fail(path,'schema_version must be 2 or 3')
     modern=d['schema_version']==3
     count=5 if modern else 10
@@ -184,6 +187,12 @@ def validate_report(path: Path, d, universe_data=None):
             if not isinstance(f.get('confidence_reason'),str) or not f['confidence_reason'].strip():fail(path,f'forecasts[{i}] confidence_reason required')
             if f.get('forecast_status')=='unavailable' and (f['confidence']!='unavailable' or f['direction']!='unknown' or any(f.get(k) is not None for k in ('estimated_mid_case_value','range_low_value','range_high_value'))):fail(path,f'forecasts[{i}] unavailable forecast must be unknown/unrated with null targets')
         if f['ticker'] in symbols:fail(path,f'duplicate ticker: {f["ticker"]}')
+        if f.get('public_snapshot') is not None:
+            if not modern or f.get('observed_quote') is not None:fail(path,'public_snapshot requires a separate schema3 point')
+            try:validate_public_snapshot(f['public_snapshot'],meta['as_of'],listing_currency=f['currency'])
+            except (ValueError, TypeError, KeyError, OverflowError):fail(path,f'forecasts[{i}].public_snapshot invalid')
+            if f['market']!='US' or f.get('current_price_value') is not None or f.get('quote_status')!='missing':
+                fail(path,f'forecasts[{i}] public provider units must remain unsortable')
         if f.get('observed_quote') is not None:
             if not modern:fail(path,'observed_quote requires schema3')
             try:
@@ -245,6 +254,7 @@ def main():
     ap.add_argument('--reports-dir',type=Path,default=Path('artifacts/daily-market-brief'))
     ap.add_argument('--universe',type=Path,default=Path('artifacts/daily-market-brief/watchlist-universe.json'))
     ap.add_argument('--date',help='validate one YYYY-MM-DD report')
+    ap.add_argument('--public',action='store_true',help='reject private structures before publication')
     a=ap.parse_args();root=a.reports_dir
     universe_json=read_json(a.universe)
     universe_keys,universe_map=validate_universe(a.universe,universe_json)
@@ -264,7 +274,7 @@ def main():
         report=read_json(p)
         taxonomy=report.get('watchlist_config',{}).get('taxonomy_id')
         if report.get('schema_version')==3 and taxonomy not in universes:fail(p,'unknown schema3 taxonomy')
-        n,events,counts=validate_report(p,report,universes.get(taxonomy,universe_data));total+=1
+        n,events,counts=validate_report(p,report,universes.get(taxonomy,universe_data),public=a.public);total+=1
         breakdown=', '.join(f'{key}={count}' for key,count in counts.items())
         print(f'OK {p}: {n} forecasts ({breakdown}), {events} calendar events')
     idx=root/'reports.json'
