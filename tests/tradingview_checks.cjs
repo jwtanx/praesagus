@@ -2,6 +2,9 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{spawnSync}=require('node:child_process');
 const {JSDOM,VirtualConsole}=require(path.join(process.env.DAILY_REPORT_TEST_DEPS||'/tmp/praesagus-viewer-test-deps','node_modules/jsdom'));
 const root=path.resolve(__dirname,'..'),moduleCode=fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'),html=fs.readFileSync(path.join(root,'artifacts/daily-market-brief/index.html'),'utf8');
+const localModuleTags=[...html.matchAll(/<script src="(\.\/tradingview\.js\?v=[a-f0-9]{12})"><\/script>/g)];
+assert.equal(localModuleTags.length,1,'Exactly one versioned local chart module is injected');
+const localModuleTag=localModuleTags[0][0];
 const report=date=>JSON.parse(fs.readFileSync(path.join(root,'artifacts/daily-market-brief',date+'.json'),'utf8'));
 const index=JSON.parse(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/reports.json'),'utf8'));
 async function settle(){for(let i=0;i<8;i++)await new Promise(resolve=>setImmediate(resolve))}
@@ -9,7 +12,7 @@ function mount({width=390,reduce=false,moduleMissing=false}={}){
   const routes={'./reports.json':index,'./2026-09-30.json':report('2026-09-30'),'./2026-10-01.json':report('2026-10-01'),'../financial-calendar/2026-10.json':JSON.parse(fs.readFileSync(path.join(root,'artifacts/financial-calendar/2026-10.json'),'utf8'))};
   const requests=[],errors=[],timers=new Map(),idleTimers=new Map(),scrolls=[],frames=new Map(),visibility=[];let timerID=10000,frameID=0;let media;
   const vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e));
-  const dom=new JSDOM(moduleMissing?html:html.replace('<script src="./tradingview.js"></script>','<script>'+moduleCode+'</script>'),{url:'https://example.org/praesagus/daily-market-brief/?view=technical&date=2026-10-01',runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc,beforeParse(w){
+  const dom=new JSDOM(moduleMissing?html:html.replace(localModuleTag,()=>'<script>'+moduleCode+'</script>'),{url:'https://example.org/praesagus/daily-market-brief/?view=technical&date=2026-10-01',runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc,beforeParse(w){
     Object.defineProperty(w,'innerWidth',{value:width});media=new w.EventTarget();media.matches=reduce;w.matchMedia=()=>media;w.requestAnimationFrame=fn=>{const id=++frameID;frames.set(id,fn);return id};w.cancelAnimationFrame=id=>frames.delete(id);w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=function(options){scrolls.push(options)};w.IntersectionObserver=class{constructor(fn){this.fn=fn;this.disconnected=false;visibility.push(this)}observe(){this.fn([{isIntersecting:true}])}disconnect(){this.disconnected=true}};
     const originalTimeout=w.setTimeout.bind(w),originalClear=w.clearTimeout.bind(w);w.setTimeout=(fn,delay,...args)=>{if(delay===5000){const id=++timerID;idleTimers.set(id,fn);return id}if(delay===15000){const id=++timerID;timers.set(id,fn);return id}return originalTimeout(fn,delay,...args)};w.clearTimeout=id=>{if(idleTimers.has(id))idleTimers.delete(id);else if(timers.has(id))timers.delete(id);else originalClear(id)};
     w.fetch=async(url,options)=>{requests.push({url,options});const result=routes[url];if(result==='defer')return new Promise(resolve=>routes[url]={resolve});if(result instanceof Error)throw result;return {ok:!!result,status:result?200:404,json:async()=>JSON.parse(JSON.stringify(result))}}
