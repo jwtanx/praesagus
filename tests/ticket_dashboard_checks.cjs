@@ -182,7 +182,8 @@ async function historicalSpecification() {
 }
 function landingChecks(){
   const file=path.join(root,'artifacts/index.html');const dom=new JSDOM(fs.readFileSync(file,'utf8'),{url:'http://localhost/praesagus/'}),doc=dom.window.document;
-  assert.equal(doc.querySelector('meta[http-equiv="refresh"]'),null);assert.equal(doc.querySelector('script'),null);
+  assert.equal(doc.querySelector('meta[http-equiv="refresh"]'),null);
+  assert.equal(doc.querySelector('script[src]'),null,'Landing enhancements have no external script dependency');
   assert.match(doc.querySelector('h1').textContent,/Understand the market/);
   assert.doesNotMatch(doc.querySelector('h1').textContent,/Choose your dashboard/);
   const products=doc.querySelector('section[aria-label="Research dashboards"]');

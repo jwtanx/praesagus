@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-47",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-03",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-03/PRSG-47-landing-sticky-navigation-cards.md",
+  "objective": "Keep homepage navigation visible and make research cards native accessible tappable links",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "45ba7d33f1c7e66d6883a32d8331cb207e833c2a",
+  "allowed_paths": [
+    "artifacts/index.html",
+    "tests/landing_dashboard_checks.cjs",
+    "tests/ticket_dashboard_checks.cjs",
+    "plans/2026-10-03/PRSG-47-landing-sticky-navigation-cards.md",
+    "plans/2026-10-03/PRSG-47.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/tickets/",
+    "artifacts/daily-market-brief/",
+    "ingest/",
+    "connectors/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "landing",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/landing_dashboard_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/landing_dashboard_checks.cjs passed with existing jsdom26 runtime; /tmp/PRSG-47-landing.txt. Native links with/without JS, sticky/focus/mobile CSS rules, frame coalescing and clamped coordinates, leave/cancel/blur/touch cleanup, runtime preference changes, reduced motion/coarse pointer and missing media/RAF fallback. DOM/style checks do not measure browser hit testing, scrolling or horizontal overflow."
+      ]
+    },
+    {
+      "id": "dashboard",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/ticket_dashboard_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/ticket_dashboard_checks.cjs passed; /tmp/PRSG-47-dashboard.txt. Only approved obsolete no-script assertion changed to reject external scripts; all other dashboard coverage unchanged."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead complete five-path review including bounded obsolete script assertion replacement and browser limitations",
+      "status": "passed",
+      "evidence": ["Lead independently reviewed all five paths against45ba7d3 and replayed both exact node commands using existing jsdom26; both passed. Native anchors preserve no-JS navigation, no nested interactive elements, local coalesced glow with cleanup/preference/touch guards, opaque sticky header. Existing test amendment confined to approved external-script guard. Real-browser scroll/hit testing/overflow and deployment remain separate follow-up, not established by DOM tests."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-47-D1",
+      "description": "Focused landing and existing dashboard regressions pass",
+      "check_ids": [
+        "landing",
+        "dashboard"
+      ],
+      "status": "done",
+      "evidence": [
+        "node tests/landing_dashboard_checks.cjs passed with existing jsdom26 runtime; /tmp/PRSG-47-landing.txt. Native links with/without JS, sticky/focus/mobile CSS rules, frame coalescing and clamped coordinates, leave/cancel/blur/touch cleanup, runtime preference changes, reduced motion/coarse pointer and missing media/RAF fallback. DOM/style checks do not measure browser hit testing, scrolling or horizontal overflow.",
+        "node tests/ticket_dashboard_checks.cjs passed; /tmp/PRSG-47-dashboard.txt. Only approved obsolete no-script assertion changed to reject external scripts; all other dashboard coverage unchanged."
+      ]
+    },
+    {
+      "id": "PRSG-47-D2",
+      "description": "Lead independently accepts five-path implementation",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": ["Lead independently accepted full five-path implementation and both passing node replays; browser delivery verification remains separate."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Lead full five-path scope/diff review and independent landing/dashboard DOM replays passed on2026-10-03. Real-browser scrolling/hit-testing/overflow not measured at acceptance; no deployment claim from tests."]
+  }
+}
