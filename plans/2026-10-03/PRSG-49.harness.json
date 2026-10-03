@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-49",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-03",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-03/PRSG-49-sticky-report-section-navigation.md",
+  "objective": "Keep report section slider/navigation sticky beneath dynamically measured main menu",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "1c237063ea09d4fd4e5e3e09f4a8863454df8d56",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/template.html",
+    "tests/report_navigation_checks.cjs",
+    "plans/2026-10-03/PRSG-49-sticky-report-section-navigation.md",
+    "plans/2026-10-03/PRSG-49.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/daily-market-brief/tradingview.js",
+    "artifacts/index.html",
+    "artifacts/tickets/",
+    "connectors/",
+    "ingest/",
+    "skills/",
+    "tests/tradingview_checks.cjs",
+    "tests/daily_report_viewer_checks.cjs"
+  ],
+  "checks": [
+    {
+      "id": "navigation",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/report_navigation_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/report_navigation_checks.cjs passed on 2026-10-03 using Node 26.7.0 and existing isolated jsdom26; transcript /tmp/PRSG-49-navigation.txt. Covers body-level sticky wrapper, identical index/template offset helper, absent template topbar, desktop/mobile measurements, menu collapse before scroll, hidden views, resize/ResizeObserver/render fallback, invalid heights and reduced-motion scrolling. Actual browser stickiness and scroll positioning not measured. Mobile cascade regression first failed against the fixed 150px media override (/tmp/PRSG-49-navigation-mobile-before.txt); after replacing it with the measured variable, focused replay passed. Test recursively inspects all panel scroll-margin declarations including nested media rules, rather than only the first rule."
+      ]
+    },
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/daily_report_viewer_checks.cjs passed; transcript /tmp/PRSG-49-viewer.txt. Existing protected viewer tests unchanged; schema2/3, dates, calendar revisions, confidence and public/private quote safety retained."
+      ]
+    },
+    {
+      "id": "ta",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/tradingview_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/tradingview_checks.cjs passed; transcript /tmp/PRSG-49-ta.txt. Existing protected TA tests unchanged; all50 identities, URL encoding, availability labels, lifecycle, motion and safety replayed. Offline only; no external network or credentials."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead complete scope and browser-limit review",
+      "status": "passed",
+      "evidence": ["Lead full five-path review and independent exact three node replays passed. Mobile fixed offsets corrected to measured variables in both index and template; recursive nested-media regression retained. Shared measured helper, body-level sticky wrapper, hidden-view/menu/resize/render refresh and reduced-motion behavior reviewed. Existing protected tests unchanged. Live scrolling/overlap still separate verification."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-49-D1",
+      "description": "Focused navigation and existing viewer/TA regressions pass",
+      "check_ids": [
+        "navigation",
+        "viewer",
+        "ta"
+      ],
+      "status": "done",
+      "evidence": [
+        "node tests/report_navigation_checks.cjs passed on 2026-10-03 using Node 26.7.0 and existing isolated jsdom26; transcript /tmp/PRSG-49-navigation.txt. Covers body-level sticky wrapper, identical index/template offset helper, absent template topbar, desktop/mobile measurements, menu collapse before scroll, hidden views, resize/ResizeObserver/render fallback, invalid heights and reduced-motion scrolling. Actual browser stickiness and scroll positioning not measured. Mobile cascade regression first failed against the fixed 150px media override (/tmp/PRSG-49-navigation-mobile-before.txt); after replacing it with the measured variable, focused replay passed. Test recursively inspects all panel scroll-margin declarations including nested media rules, rather than only the first rule.",
+        "node tests/daily_report_viewer_checks.cjs passed; transcript /tmp/PRSG-49-viewer.txt. Existing protected viewer tests unchanged; schema2/3, dates, calendar revisions, confidence and public/private quote safety retained.",
+        "node tests/tradingview_checks.cjs passed; transcript /tmp/PRSG-49-ta.txt. Existing protected TA tests unchanged; all50 identities, URL encoding, availability labels, lifecycle, motion and safety replayed. Offline only; no external network or credentials."
+      ]
+    },
+    {
+      "id": "PRSG-49-D2",
+      "description": "Lead independently accepts all five paths",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": ["Lead independently accepted exact five paths after all three exact node replays passed, including corrected nested mobile cascade coverage."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Lead independently accepted five-path implementation and three node replays on2026-10-03. Mobile measured scroll margin applies in both pages. No data/schema/chart/date/schedule changes; real-browser delivery unverified at acceptance."]
+  }
+}
