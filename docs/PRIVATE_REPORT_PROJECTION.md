@@ -99,3 +99,83 @@ performed. Synthetic tests cover cutoff/universe/symbol preservation, missing an
 conflicted points, reference gaps, forecast rejection, provenance allowlisting,
 input immutability, private no-clobber and races, strict optional validation, DOM
 escaping, frozen age, zero volume, nominal sorting exclusion and legacy rendering.
+
+## One-command pre-cutoff collection (PRSG-40)
+
+`scripts/daily-market-brief/run_private_quote_report.py` joins the existing
+collector, selection, projection, validator and private draft writer. It is an
+explicit manual operation, not a schedule or publication bridge. It derives the
+approved 30 US codes from the supplied five-name universe and makes one
+snapshot-only collector invocation. Every 50-row draft retains the 20 unsupported
+MY names and unknown/unrated forecasts. It adds no storage, credential discovery,
+reference-data inference or broker watchlist mutation.
+
+Prepare an accepted schema3 narrative/template whose information `as_of` equals
+the intended future cutoff. Its sources must already be reviewed as compatible
+with that information set; this command does not write or certify the narrative.
+Choose a declared pre-cutoff window and invoke within it:
+
+```sh
+python3 scripts/daily-market-brief/run_private_quote_report.py \
+  --root /absolute/private/store \
+  --template /absolute/input/daily-market-brief/2026-10-04.json \
+  --universe /absolute/input/watchlist-universe-five.json \
+  --credential-directory /absolute/private/credentials \
+  --app-key-name app-key-id \
+  --run-id unique-approved-daily-run \
+  --window-start 2026-10-04T07:55:00+08:00 \
+  --cutoff 2026-10-04T08:00:00+08:00 \
+  --output /absolute/private-drafts/2026-10-04.json
+```
+
+The example times and paths illustrate a future planned invocation; they are not
+an active schedule or a claim the service can deliver at those times. Existing
+store/private credentials must be configured through their separate approved
+workflows. Running with real credentials makes real read-only network requests
+inside the existing worker, subject to entitlement and transport failures.
+The coordinator only passes the locator; it never reads credential values.
+
+Preflight validates the private destination/collision, accepted report/calendar,
+universe/taxonomy/forecast constraints, existing store, locator syntax and unused
+run identifier before calling the collector. An identifier-only read of the
+existing runs table also rejects an old run whose attempts are all post-cutoff;
+it does not bypass quote validation or disclose private data. Supply a globally
+unique run identifier per invocation and do not overlap invocations. Preflight is
+not an atomic run reservation or distributed lock. A competing output creation
+still cannot be overwritten because the final writer is atomic no-clobber.
+
+Current wall time must be within `window_start <= now < cutoff`, checked initially
+and again immediately before collection. Starting at/after cutoff, clock rollback
+or inconsistent template time fails closed; no captures are backdated. Collection
+can finish after cutoff: actual late ingestion remains in private history but is
+excluded from the draft. The worker retains its 20-second deadline/2-second cleanup
+and 300-second admission/accounting budget; filesystem latency is not a hard total
+deadline. The command has no automatic retry, previous-run fallback or guaranteed
+08:00 delivery. Never use new captures to fill a past report's earlier cutoff.
+
+Stdout contains only the private-draft flag, coverage status, expected/selected/
+unselected/conflicted US counts, unsupported MY count and available attempt status
+counts. It never prints prices, provider bodies, credentials or private paths.
+`us-coverage-complete` and exit0 require all 30 US points selected and a successful
+collector outcome. This is **US selected-point coverage**, not verified units,
+freshness, source authentication, MY coverage or complete useful report evidence.
+Any failed/partial/all-missing/unattempted outcome, late ingestion or insufficient
+selection produces an honest private draft with `degraded` and exit1 when storage
+remains safely queryable. Missing coverage is not entitlement proof. Storage,
+integrity, cleanup or clock-order failures stop without writing a draft, with a
+sanitized error and no retry. Actual collector attempt evidence stays in storage.
+
+Lead separately reported that a single SPY probe succeeded while the approved
+30-code batch returned a transport failure/no valid response. That diagnostic
+does not establish provider entitlement or individual symbol coverage. Engineering
+regressions use injected synthetic collection only; no live retry or connector
+scope expansion is performed here.
+
+Focused offline check:
+
+```sh
+python3 -m pytest -q tests/test_daily_quote_report.py tests/test_market_collector.py tests/test_daily_report_projection.py tests/test_private_market_selection.py
+```
+
+The daily workflow's activation and any reviewed public projection remain
+separate gates. Do not copy private drafts wholesale into `artifacts/`.
