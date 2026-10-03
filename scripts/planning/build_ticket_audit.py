@@ -29,10 +29,10 @@ def git(root, *args, optional=False):
 CONTEXT_FIELDS = ('purpose', 'approach', 'choices', 'findings', 'tradeoffs')
 SECTION_NAMES = {
     'purpose': {'why the ticket is created?', 'objective', 'objective and boundary', 'objective and interfaces', 'problem', 'user need'},
-    'approach': {'approach', 'decision', 'scope and decision', 'accepted scope', 'implementation plan'},
-    'choices': {'choices', 'options', 'choices and tradeoffs'},
-    'findings': {'findings', 'research findings', 'decision and research review', 'evidence and limits', 'evidence and limitations', 'limitations', 'engineer handoff evidence'},
-    'tradeoffs': {'tradeoffs', 'choices and tradeoffs', 'scope and non-goals', 'safety and scope', 'frozen scope and handoff'},
+    'approach': {'approach', 'decision', 'scope and decision', 'accepted scope', 'implementation plan', 'approach and tradeoffs', 'approach, choices and tradeoffs', 'approach and safeguards'},
+    'choices': {'choices', 'options', 'choices and tradeoffs', 'approach, choices and tradeoffs', 'approach and tradeoffs'},
+    'findings': {'findings', 'research findings', 'decision and research review', 'evidence and limits', 'evidence and limitations', 'limitations', 'engineer handoff evidence', 'engineer handoff', 'validation', 'limits', 'progress and limitations'},
+    'tradeoffs': {'tradeoffs', 'choices and tradeoffs', 'scope and non-goals', 'safety and scope', 'frozen scope and handoff', 'approach and tradeoffs', 'approach, choices and tradeoffs', 'approach and safeguards', 'non-goals and dependencies'},
 }
 
 

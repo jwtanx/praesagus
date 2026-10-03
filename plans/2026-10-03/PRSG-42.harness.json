@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-42",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "harness",
+      "frontend"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.3
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-03",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-03/PRSG-42-ticket-overview-headings.md",
+  "objective": "Populate ticket overview from recorded combined approach/options/tradeoff headings",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "1939f114d047f77832bf164f5a5dc0b953f1f68e",
+  "allowed_paths": [
+    "scripts/planning/build_ticket_audit.py",
+    "tests/test_ticket_audit.py",
+    "plans/2026-10-03/PRSG-42-ticket-overview-headings.md",
+    "plans/2026-10-03/PRSG-42.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_ticket_audit.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead inspected exact alias extraction, added combined-heading and handoff regression; python3 -m pytest -q tests/test_ticket_audit.py:47 passed in7.26s. Existing explicit override, committed-only history and reference safety retained."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead source-backed extraction and four-path review",
+      "status": "passed",
+      "evidence": [
+        "Lead inspected exact alias extraction, added combined-heading and handoff regression; python3 -m pytest -q tests/test_ticket_audit.py:47 passed in7.26s. Existing explicit override, committed-only history and reference safety retained."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-42-D1",
+      "description": "Combined sections and existing audit regressions pass",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead inspected exact alias extraction, added combined-heading and handoff regression; python3 -m pytest -q tests/test_ticket_audit.py:47 passed in7.26s. Existing explicit override, committed-only history and reference safety retained."
+      ]
+    },
+    {
+      "id": "PRSG-42-D2",
+      "description": "Lead accepts bounded aliases without invented descriptions",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead inspected exact alias extraction, added combined-heading and handoff regression; python3 -m pytest -q tests/test_ticket_audit.py:47 passed in7.26s. Existing explicit override, committed-only history and reference safety retained."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead inspected exact alias extraction, added combined-heading and handoff regression; python3 -m pytest -q tests/test_ticket_audit.py:47 passed in7.26s. Existing explicit override, committed-only history and reference safety retained."
+    ]
+  }
+}

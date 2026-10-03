@@ -247,6 +247,18 @@ def test_unsafe_repository_link(url):
         audit.repository_url(url)
 
 
+@pytest.mark.parametrize('heading', ['Approach and tradeoffs', 'Approach, choices and tradeoffs'])
+def test_combined_delivery_headings_populate_overview(repo, heading):
+    path = write_ticket(repo)
+    md = path.with_name('PRSG-1-fixture.md')
+    md.write_text(md.read_text() + '\n## ' + heading + '\nRecorded method and alternatives.\n\n## Engineer handoff\nRecorded offline result.\n')
+    commit(repo, 'PRSG-1 Record combined decision sections')
+    fields = audit.build_audit(repo)['tickets'][0]['decision_context']['fields']
+    for field in ('approach', 'choices', 'tradeoffs'):
+        assert fields[field]['text'] == ['Recorded method and alternatives.']
+    assert fields['findings']['text'] == ['Recorded offline result.']
+
+
 def test_explicit_decision_context_is_committed_only(repo):
     path = write_ticket(repo)
     data = json.loads(path.read_text())
