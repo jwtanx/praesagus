@@ -1,0 +1,110 @@
+{
+  "as_of": "2026-10-03T08:02:56+08:00",
+  "valid": true,
+  "errors": [],
+  "warnings": [
+    {
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "1023",
+      "horizon_type": "week_end",
+      "forecast_target_date": "2026-10-09",
+      "issuance_count": 2,
+      "warning": "repeated instrument-target forecast vintages are correlated"
+    },
+    {
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "1155",
+      "horizon_type": "week_end",
+      "forecast_target_date": "2026-10-09",
+      "issuance_count": 2,
+      "warning": "repeated instrument-target forecast vintages are correlated"
+    },
+    {
+      "market": "MY",
+      "venue": "Bursa Malaysia",
+      "ticker": "5347",
+      "horizon_type": "week_end",
+      "forecast_target_date": "2026-10-09",
+      "issuance_count": 2,
+      "warning": "repeated instrument-target forecast vintages are correlated"
+    }
+  ],
+  "aggregation_policy": "all issuances, correlated vintages; not independent samples",
+  "summary": {
+    "total": 70,
+    "unique_instrument_targets": 67,
+    "counts": {
+      "scored": 0,
+      "pending": 70,
+      "not_scored": 0,
+      "abstain": 0,
+      "data_unavailable": 0,
+      "invalid": 0
+    },
+    "coverage": {
+      "scored": 0,
+      "mature_eligible": 0,
+      "fraction": null
+    },
+    "direction": {
+      "hits": 0,
+      "denominator": 0,
+      "hit_rate": null
+    },
+    "range": {
+      "hits": 0,
+      "denominator": 0,
+      "hit_rate": null
+    },
+    "brier": {
+      "denominator": 0,
+      "mean": null
+    }
+  },
+  "by_horizon": {
+    "week_end": {
+      "total": 70,
+      "unique_instrument_targets": 67,
+      "counts": {
+        "scored": 0,
+        "pending": 70,
+        "not_scored": 0,
+        "abstain": 0,
+        "data_unavailable": 0,
+        "invalid": 0
+      },
+      "coverage": {
+        "scored": 0,
+        "mature_eligible": 0,
+        "fraction": null
+      },
+      "direction": {
+        "hits": 0,
+        "denominator": 0,
+        "hit_rate": null
+      },
+      "range": {
+        "hits": 0,
+        "denominator": 0,
+        "hit_rate": null
+      },
+      "brier": {
+        "denominator": 0,
+        "mean": null
+      }
+    }
+  },
+  "assumptions": [
+    "Offline review uses supplied source references; it does not verify or fetch prices.",
+    "Target maturity without actual data uses the review timezone calendar date. Scoring requires a supplied aware actual_available_at no later than review as_of.",
+    "Corporate-action adjustment, currency, venue and session consistency require human/provider validation; no exchange calendar engine is used.",
+    "Ranges and forecasts are assumed frozen before outcomes; CSV history is not independently verified.",
+    "Direction scoring covers up/down only; zero return misses. Range bounds are inclusive.",
+    "Brier scoring uses a positive-return outcome and excludes zero returns.",
+    "Coverage is scored / (scored + mature not_scored); invalid and abstention rows are excluded.",
+    "Stored status and derived hit/return cells do not establish outcomes; actual inputs determine maturity and scoring.",
+    "Small or correlated samples do not establish trading skill or guarantee returns."
+  ]
+}

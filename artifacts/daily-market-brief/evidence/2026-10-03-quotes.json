@@ -1,0 +1,55 @@
+{
+  "provider": "web.finance",
+  "retrieved_at": "2026-10-03T08:04:02+08:00",
+  "limitation": "Extracted returned tool fields, not original upstream transport; upstream attribution unknown. No private provider capture. Retrieval timestamp is conservative workflow cutoff; exact call completion timestamp not separately recorded.",
+  "quotes": [
+    {
+      "ticker": "AAPL",
+      "price": 333.69,
+      "currency": "USD",
+      "quote_time": "2026-10-02T23:47:05Z"
+    },
+    {
+      "ticker": "MSFT",
+      "price": 517.53,
+      "currency": "USD",
+      "quote_time": "2026-10-02T23:47:43Z"
+    },
+    {
+      "ticker": "NVDA",
+      "price": 233.95,
+      "currency": "USD",
+      "quote_time": "2026-10-02T23:48:06Z"
+    },
+    {
+      "ticker": "TSLA",
+      "price": 370.59,
+      "currency": "USD",
+      "quote_time": "2026-10-02T23:48:11Z"
+    },
+    {
+      "ticker": "AMZN",
+      "price": 251.52,
+      "currency": "USD",
+      "quote_time": "2026-10-02T23:48:04Z"
+    },
+    {
+      "ticker": "META",
+      "price": 728.08,
+      "currency": "USD",
+      "quote_time": "2026-10-02T23:47:43Z"
+    },
+    {
+      "ticker": "GOOGL",
+      "price": 343.5,
+      "currency": "USD",
+      "quote_time": "2026-10-02T23:46:20Z"
+    },
+    {
+      "ticker": "JPM",
+      "price": 332.38,
+      "currency": "USD",
+      "quote_time": "2026-10-02T23:46:29Z"
+    }
+  ]
+}
