@@ -429,7 +429,15 @@ def test_finite_auxiliary_history_preserves_complete_core_quotes(store,count):
                                  'prev_close_price','volume','turnover','turnover_rate'])
 @pytest.mark.parametrize('bad',[-1,True,None,'invalid'])
 def test_auxiliary_history_never_relaxes_core_field_validation(store,field,bad):
-    attempt=ingest(store,resp=response([snap(lowest_history_price=-0.5,**{field:bad})]))
+    original=response([snap(lowest_history_price=-0.5,**{field:bad})])
+    if field=='prev_close_price' and bad is None:
+        # V2 explicitly treats an optional null previous close as missing; V1 remains strict.
+        from ingest.private_market_store import normalized
+        with pytest.raises(MarketStoreError):normalized(original.body,'snapshot',{'codes':['US.SYN']},version=1)
+        assert ingest(store,resp=original).status=='success'
+        assert store.query('snapshot',ING)[0]['record']['provider_prev_close'] is None
+        return
+    attempt=ingest(store,resp=original)
     assert attempt.status=='failed' and attempt.raw_hash is None
     assert store.query('snapshot',ING)==[] and list(store.raw_dir.iterdir())==[]
 
@@ -444,3 +452,89 @@ def test_auxiliary_history_retains_recursive_finite_and_secret_screening(store,e
     attempt=ingest(store,req=request(headers=headers),resp=response([snap(**extra)]))
     assert attempt.status=='failed' and attempt.raw_hash is None
     assert store.query('snapshot',ING)==[] and list(store.raw_dir.iterdir())==[]
+
+
+def append_frozen_v1_fixture(store,*,version=None):
+    """Build an old append-only record fixture, never modify an existing row."""
+    from ingest.private_market_store import canonical,digest,normalized,aware_ms
+    raw=response([snap(prev_close_price=9.5)]).body
+    raw_hash=digest(raw);store._archive(raw,raw_hash)
+    expected={'provider':'moomoo-rest','code':'US.SYN','quote_time_ms':STAMP,'market_date':'2026-10-02',
+              'price':10.5,'volume':0,'currency':None,'session':None,'adjustment':None,
+              'source_timezone':'UTC','market_timezone':None,'validity':{'equity_valid':True}}
+    identity=canonical(['moomoo-rest','US.SYN',STAMP]);payload=canonical(expected)
+    assert normalized(raw,'snapshot',{'codes':['US.SYN']},version=1)==[(identity,payload,STAMP)]
+    meta={'origin':'synthetic','capture_authenticity':'caller-supplied-unverified','provider':'moomoo-rest',
+          'run_id':'legacy','kind':'snapshot','query':{'codes':['US.SYN']},'observed_at':OBS,'ingested_at':ING,
+          'observed_ms':aware_ms(OBS,True),'ingested_ms':aware_ms(ING,True),'known_ms':aware_ms(ING,True),
+          'raw_hash':raw_hash,'status':'success','reason':None,'missing_codes':[],
+          'unsupported_markets':{'MY':'unattempted-unsupported'},'record_count':1,'rights_status':'unconfirmed',
+          'connector':'moomoo-rest-capture','endpoint':'/api/v1.0/quote/snapshot'}
+    if version is not None:meta['normalization_version']=version
+    aid=digest(canonical(meta).encode());semantic=digest(payload.encode())
+    with store._connection() as db:
+        db.execute('INSERT INTO runs VALUES (?,?)',('legacy','moomoo-rest'))
+        db.execute('INSERT INTO attempts VALUES (?,?,?,?,?)',(aid,'legacy','snapshot',aware_ms(ING,True),canonical(meta)))
+        vid=db.execute('INSERT INTO versions(kind,identity,semantic_hash,revision,payload,source_ms) VALUES (?,?,?,?,?,?)',
+                       ('snapshot',identity,semantic,1,payload,STAMP)).lastrowid
+        db.execute('INSERT INTO observations VALUES (?,?,?)',(aid,vid,0))
+    return aid,semantic,payload
+
+
+def test_frozen_v1_hash_replay_and_v2_append_dedup_without_rewrite(store):
+    from ingest.private_market_store import digest
+    aid,semantic,payload=append_frozen_v1_fixture(store)
+    with store._connection(readonly=True) as db:
+        before=[tuple(row) for row in db.execute('SELECT * FROM versions')]
+        old_attempt=tuple(db.execute('SELECT * FROM attempts WHERE id=?',(aid,)).fetchone())
+    old=store.query('snapshot',ING)[0]
+    assert old['semantic_hash']==semantic==digest(payload.encode())
+    assert 'normalization_version' not in old['record'] and 'provider_prev_close' not in old['record']
+    assert store.select_snapshots('legacy',ING,['US.SYN'])['quotes']['US.SYN']['quote']['prior_close'] is None
+    original=response([snap(prev_close_price=9.5)])
+    fresh=ingest(store,resp=original,run='legacy')
+    assert fresh.added and fresh.attempt_id!=aid
+    assert not ingest(store,resp=original,run='legacy').added
+    with store._connection(readonly=True) as db:
+        assert [tuple(row) for row in db.execute('SELECT * FROM versions WHERE revision=1')]==before
+        assert tuple(db.execute('SELECT * FROM attempts WHERE id=?',(aid,)).fetchone())==old_attempt
+        assert db.execute('PRAGMA user_version').fetchone()[0]==1
+    records=store.query('snapshot',ING)
+    assert len(records)==2 and records[1]['semantic_hash']!=semantic
+    assert records[1]['record']['provider_prev_close']==9.5 and records[1]['record']['normalization_version']==2
+    assert {m.get('normalization_version',1) for m in store.attempts(ING)}=={1,2}
+    # Same source time across differing versions stays conservatively conflicting.
+    assert store.select_snapshots('legacy',ING,['US.SYN'])['quotes']['US.SYN']['quote'] is None
+
+
+@pytest.mark.parametrize('version',[True,False,0,3,'2',2.0])
+def test_replay_rejects_unknown_or_boolean_version_even_with_valid_metadata_hash(store,version):
+    append_frozen_v1_fixture(store,version=version)
+    with pytest.raises(MarketStoreError):store.query('snapshot',ING)
+    with pytest.raises(MarketStoreError):store.select_snapshots('legacy',ING,['US.SYN'])
+
+
+def test_metadata_version_cannot_reinterpret_v1_payload(store):
+    append_frozen_v1_fixture(store,version=2)
+    with pytest.raises(MarketStoreError):store.query('snapshot',ING)
+    with pytest.raises(MarketStoreError):store.select_snapshots('legacy',ING,['US.SYN'])
+
+
+@pytest.mark.parametrize('previous',[None,0,9.5])
+def test_new_snapshot_optional_previous_close(store,previous):
+    assert ingest(store,resp=response([snap(prev_close_price=previous)])).status=='success'
+    row=store.query('snapshot',ING)[0]
+    assert row['record']['provider_prev_close']==previous and row['observation']['normalization_version']==2
+
+
+@pytest.mark.parametrize('previous',[-1,True,'9',float('nan'),float('inf')])
+def test_new_snapshot_invalid_previous_close_rejected(store,previous):
+    attempt=ingest(store,resp=response([snap(prev_close_price=previous)]))
+    assert attempt.status=='failed' and attempt.raw_hash is None and list(store.raw_dir.iterdir())==[]
+
+
+def test_v2_replay_does_not_backdate_new_known_time(store):
+    ingest(store,resp=response([snap(prev_close_price=9)]),observed=OBS,ingested=LATER)
+    assert store.query('snapshot',ING)==[]
+    assert store.select_snapshots('run1',ING,['US.SYN'])['coverage']['selected']['count']==0
+    assert store.query('snapshot',LATER)[0]['record']['provider_prev_close']==9

@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-45",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-03",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-03/PRSG-45-versioned-previous-close-retention.md",
+  "objective": "Retain provider previous close in new snapshots with immutable version-aware replay",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "12fadf2447a7ef657d34f61a1dc2e6a500a95a58",
+  "allowed_paths": [
+    "ingest/private_market_store.py",
+    "tests/test_private_market_store.py",
+    "tests/test_private_market_selection.py",
+    "plans/2026-10-03/PRSG-45-versioned-previous-close-retention.md",
+    "plans/2026-10-03/PRSG-45.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "skills/",
+    "scripts/",
+    "ingest/daily_report_projection.py",
+    "ingest/market_collector.py"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_private_market_store.py",
+        "tests/test_private_market_selection.py",
+        "tests/test_market_collector.py",
+        "tests/test_daily_report_projection.py",
+        "tests/test_daily_quote_report.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Engineer exact declared offline replay: 347 passed in 4.77s on isolated Python3.12.14/cryptography50.0.2; /tmp/PRSG-45-tests.txt. First replay 1 failed/346 passed: existing null previous-close assertion updated for accepted v2 optional-null behavior, with explicit v1 strict rejection retained; /tmp/PRSG-45-tests-first-replay.txt. Python3.11 not replayed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead immutable replay and scope review",
+      "status": "passed",
+      "evidence": ["Lead independently reviewed five paths and reran exact declared suite:347 passed5.60s Python3.12.14; v1 immutable fixture/hash/query/selection and v2 dedup/cutoff/tamper cases accepted. No real private store or historical records changed."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-45-D1",
+      "description": "Versioned previous-close storage and immutable replay regressions pass",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Engineer exact declared offline replay: 347 passed in 4.77s on isolated Python3.12.14/cryptography50.0.2; /tmp/PRSG-45-tests.txt. First replay 1 failed/346 passed: existing null previous-close assertion updated for accepted v2 optional-null behavior, with explicit v1 strict rejection retained; /tmp/PRSG-45-tests-first-replay.txt. Python3.11 not replayed."
+      ]
+    },
+    {
+      "id": "PRSG-45-D2",
+      "description": "Lead independently accepts exact scope",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": ["Lead five-path scope review and independent347-test replay accepted, with no comparability or forecast claim."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Lead reviewed all five paths and independent347tests5.60s; corrected copied module/checklist labels. Oldstore immutable; movementdisplay remains separate."]
+  }
+}

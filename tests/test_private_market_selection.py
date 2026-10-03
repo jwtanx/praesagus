@@ -245,3 +245,23 @@ def test_corrupt_run_provider_rejected(store):
     ingest(store)
     corrupt(store,'runs','UPDATE runs SET provider=?',('other-provider',))
     with pytest.raises(MarketStoreError):select(store)
+
+
+@pytest.mark.parametrize('count',[1,30])
+def test_v2_selection_retains_provider_previous_close_without_comparability(count,store):
+    codes=[f'US.SYN{i}' for i in range(count)]
+    ingest(store,[record(code=code,prev_close_price=9) for code in codes],codes=codes)
+    chosen=select(store,codes=codes)
+    assert chosen['coverage']['selected']['count']==count
+    for entry in chosen['quotes'].values():
+        assert entry['quote']['provider_prev_close']==9 and entry['quote']['normalization_version']==2
+        assert entry['quote']['prior_close'] is None and 'prior_close_unknown' in entry['gap_reasons']
+        assert all(entry['quote'][key] is None for key in ('currency','session','adjustment'))
+        assert 'change' not in entry['quote'] and 'direction' not in entry['quote']
+
+
+def test_missing_previous_close_is_explicit_null_and_changed_previous_close_conflicts(store):
+    ingest(store);assert select(store)['quotes']['US.SYN']['quote']['provider_prev_close'] is None
+    ingest(store,[record(prev_close_price=9)],observed=ING,ingested=ING)
+    result=select(store)
+    assert result['quotes']['US.SYN']['quote'] is None and result['coverage']['conflicted']['count']==1

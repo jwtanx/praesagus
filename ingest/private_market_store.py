@@ -186,7 +186,8 @@ def request_meta(request):
     return 'news', filters, secrets
 
 
-def normalized(raw, kind, request, secrets=()):
+def normalized(raw, kind, request, secrets=(), *, version=2):
+    need(type(version) is int and version in (1,2), 'invalid-response')
     value = decode(raw, secrets)
     need(isinstance(value, dict) and set(value) == {'ret_code', 'ret_msg', 'data'}
          and type(value['ret_code']) is int and value['ret_code'] == 0
@@ -206,6 +207,7 @@ def normalized(raw, kind, request, secrets=()):
                 if key.endswith('_valid'):
                     need(type(item) is bool, 'invalid-response')
                 # Historical/auxiliary prices are not consumed as current quotes.
+                if version==2 and key=='prev_close_price' and item is None:continue
                 if key in ('last_price', 'open_price', 'high_price', 'low_price',
                            'prev_close_price', 'volume', 'turnover', 'turnover_rate'):
                     need(type(item) in (int, float) and math.isfinite(item) and item >= 0, 'invalid-response')
@@ -219,6 +221,8 @@ def normalized(raw, kind, request, secrets=()):
                        'market_date': market_date, 'price': row['last_price'], 'volume': row['volume'],
                        'currency': None, 'session': None, 'adjustment': None, 'source_timezone': 'UTC', 'market_timezone': None,
                        'validity': {k: v for k, v in row.items() if k.endswith('_valid')}}
+            if version==2:
+                payload.update(normalization_version=2,provider_prev_close=row.get('prev_close_price'))
             identity = ['moomoo-rest', code, stamp]
         else:
             key = row.get('news_id');need(text(key) and key not in seen, 'invalid-response');seen.add(key)
@@ -335,6 +339,7 @@ class PrivateMarketStore:
             kind, query, secrets = request_meta(request)
             need(isinstance(response, ReadResponse) and type(response.status) is int
                  and (response.status == 0 or 100 <= response.status <= 599))
+            version=2 if kind=='snapshot' else 1
             records, raw_hash, raw = [], None, None
             reason = None
             if response.status != 200:
@@ -343,7 +348,7 @@ class PrivateMarketStore:
                 valid = False
                 try:
                     need(isinstance(response.body, bytes) and 0 < len(response.body) <= MAX_RAW)
-                    records = normalized(response.body, kind, query, secrets)
+                    records = normalized(response.body, kind, query, secrets, version=version)
                     valid = True
                 except Exception:
                     pass
@@ -360,6 +365,7 @@ class PrivateMarketStore:
                     'raw_hash': raw_hash, 'status': status, 'reason': reason, 'missing_codes': missing,
                     'unsupported_markets': {'MY': 'unattempted-unsupported'}, 'record_count': len(records),
                     'rights_status': 'unconfirmed', 'connector': 'moomoo-rest-capture', 'endpoint': request.path}
+            if kind=='snapshot':meta['normalization_version']=version
             attempt_id = digest(canonical(meta).encode())
             if raw is not None:self._archive(raw, raw_hash)
             with self._connection() as db:
@@ -385,6 +391,9 @@ class PrivateMarketStore:
              and meta['known_ms'] == max(meta['observed_ms'], meta['ingested_ms'])
              and meta['observed_ms'] == aware_ms(meta['observed_at'], True) and meta['ingested_ms'] == aware_ms(meta['ingested_at'], True)
              and meta['run_id'] == row['run_id'] and meta['kind'] == row['kind'], 'database-integrity-failed')
+        version=meta.get('normalization_version',1)
+        need(type(version) is int and version in (1,2)
+             and (meta['kind']=='snapshot' or version==1), 'database-integrity-failed')
         return meta
 
     def attempts(self, cutoff, *, limit=1000):
@@ -413,7 +422,7 @@ class PrivateMarketStore:
                     meta = self._meta({'id': row['aid'], 'run_id': row['run_id'], 'kind': row['akind'], 'known_ms': row['known_ms'], 'metadata': row['metadata']})
                     need(row['semantic_hash'] == digest(row['payload'].encode()), 'database-integrity-failed')
                     record = json.loads(row['payload'])
-                    exact = normalized(self.raw(meta['raw_hash']), kind, meta['query'])
+                    exact = normalized(self.raw(meta['raw_hash']), kind, meta['query'], version=meta.get('normalization_version',1))
                     need(0 <= row['ordinal'] < len(exact) and exact[row['ordinal']] == (row['identity'], row['payload'], row['source_ms']), 'database-integrity-failed')
                     quality = ['availability_unknown'] if kind == 'news' else ['currency_unknown', 'session_unknown', 'adjustment_unknown', 'point_observation_not_bar']
                     if row['source_ms'] is None:quality.append('source_time_unknown')
@@ -464,7 +473,7 @@ class PrivateMarketStore:
                          and meta['connector'] == 'moomoo-rest-capture'
                          and meta['endpoint'] == '/api/v1.0/quote/snapshot', 'database-integrity-failed')
                     requested.update(query['codes'])
-                    records = [] if meta['raw_hash'] is None else normalized(self.raw(meta['raw_hash']), 'snapshot', query)
+                    records = [] if meta['raw_hash'] is None else normalized(self.raw(meta['raw_hash']), 'snapshot', query, version=meta.get('normalization_version',1))
                     count = len(records)
                     status = ('failed' if meta['raw_hash'] is None else 'all-missing' if not count
                               else 'success' if count == len(codes) else 'partial')
