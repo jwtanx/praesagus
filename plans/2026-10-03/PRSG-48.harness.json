@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-48",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-03",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-03/PRSG-48-tradingview-us-my-mapping.md",
+  "objective": "Correct all50 reviewed US/MY TradingView identities with honest hosted availability and safe external fallback",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c651ca72cd80fd0755377b4e64b6b4c86cc2cddc",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/tradingview.js",
+    "tests/tradingview_checks.cjs",
+    "plans/2026-10-03/PRSG-48-tradingview-us-my-mapping.md",
+    "plans/2026-10-03/PRSG-48.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/template.html",
+    "artifacts/index.html",
+    "artifacts/tickets/",
+    "connectors/",
+    "ingest/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "ta",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/tradingview_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/tradingview_checks.cjs passed with existing isolated jsdom26 runtime; /tmp/PRSG-48-ta.txt. All30US/20MY current universe identities checked against the frozen research allowlist; raw widget JSON and once-encoded external URLs, F&N/hyphen, unknown/prototype/cross-market search fallback and explicit unverified availability covered. Existing lifecycle/race/motion/held-contact/safety and embedded daily viewer regressions retained."
+      ]
+    },
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/daily_report_viewer_checks.cjs passed; /tmp/PRSG-48-viewer.txt. No live widget/network/provider credentials used; these offline checks do not prove TradingView symbol-page availability, hosted entitlement, quote availability or data delay."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead full four-path review and widget limitations",
+      "status": "passed",
+      "evidence": ["Lead independently reviewed all four changed/new paths againstc651ca7 and replayed exact node TradingView and daily viewer commands using existing jsdom26; both passed. All50 frozen identities match accepted allowlist; own-property lookup, literal widget JSON, once-encoded external URLs and generic unknown fallback correct. Motion, data and lifecycle unchanged. Live widget/data entitlement remains unverified, separately reviewed after deployment."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-48-D1",
+      "description": "All50 identity/encoding and existing TA/viewer regressions pass",
+      "check_ids": [
+        "ta",
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "node tests/tradingview_checks.cjs passed with existing isolated jsdom26 runtime; /tmp/PRSG-48-ta.txt. All30US/20MY current universe identities checked against the frozen research allowlist; raw widget JSON and once-encoded external URLs, F&N/hyphen, unknown/prototype/cross-market search fallback and explicit unverified availability covered. Existing lifecycle/race/motion/held-contact/safety and embedded daily viewer regressions retained.",
+        "node tests/daily_report_viewer_checks.cjs passed; /tmp/PRSG-48-viewer.txt. No live widget/network/provider credentials used; these offline checks do not prove TradingView symbol-page availability, hosted entitlement, quote availability or data delay."
+      ]
+    },
+    {
+      "id": "PRSG-48-D2",
+      "description": "Lead independently accepts exact scope and limitations",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": ["Lead independent four-path diff review and both exact node replays passed; accepted with explicit live provider availability limitations."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": ["Lead independently accepted all four paths after both exact node replays passed on2026-10-03; no report/data/motion/credential/schedule changes. Provider widget data and live delivery not inferred from tests."]
+  }
+}

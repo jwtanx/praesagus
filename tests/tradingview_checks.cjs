@@ -28,8 +28,8 @@ async function directionsMappingAndLifecycle(){
   const aapl=[...t.$('#ta-chips').children].find(b=>b.textContent.includes('AAPL'));aapl.click();assert.equal(JSON.parse(t.$('#ta-chart script').textContent).symbol,'NASDAQ:AAPL');assert.equal(script.isConnected,false);
   const current=t.$('#ta-chart script');script.onerror();assert.equal(current.isConnected,true,'Stale error cannot clear current widget');
   const frame=t.w.document.createElement('iframe');current.parentNode.querySelector('.tradingview-widget-container__widget').append(frame);await settle();assert.match(frame.title,/AAPL/);assert.match(t.$('#ta-status').textContent,/Data availability\/delay/);assert.equal(t.timers.size,0);
-  const my=[...t.$('#ta-chips').children].find(b=>b.textContent.includes('0820EA'));my.click();assert.equal(t.$('#ta-chart').children.length,0);assert.match(t.$('#ta-status').textContent,/Bursa embed coverage is not verified/);assert.match(t.$('#ta-external').href,/MYX%3A0820EA/);
-  const gs=[...t.$('#ta-chips').children].find(b=>b.textContent==='📉 GS'||b.textContent==='❔ GS'||b.textContent==='📈 GS');gs.click();assert.match(t.$('#ta-status').textContent,/No curated US exchange mapping/);assert.equal(t.$('#ta-external').href,'https://www.tradingview.com/symbols/');
+  const my=[...t.$('#ta-chips').children].find(b=>b.textContent.includes('0820EA'));my.click();assert.equal(JSON.parse(t.$('#ta-chart script').textContent).symbol,'MYX:F4GBM-EA');assert.match(t.$('#ta-status').textContent,/availability is unverified/);assert.match(t.$('#ta-external').href,/MYX%3AF4GBM-EA/);
+  const gs=[...t.$('#ta-chips').children].find(b=>b.textContent==='📉 GS'||b.textContent==='❔ GS'||b.textContent==='📈 GS');gs.click();assert.equal(JSON.parse(t.$('#ta-chart script').textContent).symbol,'NYSE:GS');assert.match(t.$('#ta-external').href,/NYSE%3AGS/);
   aapl.click();const failed=t.$('#ta-chart script');failed.onerror();assert.equal(t.$('#ta-chart').children.length,0);assert.match(t.$('#ta-status').textContent,/unavailable or blocked/);assert.equal(t.$('#ta-external').hidden,false);
   aapl.click();const timeout=[...t.timers.values()][0];timeout();assert.match(t.$('#ta-status').textContent,/unavailable or blocked/);assert.equal(t.timers.size,0);
   aapl.click();t.$('.nav-link[data-view="brief"]').click();assert.equal(t.$('#ta-chart').children.length,0);assert.equal(t.timers.size,0);t.$('.nav-link[data-view="technical"]').click();assert.equal(t.$('#ta-chart script')!==null,true);
@@ -103,4 +103,48 @@ async function heldContacts(){
   event(chips,'pointerdown',{pointerId:9});event(t.w,'blur');held();event(t.w,'focus');assert.equal(t.frames.size,1,'window blur clears contacts if release cannot be delivered');
   event(chips,'touchstart',{changedTouches:[{identifier:9}]});t.w.eval('ta.destroy()');assert.equal(t.idleTimers.size,0);event(t.w.document,'touchend',{changedTouches:[{identifier:9}]});event(t.w.document,'pointerup',{pointerId:9});t.expireIdle();assert.equal(t.frames.size,0);assert.equal(t.idleTimers.size,0,'destroy removes global release listeners');assert.equal(t.errors.length,0);t.w.close();
 }
-(async()=>{await directionsMappingAndLifecycle();await dateRacesAndErrors();await keyboardSafetyAndMotion();await deterministicTickerMotion();await heldContacts();const replay=spawnSync(process.execPath,[path.join(root,'tests/daily_report_viewer_checks.cjs')],{cwd:root,encoding:'utf8'});assert.equal(replay.status,0,replay.stdout+replay.stderr);console.log('TradingView offline DOM checks passed: mapping, dates/races, directions, attribution, error/timeout cleanup, compact labels/44px targets, smooth reversible motion, pause/hover/focus/manual/visibility/reduced-motion guards, lifecycle cleanup, safety and existing daily viewer replay. No external scripts/network loaded.');})().catch(error=>{console.error(error);process.exitCode=1});
+async function allReviewedIdentitiesAndEncoding(){
+  // Expected aliases from the accepted PRSG-48 research contract, independent of implementation lookup.
+  const expectedUS={SPY:'AMEX:SPY',IWM:'AMEX:IWM',QQQ:'NASDAQ:QQQ',AAPL:'NASDAQ:AAPL',MSFT:'NASDAQ:MSFT',
+    GOOGL:'NASDAQ:GOOGL',NVDA:'NASDAQ:NVDA',AVGO:'NASDAQ:AVGO',WMT:'NASDAQ:WMT',TSLA:'NASDAQ:TSLA',LIN:'NASDAQ:LIN',
+    JPM:'NYSE:JPM',GS:'NYSE:GS',V:'NYSE:V',TSM:'NYSE:TSM',LLY:'NYSE:LLY',JNJ:'NYSE:JNJ',ABT:'NYSE:ABT',PG:'NYSE:PG',
+    KO:'NYSE:KO',HD:'NYSE:HD',MCD:'NYSE:MCD',XOM:'NYSE:XOM',COP:'NYSE:COP',SLB:'NYSE:SLB',CAT:'NYSE:CAT',GE:'NYSE:GE',UPS:'NYSE:UPS',FCX:'NYSE:FCX',NEM:'NYSE:NEM'};
+  const expectedMY={'0820EA':'MYX:F4GBM-EA','0800EA':'MYX:ABFMY1','1155':'MYX:MAYBANK','1023':'MYX:CIMB',
+    '0277':'MYX:CLOUDPT','0259':'MYX:SNS','0166':'MYX:INARI','0097':'MYX:VITROX','5225':'MYX:IHH','5878':'MYX:KPJ',
+    '4707':'MYX:NESTLE','3689':'MYX:F&N','5296':'MYX:MRDIY','4715':'MYX:GENM','6033':'MYX:PETGAS','5681':'MYX:PETDAG',
+    '5246':'MYX:WPRTS','3816':'MYX:MISC','1961':'MYX:IOICORP','5285':'MYX:SDG'};
+  const universe=JSON.parse(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/watchlist-universe-five.json'),'utf8'));
+  const rows=universe.groups.flatMap(group=>group.instruments);
+  assert.equal(rows.length,50);assert.equal(Object.keys(expectedUS).length,30);assert.equal(Object.keys(expectedMY).length,20);
+  const t=mount();await settle();t.$('.nav-link[data-view="brief"]').click();
+  const controller=t.w.PraesagusTA.create(t.$('#technical-view'));controller.show(true);
+  controller.update({metadata:{date:'2026-10-03'},forecasts:rows});assert.equal(t.$('#ta-chips').children.length,50);
+  for(const [index,row] of rows.entries()){
+    const expected=(row.market==='US'?expectedUS:expectedMY)[row.ticker];assert.ok(expected,`Accepted mapping for ${row.market} ${row.ticker}`);
+    assert.equal(t.w.PraesagusTA.symbol(row),expected);
+    const url=t.w.PraesagusTA.external(row);assert.equal(url,'https://www.tradingview.com/chart/?symbol='+encodeURIComponent(expected));
+    assert.equal(new URL(url).searchParams.get('symbol'),expected);assert.equal([...new URL(url).searchParams].length,1);
+    t.$('#ta-chips').children[index].click();const script=t.$('#ta-chart script');assert.ok(script);
+    assert.equal(JSON.parse(script.textContent).symbol,expected);assert.equal(t.$('#ta-external').href,url);
+    assert.equal(t.$('#ta-external').hidden,false);assert.match(t.$('#ta-status').textContent,/availability is unverified/);
+    assert.ok(t.$('#ta-external').textContent.includes(expected));assert.ok(t.$('#ta-chart .tradingview-widget-copyright a'));
+  }
+  const fn=rows.findIndex(row=>row.market==='MY'&&row.ticker==='3689');t.$('#ta-chips').children[fn].click();
+  assert.match(t.$('#ta-chart script').textContent,/MYX:F&N/);assert.match(t.$('#ta-external').href,/symbol=MYX%3AF%26N$/);
+  assert.doesNotMatch(t.$('#ta-external').href,/%253A|%2526/);
+  const script=t.$('#ta-chart script'),frame=t.w.document.createElement('iframe');script.parentNode.querySelector('.tradingview-widget-container__widget').append(frame);await settle();
+  assert.match(t.$('#ta-status').textContent,/Data availability\/delay remains unverified/);assert.equal(t.$('#ta-external').hidden,false);
+  script.onerror();assert.equal(t.$('#ta-chart').children.length,0);assert.equal(t.$('#ta-external').hidden,false);
+  for(const row of [{market:'US',ticker:'UNKNOWN'},{market:'US',ticker:'__proto__'},{market:'MY',ticker:'9999'},
+                    {market:'MY',ticker:'9999EA'},{market:'MY',ticker:'constructor'},{market:'MY',ticker:'F&N'},
+                    {market:'MY',ticker:'SPY'},{market:'US',ticker:'3689'},{market:'UK',ticker:'AAPL'},null]){
+    assert.equal(t.w.PraesagusTA.symbol(row),null);assert.equal(t.w.PraesagusTA.external(row),'https://www.tradingview.com/symbols/');
+  }
+  for(const row of [{market:'US',ticker:'UNKNOWN'},{market:'MY',ticker:'9999'}]){
+    controller.update({forecasts:[row]});assert.equal(t.$('#ta-chart').children.length,0);
+    assert.equal(t.$('#ta-external').href,'https://www.tradingview.com/symbols/');assert.equal(t.$('#ta-external').hidden,false);
+    assert.match(t.$('#ta-status').textContent,/No curated/);
+  }
+  controller.destroy();assert.equal(t.errors.length,0);t.dom.window.close();
+}
+(async()=>{await allReviewedIdentitiesAndEncoding();await directionsMappingAndLifecycle();await dateRacesAndErrors();await keyboardSafetyAndMotion();await deterministicTickerMotion();await heldContacts();const replay=spawnSync(process.execPath,[path.join(root,'tests/daily_report_viewer_checks.cjs')],{cwd:root,encoding:'utf8'});assert.equal(replay.status,0,replay.stdout+replay.stderr);console.log('TradingView offline DOM checks passed: all 50 reviewed identities, literal F&N/hyphen widget symbols, once-encoded URLs, unknown search fallback, unverified hosted availability, dates/races, directions, attribution, error/timeout cleanup, compact labels/44px targets, smooth reversible motion, pause/hover/focus/manual/visibility/reduced-motion guards, lifecycle cleanup, safety and existing daily viewer replay. No external scripts/network loaded.');})().catch(error=>{console.error(error);process.exitCode=1});
