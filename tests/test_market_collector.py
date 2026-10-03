@@ -140,7 +140,11 @@ def test_worker_failure_sanitization(source):
         credentials=fail if source=='credentials' else lambda _:('synthetic-api-key',lambda _:b'synthetic-signature'),
         transport_factory=fail if source=='factory' else lambda:transport, clock=lambda:OBS)
     parsed = c.parse_reply(raw, JOB)
-    assert parsed.failure in c.FAILURES and parsed.response.body == b''
+    expected={'credentials':'credentials','transport':'transport','timeout':'timeout',
+              'factory':'worker-failed','secret':'invalid-response','malformed':'invalid-response'}
+    assert parsed.failure == expected[source] and parsed.response.body == b''
+    assert parsed.response.status == (200 if source in ('secret','malformed') else 0)
+    assert parsed.observed_at == OBS
     assert b'private-exception' not in raw and b'synthetic-api-key' not in raw
 
 
@@ -384,3 +388,52 @@ def test_parent_shared_policy_screening():
     rows=json.loads(response().body)['data']['snapshot_list']
     rows[0]['extra']={'authorization':'synthetic-private'}
     with pytest.raises(ValueError):c.parse_reply(c.encode_reply(JOB,response(rows),OBS),JOB)
+
+
+def batch_job_and_response(count):
+    job={'kind':'snapshot','codes':[f'US.SYN{i}' for i in range(count)]}
+    rows=json.loads(response().body)['data']['snapshot_list']
+    return job,response([{**rows[0],'code':code} for code in job['codes']])
+
+
+@pytest.mark.parametrize('count',[1,30])
+def test_valid_one_and_thirty_receive_exact_http200(count):
+    job,resp=batch_job_and_response(count)
+    raw=c.execute_job(job,LOCATOR,credentials=lambda _:('synthetic-api-key',lambda _:b'synthetic-signature'),
+                      transport_factory=lambda:lambda _:resp,clock=lambda:OBS)
+    parsed=c.parse_reply(raw,job)
+    assert parsed.failure is None and parsed.response.status==200 and parsed.response.body==resp.body
+    assert parsed.observed_at==OBS
+
+
+@pytest.mark.parametrize('bad',['null-volume','bool-price','negative-volume','malformed','duplicate','provider','secret'])
+def test_received_bad_batch_http200_retained_without_body(bad,store):
+    job,resp=batch_job_and_response(30);data=json.loads(resp.body)
+    if bad=='null-volume':data['data']['snapshot_list'][-1]['volume']=None
+    elif bad=='bool-price':data['data']['snapshot_list'][-1]['last_price']=True
+    elif bad=='negative-volume':data['data']['snapshot_list'][-1]['volume']=-1
+    elif bad=='provider':data.update(ret_code=-1,ret_msg='synthetic-private-provider-error')
+    elif bad=='secret':data['data']['snapshot_list'][-1]['name']='synthetic-api-key'
+    body=json.dumps(data).encode()
+    if bad=='malformed':body=b'synthetic-private-provider-error'
+    elif bad=='duplicate':body=b'{"ret_code":0,"ret_code":1}'
+    times=iter([OBS])
+    raw=c.execute_job(job,LOCATOR,credentials=lambda _:('synthetic-api-key',lambda _:b'synthetic-signature'),
+                      transport_factory=lambda:lambda _:ReadResponse(200,body,{'private-header':'private-value'}),
+                      clock=lambda:next(times))
+    parsed=c.parse_reply(raw,job)
+    assert parsed.failure=='invalid-response' and parsed.response.status==200
+    assert parsed.response.body==b'' and parsed.observed_at==OBS
+    for secret in (b'synthetic-api-key',b'synthetic-private-provider-error',b'private-value',b'private-header'):
+        assert secret not in raw
+    attempt=store.ingest(c.job_request(job),parsed.response,run_id='synthetic',observed_at=OBS,ingested_at=ING,origin='synthetic')
+    assert attempt.status=='failed' and attempt.raw_hash is None and list(store.raw_dir.iterdir())==[]
+    assert store.attempts(ING)[0]['reason']=='invalid-response' and store.query('snapshot',ING)==[]
+
+
+@pytest.mark.parametrize('invalid_status',[True,0,600])
+def test_unvalidated_response_status_not_preserved(invalid_status):
+    raw=c.execute_job(JOB,LOCATOR,credentials=lambda _:('synthetic-api-key',lambda _:b'synthetic-signature'),
+                      transport_factory=lambda:lambda _:ReadResponse(invalid_status,b'private-provider-error'),clock=lambda:OBS)
+    result=c.parse_reply(raw,JOB)
+    assert result.failure=='transport' and result.response.status==0 and result.response.body==b''

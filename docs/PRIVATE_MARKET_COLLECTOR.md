@@ -99,7 +99,12 @@ successful empty news responses are coverage states, not promises of completenes
 Worker/credential/deadline failures are stored as zero-status empty-body transport
 attempts with actual failure observation/ingestion times and no raw evidence.
 HTTP failures retain only HTTP status and no provider body. Invalid successful
-responses are screened before IPC and do not archive raw bytes. The existing
+responses are screened before IPC and do not archive raw bytes. A received HTTP
+200 response rejected by screening retains HTTP 200 and its actual receipt time
+with the controlled `invalid-response` category and an empty body. A genuine
+transport exception before receipt remains status zero with `transport`; rejected
+rows are never salvaged. This classification does not establish the cause of a
+live batch failure. The existing
 store schema collapses failure reasons; the CLI outcome preserves bounded category
 detail. Storage failures stop collection and cannot be reported as persisted
 attempts. Caller-declared `trusted-capture` remains unauthenticated provenance.

@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-41",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "connectors",
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-03",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-03/PRSG-41-classify-rejected-quote-response.md",
+  "objective": "Distinguish received HTTP200 rejected data from true transport failure without emitting rejected bodies",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6d8369648e01083083317ac90faef453f1d204fb",
+  "allowed_paths": [
+    "ingest/market_collector.py",
+    "tests/test_market_collector.py",
+    "docs/PRIVATE_MARKET_COLLECTOR.md",
+    "plans/2026-10-03/PRSG-41-classify-rejected-quote-response.md",
+    "plans/2026-10-03/PRSG-41.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "artifacts/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_market_collector.py",
+        "tests/test_private_market_store.py",
+        "tests/test_moomoo_rest.py",
+        "tests/test_moomoo_rest_live.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Engineer offline replay: 355 passed in 2.27s; exact declared argv, repository cwd, isolated Python 3.12.14 / cryptography 50.0.2. Transcript /tmp/PRSG-41-tests.txt; no live calls. Python 3.11 not replayed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead scope and failure sanitization review",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed full five-path diff and independently replayed exact suite:355 passed in2.27s on existingPython3.12.14/cryptography50.0.2. Rejected200 retains status/time with empty body; actual transport stays0. Strict validation and no raw leakage preserved. Livebatchrootcause stillunverified."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-41-D1",
+      "description": "Failure distinction and existing regressions pass",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Engineer offline replay: 355 passed in 2.27s; exact declared argv, repository cwd, isolated Python 3.12.14 / cryptography 50.0.2. Transcript /tmp/PRSG-41-tests.txt; no live calls. Python 3.11 not replayed."
+      ]
+    },
+    {
+      "id": "PRSG-41-D2",
+      "description": "Lead independently accepts exact scope",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed full five-path diff and independently replayed exact suite:355 passed in2.27s on existingPython3.12.14/cryptography50.0.2. Rejected200 retains status/time with empty body; actual transport stays0. Strict validation and no raw leakage preserved. Livebatchrootcause stillunverified."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead reviewed full five-path diff and independently replayed exact suite:355 passed in2.27s on existingPython3.12.14/cryptography50.0.2. Rejected200 retains status/time with empty body; actual transport stays0. Strict validation and no raw leakage preserved. Livebatchrootcause stillunverified."
+    ]
+  }
+}

@@ -169,17 +169,25 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
     captured = None
     observed = None
     failure = None
+    screening_rejected = False
     try:key, signer = credentials(locator)
     except Exception:failure = 'credentials'
     if failure:
         return encode_reply(job, ReadResponse(0, b''), clock(), failure)
     def capture(request):
-        nonlocal captured, observed
+        nonlocal captured, observed, screening_rejected
         response = transport(request)
+        require(isinstance(response, ReadResponse) and type(response.status) is int
+                and 100 <= response.status <= 599)
         observed = clock();parse_aware(observed)
+        captured = ReadResponse(response.status, b'')
         if response.status == 200:
             kind, query, secrets = request_meta(request)
-            normalized(response.body, kind, query, (*secrets, key, locator['directory']))
+            try:
+                normalized(response.body, kind, query, (*secrets, key, locator['directory']))
+            except Exception:
+                screening_rejected = True
+                raise
         captured = response
         return response
     try:
@@ -193,6 +201,7 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
                    'http-failed':'http-failed', 'malformed-response':'invalid-response',
                    'provider-failed':'invalid-response'}.get(error.kind, 'transport')
     except Exception:failure = 'worker-failed'
+    if screening_rejected:failure = 'invalid-response'
     if captured is None:return encode_reply(job, ReadResponse(0, b''), clock(), failure or 'worker-failed')
     if failure:
         # The exact body is deliberately not emitted when shape/core validation fails.
