@@ -18,8 +18,14 @@ Propose how Consultant reviews candidate skill corrections and how Lead/human ac
 
 ## When it's considered done
 
-- [ ] PRSG-24-D1: Sourced findings and proposed protocol independently reviewed by Lead.
+- [x] PRSG-24-D1: Sourced findings and proposed protocol independently reviewed by Lead.
 
 ## Progress
 
 2026-10-01 MYT: Consultant prepared docs/research/PRSG-24-mover-catalyst-protocol.md with primary-source links, proposed parameters/schema, eight explicitly synthetic cases, leakage-controlled replay and a human-reviewed skill-candidate loop. Moomoo reference retrieval timed out; Bursa calendar verification and data rights remain prerequisites. Independent Lead review remains pending; no implemented feature or measured improvement.
+
+## Independent acceptance — 2026-10-05 MYT
+
+2026-10-05MYT Lead independent documentation review plus Trader specialist review: all8synthetic arithmetic/evidence-separation cases reviewed manually, not executed. Session/action vintage, cutoff-versus-observation, grouped interval purge, abstention/cost/tie semantics and rights/calendar gaps retained as prepilot freezes. Original Consultant ownership preserved. Documentation accepted only; no thresholds/model/policy adoption, pilot implementation, accuracy or trade approval.
+
+Trader financial review retained privately; current specialist review does not rewrite historical Consultant ownership. All future implementation requires separately frozen scope/checks and PRSG-23 rights/coverage acceptance. Documentation completion does not resolve pilot prerequisites.
