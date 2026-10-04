@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-54",
+  "tags": {
+    "type": "skill",
+    "modules": [
+      "skills"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-54-standing-lead-recovery.md",
+  "objective": "Record human standing Lead backup and recovery authorization without bypassing tool confirmation",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "20a5c5c35eddb3255464614757ba14155809f160",
+  "allowed_paths": [
+    "skills/lead/SKILL.md",
+    "plans/2026-10-05/PRSG-54-standing-lead-recovery.md",
+    "plans/2026-10-05/PRSG-54.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "artifacts/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "validation",
+      "kind": "manual",
+      "description": "Skill metadata, reference review and resource regressions",
+      "status": "passed",
+      "evidence": [
+        "quick_validate skills/lead passed; pytest tests/test_lead_status.py84passed; relative workflow/status references exist"
+      ]
+    },
+    {
+      "id": "behavior",
+      "kind": "manual",
+      "description": "Human-reviewed policy and real recovery replay",
+      "status": "passed",
+      "evidence": [
+        "Human explicitly requested standing authorization; supported safe readings and exact existing schedule updates verified ACTIVE via TOML; expired card not recreated, specialist schedules untouched"
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-54-D1",
+      "description": "Metadata/reference and resource checks",
+      "check_ids": [
+        "validation"
+      ],
+      "status": "done",
+      "evidence": [
+        "quick_validate skills/lead passed; pytest tests/test_lead_status.py84passed; relative workflow/status references exist"
+      ]
+    },
+    {
+      "id": "PRSG-54-D2",
+      "description": "Behavioral recovery and human review",
+      "check_ids": [
+        "behavior"
+      ],
+      "status": "done",
+      "evidence": [
+        "Human explicitly requested standing authorization; supported safe readings and exact existing schedule updates verified ACTIVE via TOML; expired card not recreated, specialist schedules untouched"
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Scoped skill update matches explicit human policy review; tool approval limitation retained"
+    ]
+  }
+}

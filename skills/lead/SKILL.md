@@ -4,7 +4,7 @@ description: Lead-only Praesagus backlog coordination, resource checks, schedule
 license: MIT
 metadata:
   author: praesagus
-  version: "1.5"
+  version: "1.6"
 ---
 
 # Lead control
@@ -43,6 +43,12 @@ The 06:00 companion is a daily project report, not another delegation run. Repor
 
 ## Checkpoint and five-hour reset
 
+### Standing backup and recovery authorization (2026-10-05)
+
+The human authorizes future Lead-owned checkpoint, backup, pause/removal, and safe restoration/recovery without repeat permission. Apply the resource, ownership, original-status and uniqueness checks below. This includes recovery from battery or usage stops; restore only after fresh safe readings and preserve unrelated schedules and human pauses. An explicit human resume may recover directly when an earlier wake anchor has passed; record that wake as expired instead of replaying it.
+
+Create an exact one-time reset wake automatically when the automation tool supports it. Standing authorization cannot bypass a tool-enforced confirmation: if anchored creation requires a suggestion/card, submit the exact suggestion once, record approval pending and report that limitation without requesting redundant permission. Never claim the card is active, approximate the anchor with a recurring rule, or create duplicate wakes. A later human approval/resume authorizes proceeding with supported actions after fresh safety checks.
+
 ### Weekly window safeguard (human approved 2026-10-02)
 
 Read both the five-hour and weekly windows from the same supported usage-limit response. Weekly means the reported seven-day window (10080 minutes), not an inferred balance or the user's earlier percentage. `scripts/status.py` evaluates both windows independently: known low remaining survives an unknown reset, but recovery stays blocked. Legacy flat input supplies five-hour only; weekly remains unknown and cannot yield ready. Inspect blockers even with a checkpoint action; unknown metadata stops new work. Only `recovery_status=ready` provides a candidate `recovery_epoch`, calculated as ceil(latest constraining reset)+120; it does not create a schedule. Other exhausted account buckets still override continuation.
@@ -61,7 +67,7 @@ At battery <=8%: checkpoint first, then inventory Lead-owned schedules only. Inc
 
 Before deleting anything, use apply_patch to write `/Users/jwtan/.codex/lead-state/lead-schedules-backup.md` with full restorable configuration (ID, name, kind, target, prompt, rule/timezone, status, notification policy and any model/project/execution fields), backup time, reason, checksum and per-entry removal/restoration progress. Read back and validate every entry. Append/merge an existing unfinished backup; never overwrite it. Then remove the exact confirmed Lead schedules using automation_update delete, record success/failure immediately. Backup before deletion; if save/readback fails, delete nothing. No automatic restore while battery-low. Removal is recoverable by recreating saved configurations, though IDs may change.
 
-On human `restore the schedule`, `/lead restore`, or bare `/lead` with a saved backup: check battery/usage first. If battery is <=8%, usage <=5%, another account limit is exhausted, or either reading is unknown, retain the backup and stop restoration; ask the human to charge/wait/recheck. Otherwise verify saved ownership/config integrity, view any surviving schedules and reconcile recorded new IDs. Recreate only removed recurring schedules with original settings/status; paused stays paused. Expired one-time wakes are recorded skipped, not replayed. Preserve future one-time anchors only if exact scheduling is supported. Record each new ID before the next operation; if a crash left ambiguous progress, inventory/match before retry, never blindly duplicate. Stop on partial failure and retain backup. Refresh registry. Read back all restored configs before deleting the exact temporary backup via apply_patch; keep context and a small restoration receipt. Tell the human which schedules were removed/restored/skipped and whether confirmation is still required.
+On a recovery check under standing authorization, human `restore the schedule`, `/lead restore`, or bare `/lead` with a saved backup: check battery/usage first. If battery is <=8%, usage <=5%, another account limit is exhausted, or either reading is unknown, retain the backup and stop restoration; report the resource blocker when actionable. Otherwise verify saved ownership/config integrity, view any surviving schedules and reconcile recorded new IDs. Recreate only removed recurring schedules with original settings/status; paused stays paused. Expired one-time wakes are recorded skipped, not replayed. Preserve future one-time anchors only if exact scheduling is supported. Record each new ID before the next operation; if a crash left ambiguous progress, inventory/match before retry, never blindly duplicate. Stop on partial failure and retain backup. Refresh registry. Read back all restored configs before deleting the exact temporary backup via apply_patch; keep context and a small restoration receipt. Tell the human which schedules were removed/restored/skipped and whether tool-enforced confirmation is still required.
 
 ## Evidence boundaries
 
