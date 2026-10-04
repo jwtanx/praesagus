@@ -62,3 +62,9 @@ Lead decisions: approve this collection boundary, choose authorized provider/sou
 ## Validation and evidence limits
 
 Public metadata retrieval timestamps: PyPI around12:19:31UTC; GitHub release/security/activity around12:20:31UTC; HF checkpoint API subsequently on1October. Most documentation is mutable with unknown publication date. Specific release dates/revisions are stated above. Exact full dependency resolution, security scan, wheel hashes, runtime memory/latency, provider entitlements/fees and account quotas remain untested. Only ticket metadata/schema validation was performed; independent findings/acceptance review belongs to Lead. Researcher wrote only PRSG-23's three accepted files; no PRSG-21/22/24, code or skills changes.
+
+## Lead review — 2026-10-05 MYT
+
+Documentation accepted after independent Lead reading and Engineer compatibility/source-gap review. Historical Researcher authorship retained. Release/activity/license/checkpoint figures above are reported October1 snapshots; this review neither newly reproduces them nor accepts any pin as installed, secure or final. Reverify exact artifacts, dependencies/advisories and rights when selecting a future environment. No measured performance or account entitlement established.
+
+The collector/SQLite proposal above remains an alternative, not an implementation assignment. Current smaller next experiment is a separately frozen deterministic scan of synthetic or already-authorized immutable LOCAL inputs, following PRSG-24 session/availability/action/volume/group/purge/label/scoring gates. This review does not authorize that implementation, live collection, paid access, model downloads, skill changes or public data redistribution. PRSG-23 documentation completion does not clear the US/MY rights, endpoint/adjustment/calendar/language coverage, environment or evaluation prerequisites.

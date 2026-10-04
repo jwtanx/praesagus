@@ -17,8 +17,12 @@ Write docs/research/PRSG-23-library-data-reuse.md only; may update this ticket's
 
 ## When it's considered done
 
-- [ ] PRSG-23-D1: Sourced findings and proposed protocol independently reviewed by Lead.
+- [x] PRSG-23-D1: Sourced findings and proposed protocol independently reviewed by Lead.
 
 ## Progress
 
 Researcher delivered [the sourced audit](../../docs/research/PRSG-23-library-data-reuse.md) on 1 October MYT. Preferred baseline: supported scikit-learn 1.9.1; SetFit 1.2.0 in an isolated environment because its Sentence Transformers requirement conflicts with repository 2.x; Laya 0.3.22 experimental only. Current releases, public advisory responses, checkpoint licenses/revisions, calendars and source quotas reviewed; public advisory absence does not prove security. US/MY Moomoo entitlement, historical completeness, retention/redistribution rights and actual dependency resolution remain gates. Proposed private immutable raw batches + SQLite collector; source timestamp/revision limitations in existing collectors recorded. No installation, model download, provider login, paid query, training, benchmark, code/skill edit or commit/push. Findings and independent Lead review remain pending acceptance.
+
+## Independent documentation acceptance — 2026-10-05 MYT
+
+2026-10-05MYT Lead independent documentation review with Engineer technical gap review: three-path historical delivery reviewed; library/dependency/source feasibility alternatives and limitations accepted as research findings only. Oct1 release/license/checkpoint metadata remain reported historical snapshots, not newly reproduced current metadata or installed/secure pins. Rights/entitlements/calendars/runtime/performance unresolved. No collector/model/policy/pilot scope accepted; historical Researcher ownership retained.
