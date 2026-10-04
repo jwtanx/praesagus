@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-56",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-56-deterministic-check-evidence-regression.md",
+  "objective": "Make missing-evidence regression independent of live ticket progress",
+  "status": "review",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "35e3e315fb89be28b73e77b268086f19a52a9b38",
+  "allowed_paths": [
+    "tests/test_ticket_harness.py",
+    "plans/2026-10-05/PRSG-56-deterministic-check-evidence-regression.md",
+    "plans/2026-10-05/PRSG-56.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "infra/",
+    ".github/",
+    "scripts/planning/validate_ticket.py",
+    "pyproject.toml",
+    "requirements.txt"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "manual",
+      "description": "Isolated Python3.11 focused/full pytest and verification safety replay with exact evidence",
+      "status": "passed",
+      "evidence": [
+        "Before fix: isolated CPython3.11.17 full pytest exit1,1failed1090passed33.10s; old focused missing-evidence test also failed alone. Explicit absent/empty evidence passed/failed rejection plus nonempty acceptance use standalone synthetic checks preserving live references.",
+        "/tmp/praesagus-ci-repro-20261005/bin/python -m pytest -q tests/test_ticket_harness.py \u201457passed0.07s, exit0; full python -m pytest -q in same environment \u20141096passed11warnings31.49s exit0; python -m pytest -q tests/test_ticket_verification.py \u201415passed2.63s exit0. Repository root. Exact env command/interpreter/dependencies and outside-repo logs recorded in spec.",
+        "Selected test-dependency environment is not canonical complete Poetry/Linux CI parity. Remote observed exit2 remains unresolved until Lead remote verification; no workflow/validator/PRSG1 evidence edits, skips or commit/push."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead scope/tests/push/remoteCI review",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-56-D1",
+      "description": "Deterministic rejection/acceptance and localsuite",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Before fix: isolated CPython3.11.17 full pytest exit1,1failed1090passed33.10s; old focused missing-evidence test also failed alone. Explicit absent/empty evidence passed/failed rejection plus nonempty acceptance use standalone synthetic checks preserving live references.",
+        "/tmp/praesagus-ci-repro-20261005/bin/python -m pytest -q tests/test_ticket_harness.py \u201457passed0.07s, exit0; full python -m pytest -q in same environment \u20141096passed11warnings31.49s exit0; python -m pytest -q tests/test_ticket_verification.py \u201415passed2.63s exit0. Repository root. Exact env command/interpreter/dependencies and outside-repo logs recorded in spec.",
+        "Selected test-dependency environment is not canonical complete Poetry/Linux CI parity. Remote observed exit2 remains unresolved until Lead remote verification; no workflow/validator/PRSG1 evidence edits, skips or commit/push."
+      ]
+    },
+    {
+      "id": "PRSG-56-D2",
+      "description": "Independent review and remoteCI",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

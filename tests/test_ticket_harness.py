@@ -42,11 +42,27 @@ def test_complete_needs_evidence_and_review():
         validator.validate(item, ROOT)
 
 
-def test_check_pass_needs_evidence():
+@pytest.mark.parametrize('status', ['passed', 'failed'])
+@pytest.mark.parametrize('has_empty_evidence', [False, True], ids=['absent', 'empty'])
+def test_check_pass_needs_evidence(status, has_empty_evidence):
     item = manifest()
-    item['checks'][0]['status'] = 'passed'
+    # Standalone synthetic check cannot invalidate completed live acceptance refs.
+    check = {**item['checks'][0], 'id': 'synthetic-evidence-check', 'status': status}
+    item['checks'].append(check)
+    if has_empty_evidence:
+        check['evidence'] = []
+    else:
+        check.pop('evidence', None)
     with pytest.raises(ValueError, match='needs evidence'):
         validator.validate(item, ROOT)
+
+
+@pytest.mark.parametrize('status', ['passed', 'failed'])
+def test_terminal_check_with_evidence_is_valid(status):
+    item = manifest()
+    item['checks'].append({**item['checks'][0], 'id': 'synthetic-evidence-check',
+                           'status': status, 'evidence': ['Frozen synthetic check result']})
+    assert validator.validate(item, ROOT) == 'PRSG-1'
 
 
 def test_checklist_sync():
