@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-55",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "harness",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-55-synthetic-catalyst-replay.md",
+  "objective": "Synthetic temporal evidence and fold-boundary replay without providers/models",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "35e3e315fb89be28b73e77b268086f19a52a9b38",
+  "allowed_paths": [
+    "harness/catalyst_replay.py",
+    "harness/CATALYST_REPLAY.md",
+    "tests/test_catalyst_replay.py",
+    "plans/2026-10-05/PRSG-55-synthetic-catalyst-replay.md",
+    "plans/2026-10-05/PRSG-55.harness.json",
+    "AGENTS.md"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "infra/",
+    "harness/evidence_store.py",
+    "harness/session_metrics.py",
+    "harness/forecast_review.py",
+    "harness/verification_policy.json",
+    "pyproject.toml",
+    "requirements.txt"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_catalyst_replay.py",
+        "tests/test_session_metrics.py",
+        "tests/test_evidence_store.py",
+        "tests/test_forecast_review.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Exact accepted four-module command run from repository root with /tmp/praesagus-ci-repro-20261005/bin first on PATH (CPython3.11.17):208passed0.55s exit0, /tmp/PRSG-55-focused.log. Pure synthetic controls and existing session_metrics/evidence_store/forecast_review unchanged regressions.",
+        "Lead1200descendingcluster RecursionError regression failed before iterativecompression correction, then passed. Tests cover original/correction/latefirstobservation/dateunknown/equalcutoff/offset/control annotations, independent outcomes/review/metrics, known nonadjacent contradictions/nulls, safeURL/schema/duplicate identity, transitive unknown/future links, earliestlaterfit/equality/overlap/pending and nonmutation/noIO.",
+        "Full isolated3.11suite:1154passed11warnings36.26s exit0, /tmp/PRSG-55-full.log. Selected dependency snapshot recorded in PRSG56; not canonical completePoetry/Linux parity. Five-path validation and diffcheck pass; no provider/network/model/file/db read or publication/commit/push. D2independentLead/Trader review pending."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent Lead full scope and Trader semantics review",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed all original five implementation/test/spec paths plus authorized AGENTS.md overview amendment; persistent3.11 four-module regression with --tb=short:208passed0.52s exit0. Independently reproduced large-chain RecursionError before and verified iterative root fix/regression. Trader final review accepted synthetic semantics and independently48passed0.05s; private PRSG-55-final-financial-review-20261005.md. No provider ingestion, OpenD/login, model/policy adoption or market-performance claims. Existing harness modules and committed hook guidance preserved."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-55-D1",
+      "description": "Replay/regressions pass",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Exact accepted four-module command run from repository root with /tmp/praesagus-ci-repro-20261005/bin first on PATH (CPython3.11.17):208passed0.55s exit0, /tmp/PRSG-55-focused.log. Pure synthetic controls and existing session_metrics/evidence_store/forecast_review unchanged regressions.",
+        "Lead1200descendingcluster RecursionError regression failed before iterativecompression correction, then passed. Tests cover original/correction/latefirstobservation/dateunknown/equalcutoff/offset/control annotations, independent outcomes/review/metrics, known nonadjacent contradictions/nulls, safeURL/schema/duplicate identity, transitive unknown/future links, earliestlaterfit/equality/overlap/pending and nonmutation/noIO.",
+        "Full isolated3.11suite:1154passed11warnings36.26s exit0, /tmp/PRSG-55-full.log. Selected dependency snapshot recorded in PRSG56; not canonical completePoetry/Linux parity. Five-path validation and diffcheck pass; no provider/network/model/file/db read or publication/commit/push. D2independentLead/Trader review pending."
+      ]
+    },
+    {
+      "id": "PRSG-55-D2",
+      "description": "Independent review",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed all original five implementation/test/spec paths plus authorized AGENTS.md overview amendment; persistent3.11 four-module regression with --tb=short:208passed0.52s exit0. Independently reproduced large-chain RecursionError before and verified iterative root fix/regression. Trader final review accepted synthetic semantics and independently48passed0.05s; private PRSG-55-final-financial-review-20261005.md. No provider ingestion, OpenD/login, model/policy adoption or market-performance claims. Existing harness modules and committed hook guidance preserved."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed all original five implementation/test/spec paths plus authorized AGENTS.md overview amendment; persistent3.11 four-module regression with --tb=short:208passed0.52s exit0. Independently reproduced large-chain RecursionError before and verified iterative root fix/regression. Trader final review accepted synthetic semantics and independently48passed0.05s; private PRSG-55-final-financial-review-20261005.md. No provider ingestion, OpenD/login, model/policy adoption or market-performance claims. Existing harness modules and committed hook guidance preserved."
+    ]
+  }
+}
