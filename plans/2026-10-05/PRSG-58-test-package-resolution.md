@@ -11,7 +11,7 @@ Add a minimal tests/__init__.py so this checkout supplies its own ordinary packa
 
 ## When it's considered done
 - [x] PRSG-58-D1: Shadowing regression fails before and passes after; focused/full checks recorded.
-- [ ] PRSG-58-D2: Lead independent scope/replay and remote CI result reviewed.
+- [x] PRSG-58-D2: Lead independent scope/replay and remote CI result reviewed.
 
 
 ## Engineer delivery evidence — 2026-10-05 MYT
@@ -27,3 +27,7 @@ Required full suite command: `PATH=/Users/jwtan/.codex/venvs/praesagus-tests-311
 Final full suite1155 passed,11 warnings in37.70s, exit0. Four-path manifest validation and `git diff --check` passed. D1 done; D2/Lead review and remote CI verification remain pending.
 
 Lead preliminary review: all four paths reviewed; focused37passed1.04s exit0 using persistent3.11 with --tb=short. Remote confirmation pending.
+
+## Lead final acceptance — 2026-10-05 MYT
+
+Lead independently reviewed ticket-owned paths and local regressions. Reviewed code tip39643265f21b206b5035d61c99bbcf58cf82afe6 pushed and remote main readback matched. GitHub Actions CI37243117657 completed success; Run tests and Replay ticket verification safety cases independently confirmed successful from supported public job metadata. URL https://github.com/jwtanx/praesagus/actions/runs/37243117657 . Local full push hook1155passed11warnings28.32s exit0. Selected local environment remains distinct from canonical Poetry/Linux CI; both now pass. Previous remote exit2 traceback was inaccessible, so exact original remote root cause is not independently asserted; synthetic package-shadowing collection regression proves the fixed defect. No test/validator weakening or skip.
