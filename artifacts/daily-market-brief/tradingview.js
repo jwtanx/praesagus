@@ -26,22 +26,51 @@
     const chips=root.querySelector('#ta-chips'),chart=root.querySelector('#ta-chart'),status=root.querySelector('#ta-status'),caption=root.querySelector('#ta-caption'),fallback=root.querySelector('#ta-external');
     let rows=[],selected=-1,active=false,generation=0,timer=null,observer=null,destroyed=false;
     const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)'),listeners=[];
-    let frame=null,lastTime=null,phase=0,hover=false,focused=false,paused=false,manual=false,inViewport=false,idleTimer=null;
+    let frame=null,lastTime=null,period=0,offset=0,hover=false,focused=false,paused=false,manual=false,inViewport=false,idleTimer=null;
     const pointers=new Set(),touches=new Set();
     let windowBlurred=false;
     function listen(target,type,fn,options){target?.addEventListener?.(type,fn,options);listeners.push(()=>target?.removeEventListener?.(type,fn,options))}
     function stopMotion(){if(frame!==null)window.cancelAnimationFrame(frame);frame=null;lastTime=null}
-    function canMove(){return !destroyed&&active&&inViewport&&!document.hidden&&!reduced?.matches&&!hover&&!focused&&!paused&&!manual&&!windowBlurred&&!pointers.size&&!touches.size&&rows.length>1&&chips.scrollWidth>chips.clientWidth}
-    function syncPhase(){const max=chips.scrollWidth-chips.clientWidth;if(max>0){const angle=Math.acos(1-2*Math.max(0,Math.min(max,chips.scrollLeft))/max);phase=phase%(2*Math.PI)>Math.PI?2*Math.PI-angle:angle}}
+    function canMove(){return !destroyed&&active&&inViewport&&!document.hidden&&!reduced?.matches&&!hover&&!focused&&!paused&&!manual&&!windowBlurred&&!pointers.size&&!touches.size&&rows.length>1&&period>chips.clientWidth}
+    function rebuildTape(){
+      if(destroyed)return;
+      stopMotion();
+      for(const copy of chips.querySelectorAll('[data-tape-copy]'))copy.remove();
+      period=0;offset=0;
+      const buttons=[...chips.children];
+      if(rows.length>1&&buttons.length){
+        const gap=parseFloat(window.getComputedStyle(chips).gap)||0;
+        const first=buttons[0],last=buttons.at(-1);
+        const firstRect=first.getBoundingClientRect(),lastRect=last.getBoundingClientRect();
+        const extent=lastRect.right-firstRect.left||last.offsetLeft+last.offsetWidth-first.offsetLeft;
+        const width=extent||chips.scrollWidth;
+        if(width>chips.clientWidth){
+          period=width+gap;
+          for(const [index,button] of buttons.entries()){
+            // Decorative spans cannot enter the accessibility tree or receive focus.
+            const copy=node('span');copy.className=button.className;copy.dataset.tapeCopy=String(index);
+            copy.setAttribute('aria-hidden','true');copy.title=button.title;
+            copy.append(button.firstChild.cloneNode(true));
+            const buttonWidth=button.getBoundingClientRect().width||button.offsetWidth;
+            if(buttonWidth)copy.style.width=buttonWidth+'px';
+            copy.style.font=window.getComputedStyle(button).font;
+            copy.classList.toggle('ta-chip-selected',index===selected);
+            copy.onclick=()=>{manualPause();select(index)};chips.append(copy);
+          }
+          offset=((chips.scrollLeft%period)+period)%period;chips.scrollLeft=offset;
+        }else chips.scrollLeft=0;
+      }
+      syncMotion();
+    }
     function tick(now){
       frame=null;if(!canMove()){lastTime=null;return}
-      const max=chips.scrollWidth-chips.clientWidth;
-      // Cosine eases to zero speed at each end; cap long gaps to avoid jumps.
-      if(lastTime!==null){phase=(phase+Math.min(64,Math.max(0,now-lastTime))/1000*24/max)%(2*Math.PI);chips.scrollLeft=max*(1-Math.cos(phase))/2}
+      // Accumulate fractions independently of rounded browser scroll readback.
+      // Copies at one measured period have identical pixels; modulo connects end to start.
+      if(lastTime!==null){offset=(offset+Math.min(64,Math.max(0,now-lastTime))/1000*12)%period;chips.scrollLeft=offset;}
       lastTime=now;frame=window.requestAnimationFrame(tick);
     }
     function syncMotion(){
-      if(!canMove()){stopMotion();return}if(frame===null){syncPhase();frame=window.requestAnimationFrame(tick)}
+      if(!canMove()){stopMotion();return}if(frame===null){offset=((chips.scrollLeft%period)+period)%period;frame=window.requestAnimationFrame(tick)}
     }
     function clearIdle(){clearTimeout(idleTimer);idleTimer=null}
     function manualPause(){clearIdle();if(paused)return;manual=true;syncMotion();idleTimer=setTimeout(()=>{idleTimer=null;manual=false;syncMotion()},5000)}
@@ -58,13 +87,15 @@
     listen(window,'focus',()=>{windowBlurred=false;syncMotion()});
     listen(chips,'pointermove',event=>{if(event.buttons)manualPause()},{passive:true});
     listen(chips,'keydown',event=>{if(event.key==='Escape'){paused=true;manual=false;clearIdle();syncMotion()}else manualPause()});
-    listen(document,'visibilitychange',syncMotion);listen(window,'resize',()=>{stopMotion();syncMotion()});listen(reduced,'change',syncMotion);
+    listen(document,'visibilitychange',syncMotion);listen(window,'resize',rebuildTape);listen(reduced,'change',syncMotion);
+    const tapeResize=typeof ResizeObserver==='function'?new ResizeObserver(rebuildTape):null;
+    tapeResize?.observe(chips);
     const visibility=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{inViewport=entries.some(entry=>entry.isIntersecting);syncMotion()}):null;
     if(visibility)visibility.observe(chips);else inViewport=true;
     function clear(){++generation;clearTimeout(timer);timer=null;observer?.disconnect();observer=null;chart.replaceChildren()}
     function select(index){
       if(destroyed||index<0||index>=rows.length)return;selected=index;clear();
-      [...chips.children].forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));
+      [...chips.children].forEach((button,i)=>{if(button.dataset.tapeCopy!==undefined)button.classList.toggle('ta-chip-selected',Number(button.dataset.tapeCopy)===index);else button.setAttribute('aria-pressed',String(i===index))});
       const row=rows[index],mapped=symbol(row);fallback.href=external(row);fallback.hidden=false;
       fallback.textContent=mapped?'Open '+mapped+' on TradingView (availability unverified)':'Find symbol on TradingView (identity unverified)';
       if(!mapped){status.textContent=row.market==='MY'?'No curated Bursa identity; use TradingView symbol search.':'No curated US exchange mapping; embedded chart unavailable.';return}
@@ -82,7 +113,7 @@
       observer.observe(container,{childList:true,subtree:true});container.append(script);chart.append(container);timer=setTimeout(()=>{if(!container.querySelector('iframe'))fail()},15000);
     }
     function update(report,message){
-      if(destroyed)return;clearIdle();manual=false;stopMotion();clear();selected=-1;chips.replaceChildren();chips.scrollLeft=0;phase=0;focused=chips.contains(document.activeElement);rows=[];fallback.hidden=true;
+      if(destroyed)return;clearIdle();manual=false;stopMotion();clear();selected=-1;chips.replaceChildren();chips.scrollLeft=0;period=0;offset=0;focused=chips.contains(document.activeElement);rows=[];fallback.hidden=true;
       caption.textContent=report?.metadata?.date?'Watchlist from '+report.metadata.date+'. Chart prices are current or delayed, not frozen to the report date. Ticker colors and icons show the recorded report scenario, not a live price signal.':'Select a saved report date for its research watchlist.';
       const seen=new Set();
       for(const row of Array.isArray(report?.forecasts)?report.forecasts:[]){if(!row||typeof row.ticker!=='string'||!(/^[A-Z][A-Z0-9.\-]{0,14}$/.test(row.ticker)||/^\d{4}(?:EA)?$/.test(row.ticker))||!['US','MY'].includes(row.market))continue;const key=row.market+':'+row.ticker;if(seen.has(key))continue;seen.add(key);rows.push({ticker:row.ticker,market:row.market,direction:row.direction})}
@@ -91,10 +122,10 @@
         const button=node('button'),inner=node('span',emoji+' '+row.ticker);inner.className='ta-chip-label';button.append(inner);button.type='button';button.className='ta-chip ta-'+color;button.setAttribute('aria-label',row.market+' '+row.ticker+' · '+label+' report scenario');button.title=row.market+' '+row.ticker+' · '+label+' recorded report scenario';button.setAttribute('aria-pressed','false');button.onclick=()=>{manualPause();select(index)};
         button.onkeydown=event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const target=event.key==='Home'?0:event.key==='End'?rows.length-1:(index+(event.key==='ArrowRight'?1:-1)+rows.length)%rows.length;chips.children[target].focus();chips.children[target].scrollIntoView({block:'nearest',inline:'nearest',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})};chips.append(button);
       }
-      if(rows.length)select(0);else status.textContent=message||'No supported tickers recorded for this report.';syncMotion();
+      if(rows.length)select(0);else status.textContent=message||'No supported tickers recorded for this report.';rebuildTape();
     }
-    function show(value){if(destroyed)return;const changed=active!==value;active=value;if(!active)clear();else if(changed&&selected>=0)select(selected);syncMotion()}
-    function destroy(){if(destroyed)return;destroyed=true;active=false;pointers.clear();touches.clear();clearIdle();stopMotion();clear();visibility?.disconnect();listeners.forEach(remove=>remove());for(const button of chips.children){button.onclick=null;button.onkeydown=null}}
+    function show(value){if(destroyed)return;const changed=active!==value;active=value;if(!active){clear();clearIdle();manual=false}else if(changed&&selected>=0)select(selected);if(active&&changed)rebuildTape();else syncMotion()}
+    function destroy(){if(destroyed)return;destroyed=true;active=false;pointers.clear();touches.clear();clearIdle();stopMotion();clear();visibility?.disconnect();tapeResize?.disconnect();listeners.forEach(remove=>remove());for(const button of chips.children){button.onclick=null;button.onkeydown=null}}
     update(null);return {update,show,destroy};
   }
   window.PraesagusTA=Object.freeze({create,symbol,external});

@@ -75,10 +75,10 @@ async function deterministicTickerMotion(){
   t.media.matches=false;t.media.dispatchEvent(new t.w.Event('change'));assert.equal(t.frames.size,1);
   t.$('.nav-link[data-view="brief"]').click();assert.equal(t.frames.size,0);t.$('.nav-link[data-view="technical"]').click();assert.equal(t.frames.size,1);
   chips.dispatchEvent(new t.w.MouseEvent('mouseenter'));await t.w.chooseReportDate('2026-09-30');await settle();assert.equal(t.frames.size,0,'date update retains hover pause');chips.dispatchEvent(new t.w.MouseEvent('mouseleave'));assert.equal(t.frames.size,1);assert.equal(chips.scrollLeft,0);
-  // Traverse a complete cosine cycle: smooth reversal, bounded steps, no wrap.
-  let previous=0,previousDelta=0,reversed=false,maxDelta=0;
-  for(let time=0;time<110000;time+=16){t.step(time);const position=chips.scrollLeft,delta=position-previous;assert.ok(position>=0&&position<=400);maxDelta=Math.max(maxDelta,Math.abs(delta));if(previousDelta>0&&delta<0){reversed=true;assert.ok(Math.abs(previousDelta)<0.01&&Math.abs(delta)<0.01)}previous=position;previousDelta=delta}
-  assert.ok(reversed);assert.ok(maxDelta<0.2,'maximum speed approximately 12 pixels/sec');assert.equal(t.frames.size,1);
+  // PRSG-53 replaces reversal with a 704px period (700px fixture content + 4px gap).
+  let previous=chips.scrollLeft,wraps=0;
+  for(let time=0;time<180000;time+=16){t.step(time);const position=chips.scrollLeft,delta=(position-previous+704)%704;assert.ok(position>=0&&position<704);assert.ok(delta<0.2,'constant speed 12 pixels/sec');if(position<previous)wraps++;previous=position}
+  assert.ok(wraps>=3);assert.equal(t.frames.size,1);
   Object.defineProperty(chips,'scrollWidth',{configurable:true,value:300});t.w.dispatchEvent(new t.w.Event('resize'));assert.equal(t.frames.size,0,'no overflow, no animation');
   // Escape is a persistent stop, even after idle/date/view/preference changes.
   Object.defineProperty(chips,'scrollWidth',{configurable:true,value:700});t.w.dispatchEvent(new t.w.Event('resize'));chips.focus();chips.dispatchEvent(new t.w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));chips.blur();t.expireIdle();assert.equal(t.frames.size,0);
@@ -150,4 +150,4 @@ async function allReviewedIdentitiesAndEncoding(){
   }
   controller.destroy();assert.equal(t.errors.length,0);t.dom.window.close();
 }
-(async()=>{await allReviewedIdentitiesAndEncoding();await directionsMappingAndLifecycle();await dateRacesAndErrors();await keyboardSafetyAndMotion();await deterministicTickerMotion();await heldContacts();const replay=spawnSync(process.execPath,[path.join(root,'tests/daily_report_viewer_checks.cjs')],{cwd:root,encoding:'utf8'});assert.equal(replay.status,0,replay.stdout+replay.stderr);console.log('TradingView offline DOM checks passed: all 50 reviewed identities, literal F&N/hyphen widget symbols, once-encoded URLs, unknown search fallback, unverified hosted availability, dates/races, directions, attribution, error/timeout cleanup, compact labels/44px targets, smooth reversible motion, pause/hover/focus/manual/visibility/reduced-motion guards, lifecycle cleanup, safety and existing daily viewer replay. No external scripts/network loaded.');})().catch(error=>{console.error(error);process.exitCode=1});
+(async()=>{await allReviewedIdentitiesAndEncoding();await directionsMappingAndLifecycle();await dateRacesAndErrors();await keyboardSafetyAndMotion();await deterministicTickerMotion();await heldContacts();const replay=spawnSync(process.execPath,[path.join(root,'tests/daily_report_viewer_checks.cjs')],{cwd:root,encoding:'utf8'});assert.equal(replay.status,0,replay.stdout+replay.stderr);console.log('TradingView offline DOM checks passed: all 50 reviewed identities, literal F&N/hyphen widget symbols, once-encoded URLs, unknown search fallback, unverified hosted availability, dates/races, directions, attribution, error/timeout cleanup, compact labels/44px targets, seamless one-direction motion, pause/hover/focus/manual/visibility/reduced-motion guards, lifecycle cleanup, safety and existing daily viewer replay. No external scripts/network loaded.');})().catch(error=>{console.error(error);process.exitCode=1});

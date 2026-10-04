@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-53",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-53-seamless-ticker-tape.md",
+  "objective": "Complete requested seamless continuous ticker tape preserving interaction guards",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "bb1d1346aecb1dc32784c4d3ab641e8c63866209",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/tradingview.js",
+    "artifacts/daily-market-brief/index.html",
+    "tests/tradingview_checks.cjs",
+    "tests/ticker_tape_loop_checks.cjs",
+    "plans/2026-10-05/PRSG-53-seamless-ticker-tape.md",
+    "plans/2026-10-05/PRSG-53.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "connectors/",
+    "skills/",
+    "agent-operations/",
+    "artifacts/financial-calendar/",
+    "artifacts/daily-market-brief/template.html"
+  ],
+  "checks": [
+    {
+      "id": "ticker_tape_loop_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/ticker_tape_loop_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/ticker_tape_loop_checks.cjs \u2014 final replay exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0, existing isolated jsdom26. Offline fixtures; actual browser continuity remains unverified.",
+        "Post-review quantized integer scroll readback regression failed against original per-frame reread, then passed with accumulated logical offset. Three cycles at each of two width scales stay within half-pixel browser rounding tolerance; manual resume from 500px and capped long gap verified. All six exact commands replayed after correction and asset hash8905c00408c9, exit0."
+      ]
+    },
+    {
+      "id": "tradingview_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/tradingview_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/tradingview_checks.cjs \u2014 final replay exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0, existing isolated jsdom26. Offline fixtures; actual browser continuity remains unverified."
+      ]
+    },
+    {
+      "id": "chart_asset_version_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/chart_asset_version_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/chart_asset_version_checks.cjs \u2014 final replay exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0, existing isolated jsdom26. Offline fixtures; actual browser continuity remains unverified."
+      ]
+    },
+    {
+      "id": "daily_report_viewer_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/daily_report_viewer_checks.cjs \u2014 final replay exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0, existing isolated jsdom26. Offline fixtures; actual browser continuity remains unverified."
+      ]
+    },
+    {
+      "id": "report_navigation_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/report_navigation_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/report_navigation_checks.cjs \u2014 final replay exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0, existing isolated jsdom26. Offline fixtures; actual browser continuity remains unverified."
+      ]
+    },
+    {
+      "id": "report_date_navigation_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/report_date_navigation_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/report_date_navigation_checks.cjs \u2014 final replay exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0, existing isolated jsdom26. Offline fixtures; actual browser continuity remains unverified."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead full scope, changed assertion and browser review",
+      "status": "passed",
+      "evidence": [
+        "Lead independent review 2026-10-05 MYT: all six exact Node commands passed exit0; full six-path diff and obsolete-reversal-only assertion review. CUA desktop1280/mobile390: 50 canonical buttons/50 hidden copies, matching original/copy widths and3368.1953125px period; forward64\u2192416.5px, mobile End focuses canonical MY5285 (no hidden focus); focus release resumes3160px and wraps to8px showing SPY/QQQ/IWM, page width390; viewport reset. Rounded-readback defect corrected with failing-before/passing-after regression. Browser observations verify movement/wrap and geometry, not frame-by-frame pixel capture or external quote freshness."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-53-D1",
+      "description": "Focused/existing regressions pass",
+      "check_ids": [
+        "ticker_tape_loop_checks",
+        "tradingview_checks",
+        "chart_asset_version_checks",
+        "daily_report_viewer_checks",
+        "report_navigation_checks",
+        "report_date_navigation_checks"
+      ],
+      "status": "done",
+      "evidence": [
+        "All six exact node commands passed. New synthetic fractional-geometry rAF fixture crosses at least three cycles before/after resize; modulo displacement stays 0.192px/16ms through wrap, with a 64ms long-gap cap. Verifies 50 canonical accessible buttons, nonfocusable hidden copy mapping and selection, canonical keyboard, no-overflow/single/empty, reduced motion and lifecycle cleanup. Existing unrelated TradingView assertions preserved; obsolete reversal block replaced with bounded forward wrap check.",
+        "Independent review finding addressed with failing-before/passing-after integer readback regression and fresh six-command replay; logical offset accumulates fractional motion across frames and resynchronizes on resume/rebuild. D2 remains pending."
+      ]
+    },
+    {
+      "id": "PRSG-53-D2",
+      "description": "Independent Lead review",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent review 2026-10-05 MYT: all six exact Node commands passed exit0; full six-path diff and obsolete-reversal-only assertion review. CUA desktop1280/mobile390: 50 canonical buttons/50 hidden copies, matching original/copy widths and3368.1953125px period; forward64\u2192416.5px, mobile End focuses canonical MY5285 (no hidden focus); focus release resumes3160px and wraps to8px showing SPY/QQQ/IWM, page width390; viewport reset. Rounded-readback defect corrected with failing-before/passing-after regression. Browser observations verify movement/wrap and geometry, not frame-by-frame pixel capture or external quote freshness."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead independent review 2026-10-05 MYT: all six exact Node commands passed exit0; full six-path diff and obsolete-reversal-only assertion review. CUA desktop1280/mobile390: 50 canonical buttons/50 hidden copies, matching original/copy widths and3368.1953125px period; forward64\u2192416.5px, mobile End focuses canonical MY5285 (no hidden focus); focus release resumes3160px and wraps to8px showing SPY/QQQ/IWM, page width390; viewport reset. Rounded-readback defect corrected with failing-before/passing-after regression. Browser observations verify movement/wrap and geometry, not frame-by-frame pixel capture or external quote freshness."
+    ]
+  }
+}
