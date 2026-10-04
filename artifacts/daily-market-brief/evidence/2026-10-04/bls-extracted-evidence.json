@@ -1,0 +1,16 @@
+{
+  "source": {
+    "label": "BLS September employment",
+    "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+    "provider": "BLS September employment (primary)",
+    "published_at": "2026-10-02T08:30:00-04:00",
+    "retrieved_at": "2026-10-04T12:38:25+08:00",
+    "data_period": "September 2026",
+    "limitation": "Browser tool retrieved release; direct urllib download failed. Revisions can alter interpretation; no consensus surprise claimed.",
+    "connector": "web research extraction"
+  },
+  "available_by": "2026-10-04T12:38:25+08:00",
+  "facts": "Primary fact: September payrolls rose 29,000 and unemployment was 4.2%. Wage growth was 0.1% monthly / 3.0% yearly; combined July/August revisions were -60,000.",
+  "schedule_source": "https://www.bls.gov/schedule/2026/10_sched.htm",
+  "schedule_notes": "October 5\u20139 has no listed BLS selected releases. CPI scheduled October14 08:30ET; PPI October15 08:30ET. Extracted through web tool; no raw BLS HTML captured."
+}

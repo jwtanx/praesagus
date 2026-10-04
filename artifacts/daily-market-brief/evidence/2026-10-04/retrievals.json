@@ -1,0 +1,49 @@
+[
+  {
+    "key": "bls-employment",
+    "source_url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+    "retrieved_at": "2026-10-04T12:39:43.820624+08:00",
+    "status": "failed",
+    "error_type": "HTTPError"
+  },
+  {
+    "key": "bls-calendar",
+    "source_url": "https://www.bls.gov/schedule/2026/10_sched.htm",
+    "retrieved_at": "2026-10-04T12:39:44.458993+08:00",
+    "status": "failed",
+    "error_type": "HTTPError"
+  },
+  {
+    "key": "nyfed-calendar",
+    "source_url": "https://www.newyorkfed.org/research/calendars/i-oct26.html",
+    "resolved_url": "https://www.newyorkfed.org/research/calendars/i-oct26.html",
+    "retrieved_at": "2026-10-04T12:39:44.514416+08:00",
+    "ingested_at": "2026-10-04T12:39:45.341160+08:00",
+    "connector": "public-https-urllib",
+    "status": "retrieved",
+    "sha256": "5287b651521a03f6094ceb4a7cf73ed89a96bb20e444c4dad9b276571f1e1082",
+    "raw_path": "nyfed-calendar.html"
+  },
+  {
+    "key": "nyse-calendar",
+    "source_url": "https://www.nyse.com/trade/hours-calendars",
+    "resolved_url": "https://www.nyse.com/trade/hours-calendars",
+    "retrieved_at": "2026-10-04T12:39:45.341229+08:00",
+    "ingested_at": "2026-10-04T12:39:45.471221+08:00",
+    "connector": "public-https-urllib",
+    "status": "retrieved",
+    "sha256": "79602f7be5a8f1d39c2b1cac4dd02c4c07f18cf9f92d70602834069154719bad",
+    "raw_path": "nyse-calendar.html"
+  },
+  {
+    "key": "stz-calendar",
+    "source_url": "https://ir.cbrands.com/news-events/press-releases/detail/345/constellation-brands-to-report-second-quarter-fiscal-2027-financial-results-on-october-6-2026-after-market-close-and-host-conference-call-on-october-7-2026-at-8-00-am-et",
+    "resolved_url": "https://ir.cbrands.com/news-events/press-releases/detail/345/constellation-brands-to-report-second-quarter-fiscal-2027-financial-results-on-october-6-2026-after-market-close-and-host-conference-call-on-october-7-2026-at-8-00-am-et",
+    "retrieved_at": "2026-10-04T12:39:45.471284+08:00",
+    "ingested_at": "2026-10-04T12:39:46.113231+08:00",
+    "connector": "public-https-urllib",
+    "status": "retrieved",
+    "sha256": "190c0fd574015ca2d3e73f055c410f6f186056ded7dfbf31e7bce52bdda14a69",
+    "raw_path": "stz-calendar.html"
+  }
+]
