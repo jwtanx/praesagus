@@ -1378,6 +1378,34 @@
       "change_reason": "Full-month schedule initialization from primary source.",
       "revision": 1,
       "recorded_at": "2026-10-01T18:50:02+08:00"
+    },
+    {
+      "date": "2026-10-07",
+      "title": "Constellation Brands (STZ) fiscal Q2 results",
+      "kind": "event",
+      "time": "Wed Oct 7 after 4:00 am MYT / Tue Oct 6 after 4:00 pm EDT; call Oct 7 8:00 pm MYT / 8:00 am EDT",
+      "summary": "Guidance, volume/pricing and demand commentary could move beverage/consumer staples; earnings gap risk makes pre-result direction uncertain.",
+      "details": "Issuer schedules results after the October6 US market close, falling on October7 MYT. Exact release time is unspecified. Earnings call is October7 08:00ET /20:00MYT. Watch volumes, margins and guidance; no direction assumed.",
+      "exposures": "STZ, consumer staples",
+      "sources": [
+        {
+          "label": "Constellation Brands issuer notice",
+          "url": "https://ir.cbrands.com/news-events/press-releases/detail/345/constellation-brands-to-report-second-quarter-fiscal-2027-financial-results-on-october-6-2026-after-market-close-and-host-conference-call-on-october-7-2026-at-8-00-am-et",
+          "provider": "Constellation Brands issuer notice (primary)",
+          "published_at": "2026-09-10",
+          "retrieved_at": "2026-10-04T12:39:45.471284+08:00",
+          "data_period": "Fiscal Q2 2027 reporting schedule",
+          "limitation": "Issuer specifies after US market close, not exact release minute. Date-only source publication; converted to MYT.",
+          "connector": "public-https-urllib"
+        }
+      ],
+      "event_id": "stz-fy2027-q2-results",
+      "status": "scheduled",
+      "change_reason": "Correct MYT display date: October6 after US close is October7 in Malaysia. Issuer schedule freshly retrieved; no cancellation or rescheduling asserted.",
+      "source_verification": "Issuer timing rechecked on October4; source date converted from EDT to MYT.",
+      "country": "US",
+      "revision": 3,
+      "recorded_at": "2026-10-04T12:41:46.251745+08:00"
     }
   ]
 }
