@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-01/PRSG-22-market-learning-program.md",
   "objective": "Overall market-learning plan",
-  "status": "review",
+  "status": "complete",
   "owner": "Lead",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -45,8 +45,10 @@
       "id": "findings",
       "kind": "manual",
       "description": "Overall phased plan, risks and role assignments reviewed by Lead",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead review2026-10-05MYT: phased documentation-only plan accepted; repository forecast_review functions inspected, future collection/model/skill runtime remains absent. Three linked official docs reopened successfully. Leakage/session/provenance/rights/sample/cost/abstention gates reviewed; estimates unmeasured; PRSG23/24 research dependencies and human evaluation approval remain prerequisites. Historical owners retained; future financial judgment routes to verified Trader. No implementation or model performance accepted."
+      ]
     },
     {
       "id": "metadata",
@@ -57,8 +59,10 @@
         "plans/2026-10-01/PRSG-22.harness.json"
       ],
       "cwd": ".",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "python3 scripts/planning/validate_ticket.py plans/2026-10-01/PRSG-22.harness.json passed; complete two-path update verified"
+      ]
     }
   ],
   "acceptance": [
@@ -69,12 +73,17 @@
         "findings",
         "metadata"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead review2026-10-05MYT: phased documentation-only plan accepted; repository forecast_review functions inspected, future collection/model/skill runtime remains absent. Three linked official docs reopened successfully. Leakage/session/provenance/rights/sample/cost/abstention gates reviewed; estimates unmeasured; PRSG23/24 research dependencies and human evaluation approval remain prerequisites. Historical owners retained; future financial judgment routes to verified Trader. No implementation or model performance accepted."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead review2026-10-05MYT: phased documentation-only plan accepted; repository forecast_review functions inspected, future collection/model/skill runtime remains absent. Three linked official docs reopened successfully. Leakage/session/provenance/rights/sample/cost/abstention gates reviewed; estimates unmeasured; PRSG23/24 research dependencies and human evaluation approval remain prerequisites. Historical owners retained; future financial judgment routes to verified Trader. No implementation or model performance accepted."
+    ]
   }
 }

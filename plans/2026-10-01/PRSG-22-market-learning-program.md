@@ -45,8 +45,14 @@ Lead owns this plan. PRSG-23 and PRSG-24 have disjoint documentation paths. No E
 
 ## When it's considered done
 
-- [ ] PRSG-22-D1: Overall phased plan, risks and role assignments reviewed by Lead.
+- [x] PRSG-22-D1: Overall phased plan, risks and role assignments reviewed by Lead.
 
 ## Progress
 
 Planning recorded; findings/review pending. No implemented feature or measured improvement.
+
+## Lead acceptance — 2026-10-05 MYT
+
+Lead review2026-10-05MYT: phased documentation-only plan accepted; repository forecast_review functions inspected, future collection/model/skill runtime remains absent. Three linked official docs reopened successfully. Leakage/session/provenance/rights/sample/cost/abstention gates reviewed; estimates unmeasured; PRSG23/24 research dependencies and human evaluation approval remain prerequisites. Historical owners retained; future financial judgment routes to verified Trader. No implementation or model performance accepted.
+
+Historical Researcher/Consultant assignments above retain original ownership. Future source comparisons use bounded temporary research; financial judgment and review route to the verified Trader. No successor implementation is allocated by this acceptance. Before any pilot, PRSG-23/PRSG-24 findings must be independently accepted and a new frozen implementation manifest must select versions, rights, sample/window boundaries and measurable thresholds. No installed model, persistent collector or measured accuracy/ROI claimed. Official references rechecked: [scikit-learn feature extraction](https://scikit-learn.org/stable/modules/feature_extraction.html), [SetFit](https://huggingface.co/docs/setfit/index), [Moomoo historical candles](https://openapi.moomoo.com/moomoo-api-doc/en/quote/request-history-kline.html). They establish available library/API interfaces only, not entitlement or investment validity.
