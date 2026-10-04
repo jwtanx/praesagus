@@ -36,6 +36,8 @@ def safe_url(value):
         return None
     try:
         parsed = urlsplit(value)
+        # urlsplit defers malformed/out-of-range port validation until this access.
+        parsed.port
         return value if parsed.scheme.lower() in {'http', 'https'} and parsed.hostname and not parsed.username and not parsed.password else None
     except ValueError:
         return None
@@ -61,7 +63,9 @@ def _normalize(raw, dataset, now):
     ticker = (raw.get('ticker') or '').strip().upper() or None
     if not ticker:
         gaps.append('ticker unavailable (may be a global event)')
-    metadata = raw.get('metadata') or {}
+    metadata = raw.get('metadata')
+    if metadata is None:
+        metadata = {}
     if not isinstance(metadata, dict):
         raise ValueError('metadata must be an object')
     if kind == 'filing':

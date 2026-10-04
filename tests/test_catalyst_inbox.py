@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 from fastapi.testclient import TestClient
 
-from backend.catalyst_services import get_catalysts
+from backend.catalyst_services import _normalize, get_catalysts, safe_url
 from backend.main import app
 
 NOW = datetime(2026, 10, 1, 12, tzinfo=timezone.utc)
@@ -172,3 +172,61 @@ def test_date_only_calendar_uses_supplied_zone_without_midnight(tmp_path):
     row = get_catalysts(now=NOW, data_dir=tmp_path)['records'][0]
     assert row['event_at'] == '2026-10-02' and row['time_precision'] == 'date'
     assert row['timezone'] == 'Pacific/Auckland' and row['scheduled'] is False
+
+
+@pytest.mark.parametrize('url', ['https://example.org:bad/source', 'https://example.org:65536/source', 'https://example.org:-1/source'])
+def test_invalid_ports_are_null_without_losing_evidence(tmp_path, url):
+    assert safe_url(url) is None
+    raw = news(link=url)
+    direct, _ = _normalize(raw, 'news', NOW)
+    assert direct['source_url'] is None
+    assert direct['published_at'] == raw['published_at']
+    write(tmp_path, 'news', [raw])
+    before = (tmp_path / 'news.json').read_bytes()
+    result = get_catalysts(now=NOW, data_dir=tmp_path)
+    assert result['count'] == 1 and result['dataset_status']['news']['rows_skipped'] == 0
+    assert result['records'][0] == direct
+    assert 'source_url unavailable or unsafe' in direct['data_gaps']
+    assert direct['source_id'] == raw['source_id'] and direct['source'] == raw['source_name']
+    assert direct['available_at'] == raw['first_seen_at'] and direct['ingested_at'] == raw['ingest_ts']
+    assert (tmp_path / 'news.json').read_bytes() == before
+
+
+@pytest.mark.parametrize('url', ['https://example.org/source', 'http://example.org:80/source', 'https://example.org:443/source', 'https://example.org:8443/source'])
+def test_valid_ports_preserve_original_url(url):
+    assert safe_url(url) == url
+    row, _ = _normalize(news(link=url), 'news', NOW)
+    assert row['source_url'] == url
+
+
+@pytest.mark.parametrize('metadata', [[], False, 0, '', ['bad'], 'bad'])
+def test_nonobject_metadata_rejected_and_counted(tmp_path, metadata):
+    invalid = news('invalid', metadata=metadata)
+    with pytest.raises(ValueError, match='metadata must be an object'):
+        _normalize(invalid, 'news', NOW)
+    valid = news('valid', metadata={'source_url': 'https://example.org/provenance'})
+    write(tmp_path, 'news', [invalid, valid])
+    before = (tmp_path / 'news.json').read_bytes()
+    result = get_catalysts(now=NOW, data_dir=tmp_path)
+    state = result['dataset_status']['news']
+    assert state['status'] == 'loaded' and state['rows_read'] == 2
+    assert state['rows_skipped'] == 1 and state['records_loaded'] == 1
+    assert result['count'] == 1 and result['records'][0]['source_id'] == 'valid'
+    assert result['records'][0]['published_at'] == valid['published_at']
+    assert (tmp_path / 'news.json').read_bytes() == before
+
+
+def test_absent_null_and_object_calendar_metadata_preserve_provenance(tmp_path):
+    common = {'event_date': '2026-10-02', 'published_at': '2026-10-01T10:00:00Z',
+              'first_seen_at': '2026-10-01T10:05:00Z', 'ingest_ts': '2026-10-01T10:06:00Z'}
+    rows = [{**common, 'source_id': 'absent'}, {**common, 'source_id': 'null', 'metadata': None},
+            {**common, 'source_id': 'empty', 'metadata': {}},
+            {**common, 'source_id': 'object', 'metadata': {'source_url': 'https://example.org:443/calendar'}}]
+    write(tmp_path, 'calendar', rows)
+    result = get_catalysts(now=NOW, data_dir=tmp_path)
+    assert result['count'] == 4 and result['dataset_status']['calendar']['rows_skipped'] == 0
+    for row in result['records']:
+        assert row['published_at'] == common['published_at']
+        assert row['available_at'] == common['first_seen_at'] and row['ingested_at'] == common['ingest_ts']
+        assert row['event_at'] == common['event_date'] and row['time_precision'] == 'date'
+    assert next(row for row in result['records'] if row['source_id'] == 'object')['source_url'] == 'https://example.org:443/calendar'

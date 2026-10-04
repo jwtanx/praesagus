@@ -66,3 +66,20 @@ Effort: normalization/API 1–1.5 days; frontend 0.75–1.25; failure/replay tes
 - [ ] PRSG-1-D5: Lead reviews the scoped diff, records limitations and accepts release; commit/deployment evidence recorded where applicable.
 
 Check items only with evidence; update corresponding manifest acceptance status/evidence in the same edit. User usability target is a separate post-release impact check and must be reported as unmeasured until tested.
+
+## Accepted correction scope — 2026-10-05 MYT
+
+Lead independently reproduced malformed/out-of-range URL ports accepted by safe_url, and metadata [], false, 0, empty string accepted as object via falsy default. Correction base c54c38abb5f250840cbcbbcee8719fadb8c872da; Engineer writes only catalyst_services.py, test_catalyst_inbox.py and this existing spec/manifest. Preserve historical baseline and all original acceptance/check definitions. Validate parsed.port and reject invalid ports without exceptions escaping; valid omitted/standard ports retained. Reject supplied nonobject metadata including falsy values; absent/null metadata remain supported. Add failing-before/passing-after direct normalization and dataset skipped-count/provenance regressions. Run focused16+ regressions and manifest/diff checks; no dependency installs/provider access/frontend edits/full-suite claims. Leave Lead review and D3-D5 pending. Preserve unrelated PRSG-54 skill work.
+
+
+## Engineer correction delivery — 2026-10-05 MYT
+
+Service correction reads `parsed.port` inside the existing ValueError boundary, rejecting malformed/out-of-range ports while retaining original valid URLs. Metadata defaults only for absent/null; supplied nonobjects, including falsy values, raise the existing malformed-row error. No other normalization or source semantics changed.
+
+Command `python3 -m pytest -q tests/test_catalyst_inbox.py` ran at repository root on Python3.9.6. Added regressions failed before the service fix:7 failed,23 passed. After fix:30 passed in0.41s. Coverage includes direct URL/normalization rejection, malformed/negative/out-of-range ports, valid omitted/80/443/8443 ports, falsy/nonempty nonobjects, malformed dataset skipped counts, unchanged raw file bytes, retained source ID/provider and publication/availability/ingestion times, absent/null/empty-object metadata and calendar metadata source link/date precision.
+
+Four-path manifest validation, correction-baseline scope assertion and `git diff --check` passed. Preserved Lead's pre-existing correction-scope edits and original historical baseline/checks/acceptance definitions. Focused evidence recorded; all D1-D5 checklist and Lead review remain pending. No frontend/full-suite/browser checks rerun; Python3.9 focused pass does not establish supported3.11 full suite. No dependency/provider/auth/schedule edits, commit or push. Lead owns correction acceptance and outstanding broader verification.
+
+## Lead correction review and additional UI evidence
+
+Correction accepted independently: all four changed paths reviewed; focused replay30passed0.46s onPython3.9.6. Original ticket completion remains pending supported-runtime full suite and final full historical scope acceptance. CUA synthetic HTTP desktop/mobile390 proves safe source href/target/rel,53rowpaging,calendar1rowfilter,SLOW superseded byEMPTY retained after delay;mobileAAPL/news52rowsnext/previous,pagewidth390. Actual API query wiring exercised by browser; credentials/provider freshness untested. Viewport reset. Do not report correction acceptance as whole-ticket completion.
