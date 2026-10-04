@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-52",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-52-compact-report-date-navigation.md",
+  "objective": "Complete requested compact date plus day/week report navigation",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "43c9eeed5e3996335f3a1808d0bcd70235553613",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "tests/report_date_navigation_checks.cjs",
+    "plans/2026-10-05/PRSG-52-compact-report-date-navigation.md",
+    "plans/2026-10-05/PRSG-52.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "connectors/",
+    "skills/",
+    "agent-operations/",
+    "artifacts/financial-calendar/",
+    "artifacts/daily-market-brief/tradingview.js"
+  ],
+  "checks": [
+    {
+      "id": "report_date_navigation_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/report_date_navigation_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/report_date_navigation_checks.cjs \u2014 exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0 with existing isolated jsdom26. Offline fixtures; no browser layout verification.",
+        "Lead independent exact command replay exit0 on2026-10-05 MYT."
+      ]
+    },
+    {
+      "id": "daily_report_viewer_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/daily_report_viewer_checks.cjs \u2014 exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0 with existing isolated jsdom26. Offline fixtures; no browser layout verification.",
+        "Lead independent exact command replay exit0 on2026-10-05 MYT."
+      ]
+    },
+    {
+      "id": "report_navigation_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/report_navigation_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/report_navigation_checks.cjs \u2014 exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0 with existing isolated jsdom26. Offline fixtures; no browser layout verification.",
+        "Lead independent exact command replay exit0 on2026-10-05 MYT."
+      ]
+    },
+    {
+      "id": "tradingview_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/tradingview_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/tradingview_checks.cjs \u2014 exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0 with existing isolated jsdom26. Offline fixtures; no browser layout verification.",
+        "Lead independent exact command replay exit0 on2026-10-05 MYT."
+      ]
+    },
+    {
+      "id": "chart_asset_version_checks",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/chart_asset_version_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/chart_asset_version_checks.cjs \u2014 exit 0 on 2026-10-05 MYT, repository root, Node v26.7.0 with existing isolated jsdom26. Offline fixtures; no browser layout verification.",
+        "Lead independent exact command replay exit0 on2026-10-05 MYT."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead full scope and desktop/mobile browser review",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed all four paths and replayed all five exact Node commands successfully on2026-10-05 MYT. CUA local browser390x844 and1280x800: Enter previous report Oct4->Oct3; full date accessible;44px touch buttons; mobile document390/no overflow, popup16..316within390, desktop1280/no overflow; dateOct4 picker selection updates URL and closes. Week controls disabled where history has no target; gaps/leap/year/races covered fixture. Real physical touch and external widget data unverified. Existing Python-wide CI failing independently; not claimed fixed by UI ticket."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-52-D1",
+      "description": "Focused and existing regressions pass",
+      "check_ids": [
+        "report_date_navigation_checks",
+        "daily_report_viewer_checks",
+        "report_navigation_checks",
+        "tradingview_checks",
+        "chart_asset_version_checks"
+      ],
+      "status": "done",
+      "evidence": [
+        "All five exact node commands passed after preserving the existing saved-report label. Focused fixture covers unordered/duplicate/missing dates, leap/month/year and day/week boundaries, failed/malformed index, no target, unavailable picker dates, native button focus, unchanged index, report errors, URL/current views, aborted and late response races."
+      ]
+    },
+    {
+      "id": "PRSG-52-D2",
+      "description": "Lead scope and browser acceptance",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed all four paths and replayed all five exact Node commands successfully on2026-10-05 MYT. CUA local browser390x844 and1280x800: Enter previous report Oct4->Oct3; full date accessible;44px touch buttons; mobile document390/no overflow, popup16..316within390, desktop1280/no overflow; dateOct4 picker selection updates URL and closes. Week controls disabled where history has no target; gaps/leap/year/races covered fixture. Real physical touch and external widget data unverified. Existing Python-wide CI failing independently; not claimed fixed by UI ticket."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Lead independently reviewed all four paths and replayed all five exact Node commands successfully on2026-10-05 MYT. CUA local browser390x844 and1280x800: Enter previous report Oct4->Oct3; full date accessible;44px touch buttons; mobile document390/no overflow, popup16..316within390, desktop1280/no overflow; dateOct4 picker selection updates URL and closes. Week controls disabled where history has no target; gaps/leap/year/races covered fixture. Real physical touch and external widget data unverified. Existing Python-wide CI failing independently; not claimed fixed by UI ticket."
+    ]
+  }
+}
