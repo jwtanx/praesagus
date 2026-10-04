@@ -1,6 +1,6 @@
 ---
 name: praesagus-implementation
-description: Implement repository features from Researcher or Lead decisions with a small, explicit plan and focused tests. Use for Praesagus engineering tasks; this guides delivery and does not implement the proposed answer runtime by itself.
+description: Implement accepted Lead decisions with Trader or temporary research evidence with a small, explicit plan and focused tests. Use for Praesagus engineering tasks; this guides delivery and does not implement the proposed answer runtime by itself.
 license: MIT
 metadata:
   author: praesagus
@@ -13,13 +13,13 @@ metadata:
 
 ## Use when
 
-- A Researcher or Lead has supplied a report, decision, or scoped implementation task for this repository.
+- Trader, a temporary research subagent or Lead has supplied a report, decision, or scoped implementation task for this repository.
 - A feature or fix needs a focused test harness as part of implementation.
 
 ## Workflow
 
-1. Read the repository `AGENTS.md` and inspect the relevant code, tests, configuration, and report. Treat the Lead's decision as the scope and the Researcher's report as supporting evidence; do not silently broaden either.
-2. Summarize the decision as a short implementation plan: behavior to add or change, key constraints, and observable acceptance checks. Resolve routine details from the codebase. If a missing research or product decision materially affects correctness, identify the precise question and request clarification from the Researcher/Lead through the available workflow while continuing independent work.
+1. Read the repository `AGENTS.md` and inspect the relevant code, tests, configuration, and report. Treat the Lead's decision as the scope and Trader and temporary research reports as supporting evidence; do not silently broaden either.
+2. Summarize the decision as a short implementation plan: behavior to add or change, key constraints, and observable acceptance checks. Resolve routine details from the codebase. If a missing research or product decision materially affects correctness, identify the precise question and request financial clarification from Trader or scope clarification from Lead through the available workflow while continuing independent work.
 3. Make the smallest coherent change using existing interfaces and dependencies. Preserve unrelated working-tree changes and existing behavior outside the accepted scope.
 4. Add or update focused automated tests for each changed behavior. Prefer deterministic fixtures and mocked external services; tests must not need credentials, live data, or place orders. Cover the important rejection and failure paths for the feature, not just its happy path.
 5. Run the narrow relevant checks. Run broader checks when the change spans components or the repository requires them. Report exact commands and outcomes; distinguish checks not run from checks that failed.

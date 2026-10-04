@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-51",
+  "tags": {
+    "type": "skill",
+    "modules": [
+      "skills",
+      "harness",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-04",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-04/PRSG-51-agent-startup-and-spawn.md",
+  "objective": "Provide three role startup prompts and verified context/schedule takeover through spawn, preserving historical evidence and safety pauses",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "5e401dba25d0ba00adaba996078cf062a84c4e3e",
+  "allowed_paths": [
+    ".agents/skills/spawn",
+    "AGENTS.md",
+    "README.md",
+    "agent-operations/README.md",
+    "agent-operations/handoffs/README.md",
+    "agent-operations/handoffs/context.md",
+    "agent-operations/handoffs/messages.md",
+    "agent-operations/handoffs/records.md",
+    "agent-operations/handoffs/roles.json",
+    "agent-operations/handoffs/transfer.json",
+    "agent-operations/roles.json",
+    "agent-operations/schedules/README.md",
+    "agent-operations/schedules/lead-coordination.md",
+    "agent-operations/schedules/lead-daily-planning.md",
+    "agent-operations/schedules/resource-recovery.md",
+    "agent-operations/schedules/trader-daily-report.md",
+    "agent-operations/startup-prompts/engineer.md",
+    "agent-operations/startup-prompts/lead.md",
+    "agent-operations/startup-prompts/trader.md",
+    "docs/LEAD_WORKFLOW.md",
+    "plans/2026-10-04/PRSG-51-agent-startup-and-spawn.md",
+    "plans/2026-10-04/PRSG-51.harness.json",
+    "plans/README.md",
+    "scripts/planning/validate_ticket.py",
+    "skills/daily-market-brief/SKILL.md",
+    "skills/lead/SKILL.md",
+    "skills/lead/scripts/status.py",
+    "skills/praesagus-feature-planner/SKILL.md",
+    "skills/praesagus-feature-planner/references/ticket-harness.md",
+    "skills/praesagus-implementation/SKILL.md",
+    "skills/praesagus-project-lead/SKILL.md",
+    "skills/spawn/SKILL.md",
+    "skills/spawn/agents/openai.yaml",
+    "skills/spawn/references/transfer.md",
+    "tests/test_lead_status.py",
+    "tests/test_ticket_harness.py"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "artifacts/",
+    "connectors/",
+    "ingest/",
+    "infra/"
+  ],
+  "checks": [
+    {
+      "id": "regression",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_lead_status.py",
+        "tests/test_ticket_harness.py",
+        "tests/test_ticket_audit.py",
+        "tests/test_ticket_verification.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "221 passed in 19.06s; recovery +120 seconds and active/historical role validation covered.",
+        "Continuation replay: same exact four-test argv passed, 221 passed in 18.95s.",
+        "Final pre-push validation: python3 -m pytest -q tests/test_lead_status.py tests/test_ticket_harness.py tests/test_ticket_audit.py tests/test_ticket_verification.py tests/test_commit_hook.py:264 passed in23.85s. Independent Lead exact four-test replay:221 passed in19.02s."
+      ]
+    },
+    {
+      "id": "metadata",
+      "kind": "manual",
+      "description": "Skill metadata, local references and role configuration validation",
+      "status": "passed",
+      "evidence": [
+        "Current-chat adoption correction: spawn skill metadata passed; all changed/new Markdown references and JSON parsed; full supplied changed/new path scope validated; git diff --check passed. Earlier six-skill and focused221 tests retained; documentation-only correction did not change scripts/tests.",
+        "Final six skill quick_validate runs passed; all changed/new links and JSON/full Git scope plus git diff --check passed; local HEAD matched fetched origin/main before delivery."
+      ]
+    },
+    {
+      "id": "replay",
+      "kind": "manual",
+      "description": "Independent offline transfer failure replay",
+      "status": "passed",
+      "evidence": [
+        "Independent Sol 6.1 Low document replay covered busy Engineer/legacy Researcher, weekly2%, pending report confirmation and crash retry. No archive/activation on unresolved group cutover. Corrected inactive-preparation wording, durable accepted-held retirement state and group barrier; no live tool verification.",
+        "Final independent read-only full-scope review recommended acceptance as offline instruction delivery: crash-after-retirement receipt, fresh bootstrap, group failure barrier, safe paused takeover and legacy responsibilities coherent. Live API operations not tested.",
+        "Independent offline current-chat adoption replay passed all5 scenarios: idle Engineer source, already-registered Lead, all missing destinations, concurrent completed Lead takeover with keep-existing instruction, unknown Trader settings. No implicit creation, self-wait, self-message or self-archive; no substantive contradiction found. Live operations remain untested by this replay."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead independently reviews complete scope and accepts instructions; live migration deferred",
+      "status": "passed",
+      "evidence": [
+        "Registered Lead independently accepted complete36-path offline instruction delivery on2026-10-05 MYT via explicit returned review. Exact four-test replay221passed19.02s, full actual Git scope validate_ticket.validate, local links/JSON/canonical discovery and diff whitespace passed. Replayed current-chat/idempotent/all missing destinations/busy source/pending confirmation/crash/weekly2%/unknown battery and legacy ownership boundaries; no blocking finding. Live API atomicity/model controls/scheduler reliability not established by this delivery; historical live transfers occurred separately under prior version."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-51-D1",
+      "description": "Metadata, references and focused regressions pass",
+      "check_ids": [
+        "regression",
+        "metadata"
+      ],
+      "status": "done",
+      "evidence": [
+        "Prior221 focused regressions passed; corrected skill metadata/local references/JSON/full path scope and whitespace validation passed."
+      ]
+    },
+    {
+      "id": "PRSG-51-D2",
+      "description": "Independent replay and Lead acceptance",
+      "check_ids": [
+        "replay",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Registered Lead independently accepted complete36-path offline instruction delivery on2026-10-05 MYT via explicit returned review. Exact four-test replay221passed19.02s, full actual Git scope validate_ticket.validate, local links/JSON/canonical discovery and diff whitespace passed. Replayed current-chat/idempotent/all missing destinations/busy source/pending confirmation/crash/weekly2%/unknown battery and legacy ownership boundaries; no blocking finding. Live API atomicity/model controls/scheduler reliability not established by this delivery; historical live transfers occurred separately under prior version."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Registered Lead independently accepted complete36-path offline instruction delivery on2026-10-05 MYT via explicit returned review. Exact four-test replay221passed19.02s, full actual Git scope validate_ticket.validate, local links/JSON/canonical discovery and diff whitespace passed. Replayed current-chat/idempotent/all missing destinations/busy source/pending confirmation/crash/weekly2%/unknown battery and legacy ownership boundaries; no blocking finding. Live API atomicity/model controls/scheduler reliability not established by this delivery; historical live transfers occurred separately under prior version."
+    ]
+  }
+}

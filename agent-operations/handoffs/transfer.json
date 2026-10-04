@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "transaction_id": null,
+  "created_at": null,
+  "timezone": "Asia/Kuala_Lumpur",
+  "project_id": null,
+  "requested_roles": [],
+  "phase": "inventory",
+  "group_cutover_verified": false,
+  "roles": {},
+  "legacy_dependencies": [],
+  "schedule_backups": [],
+  "operations": [],
+  "blockers": [],
+  "next_safe_step": null
+}

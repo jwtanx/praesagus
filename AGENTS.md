@@ -30,10 +30,24 @@ Treat `docs/`, scripts, configuration, and tests as evidence of implemented beha
 - Preserve raw-source provenance and timestamps. Avoid destructive changes to stored data; use versioned or append-only outputs where appropriate.
 - Keep failures visible and bounded: validate inputs, handle upstream errors, use sensible timeouts/retries, and avoid claiming freshness or success without evidence.
 
+## Agent startup and replacement
+
+The permanent team is Lead, Trader and Engineer; Consultant is renamed Trader and Researcher is no longer a permanent role. Preserve historical ticket/commit ownership. The role configuration is [agent-operations/roles.json](agent-operations/roles.json).
+
+| Role | Read on startup |
+|---|---|
+| Lead | [agent-operations/startup-prompts/lead.md](agent-operations/startup-prompts/lead.md) |
+| Trader | [agent-operations/startup-prompts/trader.md](agent-operations/startup-prompts/trader.md) |
+| Engineer | [agent-operations/startup-prompts/engineer.md](agent-operations/startup-prompts/engineer.md) |
+
+Read only the explicitly assigned role's prompt; do not guess a role from repository access. Reuse [skills/spawn/SKILL.md](skills/spawn/SKILL.md) for human `/spawn lead|trader|engineer|all` requests (`$spawn` is native invocation). An invocation authorizes the requested verified checkpoint, adoption of the current human-started chat, role/schedule transfer and predecessor rename/archive; authoring the skill does not execute it. Single-role requests never create or fork an additional chat; all uses an explicit existing-destination map unless the human separately requests creation. Active IDs and private handoffs live outside Git. Verify successor readiness and schedule uniqueness before retirement; preserve human pauses and unrelated work.
+
+[Schedule definitions](agent-operations/schedules/README.md) cover Trader 08:00, Lead 06:00 direction report, Lead quarter-hour 09:00–05:45 next day and conditional battery/usage recovery. Existing schedules require explicit takeover; these files do not schedule themselves. Trader uses gpt-6.1-sol/medium; report research subagents use gpt-6.1-sol/low. Other bounded long-context/simple research uses gpt-6-luna/low and stronger research gpt-6.1-sol/low. Lead/Engineer keep current model settings. Each permanent role may spawn research help; financial judgment and acceptance remain with Trader, project integration with Lead.
+
 ## Project lead workflow
 
 - Use `skills/praesagus-feature-planner/SKILL.md` to prioritize new features and define an evidence-backed, measurable MVP.
-- Use `skills/praesagus-project-lead/SKILL.md` for material multi-step coordination. Delegate bounded evidence work to Researcher and accepted implementation work to Engineer; Lead owns scope, review, integration, and final decisions.
+- Use `skills/praesagus-project-lead/SKILL.md` for material multi-step coordination. Delegate financial judgment/reporting to Trader, bounded general research to temporary research subagents, and accepted implementation work to Engineer; Lead owns scope, review, integration, and final decisions.
 
 ### Agent-created skill registry and reuse
 
@@ -42,9 +56,9 @@ Treat `docs/`, scripts, configuration, and tests as evidence of implemented beha
 | Lead — created | `skills/praesagus-feature-planner/SKILL.md`, `skills/praesagus-project-lead/SKILL.md` | Prioritization, dated ticket specs, scope/evidence review and established-session delegation |
 | Lead — resource workflow | `skills/lead/SKILL.md` | `/lead` resource checks, approved schedule coordination and human-requested restoration; Lead chat only, not a runtime access-control boundary |
 | Engineer — created | `skills/praesagus-implementation/SKILL.md` | Accepted code changes, focused test harnesses, implementation handoff |
-| Researcher — created | `skills/research-brief/SKILL.md` | Market/product/API/technical research, sourced options and tradeoffs |
-| Consultant — created; Researcher also maintains reports | `skills/daily-market-brief/SKILL.md`, `skills/technical-trend-analysis/SKILL.md` | Timestamped news/catalyst briefs and data-supported technical trend review |
-| Consultant — amended existing skills | `skills/praesagus-trading-orchestrator/SKILL.md`, `skills/moomoo-skills/SKILL.md` | Financial specialist routing, risk/evidence controls and Moomoo interpretation |
+| Temporary research — reused | `skills/research-brief/SKILL.md` | Market/product/API/technical research, sourced options and tradeoffs |
+| Trader — financial research and reports | `skills/daily-market-brief/SKILL.md`, `skills/technical-trend-analysis/SKILL.md` | Timestamped news/catalyst briefs and data-supported technical trend review |
+| Trader — reuses financial skills | `skills/praesagus-trading-orchestrator/SKILL.md`, `skills/moomoo-skills/SKILL.md` | Financial specialist routing, risk/evidence controls and Moomoo interpretation |
 
 Before an applicable assignment, reuse and read the relevant role skill rather than recreate its workflow. Keep shared requirements in `skills/skill-template/SKILL.md`; load specialist finance skills only when relevant. Skill changes need metadata/reference validation and a relevant replayed behavioral case (for example missing data, future evidence, duplicate news, unsupported causal claims or failed delivery). Record evidence and limitations; skill validation alone does not prove analysis quality. Reuse tested failure cases as regressions and require human review before promoting prompt/model/risk-policy changes. These skills are instructions, not an autonomous runtime.
 
@@ -56,7 +70,7 @@ Before an applicable assignment, reuse and read the relevant role skill rather t
 
 - Store specs under `plans/YYYY-MM-DD/PRSG-N-title.md` with matching `.harness.json`; date is MYT creation date and PRSG numbers are globally unique. Keep stable checklist IDs in "When it's considered done" synchronized with JSON evidence/status.
 - Quick-glance tags in Markdown and JSON: type (`feature`, `bug`, `spike`, `refactor`, `chore`, `docs`, `test`, `skill`); modules (`backend`, `frontend`, `connectors`, `financial-data`, `market-research`, `alerting`, `observability`, `harness`, `skills`, `infra`, `docs`); one owner role; priority (`P0` actual critical incident, `P1` next committed, `P2` planned, `P3` later); effort (`XS` <0.5, `S` 0.5–2, `M` >2–7, `L` >7–15, `XL` >15 person-days plus range); impact (`low`, `medium`, `medium-high`, `high` with rationale).
-- Research/feasibility spikes go to Researcher; market/chart/news interpretation to Consultant; code bugs and accepted implementation to Engineer; prioritization/integration to Lead. Mixed tickets have one owner and disjoint delegated scopes. Bugs include reproduction/expected behavior and regressions; spikes include a timebox, decision question, sources/tradeoffs and reviewed findings.
+- Research/feasibility spikes belong to Lead or Engineer with temporary research help; market/chart/news interpretation to Trader; code bugs and accepted implementation to Engineer; prioritization/integration to Lead. Mixed tickets have one owner and disjoint delegated scopes. Bugs include reproduction/expected behavior and regressions; spikes include a timebox, decision question, sources/tradeoffs and reviewed findings.
 - Freeze accepted paths, protected paths, base SHA, checks and owner before implementation. Validate with `scripts/planning/validate_ticket.py` and review every ticket-owned changed path, including new/deleted files and both rename endpoints; preserve unrelated pre-existing edits. The checker validates supplied paths and declared evidence, not completeness of a Git diff or filesystem write prevention. Lead controls scope changes and independently accepts completion.
 
 ## Data, research, and trader safeguards

@@ -82,7 +82,7 @@ Daily-report-only commits must start with `[REPORT] YYYYMMDD`, using the report'
 
 The shared report viewer is `artifacts/daily-market-brief/index.html`; it renders structured dated JSON from the same directory and uses `reports.json` to populate a calendar date picker that disables dates without reports. Its main navigation includes a Financial Calendar with event and market-closure markers, keyboard/mouse details, and tap-to-open event notes on mobile. The Pages workflow runs the JSON validator before deployment and publishes the `artifacts` tree. Update the shared `artifacts/index.html` landing page as needed, keep JSON/index paths relative and same-origin, and verify both a current report and the date picker in the deployed mobile view. A successful push or commit does not itself prove deployment; verify the GitHub Pages Actions run and the live URL before reporting it.
 
-This skill describes how the active Codex task/agent generates a report when invoked. It does not create an 8:00 a.m. MYT schedule, run autonomously every day, or assign report generation to the `Researcher` chat. Researcher may provide a one-time research task when asked, but daily generation requires an explicitly configured automation or external scheduler and an available market-data/news workflow.
+This skill guides the active Trader and its Sol 6.1 Low research subagents when invoked. Trader uses Sol 6.1 Medium for final financial judgment and report acceptance. The intended 08:00 MYT schedule is defined in agent-operations/schedules/trader-daily-report.md and transferred through skills/spawn/SKILL.md; legacy Researcher ownership persists until verified takeover. These instructions do not create a schedule or guarantee execution.
 
 ## Moomoo inputs
 

@@ -45,7 +45,7 @@ def validate(manifest, root, changed=()):
             raise ValueError(field + ' is required')
     tags = manifest['tags']
     vocab = {'type': {'feature', 'bug', 'spike', 'refactor', 'chore', 'docs', 'test', 'skill'},
-             'owner_role': {'Lead', 'Engineer', 'Researcher', 'Consultant'},
+             'owner_role': {'Lead', 'Engineer', 'Trader', 'Researcher', 'Consultant'},
              'priority': {'P0', 'P1', 'P2', 'P3'},
              'effort_size': {'XS', 'S', 'M', 'L', 'XL'},
              'impact': {'low', 'medium', 'medium-high', 'high'}}

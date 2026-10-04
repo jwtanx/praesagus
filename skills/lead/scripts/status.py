@@ -109,7 +109,7 @@ def evaluate(data, battery_text, now):
         recovery_status = 'blocked'
     elif constraining:
         recovery_status = 'ready'
-        recovery = math.ceil(max(readings[name][1] for name in constraining)) + 60
+        recovery = math.ceil(max(readings[name][1] for name in constraining)) + 120
     else:
         recovery_status = 'not_required'
     return dict(battery_percent=percent,

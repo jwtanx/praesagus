@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "timezone": "Asia/Kuala_Lumpur",
+  "roles": [
+    {
+      "role": "Lead",
+      "startup_prompt": "agent-operations/startup-prompts/lead.md",
+      "model": null,
+      "reasoning_effort": null,
+      "schedules": [
+        "lead-daily-planning",
+        "lead-coordination",
+        "resource-recovery"
+      ]
+    },
+    {
+      "role": "Trader",
+      "startup_prompt": "agent-operations/startup-prompts/trader.md",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "medium",
+      "schedules": [
+        "trader-daily-report"
+      ]
+    },
+    {
+      "role": "Engineer",
+      "startup_prompt": "agent-operations/startup-prompts/engineer.md",
+      "model": null,
+      "reasoning_effort": null,
+      "schedules": []
+    }
+  ]
+}

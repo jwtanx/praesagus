@@ -64,11 +64,11 @@ def test_both_window_thresholds(five,weekly,action):
     assert result['action']==action and result['weekly_remaining_percent']==100-weekly
 
 
-def test_latest_constraining_reset_ceiling_plus_60():
+def test_latest_constraining_reset_ceiling_plus_120():
     payload=data(98);payload['windows']['weekly'].update(usedPercent=99,resetsAt=NOW.timestamp()+86400.25)
     result=probe.evaluate(payload,'29%;',NOW)
     assert result['constraining_windows']==['five_hour','weekly']
-    assert result['recovery_epoch']==int(NOW.timestamp())+86461 and result['recovery_status']=='ready'
+    assert result['recovery_epoch']==int(NOW.timestamp())+86521 and result['recovery_status']=='ready'
     assert result['reset_epoch']==NOW.timestamp()+3600
     assert result['weekly_reset_epoch']==NOW.timestamp()+86400.25
 
@@ -76,7 +76,7 @@ def test_latest_constraining_reset_ceiling_plus_60():
 def test_only_constraining_reset_used():
     result=probe.evaluate(data(98),'29%;',NOW)
     assert result['constraining_windows']==['five_hour']
-    assert result['recovery_epoch']==NOW.timestamp()+3660
+    assert result['recovery_epoch']==NOW.timestamp()+3720
 
 
 @pytest.mark.parametrize('reset',[None,True,float('nan'),float('inf'),NOW.timestamp(),NOW.timestamp()-1,1e100,'tomorrow'])

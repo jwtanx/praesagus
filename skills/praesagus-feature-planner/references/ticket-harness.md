@@ -16,14 +16,14 @@ Put a `Type · Modules · Owner · Priority · Effort · Impact` line directly b
 |---|---|
 | type | `feature`, `bug`, `spike`, `refactor`, `chore`, `docs`, `test`, `skill` |
 | modules | One or more: `backend`, `frontend`, `connectors`, `financial-data`, `market-research`, `alerting`, `observability`, `harness`, `skills`, `infra`, `docs` |
-| owner_role | `Lead`, `Engineer`, `Researcher`, `Consultant`; one accountable owner |
+| owner_role | `Lead`, `Engineer`, `Trader`; one accountable owner (legacy `Researcher`/`Consultant` remain valid for historical manifests) |
 | priority | `P0` current critical outage/security/data-loss issue; `P1` next committed work; `P2` planned; `P3` optional/later. Do not label speculative risk P0. |
 | effort_size | `XS` under 0.5 day, `S` 0.5–2, `M` over 2–7, `L` over 7–15, `XL` over 15; pair with positive low/high person-day estimate. Split XL delivery before assignment. |
 | impact | `low`, `medium`, `medium-high`, `high`; describe affected user/outcome and evidence confidence in the spec. Not a revenue/ROI calculation. |
 
 A `bug` includes reproducible actual versus expected behavior, affected versions/environment, severity and a regression test. A `spike` includes one decision question, timebox, three strongest options where viable, source evidence, tradeoffs and a decision brief; completion means a reviewed answer, not a production feature. Use modules to select relevant expertise and a bounded write set; tags alone do not authorize edits or external activity.
 
-Route research/provider/product/technical feasibility spikes to Researcher (`research-brief`); market interpretation/chart/news tasks and related skill extraction to Consultant (`daily-market-brief`, `technical-trend-analysis` and applicable orchestrator); backend/frontend/connector bugs or accepted implementations to Engineer (`praesagus-implementation`); prioritization, planning/docs and integration decisions to Lead (planner/project-lead). For mixed tickets choose one owner and define separate dependent assignments with disjoint write scopes. Do not assign the same path to two concurrent owners.
+Route research/provider/product/technical feasibility spikes to Lead/Engineer using temporary research subagents (`research-brief`); market interpretation/chart/news tasks and related skill extraction to Trader (`daily-market-brief`, `technical-trend-analysis` and applicable orchestrator); backend/frontend/connector bugs or accepted implementations to Engineer (`praesagus-implementation`); prioritization, planning/docs and integration decisions to Lead (planner/project-lead). For mixed tickets choose one owner and define separate dependent assignments with disjoint write scopes. Do not assign the same path to two concurrent owners.
 
 Use `schema_version: 1`, `ticket_key`, `tags`, `created_on`, `timezone`, `spec_path`, `objective`, `status`, `owner`, `reviewer`, `scope_status`, `base_sha`, `allowed_paths`, `protected_paths`, `checks`, `acceptance`, and `review`. States: planned/in_progress/review/complete/blocked. Scope: provisional/accepted. Active implementation needs accepted scope and a resolved 40-character Git base SHA; planned tickets may have null base.
 

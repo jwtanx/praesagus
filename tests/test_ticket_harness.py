@@ -80,3 +80,10 @@ def test_prefix_boundary():
 
 def test_valid_supplied_path():
     assert validator.validate(manifest(), ROOT, ['backend/catalyst_services.py']) == 'PRSG-1'
+
+
+@pytest.mark.parametrize('role', ['Lead', 'Engineer', 'Trader', 'Researcher', 'Consultant'])
+def test_active_and_historical_owner_roles(role):
+    item = manifest()
+    item['owner'] = item['tags']['owner_role'] = role
+    assert validator.validate(item, ROOT) == 'PRSG-1'

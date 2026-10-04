@@ -1,6 +1,6 @@
 # Praesagus delivery plans
 
-Planning baseline: 1 October 2026 (Asia/Kuala_Lumpur). Lead owns prioritization and acceptance; Engineer owns implementation; Researcher resolves provider/product uncertainty; Consultant reviews market semantics. Plans describe future behavior until implementation and tests establish completion.
+Planning baseline: 1 October 2026 (Asia/Kuala_Lumpur). Lead owns prioritization and acceptance; Engineer owns implementation; Lead/Engineer resolve provider/product uncertainty using temporary research subagents; Trader owns financial judgment and reports. Plans describe future behavior until implementation and tests establish completion.
 
 ## Ordered backlog
 
@@ -26,7 +26,7 @@ Estimates include focused tests, documentation, and Lead review for one engineer
 | PRSG-4 | feature | backend, frontend, connectors | Engineer | P2 | M: 3–5 days | medium |
 | PRSG-5 | feature | backend, frontend, alerting | Engineer | P2 | M: 4–7 days | high |
 
-Future research/feasibility tickets use `spike` and Researcher ownership; market-analysis spikes use Consultant ownership. Bugs include reproduction, severity and regression coverage. The planning skill defines all tag values and routing rules.
+New research/feasibility tickets use `spike` and Lead/Engineer ownership with temporary research help; market-analysis spikes use Trader ownership. Bugs include reproduction, severity and regression coverage. The planning skill defines all tag values and routing rules.
 
 ## Decision rationale
 
@@ -58,7 +58,9 @@ python3 scripts/planning/validate_ticket.py plans/2026-10-01/PRSG-1.harness.json
 
 The validator checks supplied paths and declared evidence, but does not collect a Git diff, run test commands, prevent edits, verify log truth, or implement the future answer runtime. Lead must compare the complete ticket diff against the frozen base, account for pre-existing dirty changes separately, and review evidence. Protected paths win. Future manifests have provisional scope until Lead accepts exact paths and freezes a base SHA before implementation.
 
-## Delivery record
+## Historical delivery record
+
+The IDs below are historical. Verify the private active-role registry for new assignments; use [spawn](../skills/spawn/SKILL.md) for replacement.
 
 - Engineer session: `01a0f1ee-92bc-7ba0-add1-02a5023a6dad`.
 - Researcher session: `01a0f1ec-b056-7a53-904e-46b944471262`.

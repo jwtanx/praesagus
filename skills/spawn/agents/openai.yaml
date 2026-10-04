@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spawn Praesagus Agent"
+  short_description: "Adopt this chat with verified context and schedules"
+  default_prompt: "Use $spawn lead to adopt this chat as Lead with a verified context and schedule handoff."

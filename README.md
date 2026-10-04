@@ -2,6 +2,16 @@
 
 Starter repo for the Praesagus market intelligence platform.
 
+## Agent startup and replacement
+
+See [agent operations](agent-operations/README.md), [handoff templates](agent-operations/handoffs/README.md) and [schedules](agent-operations/schedules/README.md).
+
+- Lead: [agent-operations/startup-prompts/lead.md](agent-operations/startup-prompts/lead.md)
+- Trader: [agent-operations/startup-prompts/trader.md](agent-operations/startup-prompts/trader.md)
+- Engineer: [agent-operations/startup-prompts/engineer.md](agent-operations/startup-prompts/engineer.md)
+
+Use [the spawn skill](skills/spawn/SKILL.md): `$spawn lead`, `$spawn trader`, `$spawn engineer` or `$spawn all`. `/spawn ROLE` is a natural-language alias. Single-role invocation adopts and renames the current human-started chat without creating another. For all, identify existing destination chats. Replacement summarizes verified context, reconciles schedules, then renames/archives predecessors after takeover. These instructions do not themselves create chats or migrate live schedules.
+
 ## Architecture
 
 ![Detailed Praesagus architecture diagram with source and infrastructure service marks](docs/praesagus-architecture.png)

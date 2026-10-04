@@ -1,0 +1,11 @@
+# Resource checkpoint and recovery
+
+Use fresh supported Codex usage limits for five-hour and weekly windows from the same bucket/response, plus pmset battery. Reuse skills/lead/scripts/status.sh with sanitized schema-2 input; never scrape auth files. Unknown/stale/future readings stop new delegation. Other account-limit blockers remain binding.
+
+- Battery <=8%, including charging: checkpoint, inventory verified Lead schedules (including recovery wakes), save complete private backup with checksum/progress, read back, then remove only confirmed Lead schedules. Save/readback failure means delete nothing. Preserve Trader schedules. No automatic battery restoration.
+- Either usage window <=5% remaining: checkpoint before new work.
+- Either window <=2%: stop expensive work/delegation, preserve dirty ownership and exact next steps; pause confirmed Lead recurring schedules after saving original settings/status. Create exactly one verified one-time recovery wake at ceil(latest constraining reset)+120 seconds only when required metadata/battery are known safe. Unknown reset means no guessed wake. Reuse an existing matching wake; never substitute a recurring recovery timer. Product confirmation may still be required; disclose pending status.
+
+Standing human authorization covers this Lead save/pause/recovery procedure, not usage-credit redemption. Commit/push only independently reviewed ticket changes under existing authority; preserve unfinished edits without claiming acceptance. Use `/Users/jwtan/.codex/lead-state/context.md`, schedules.md and lead-schedules-backup.md. Merge unfinished backups; never overwrite them blindly.
+
+At a usage wake recheck all windows and battery, load checkpoint and resume only eligible schedules within time guards. At human restore or a spawn takeover with a saved battery backup, require battery >8%, both windows >5%, known metadata and no other exhausted limit. Verify integrity/ownership, reconcile surviving IDs, restore only removed entries with original status, skip expired one-time wakes, record each result/new ID and verify before removing the temporary backup. A transfer cannot use safety-paused state as permission to activate work. Keep receipts on partial failure and resume idempotently.
