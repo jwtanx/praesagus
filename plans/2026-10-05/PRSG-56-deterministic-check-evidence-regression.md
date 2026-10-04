@@ -11,7 +11,7 @@ Only tests/test_ticket_harness.py functional change plus thisspec/manifest. Para
 
 ## When it's considered done
 - [x] PRSG-56-D1: Failing-before/rejection+acceptance regressions and full local suite pass.
-- [ ] PRSG-56-D2: Lead independently reviews scope, verifies tests/push and observes remoteCI result; remote failure remains separately diagnosed if different.
+- [x] PRSG-56-D2: Lead independently reviews scope, verifies tests/push and observes remoteCI result; remote failure remains separately diagnosed if different.
 
 
 ## Engineer implementation and environment
@@ -63,3 +63,7 @@ xmltodict==1.0.4
 Full-suite invocation is `PATH=/tmp/praesagus-ci-repro-20261005/bin:$PATH AWS_EC2_METADATA_DISABLED=true AWS_ACCESS_KEY_ID=testing AWS_SECRET_ACCESS_KEY=testing AWS_DEFAULT_REGION=us-east-1 PRAESAGUS_API_KEY= /tmp/praesagus-ci-repro-20261005/bin/python -m pytest -q`. AWS values are synthetic test values; metadata lookup disabled. No repository dependency/workflow changes. CI's observed exit2 differs from the reproduced local exit1, so remote cause/parity is not established until Lead inspects the new remote run. No skip or weakened validator, no PRSG-1 evidence removed. PRSG-55 plans preserved. Lead acceptance/remote verification and D2 remain pending; no commit/push by Engineer.
 
 Final full replay after standalone-check refinement:1096 passed,11 warnings in31.49s, exit0. Three-path manifest validation and `git diff --check` passed. D1 demonstrated; D2 and Lead review remain pending.
+
+## Lead final acceptance — 2026-10-05 MYT
+
+Lead independently reviewed ticket-owned paths and local regressions. Reviewed code tip39643265f21b206b5035d61c99bbcf58cf82afe6 pushed and remote main readback matched. GitHub Actions CI37243117657 completed success; Run tests and Replay ticket verification safety cases independently confirmed successful from supported public job metadata. URL https://github.com/jwtanx/praesagus/actions/runs/37243117657 . Local full push hook1155passed11warnings28.32s exit0. Selected local environment remains distinct from canonical Poetry/Linux CI; both now pass. Previous remote exit2 traceback was inaccessible, so exact original remote root cause is not independently asserted; synthetic package-shadowing collection regression proves the fixed defect. No test/validator weakening or skip.

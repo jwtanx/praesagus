@@ -19,7 +19,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-05/PRSG-56-deterministic-check-evidence-regression.md",
   "objective": "Make missing-evidence regression independent of live ticket progress",
-  "status": "review",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -57,8 +57,10 @@
       "id": "review",
       "kind": "manual",
       "description": "Lead scope/tests/push/remoteCI review",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed ticket-owned paths and local regressions. Reviewed code tip39643265f21b206b5035d61c99bbcf58cf82afe6 pushed and remote main readback matched. GitHub Actions CI37243117657 completed success; Run tests and Replay ticket verification safety cases independently confirmed successful from supported public job metadata. URL https://github.com/jwtanx/praesagus/actions/runs/37243117657 . Local full push hook1155passed11warnings28.32s exit0. Selected local environment remains distinct from canonical Poetry/Linux CI; both now pass. Previous remote exit2 traceback was inaccessible, so exact original remote root cause is not independently asserted; synthetic package-shadowing collection regression proves the fixed defect. No test/validator weakening or skip."
+      ]
     }
   ],
   "acceptance": [
@@ -81,12 +83,16 @@
       "check_ids": [
         "review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed ticket-owned paths and local regressions. Reviewed code tip39643265f21b206b5035d61c99bbcf58cf82afe6 pushed and remote main readback matched. GitHub Actions CI37243117657 completed success; Run tests and Replay ticket verification safety cases independently confirmed successful from supported public job metadata. URL https://github.com/jwtanx/praesagus/actions/runs/37243117657 . Local full push hook1155passed11warnings28.32s exit0. Selected local environment remains distinct from canonical Poetry/Linux CI; both now pass. Previous remote exit2 traceback was inaccessible, so exact original remote root cause is not independently asserted; synthetic package-shadowing collection regression proves the fixed defect. No test/validator weakening or skip."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed ticket-owned paths and local regressions. Reviewed code tip39643265f21b206b5035d61c99bbcf58cf82afe6 pushed and remote main readback matched. GitHub Actions CI37243117657 completed success; Run tests and Replay ticket verification safety cases independently confirmed successful from supported public job metadata. URL https://github.com/jwtanx/praesagus/actions/runs/37243117657 . Local full push hook1155passed11warnings28.32s exit0. Selected local environment remains distinct from canonical Poetry/Linux CI; both now pass. Previous remote exit2 traceback was inaccessible, so exact original remote root cause is not independently asserted; synthetic package-shadowing collection regression proves the fixed defect. No test/validator weakening or skip."
+    ]
   }
 }
