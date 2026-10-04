@@ -16,6 +16,8 @@ if [ -z "$current" ]; then
         fi
     done
 fi
-chmod +x "$root/.githooks/commit-msg"
+for hook in commit-msg pre-commit pre-push run-tests; do
+    chmod +x "$root/.githooks/$hook"
+done
 git config --local core.hooksPath .githooks
-echo 'Enabled commit-title and staged harness-filename validation for this checkout.'
+echo 'Enabled full-test commit/push gates, commit-title and staged harness-filename validation for this checkout.'

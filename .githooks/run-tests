@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+python=$(git config --get praesagus.testPython || true)
+python=${python:-python3}
+if ! command -v "$python" >/dev/null 2>&1; then
+    echo 'Test gate: Python interpreter unavailable. Configure git config --local praesagus.testPython /absolute/path/to/python (Python >=3.11 with pytest).' >&2
+    exit 1
+fi
+if ! "$python" -c 'import importlib.util, sys; sys.exit(0 if sys.version_info >= (3, 11) and importlib.util.find_spec("pytest") is not None else 1)'; then
+    echo 'Test gate: require Python >=3.11 with pytest. Prepare the environment, then configure git config --local praesagus.testPython /absolute/path/to/python.' >&2
+    exit 1
+fi
+exec "$python" -m pytest -q

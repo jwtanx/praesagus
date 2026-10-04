@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-57",
+  "tags": {
+    "type": "chore",
+    "modules": [
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-57-test-gates-before-commit-push.md",
+  "objective": "Require full tests in versioned commit and push hooks",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "35e3e315fb89be28b73e77b268086f19a52a9b38",
+  "allowed_paths": [
+    ".githooks/pre-commit",
+    ".githooks/pre-push",
+    ".githooks/run-tests",
+    "scripts/install_git_hooks.sh",
+    "tests/test_test_hooks.py",
+    "docs/TEST_HOOKS.md",
+    "plans/2026-10-05/PRSG-57-test-gates-before-commit-push.md",
+    "plans/2026-10-05/PRSG-57.harness.json",
+    "AGENTS.md"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "infra/",
+    ".github/",
+    ".githooks/commit-msg",
+    "scripts/planning/validate_ticket.py",
+    "pyproject.toml",
+    "requirements.txt"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "manual",
+      "description": "Focused hook failure fixtures and supported3.11fullsuite",
+      "status": "passed",
+      "evidence": [
+        "Focused isolated Git hook/title regressions: /tmp/praesagus-ci-repro-20261005/bin/python -m pytest -q tests/test_test_hooks.py tests/test_commit_hook.py \u201453passed11.62s exit0. Full isolated3.11.17 suite \u20141106passed11warnings35.39s exit0, exact synthetic env/PATH invocation and selected dependency limitation recorded in spec.",
+        "Initial3failed50passed fixture-only run corrected by copying unchanged staged checker dependency and delegating checker to actual interpreter, checking pytest invocation without assuming last call. Fixtures prove real commit/push blocking/allowing, missing prerequisites, root argv/exit37, configured path spaces/active fallback, modes/title gate/customhook preservation; no live providers.",
+        "Nine ticket paths reviewed; actualcheckout configuration/install/commit/push not performed by Engineer. PRSG55/56 edits preserved separately; D2/Lead activation review remains pending; workingtree/bypass/independentCI limitations documented."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead scope and actualcheckout activation/test review",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed all nine paths and unchanged commit-msg; focused hook/title replay: 53 passed in 10.31s, exit0. Configured checkout-local praesagus.testPython=/tmp/praesagus-ci-repro-20261005/bin/python and installer core.hooksPath=.githooks verified by readback. Actual .githooks/pre-push with documented synthetic AWS environment: 1106 passed, 11 warnings in35.88s, exit0; /tmp/PRSG-57-lead-real-hook.log. Current working-tree coverage, separate CI and temporary runtime limitations retained."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-57-D1",
+      "description": "Hooktests",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Focused isolated Git hook/title regressions: /tmp/praesagus-ci-repro-20261005/bin/python -m pytest -q tests/test_test_hooks.py tests/test_commit_hook.py \u201453passed11.62s exit0. Full isolated3.11.17 suite \u20141106passed11warnings35.39s exit0, exact synthetic env/PATH invocation and selected dependency limitation recorded in spec.",
+        "Initial3failed50passed fixture-only run corrected by copying unchanged staged checker dependency and delegating checker to actual interpreter, checking pytest invocation without assuming last call. Fixtures prove real commit/push blocking/allowing, missing prerequisites, root argv/exit37, configured path spaces/active fallback, modes/title gate/customhook preservation; no live providers.",
+        "Nine ticket paths reviewed; actualcheckout configuration/install/commit/push not performed by Engineer. PRSG55/56 edits preserved separately; D2/Lead activation review remains pending; workingtree/bypass/independentCI limitations documented."
+      ]
+    },
+    {
+      "id": "PRSG-57-D2",
+      "description": "Independentactivationreview",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed all nine paths and unchanged commit-msg; focused hook/title replay: 53 passed in 10.31s, exit0. Configured checkout-local praesagus.testPython=/tmp/praesagus-ci-repro-20261005/bin/python and installer core.hooksPath=.githooks verified by readback. Actual .githooks/pre-push with documented synthetic AWS environment: 1106 passed, 11 warnings in35.88s, exit0; /tmp/PRSG-57-lead-real-hook.log. Current working-tree coverage, separate CI and temporary runtime limitations retained."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed all nine paths and unchanged commit-msg; focused hook/title replay: 53 passed in 10.31s, exit0. Configured checkout-local praesagus.testPython=/tmp/praesagus-ci-repro-20261005/bin/python and installer core.hooksPath=.githooks verified by readback. Actual .githooks/pre-push with documented synthetic AWS environment: 1106 passed, 11 warnings in35.88s, exit0; /tmp/PRSG-57-lead-real-hook.log. Current working-tree coverage, separate CI and temporary runtime limitations retained."
+    ]
+  }
+}
