@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-58",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-58-test-package-resolution.md",
+  "objective": "Resolve local test helper imports despite competing installed tests package",
+  "status": "review",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "81037cf3d3749643c4bd17486f7f2b9468611cbf",
+  "allowed_paths": [
+    "tests/__init__.py",
+    "tests/test_package_resolution.py",
+    "plans/2026-10-05/PRSG-58-test-package-resolution.md",
+    "plans/2026-10-05/PRSG-58.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "infra/",
+    ".github/",
+    "scripts/planning/validate_ticket.py",
+    "pyproject.toml",
+    "requirements.txt"
+  ],
+  "checks": [
+    {
+      "id": "tests",
+      "kind": "manual",
+      "description": "Synthetic package collision collection and focused/full3.11 regression",
+      "status": "passed",
+      "evidence": [
+        "Fresh competing-package collection regression failed before marker:1failed0.24s, nested pytest collection exit2 ModuleNotFoundError tests.test_daily_report_projection. /tmp/PRSG-58-before.log. Minimal tests/__init__.py marker then resolves ordinary local package; fresh subprocess checks local package/helper paths and collected IDs match unshadowed baseline.",
+        "Persistent CPython3.11.17 /Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python: focused tests/test_package_resolution.py tests/test_daily_quote_report.py \u201437passed0.78s exit0; full pytest \u20141155passed11warnings37.70s exit0. Exact commands/synthetic env/log paths in spec. Not canonical fullPoetry/Linux environment parity.",
+        "Four-path manifest validation/diffcheck passed. PRSG55/AGENTS work preserved; no workflow/dependency/helper duplication/skip/commit/push. Remote37242245608traceback unavailable; same-rootcause association remains hypothesis until independent Lead verification."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead independent scope/replay and remote CI review",
+      "status": "pending",
+      "evidence": [
+        "Lead independently reviewed all four paths and replayed focused37passed1.04s exit0 using persistent3.11 with --tb=short. Synthetic shadowing before exit2 and ordinary local package resolution after independently verified. RemoteCI result still pending; no root-cause/complete claim."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-58-D1",
+      "description": "Deterministic helper collection",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Fresh competing-package collection regression failed before marker:1failed0.24s, nested pytest collection exit2 ModuleNotFoundError tests.test_daily_report_projection. /tmp/PRSG-58-before.log. Minimal tests/__init__.py marker then resolves ordinary local package; fresh subprocess checks local package/helper paths and collected IDs match unshadowed baseline.",
+        "Persistent CPython3.11.17 /Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python: focused tests/test_package_resolution.py tests/test_daily_quote_report.py \u201437passed0.78s exit0; full pytest \u20141155passed11warnings37.70s exit0. Exact commands/synthetic env/log paths in spec. Not canonical fullPoetry/Linux environment parity.",
+        "Four-path manifest validation/diffcheck passed. PRSG55/AGENTS work preserved; no workflow/dependency/helper duplication/skip/commit/push. Remote37242245608traceback unavailable; same-rootcause association remains hypothesis until independent Lead verification."
+      ]
+    },
+    {
+      "id": "PRSG-58-D2",
+      "description": "Independent review and remote CI",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
