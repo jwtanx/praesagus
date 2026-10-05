@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-01/PRSG-21-jev-classification-research.md",
   "objective": "Compare Jev alternatives and plan input-specific market classification with Consultant",
-  "status": "review",
+  "status": "complete",
   "owner": "Researcher",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -48,7 +48,8 @@
       "description": "Researcher reviews primary-source shortlist and incorporates completed Consultant input-model findings",
       "status": "passed",
       "evidence": [
-        "2026-10-01 20:11 MYT: compiled docs/research/PRSG-21-jev-classification.md from official TypeSafe docs, maintainer repositories/model cards and public GitHub API snapshots, plus Consultant completed brief. Self-review only; no benchmark, model training or implementation executed."
+        "2026-10-01 20:11 MYT: compiled docs/research/PRSG-21-jev-classification.md from official TypeSafe docs, maintainer repositories/model cards and public GitHub API snapshots, plus Consultant completed brief. Self-review only; no benchmark, model training or implementation executed.",
+        "2026-10-05 MYT Engineer bounded public-source audit and documentation correction: appended dated current-source clarification only, preserving Oct1 prices/stars/activity/conditional rankings. Current Kev README distinguishes small4B/0.8B ID-development temperature fitting from larger held-out datasets; no finance/OOD calibration inference. Laya Englishcard reports weak base typed-decisions versus benchmark-finetuned checkpoint and512token total option/state budget; pinned checkpoint/task/chunking/calibration required. TypeSafe identity/texttyped/version/math/time sources, Laya/Kev code+card licensing, SemIf MIT/upstream separation, sklearn calibration/TimeSeriesSplit reopened. FinBERT weightlicense unresolved. Failed rawSemIfmain/LICENSE resolvedviaactualmaster; LayaGitHubAPI failed but repo/license/card accessible. No snapshot re-verification, benchmark, model/security/license approval or classifier selection; no tests/models/downloads/paid/provider access/commit/push. Current humanMoomoo/privateportfolio/provisionalwidget priorities retained. Lead final acceptance pending."
       ]
     },
     {
@@ -75,8 +76,10 @@
       "id": "lead-review",
       "kind": "manual",
       "description": "Lead independently reviews sources, scope, Consultant integration and pilot decision",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT Lead final research acceptance: independently read original brief/spec/manifest and all three correction diffs; reopened official TypeSafe models, SemIf repository, Kev README exact calibration statement (line453 at review) and Laya English card Honest Limits/token budget. Dated source addendum correctly limits unsupported zero-shot/calibration claims and preserves history. Accept research deliverable and documentation correction only: no classifier, pilot or model approval; no financial-quality, rights, production-baseline or savings claim. Existing unresolved FinBERT weight rights, source timing/failure limits and hardware/data/checkpoint/calibration/pilot decisions retained. Findings addendum unchanged; delivery is next, not automatic feature selection. No Engineer commit/push."
+      ]
     }
   ],
   "acceptance": [
@@ -88,13 +91,18 @@
         "metadata",
         "lead-review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Documentation correction delivered for Lead review; D1 remains pending. 2026-10-05 MYT Engineer bounded public-source audit and documentation correction: appended dated current-source clarification only, preserving Oct1 prices/stars/activity/conditional rankings. Current Kev README distinguishes small4B/0.8B ID-development temperature fitting from larger held-out datasets; no finance/OOD calibration inference. Laya Englishcard reports weak base typed-decisions versus benchmark-finetuned checkpoint and512token total option/state budget; pinned checkpoint/task/chunking/calibration required. TypeSafe identity/texttyped/version/math/time sources, Laya/Kev code+card licensing, SemIf MIT/upstream separation, sklearn calibration/TimeSeriesSplit reopened. FinBERT weightlicense unresolved. Failed rawSemIfmain/LICENSE resolvedviaactualmaster; LayaGitHubAPI failed but repo/license/card accessible. No snapshot re-verification, benchmark, model/security/license approval or classifier selection; no tests/models/downloads/paid/provider access/commit/push. Current humanMoomoo/privateportfolio/provisionalwidget priorities retained. Lead final acceptance pending.",
+        "2026-10-05 MYT Lead final research acceptance: independently read original brief/spec/manifest and all three correction diffs; reopened official TypeSafe models, SemIf repository, Kev README exact calibration statement (line453 at review) and Laya English card Honest Limits/token budget. Dated source addendum correctly limits unsupported zero-shot/calibration claims and preserves history. Accept research deliverable and documentation correction only: no classifier, pilot or model approval; no financial-quality, rights, production-baseline or savings claim. Existing unresolved FinBERT weight rights, source timing/failure limits and hardware/data/checkpoint/calibration/pilot decisions retained. Findings addendum unchanged; delivery is next, not automatic feature selection. No Engineer commit/push."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "2026-10-05 MYT Lead final research acceptance: independently read original brief/spec/manifest and all three correction diffs; reopened official TypeSafe models, SemIf repository, Kev README exact calibration statement (line453 at review) and Laya English card Honest Limits/token budget. Dated source addendum correctly limits unsupported zero-shot/calibration claims and preserves history. Accept research deliverable and documentation correction only: no classifier, pilot or model approval; no financial-quality, rights, production-baseline or savings claim. Existing unresolved FinBERT weight rights, source timing/failure limits and hardware/data/checkpoint/calibration/pilot decisions retained. Findings addendum unchanged; delivery is next, not automatic feature selection. No Engineer commit/push."
+    ]
   },
   "research_evidence": {
     "reviewed_at": "2026-10-01T20:11:39+08:00",
@@ -112,6 +120,22 @@
       "https://huggingface.co/jaredpalmer/kev-4b",
       "https://github.com/huggingface/setfit",
       "https://scikit-learn.org/stable/modules/calibration.html"
+    ]
+  },
+  "correction_scope": {
+    "accepted_on": "2026-10-05",
+    "base_sha": "c31b6bde28e47a4839a0861888c04831c3550d13",
+    "owner": "Engineer",
+    "allowed_paths": [
+      "docs/research/PRSG-21-jev-classification.md",
+      "plans/2026-10-01/PRSG-21-jev-classification-research.md",
+      "plans/2026-10-01/PRSG-21.harness.json"
+    ],
+    "status": "accepted",
+    "limitations": "Dated current-source addendum only; original base/date/historical Researcher owner/research_evidence retained. No model selection, implementation or final acceptance. All other paths protected; no tests/downloads/paid/provider access/commit/push.",
+    "evidence": [
+      "2026-10-05 MYT Engineer bounded public-source audit and documentation correction: appended dated current-source clarification only, preserving Oct1 prices/stars/activity/conditional rankings. Current Kev README distinguishes small4B/0.8B ID-development temperature fitting from larger held-out datasets; no finance/OOD calibration inference. Laya Englishcard reports weak base typed-decisions versus benchmark-finetuned checkpoint and512token total option/state budget; pinned checkpoint/task/chunking/calibration required. TypeSafe identity/texttyped/version/math/time sources, Laya/Kev code+card licensing, SemIf MIT/upstream separation, sklearn calibration/TimeSeriesSplit reopened. FinBERT weightlicense unresolved. Failed rawSemIfmain/LICENSE resolvedviaactualmaster; LayaGitHubAPI failed but repo/license/card accessible. No snapshot re-verification, benchmark, model/security/license approval or classifier selection; no tests/models/downloads/paid/provider access/commit/push. Current humanMoomoo/privateportfolio/provisionalwidget priorities retained. Lead final acceptance pending.",
+      "2026-10-05 MYT Lead final research acceptance: independently read original brief/spec/manifest and all three correction diffs; reopened official TypeSafe models, SemIf repository, Kev README exact calibration statement (line453 at review) and Laya English card Honest Limits/token budget. Dated source addendum correctly limits unsupported zero-shot/calibration claims and preserves history. Accept research deliverable and documentation correction only: no classifier, pilot or model approval; no financial-quality, rights, production-baseline or savings claim. Existing unresolved FinBERT weight rights, source timing/failure limits and hardware/data/checkpoint/calibration/pilot decisions retained. Findings addendum unchanged; delivery is next, not automatic feature selection. No Engineer commit/push."
     ]
   }
 }

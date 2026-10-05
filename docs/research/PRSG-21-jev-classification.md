@@ -80,3 +80,86 @@ Lead decisions: (1) approve the narrow text pilot and frozen success gate; (2) c
 ## Evidence limitations
 
 Sources are mutable primary maintainer/vendor pages retrieved on 1 October 2026 via web search/open and public GitHub API. Exact publication times are unknown except explicit dates above; individual web request timestamps were not instrumented. API observation times were recorded by research agents. Repository/code/card inspection is not security, licensing counsel, operational maturity or model-quality validation. No market data was purchased, models trained, benchmarks executed or production files changed. Lead review remains pending.
+
+## Current-source clarification — 5 October 2026 MYT
+
+Engineer reopened the public primary sources below for a bounded readiness audit;
+Lead authorized this addendum, with final research acceptance still pending.
+The October 1 prices, stars, activity dates, findings and conditional ranking above
+remain **historical reported snapshots**, not current measurements or model
+selection. Mutable pages cannot retrospectively establish their October 1 state.
+No models were downloaded, executed or selected, and no benchmarks were run.
+
+Two qualifiers materially limit the historical direct-replacement recommendation:
+
+- **Kev calibration:** the [current maintainer README](https://github.com/jaredpalmer/kev)
+  distinguishes the smaller Kev-4B/0.8B temperatures fitted on in-distribution
+  development sets from larger models fitted on held-out datasets. The historical
+  shorthand “held-out temperature calibration” must not imply unseen-source or
+  finance calibration for those smaller checkpoints. Their [4B](https://huggingface.co/jaredpalmer/kev-4b)
+  and [0.8B cards](https://huggingface.co/jaredpalmer/kev-0.8b) identify adapter/head
+  and base-model licensing separately; the pinned deployed revision and its
+  training-data notices still need review. Maintainer evaluations are not an
+  independent Praesagus benchmark.
+- **Laya checkpoint and input budget:** the [English model card](https://huggingface.co/convaiinnovations/laya)
+  reports near-chance base-checkpoint typed decisions below its majority control;
+  its stronger reported typed-decision result belongs to a benchmark-fine-tuned
+  checkpoint. The English base defaults to **512 tokens including the option
+  budget**, so whole filings cannot be assumed to fit. This is a maintainer
+  report, not locally reproduced evidence. Pin the exact checkpoint/task and
+  assess option/state allocation, truncation or chunking, language coverage and
+  independent calibration before any selection. The [maintainer README](https://github.com/NandhaKishorM/laya)
+  also reports confidently wrong non-Latin-script behavior; a confidence threshold
+  alone cannot establish safe multilingual routing.
+
+The audit reopened [TypeSafe's introduction](https://docs.typesafe.ai/introduction),
+[model documentation](https://docs.typesafe.ai/models),
+[jaggedness](https://docs.typesafe.ai/model-jaggedness/jev-1.13) and
+[confidence](https://docs.typesafe.ai/confidence). They support the vendor identity,
+typed/text-only interface, version pinning and arithmetic/date limitations.
+[Jevai.net](https://jevai.net/) still links to a third-party API site; affiliation
+with TypeSafe remains unverified. No price or throughput term from the dated
+comparison is promoted to a current procurement quote.
+
+Laya's [code license](https://github.com/NandhaKishorM/laya/blob/main/LICENSE)
+and English card identify Apache-2.0. Kev's
+[code license](https://github.com/jaredpalmer/kev/blob/main/LICENSE) and smaller
+cards identify Apache-2.0, with separate base/data notices to preserve.
+[SemIf's maintainer repository](https://github.com/TheoLeeCJ/SemIf-OpenJev)
+explicitly distinguishes its interface pattern from Jev's undisclosed training;
+its [MIT code license](https://github.com/TheoLeeCJ/SemIf-OpenJev/blob/master/LICENSE)
+does not cover all upstream weights. The attempted raw SemIf `main/LICENSE` URL
+failed in the browser tool; following the repository's actual `master/LICENSE`
+link resolved the license. The Laya public GitHub API request also failed in this
+audit, while its repository, license and model card were accessible. Neither
+failure changes or re-verifies the original star/activity snapshots.
+
+The [FinBERT checkpoint card](https://huggingface.co/ProsusAI/finbert) still did not
+expose an explicit weight license in this review; **weight rights remain
+unresolved**, independent of its code license. Reading repository/card license
+claims is not legal approval, security review or operational-maturity proof.
+
+The evaluation proposal remains suitable research input: a frozen reviewed
+corpus, clustered chronological train/calibration/test windows, catalyst misses,
+abstention and total cost at matched error/coverage. Reopened
+[scikit-learn calibration guidance](https://scikit-learn.org/stable/modules/calibration.html)
+supports independent calibration data; [TimeSeriesSplit](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html)
+requires equally spaced samples for comparable fold metrics and does not itself
+purge irregular overlapping event/outcome labels. The 500–1,000-example pilot is
+an estimate, not demonstrated adequacy.
+
+Still required before a pilot: Lead-approved taxonomy and numerical recall,
+coverage/error, latency and cost gates; reviewed source archives/labels and data
+rights; pinned code/checkpoint/base/data-license review; hardware memory/precision
+and context budgets; English/US/MY language slices; and privacy terms plus an
+explicit budget if a paid Jev comparison is approved. A price experiment needs
+separate point-in-time history, horizons, neutral bands and untouched outcomes.
+There is **no zero-shot Jev parity, predictive performance or model approval**
+established here. Current human priorities remain Moomoo read-only news/metrics,
+private portfolio and a provisional hosted TradingView widget; this research does
+not authorize classifier implementation or change that direction.
+
+Public-page retrieval date: 2026-10-05 MYT; exact per-request/publication timestamps
+were not instrumented. Claims above are source-attributed current-page statements
+or explicit evaluation requirements, not experiments. No repository code, test,
+model, dependency, paid service or live provider changes were made for this audit.
