@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-59",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-59-stable-acceptance-regressions.md",
+  "objective": "Keep acceptance validator regressions independent of live ticket lifecycle",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "72160e2222cb7bad18125d7649a159b60a0c2e8b",
+  "allowed_paths": [
+    "tests/test_ticket_harness.py",
+    "plans/2026-10-05/PRSG-59-stable-acceptance-regressions.md",
+    "plans/2026-10-05/PRSG-59.harness.json"
+  ],
+  "protected_paths": [
+    "scripts/planning/validate_ticket.py",
+    "plans/2026-10-01/",
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "infra/",
+    ".github/",
+    "AGENTS.md"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_ticket_harness.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT supported Python3.11.17: before correction python3 -m pytest -q tests/test_ticket_harness.py at root failed1/passed56 in0.09s: checklist mismatch DID NOT RAISE with PRSG-1 D1 already done. External temporary fully accepted spec/manifest probe validated PRSG-1 then original completion test failed DID NOT RAISE. After correction same focused command58passed0.09s; repeated after authorized PRSG-1 final acceptance58passed0.09s. Controlled valid fixtures assert validator acceptance first, explicitly set review pending for complete rejection, and invert pending/done status against matching temporary Markdown for both mismatch directions. Live PRSG-1 evidence not altered by tests; validator unchanged."
+      ]
+    },
+    {
+      "id": "scope",
+      "kind": "manual",
+      "description": "Validate manifest and exactly three ticket-owned paths; preserve PRSG-1 edits",
+      "status": "passed",
+      "evidence": [
+        "Frozen three-path metadata validation and git diff --check passed; ticket-owned changes are those three paths plus two disjoint previously authorized PRSG-1 metadata paths. Concurrent daily-market-brief reports.json and new 2026-10-05 report/evidence paths appeared during final validation; preserved without review or edits. No validator/application edits, skips, removed assertions, commit or push."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead independent scope and integration acceptance",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT Lead acceptance: independently reviewed all three PRSG-59 owned paths, unchanged validator and controlled valid-fixture rejection cases. Independent focused python3 -m pytest -q tests/test_ticket_harness.py: 58 passed in 0.08s. D2 accepted; Lead will integrate PRSG-59 then PRSG-1 separately. No Engineer commit/push; full hook/remote CI remain integration evidence."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-59-D1",
+      "description": "Stable before/after controlled acceptance regressions",
+      "check_ids": [
+        "focused",
+        "scope"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-05 MYT supported Python3.11.17: before correction python3 -m pytest -q tests/test_ticket_harness.py at root failed1/passed56 in0.09s: checklist mismatch DID NOT RAISE with PRSG-1 D1 already done. External temporary fully accepted spec/manifest probe validated PRSG-1 then original completion test failed DID NOT RAISE. After correction same focused command58passed0.09s; repeated after authorized PRSG-1 final acceptance58passed0.09s. Controlled valid fixtures assert validator acceptance first, explicitly set review pending for complete rejection, and invert pending/done status against matching temporary Markdown for both mismatch directions. Live PRSG-1 evidence not altered by tests; validator unchanged."
+      ]
+    },
+    {
+      "id": "PRSG-59-D2",
+      "description": "Lead scope and integration acceptance",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-05 MYT Lead acceptance: independently reviewed all three PRSG-59 owned paths, unchanged validator and controlled valid-fixture rejection cases. Independent focused python3 -m pytest -q tests/test_ticket_harness.py: 58 passed in 0.08s. D2 accepted; Lead will integrate PRSG-59 then PRSG-1 separately. No Engineer commit/push; full hook/remote CI remain integration evidence."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-05 MYT Lead acceptance: independently reviewed all three PRSG-59 owned paths, unchanged validator and controlled valid-fixture rejection cases. Independent focused python3 -m pytest -q tests/test_ticket_harness.py: 58 passed in 0.08s. D2 accepted; Lead will integrate PRSG-59 then PRSG-1 separately. No Engineer commit/push; full hook/remote CI remain integration evidence."
+    ]
+  }
+}

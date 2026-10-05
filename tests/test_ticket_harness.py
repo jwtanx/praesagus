@@ -35,11 +35,31 @@ def test_reject_bad_tags(field, value):
         validator.validate(item, ROOT)
 
 
-def test_complete_needs_evidence_and_review():
+def acceptance_fixture(tmp_path, status='done'):
+    """Control lifecycle state without editing the live ticket's evidence/spec."""
     item = manifest()
+    item['checks'] = [{'id': 'synthetic', 'kind': 'manual',
+                       'description': 'Controlled acceptance evidence',
+                       'status': 'passed', 'evidence': ['Synthetic passing check']}]
+    item['acceptance'] = [{'id': 'PRSG-1-D1', 'description': 'Controlled acceptance',
+                          'check_ids': ['synthetic'], 'status': status,
+                          'evidence': ['Synthetic acceptance evidence']}]
+    item['review'] = {'status': 'accepted', 'evidence': ['Synthetic reviewed fixture']}
+    item['status'] = 'complete' if status == 'done' else 'review'
+    spec = tmp_path / item['spec_path']
+    spec.parent.mkdir(parents=True)
+    mark = '[x]' if status == 'done' else '[ ]'
+    spec.write_text(f"- {mark} PRSG-1-D1: Controlled acceptance\n")
+    assert validator.validate(item, tmp_path) == 'PRSG-1'
+    return item
+
+
+def test_complete_needs_evidence_and_review(tmp_path):
+    item = acceptance_fixture(tmp_path)
     item['status'] = 'complete'
+    item['review'] = {'status': 'pending', 'evidence': []}
     with pytest.raises(ValueError, match='complete needs'):
-        validator.validate(item, ROOT)
+        validator.validate(item, tmp_path)
 
 
 @pytest.mark.parametrize('status', ['passed', 'failed'])
@@ -65,11 +85,12 @@ def test_terminal_check_with_evidence_is_valid(status):
     assert validator.validate(item, ROOT) == 'PRSG-1'
 
 
-def test_checklist_sync():
-    item = manifest()
-    item['acceptance'][0]['status'] = 'done'
+@pytest.mark.parametrize('spec_status', ['pending', 'done'])
+def test_checklist_sync(tmp_path, spec_status):
+    item = acceptance_fixture(tmp_path, spec_status)
+    item['acceptance'][0]['status'] = 'done' if spec_status == 'pending' else 'pending'
     with pytest.raises(ValueError, match='checklist mismatch'):
-        validator.validate(item, ROOT)
+        validator.validate(item, tmp_path)
 
 
 def test_protected_overlap():
