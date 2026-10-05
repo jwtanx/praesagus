@@ -20,7 +20,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-01/PRSG-13-competitor-dashboard-research.md",
   "objective": "Competitor dashboard and feature research",
-  "status": "review",
+  "status": "complete",
   "owner": "Researcher",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -53,8 +53,10 @@
       "id": "review",
       "kind": "manual",
       "description": "Lead reviews scoped findings or implementation",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT Lead historical research acceptance: read full comparison/spec/manifest and reviewed existing-code baseline distinctions. Independently reopened six official public product pages: TradingView features, Koyfin watchlists, TIKR, Finviz Elite, Stock Analysis tools and Seeking Alpha features. Accept the six-platform sourced vendor gap matrix and five measurable scoped hypotheses as research only. Priorities remain hypotheses, not new implementation authority; adoption, returns, feature depth and licensing are not proven, and no paid/login testing occurred. Current human priorities remain Moomoo read-only news/metrics/private portfolio and provisional hosted TradingView widget, with no automatic workspace/ratings/alerts expansion. Original dated findings, source timing limitations and historical Researcher owner/base/date remain unchanged. Metadata-only acceptance; no code, test or dependency edits, Engineer commit or push."
+      ]
     }
   ],
   "acceptance": [
@@ -65,13 +67,17 @@
         "findings",
         "review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-05 MYT Lead historical research acceptance: read full comparison/spec/manifest and reviewed existing-code baseline distinctions. Independently reopened six official public product pages: TradingView features, Koyfin watchlists, TIKR, Finviz Elite, Stock Analysis tools and Seeking Alpha features. Accept the six-platform sourced vendor gap matrix and five measurable scoped hypotheses as research only. Priorities remain hypotheses, not new implementation authority; adoption, returns, feature depth and licensing are not proven, and no paid/login testing occurred. Current human priorities remain Moomoo read-only news/metrics/private portfolio and provisional hosted TradingView widget, with no automatic workspace/ratings/alerts expansion. Original dated findings, source timing limitations and historical Researcher owner/base/date remain unchanged. Metadata-only acceptance; no code, test or dependency edits, Engineer commit or push."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "2026-10-05 MYT Lead historical research acceptance: read full comparison/spec/manifest and reviewed existing-code baseline distinctions. Independently reopened six official public product pages: TradingView features, Koyfin watchlists, TIKR, Finviz Elite, Stock Analysis tools and Seeking Alpha features. Accept the six-platform sourced vendor gap matrix and five measurable scoped hypotheses as research only. Priorities remain hypotheses, not new implementation authority; adoption, returns, feature depth and licensing are not proven, and no paid/login testing occurred. Current human priorities remain Moomoo read-only news/metrics/private portfolio and provisional hosted TradingView widget, with no automatic workspace/ratings/alerts expansion. Original dated findings, source timing limitations and historical Researcher owner/base/date remain unchanged. Metadata-only acceptance; no code, test or dependency edits, Engineer commit or push."
+    ]
   },
   "research_evidence": {
     "reviewed_at": "2026-10-01T18:44:18+08:00",

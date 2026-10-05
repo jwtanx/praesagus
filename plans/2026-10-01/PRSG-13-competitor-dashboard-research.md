@@ -12,8 +12,14 @@ Deliver a sourced gap matrix and up to five evidence-backed ranked feature hypot
 
 ## When it's considered done
 
-- [ ] PRSG-13-D1: Sourced competitor gap matrix and reviewed feature priorities
+- [x] PRSG-13-D1: Sourced competitor gap matrix and reviewed feature priorities
 
 ## Research delivery for review
 
 Researcher produced [the six-platform matrix](../../docs/research/PRSG-13-competitor-dashboards.md) at 18:44:18 MYT on 1 October 2026, within the three-hour ceiling. Official TradingView, Koyfin, TIKR, Finviz, Stock Analysis and Seeking Alpha documentation was opened. Compared actual repository code with documented vendor workflows; unknown means unverified, not absent. Five ranked hypotheses include scoped MVPs, dependencies/rights, rough effort and measurable experiments, reusing existing PRSG-2/3/4/5 plans. No paid account, usability experiment, implementation or return/user-demand claim. Findings ready; Lead review and acceptance remain pending.
+
+## Lead historical research acceptance — 2026-10-05 MYT
+
+2026-10-05 MYT Lead historical research acceptance: read full comparison/spec/manifest and reviewed existing-code baseline distinctions. Independently reopened six official public product pages: TradingView features, Koyfin watchlists, TIKR, Finviz Elite, Stock Analysis tools and Seeking Alpha features. Accept the six-platform sourced vendor gap matrix and five measurable scoped hypotheses as research only. Priorities remain hypotheses, not new implementation authority; adoption, returns, feature depth and licensing are not proven, and no paid/login testing occurred. Current human priorities remain Moomoo read-only news/metrics/private portfolio and provisional hosted TradingView widget, with no automatic workspace/ratings/alerts expansion. Original dated findings, source timing limitations and historical Researcher owner/base/date remain unchanged. Metadata-only acceptance; no code, test or dependency edits, Engineer commit or push.
+
+State: complete for the research deliverable only. Earlier pending-review language is retained as dated delivery history. Lead owns integration.
