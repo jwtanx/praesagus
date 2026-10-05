@@ -93,7 +93,8 @@
       "cwd": ".",
       "status": "passed",
       "evidence": [
-        "2026-10-05 MYT: Python 3.11.17 repo test environment; 514 tests passed. No live API or Keychain reads."
+        "2026-10-05 MYT: Python 3.11.17 repo test environment; 514 tests passed. No live API or Keychain reads.",
+        "Post-delivery: both Git hook test runs passed, each with 1,170 tests."
       ]
     },
     {
@@ -128,7 +129,8 @@
       "description": "Validate safe public projection and rights gate from synthetic private-store records, including missing/conflicted/late quotes, unsupported MY symbols, empty/unavailable news, field/market permission coverage, private-field rejection, and legacy report compatibility",
       "status": "passed",
       "evidence": [
-        "2026-10-05 MYT: synthetic private-store projection covers 50 rows, 30 US/20 unsupported MY, current/expired/missing/wrong-market/wrong-field rights evidence, and report validator accepts existing schema-2/schema-3 reports."
+        "2026-10-05 MYT: synthetic private-store projection covers 50 rows, 30 US/20 unsupported MY, current/expired/missing/wrong-market/wrong-field rights evidence, and report validator accepts existing schema-2/schema-3 reports.",
+        "Post-delivery Pages workflow run 37318479224 succeeded; no live market snapshot was generated."
       ]
     },
     {
@@ -147,7 +149,8 @@
       "description": "Inspect current/historical report fixtures with synthetic direct-REST/store data, failures, empty news, three-point warmup, missing captures, cutoff filtering, all 50 forecast rows/20 MY gaps and forecast evidence/confidence/abstention; confirm public artifacts contain no key/private path/hash/account identifiers",
       "status": "passed",
       "evidence": [
-        "2026-10-05 MYT: jsdom replay confirmed same-origin snapshots no later than selected report cutoff, three-date trend threshold, Trader forecast context, source links, news empty/unavailable rendering, and existing report display."
+        "2026-10-05 MYT: jsdom replay confirmed same-origin snapshots no later than selected report cutoff, three-date trend threshold, Trader forecast context, source links, news empty/unavailable rendering, and existing report display.",
+        "Post-delivery HTTP check: viewer returned 200; date-keyed market snapshot returned 404, consistent with no live/public snapshot data."
       ]
     },
     {
@@ -241,7 +244,8 @@
   "review": {
     "status": "accepted",
     "evidence": [
-      "Lead independently reviewed the final 12-file PRSG-61 scope and confirmed no out-of-scope paths."
+      "Lead independently reviewed the final 12-file PRSG-61 scope and confirmed no out-of-scope paths.",
+      "Post-delivery commit b62b24fde4e9eed3360e127fdcaa34045efcfd38 was pushed to main by Lead; Pages run 37318479224 succeeded, viewer returned HTTP 200, and snapshot returned HTTP 404/no live data."
     ]
   }
 }
