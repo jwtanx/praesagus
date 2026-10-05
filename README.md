@@ -74,6 +74,8 @@ curl --get 'http://localhost:8000/api/v1/moomoo/quotes' --data-urlencode 'codes=
 
 Both responses include `retrieved_at`. News search is not a continuous push feed, and the quote route returns a snapshot rather than streaming updates. Market-data entitlements may be required. If `PRAESAGUS_API_KEY` is configured, add `-H 'X-API-Key: YOUR_KEY'` to the requests.
 
+For the separate private REST AppKey workflow, follow [secure macOS credential onboarding](docs/MOOMOO_CREDENTIAL_SETUP.md) and the [manual private collector](docs/PRIVATE_MARKET_COLLECTOR.md). This uses encrypted Ed25519 credentials and exact login Keychain lookup; OpenD login does not configure it. Live collection requires an explicit manual invocation and private storage.
+
 ### 5. Run SEC filing analysis or live QR monitoring
 
 Run a one-time report with local summarization (no SerpApi key required):

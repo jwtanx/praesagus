@@ -246,3 +246,9 @@ References: [Ed25519 signing](https://cryptography.io/en/latest/hazmat/primitive
 [encrypted PEM loading](https://cryptography.io/en/latest/hazmat/primitives/asymmetric/serialization/),
 [package metadata](https://pypi.org/project/cryptography/),
 [Python HTTPSConnection](https://docs.python.org/3.11/library/http.client.html).
+
+## Secure onboarding and manual collection
+
+Follow [Moomoo AppKey and macOS credential setup](MOOMOO_CREDENTIAL_SETUP.md) for the delivered PRSG-34 encrypted signer and exact login Keychain identifiers. The guide separates public-source verification, mocked failure replay and human-authorized live reads. It covers private files, item-level access approval, rotation and revocation without printing secrets.
+
+[PRSG-37 manual private collection](PRIVATE_MARKET_COLLECTOR.md) supplies explicit credential-directory/AppKeyID locators and writes to an existing private store. It permits only news and US snapshots, with bounded worker supervision; no account reads, trading, watchlist writes or implicit scheduling. This does not expand the offline protocol core or OpenD routes. Official docs currently recommend OAuth; the implemented loader uses compatible traditional AppKey signing and has no OAuth flow.
