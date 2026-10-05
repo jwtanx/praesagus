@@ -32,15 +32,25 @@ def checkout(tmp_path):
     fake = tmp_path / 'interpreter with spaces'
     fake.write_text('#!' + sys.executable + '\n' + '''
 import importlib.util, json, os, sys
+import subprocess
 from pathlib import Path
 with open(os.environ['HOOK_FIXTURE_LOG'], 'a') as handle:
     handle.write(json.dumps({'cwd': os.getcwd(), 'argv': sys.argv[1:]}) + '\\n')
 if sys.argv[1] == '-c':
     mode = os.environ.get('HOOK_FIXTURE_PREREQUISITE')
-    if mode == 'version': sys.version_info = (3, 10, 0)
-    if mode == 'pytest': importlib.util.find_spec = lambda name: None
+    sys.version_info = (3, 10, 0) if mode == 'version' else (3, 11, 0)
+    importlib.util.find_spec = (lambda name: None) if mode == 'pytest' else (lambda name: object())
     exec(sys.argv[2])
 elif sys.argv[1:] == ['-m', 'pytest', '-q']:
+    with open(os.environ['HOOK_FIXTURE_LOG'], 'a') as handle:
+        handle.write(json.dumps({'test_git_env': {key: os.environ.get(key) for key in
+            ('GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_PREFIX')}}) + '\\n')
+    nested = Path(os.environ['HOOK_FIXTURE_LOG']).parent / 'nested-repository'
+    nested.mkdir(exist_ok=True)
+    subprocess = __import__('subprocess')
+    subprocess.run(['git', 'init', '-q', str(nested)], check=True)
+    (nested / 'fixture.txt').write_text('nested git works\\n')
+    subprocess.run(['git', '-C', str(nested), 'add', 'fixture.txt'], check=True)
     sys.exit(int(os.environ.get('HOOK_FIXTURE_EXIT', '0')))
 else:
     os.execv(sys.executable, [sys.executable, *sys.argv[1:]])
@@ -61,28 +71,50 @@ def stage(repo):
     assert git(repo, 'add', 'owned.txt').returncode == 0
 
 
+def hook_env(repo, env):
+    return {**env, 'GIT_DIR': str(repo / '.git'), 'GIT_WORK_TREE': str(repo),
+            'GIT_INDEX_FILE': str(repo / '.git/index'), 'GIT_PREFIX': ''}
+
+
 def calls(env):
     return [json.loads(line) for line in Path(env['HOOK_FIXTURE_LOG']).read_text().splitlines()]
 
 
 @pytest.mark.parametrize('hook', ['pre-commit', 'pre-push'])
-def test_gate_root_argv_and_failure_status(checkout, hook):
+def test_hook_context_isolated_test_child_and_exit_status(checkout, hook):
     repo, _, env = checkout
     install(repo)
-    child = repo / 'nested'
+    env = hook_env(repo, env)
+    env['HOOK_FIXTURE_EXIT'] = '37'
+    result = subprocess.run([str(repo / '.githooks' / hook)], cwd=repo, env=env, capture_output=True, text=True)
+    assert result.returncode == 37, result.stderr
+    recorded = calls(env)
+    invocations = [call for call in recorded if 'argv' in call]
+    assert [call['argv'][0] for call in invocations] == ['-c', '-m']
+    assert invocations[-1] == {'cwd': str(repo), 'argv': ['-m', 'pytest', '-q']}
+    child_env = next(call['test_git_env'] for call in recorded if 'test_git_env' in call)
+    assert child_env == {key: None for key in ('GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE','GIT_PREFIX')}
+    assert (Path(env['HOOK_FIXTURE_LOG']).parent / 'nested-repository/.git/index').is_file()
+
+
+@pytest.mark.parametrize('hook', ['pre-commit', 'pre-push'])
+def test_hook_runner_uses_checkout_root_from_nested_cwd(checkout, hook):
+    repo, _, env = checkout
+    install(repo)
+    child = repo / 'nested-cwd'
     child.mkdir()
     env['HOOK_FIXTURE_EXIT'] = '37'
-    result = subprocess.run([str(repo / '.githooks' / hook)], cwd=child, env=env)
-    assert result.returncode == 37
-    recorded = calls(env)
-    assert [call['argv'][0] for call in recorded] == ['-c', '-m']
-    assert recorded[-1] == {'cwd': str(repo), 'argv': ['-m', 'pytest', '-q']}
+    result = subprocess.run([str(repo / '.githooks' / hook)], cwd=child, env=env, capture_output=True, text=True)
+    assert result.returncode == 37, result.stderr
+    invocations = [call for call in calls(env) if 'argv' in call]
+    assert invocations[-1] == {'cwd': str(repo), 'argv': ['-m', 'pytest', '-q']}
 
 
 def test_failed_tests_block_commit_and_success_keeps_commit_message_gate(checkout):
     repo, _, env = checkout
     install(repo)
     stage(repo)
+    env = hook_env(repo, env)
     env['HOOK_FIXTURE_EXIT'] = '1'
     assert git(repo, 'commit', '-qm', 'PRSG-57 Synthetic failure', env=env).returncode != 0
     assert git(repo, 'rev-parse', '--verify', 'HEAD').returncode != 0
@@ -96,6 +128,7 @@ def test_failed_tests_block_push_and_success_allows_local_push(checkout, tmp_pat
     repo, _, env = checkout
     install(repo)
     stage(repo)
+    env = hook_env(repo, env)
     assert git(repo, 'commit', '-qm', 'PRSG-57 Synthetic baseline', env=env).returncode == 0
     remote = tmp_path / 'remote.git'
     subprocess.run(['git', 'init', '--bare', '-q', str(remote)], check=True)

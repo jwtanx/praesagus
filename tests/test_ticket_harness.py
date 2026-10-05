@@ -119,6 +119,16 @@ def test_valid_supplied_path():
     assert validator.validate(manifest(), ROOT, ['backend/catalyst_services.py']) == 'PRSG-1'
 
 
+def test_reserved_prsg_zero_manifest_and_paths_validate():
+    item = json.loads((ROOT / 'plans/2026-10-05/PRSG-0.harness.json').read_text())
+    paths = item['allowed_paths']
+    assert validator.validate(item, ROOT, paths) == 'PRSG-0'
+    invalid = copy.deepcopy(item)
+    invalid['ticket_key'] = 'PRSG-00'
+    with pytest.raises(ValueError, match='invalid ticket key'):
+        validator.validate(invalid, ROOT)
+
+
 @pytest.mark.parametrize('role', ['Lead', 'Engineer', 'Trader', 'Researcher', 'Consultant'])
 def test_active_and_historical_owner_roles(role):
     item = manifest()

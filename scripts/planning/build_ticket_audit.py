@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 from urllib.parse import quote, unquote, urlsplit
 
-PLAN = re.compile(r'^plans/\d{4}-\d{2}-\d{2}/(PRSG-[1-9][0-9]*)\.harness\.json$')
+PLAN = re.compile(r'^plans/\d{4}-\d{2}-\d{2}/(PRSG-(?:0|[1-9][0-9]*))\.harness\.json$')
 KEY = re.compile(r'^(PRSG-(?:0|[1-9][0-9]*)) ')
 STATES = {'planned', 'in_progress', 'review', 'complete', 'blocked'}
 _spec = importlib.util.spec_from_file_location('audit_ticket_validator', Path(__file__).with_name('validate_ticket.py'))

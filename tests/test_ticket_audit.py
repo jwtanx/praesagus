@@ -102,6 +102,28 @@ def test_shared_activity_is_not_completed_ticket(repo):
     assert row['completion_commit'] is None
 
 
+def test_prsg_zero_manifest_is_canonical_checkpoint_and_activity_remains(repo):
+    (repo / 'activity.txt').write_text('shared workflow activity')
+    activity = commit(repo, 'PRSG-0 Earlier shared workflow activity')
+    path = write_ticket(repo, key='PRSG-0')
+    created = commit(repo, 'PRSG-0 Create canonical manifest')
+    row = next(item for item in audit.build_audit(repo)['tickets'] if item['ticket_key'] == 'PRSG-0')
+    assert row['status'] == 'planned'
+    assert row['manifest_path'] == 'plans/2026-10-01/PRSG-0.harness.json'
+    assert [event['kind'] for event in row['history']] == ['delivery_commit', 'progress_updated']
+    assert row['history'][-1]['commit']['sha'] == created
+    assert row['history'][0]['commit']['sha'] == activity
+
+
+def test_prsg_zero_activity_without_manifest_stays_activity_only(repo):
+    (repo / 'activity.txt').write_text('shared workflow activity')
+    sha = commit(repo, 'PRSG-0 Set up shared workflow')
+    row = audit.build_audit(repo)['tickets'][0]
+    assert row['ticket_key'] == 'PRSG-0' and row['status'] == 'activity_only'
+    assert 'manifest_path' not in row
+    assert row['history'][0]['commit']['sha'] == sha
+
+
 def test_complete_removed_clears_current_completion(repo):
     path = write_ticket(repo, 'complete')
     completed = commit(repo, 'PRSG-1 Complete')

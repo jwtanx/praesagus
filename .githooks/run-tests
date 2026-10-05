@@ -12,4 +12,6 @@ if ! "$python" -c 'import importlib.util, sys; sys.exit(0 if sys.version_info >=
     echo 'Test gate: require Python >=3.11 with pytest. Prepare the environment, then configure git config --local praesagus.testPython /absolute/path/to/python.' >&2
     exit 1
 fi
-exec "$python" -m pytest -q
+# Hook-only Git context points nested Git commands in pytest at this checkout.
+# Preserve it for root/configuration checks above, then clear it for the test tree.
+exec env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE -u GIT_PREFIX "$python" -m pytest -q

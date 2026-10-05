@@ -32,7 +32,7 @@ def validate(manifest, root, changed=()):
     if not required <= manifest.keys():
         raise ValueError('missing manifest fields: ' + ', '.join(sorted(required - manifest.keys())))
     key = manifest['ticket_key']
-    if not isinstance(key, str) or not re.fullmatch(r'PRSG-[1-9][0-9]*', key):
+    if not isinstance(key, str) or not re.fullmatch(r'PRSG-(?:0|[1-9][0-9]*)', key):
         raise ValueError('invalid ticket key')
     day = manifest['created_on']
     if not isinstance(day, str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', day):

@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-0",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "harness",
+      "docs"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-0-test-hook-env-isolation.md",
+  "objective": "Prevent Git hook context variables from breaking pytest subprocess Git fixtures and make reserved PRSG-0 manifests valid and auditable",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "0a43f04f03b406cb73480a50cec9dc1b7f15f36e",
+  "allowed_paths": [
+    ".githooks/run-tests",
+    "tests/test_test_hooks.py",
+    "docs/TEST_HOOKS.md",
+    "scripts/planning/validate_ticket.py",
+    "tests/test_ticket_harness.py",
+    "scripts/planning/build_ticket_audit.py",
+    "tests/test_ticket_audit.py",
+    "plans/2026-10-05/PRSG-0-test-hook-env-isolation.md",
+    "plans/2026-10-05/PRSG-0.harness.json"
+  ],
+  "protected_paths": [
+    ".githooks/pre-commit",
+    ".githooks/pre-push",
+    ".githooks/commit-msg",
+    "scripts/install_git_hooks.sh",
+    "scripts/planning/check_staged_harness.py",
+    "tests/test_commit_hook.py",
+    ".github/workflows/ci.yml",
+    "AGENTS.md",
+    "backend/main.py",
+    "backend/services.py",
+    "backend/freshness_services.py",
+    "connectors/financial/run_status.py",
+    "ingest/config/financial_freshness.yaml",
+    "scripts/run_sec_filings.py",
+    "frontend/src/services/api.ts",
+    "frontend/src/pages/Financial.tsx",
+    "frontend/src/pages/Platforms.tsx",
+    "frontend/src/pages/Pipeline.tsx",
+    "tests/test_connector_freshness.py",
+    "tests/connector_freshness_checks.cjs",
+    "plans/2026-10-01/PRSG-2-connector-freshness.md",
+    "plans/2026-10-01/PRSG-2.harness.json",
+    "plans/2026-10-05/PRSG-60-moomoo-dashboard-price-trend.md",
+    "plans/2026-10-05/PRSG-60.harness.json"
+  ],
+  "checks": [
+    {
+      "id": "hook-regressions",
+      "kind": "command",
+      "argv": [
+        "sh",
+        "-c",
+        "\"$(git config --get praesagus.testPython)\" -m pytest -q tests/test_test_hooks.py tests/test_commit_hook.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["Configured praesagus.testPython (Python 3.11.17): 55 passed in 13.13s; full output /tmp/PRSG-0-hook-regressions.log"]
+    },
+    {
+      "id": "ticket-metadata",
+      "kind": "command",
+      "argv": [
+        "sh",
+        "-c",
+        "\"$(git config --get praesagus.testPython)\" -m pytest -q tests/test_ticket_harness.py tests/test_ticket_audit.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["Configured praesagus.testPython (Python 3.11.17): 131 passed in 13.40s; full output /tmp/PRSG-0-ticket-metadata.log"]
+    },
+    {
+      "id": "hook-context-full",
+      "kind": "command",
+      "argv": [
+        "sh",
+        "-c",
+        "env GIT_DIR=\"$(git rev-parse --absolute-git-dir)\" GIT_WORK_TREE=\"$(git rev-parse --show-toplevel)\" GIT_INDEX_FILE=\"$(git rev-parse --git-path index)\" GIT_PREFIX= sh .githooks/run-tests"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["Linked-worktree portable hook-context command; configured Python 3.11.17: 1161 passed, 11 existing deprecation warnings in 34.93s; full output /tmp/PRSG-0-hook-context-full.log"]
+    },
+    {
+      "id": "scope",
+      "kind": "command",
+      "argv": [
+        "sh",
+        "-c",
+        "\"$(git config --get praesagus.testPython)\" scripts/planning/validate_ticket.py plans/2026-10-05/PRSG-0.harness.json --changed-file .githooks/run-tests --changed-file tests/test_test_hooks.py --changed-file docs/TEST_HOOKS.md --changed-file scripts/planning/validate_ticket.py --changed-file tests/test_ticket_harness.py --changed-file scripts/planning/build_ticket_audit.py --changed-file tests/test_ticket_audit.py --changed-file plans/2026-10-05/PRSG-0-test-hook-env-isolation.md --changed-file plans/2026-10-05/PRSG-0.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["Configured praesagus.testPython validated PRSG-0 manifest and all nine declared changed paths; JSON parsing and git diff --check also passed"]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead independently reviews the complete frozen diff, hook-context behavior, reserved PRSG-0 validation/audit support, existing title/staged filename gates and all test evidence.",
+      "status": "passed",
+      "evidence": ["Lead independently reviewed all nine paths and reran 55 focused hook tests, 131 ticket metadata tests, 1161 full-suite tests under simulated hook context (11 existing warnings), explicit-path validation, JSON parsing and diff check; accepted PRSG-0-D1/D2/D3 at 2026-10-05 19:58:24 MYT (11:58:24 UTC)"]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-0-D1",
+      "description": "Actual pre-commit/pre-push regressions with simulated Git hook variables prove test-child isolation, nested Git operations, and unchanged block/allow behavior.",
+      "check_ids": [
+        "hook-regressions"
+      ],
+      "status": "done",
+      "evidence": ["Lead accepted after independently rerunning the focused hook suite: 55 passed."]
+    },
+    {
+      "id": "PRSG-0-D2",
+      "description": "PRSG-0 manifests validate and committed audit recognizes them as canonical manifest checkpoints; existing activity-only and positive ticket records remain covered.",
+      "check_ids": [
+        "ticket-metadata",
+        "scope"
+      ],
+      "status": "done",
+      "evidence": ["Lead accepted after independently rerunning 131 metadata tests and the explicit-path validator; canonical PRSG-0 checkpoint and activity-only behavior covered."]
+    },
+    {
+      "id": "PRSG-0-D3",
+      "description": "Full pytest passes through run-tests under simulated hook Git variables and Lead accepts the scoped behavior/evidence.",
+      "check_ids": [
+        "hook-context-full",
+        "lead-review",
+        "scope"
+      ],
+      "status": "done",
+      "evidence": ["Lead accepted after independently rerunning the full suite under simulated hook context: 1161 passed with 11 existing warnings; JSON and whitespace checks passed."]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": ["Lead independently accepted PRSG-0-D1/D2/D3 on 2026-10-05 19:58:24 MYT (11:58:24 UTC)."]
+  }
+}
