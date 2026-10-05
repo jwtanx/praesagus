@@ -4,8 +4,8 @@
     "title": "Daily Market Brief",
     "date": "2026-10-05",
     "as_of": "2026-10-05T10:50:56.514538+08:00",
-    "subtitle": "Monday 5 October 2026 · Delayed morning evidence review · Fresh quote setup unavailable",
-    "disclaimer": "Research only. Scheduled08:00 run interrupted by usage limits; resumed later. Actual cutoff shown; no fresh quotes or supported price targets."
+    "subtitle": "Monday 5 October 2026 · Original evidence cutoff 10:50 MYT · Post-cutoff Moomoo access check unavailable",
+    "disclaimer": "Research only. Original report cutoff remains 10:50:56 MYT; a 20:30 MYT local access check is operational status only and does not update the forecast information set. No fresh quotes or supported price targets."
   },
   "summary": [
     {
@@ -22,6 +22,11 @@
       "label": "Coverage limits",
       "title": "50 forecasts remain Unrated",
       "summary": "30 October3 US points inherited with original timestamps;20MY quotes missing. No verified daily capture setup, matched baseline or target method."
+    },
+    {
+      "label": "Moomoo access",
+      "title": "Local APIs unavailable; direct REST is manual only",
+      "summary": "At 20:30 MYT, localhost OpenD:11111 and Praesagus API:8000 were unreachable; no Moomoo environment config was present. Direct HTTPS REST can bypass OpenD, but no credential/store locator or scheduled report bridge is configured. Setup requires the documented private AppKeyID and encrypted private.pem directory, exact login Keychain passphrase item, existing private store, and a reviewed report projection; the current manual collector writes a private US-only draft and MY quotes remain unsupported. All 50 quote values remain missing and forecast rows are unchanged/Unrated."
     }
   ],
   "sections": {
@@ -433,6 +438,10 @@
         },
         {
           "text": "BLS upcoming schedule checked by research subagent; current October14 CPI/15 PPI/16 import-export dates match. BNM October7 balance-sheet release is an unintegrated candidate, not silently added or represented as a current ledger event.",
+          "sources": []
+        },
+        {
+          "text": "Moomoo access check at 2026-10-05T20:30:57+08:00: local OpenD port11111 and FastAPI port8000 were unreachable, with no Moomoo environment configuration set. Direct REST avoids OpenD but has no configured credential/store locator or daily report bridge. Setup requires the documented private AppKeyID and encrypted private.pem directory, exact login Keychain passphrase item, existing private store and a reviewed report projection; the current manual collector writes a private US-only draft, with MY unsupported. No provider request succeeded, no fresh price/news values were added, and the 50 original Unrated forecasts and forecast ledger remain unchanged.",
           "sources": []
         }
       ]
@@ -3130,7 +3139,7 @@
       "confidence_reason": "5285: no validated direction/target method or comparable baseline; stale inherited or missing quote cannot establish a forecast."
     }
   ],
-  "footer": "Actual cutoff 2026-10-05T10:50:56.514538+08:00 (MYT); scheduled08:00 run interrupted by usage limit and completed later, not backdated. Latest completed US regular session October2.30US points inherited from October3 with original timestamps/unknown provider units;20MY missing. No fresh quote capture.50 forecasts Unrated. Monthly ledger reused unchanged; no cancellation inferred from absence.70 issuances/67pairs,0 matured/scored; no ledger changes. Bounded issuer/macro review with raw provenance retained privately and public retrieval manifest; overnight/SEC/MY-closure coverage incomplete. Research only/watchlist; NO TRADE.",
+  "footer": "Original report cutoff remains 2026-10-05T10:50:56.514538+08:00 (MYT); market synthesis completed after the scheduled08:00 run was interrupted by usage limits, not backdated. A post-cutoff local access check at 20:30:57 MYT is operational status only and was not used to alter forecasts. Latest completed US regular session October2.30US points inherited from October3 with original timestamps/unknown provider units;20MY missing. No fresh quote capture.50 forecasts Unrated. Monthly ledger reused unchanged; no cancellation inferred from absence.70 issuances/67pairs,0 matured/scored; no ledger changes. Bounded issuer/macro review with raw provenance retained privately and public retrieval manifest; overnight/SEC/MY-closure coverage incomplete. Research only/watchlist; NO TRADE. Later Moomoo access check at 20:30 MYT found both local API endpoints unreachable; direct REST is implemented but no configured credentials/store/report bridge is verified. No fresh quote/news request succeeded. Forecast rows and ledger preserved.",
   "watchlist_config": {
     "taxonomy_id": "praesagus-daily-coverage-v2-five",
     "count_per_group": 5,
