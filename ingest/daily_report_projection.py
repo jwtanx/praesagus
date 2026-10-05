@@ -2,11 +2,13 @@
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from importlib import import_module
+import json
 import math
 import os
 from pathlib import Path
 import re
 import tempfile
+from urllib.parse import parse_qsl, urlparse
 
 from ingest.private_market_store import REPO, canonical, check_secrets, need, parse_aware, private, safe
 
@@ -86,7 +88,7 @@ def validate_public_snapshot(snapshot, cutoff, *, listing_currency):
     times={key:parse_aware(snapshot[key]) for key in PUBLIC_TIMES}
     need(times['cutoff']==parse_aware(cutoff)
          and times['source_at']<=times['observed_at']<=times['ingested_at']<=times['known_at']<=times['cutoff'])
-    validate_public_report_boundary(snapshot)
+    check_secrets(snapshot)
 
 
 def map_public_snapshot(quote, cutoff, *, listing_currency):
@@ -102,6 +104,297 @@ def map_public_snapshot(quote, cutoff, *, listing_currency):
         validate_public_snapshot(result,cutoff,listing_currency=listing_currency)
         return result
     return safe(project,category='public-snapshot-failed')
+
+
+MARKET_SNAPSHOT_FIELDS = {
+    'schema_version','report_date','cutoff','provider','rights','coverage','quotes','news_queries'
+}
+MARKET_QUOTE_FIELDS = {
+    'market','country','ticker','name','listing_currency','status','gaps','public_snapshot','metrics'
+}
+MARKET_QUOTE_STATUSES = {'selected','missing','conflicted','failed','unsupported'}
+MARKET_METRIC_FIELDS = {'provider_volume','volume_unit'}
+MARKET_NEWS_QUERY_FIELDS = {'keyword','status','records'}
+MARKET_NEWS_FIELDS = {
+    'provider','endpoint','title','url','news_type','published_at','source_at',
+    'observed_at','ingested_at','known_at','cutoff'
+}
+RIGHTS_FIELDS = {
+    'quote.price','quote.provider_volume','news.title','news.url','news.news_type',
+    'news.publication_time','source.timestamps'
+}
+RIGHTS_INPUT_FIELDS = {
+    'schema_version','provider','authority','markets','fields','uses','evidence_url',
+    'verified_by','verified_at','expires_at'
+}
+RIGHTS_OUTPUT_FIELDS = {
+    'status','provider','markets','fields','uses','evidence_url','verified_at','expires_at','published_at'
+}
+RIGHTS_USES = {'public-website-display','redistribution'}
+RIGHTS_URL = re.compile(r'^https://[^\s<>"\']+$')
+NEWS_KEYWORDS = ('SPY','QQQ')
+
+
+def _timestamp(value, field):
+    try:
+        return parse_aware(value)
+    except (ValueError, TypeError, OverflowError):
+        raise ValueError(f'invalid {field}') from None
+
+
+def _safe_https_url(value):
+    if not isinstance(value,str) or RIGHTS_URL.fullmatch(value) is None:
+        return False
+    parsed=urlparse(value)
+    query_keys={key.lower() for key,_ in parse_qsl(parsed.query,keep_blank_values=True)}
+    return bool(parsed.hostname and not parsed.username and not parsed.password
+                and not query_keys.intersection({'token','key','secret','auth','authorization','account','session'})
+                and not parsed.fragment)
+
+
+def validate_market_rights(evidence, published_at, *, markets=('US',), fields=RIGHTS_FIELDS):
+    """Require explicit current permission for every field and requested market."""
+    need(isinstance(evidence,dict) and set(evidence)==RIGHTS_INPUT_FIELDS)
+    need(type(evidence['schema_version']) is int and evidence['schema_version']==1
+         and evidence['provider']=='moomoo-rest')
+    for key in ('authority','verified_by'):
+        need(isinstance(evidence[key],str) and 1<=len(evidence[key].strip())<=512)
+    requested_markets=set(markets)
+    allowed_markets=evidence['markets']
+    need(isinstance(allowed_markets,list) and len(allowed_markets)==len(set(allowed_markets))
+         and requested_markets<=set(allowed_markets) and set(allowed_markets)<={'US','HK','SG','JP','CN'})
+    allowed_fields=evidence['fields']
+    need(isinstance(allowed_fields,list) and len(allowed_fields)==len(set(allowed_fields))
+         and all(isinstance(field,str) and field for field in allowed_fields)
+         and set(fields)<=set(allowed_fields))
+    uses=evidence['uses']
+    need(isinstance(uses,list) and len(uses)==len(set(uses)) and RIGHTS_USES<=set(uses))
+    source=evidence['evidence_url']
+    need(_safe_https_url(source))
+    verified=_timestamp(evidence['verified_at'],'rights verified_at')
+    expires=_timestamp(evidence['expires_at'],'rights expires_at')
+    now=_timestamp(published_at,'publication time')
+    need(verified<=now<expires)
+    return {
+        'status':'verified', 'provider':'moomoo-rest', 'markets':sorted(requested_markets),
+        'fields':sorted(fields), 'uses':sorted(RIGHTS_USES), 'evidence_url':source,
+        'verified_at':evidence['verified_at'], 'expires_at':evidence['expires_at'],
+        'published_at':published_at,
+    }
+
+
+def _market_quote_point(entry, cutoff, ticker, run_id):
+    record=entry.get('quote')
+    provenance=entry.get('provenance')
+    if record is None or provenance is None:
+        return None
+    need(record.get('code')=='US.'+ticker and record.get('price',0)>0)
+    quote={
+        'price':record['price'], 'volume':record['volume'],
+        'source_at':epoch_time(provenance['source_ms']), 'observed_at':provenance['observed_at'],
+        'ingested_at':provenance['ingested_at'], 'known_at':epoch_time(provenance['known_ms']),
+        'cutoff':cutoff, 'origin':provenance['origin'], 'currency':None, 'session':None,
+        'adjustment':None, 'prior_close':None, 'gaps':list(GAPS),
+        'provenance':{key:provenance[key] for key in PROVENANCE_KEYS if key!='run_id'} | {'run_id':run_id},
+    }
+    return map_public_snapshot(quote,cutoff,listing_currency='USD')
+
+
+def project_public_market_snapshot(store, universe, *, run_id, cutoff, rights_evidence=None,
+                                   publication_time=None):
+    """Project a same-run REST selection to a rights-gated, public-safe data shape.
+
+    With no permission evidence this creates only a private analysis artifact. The
+    public writer separately refuses to write such an artifact into Pages.
+    """
+    validator=import_module('scripts.daily-market-brief.validate_report_json')
+    keys,instruments=validator.validate_universe(Path('watchlist-universe-five.json'),universe)
+    need(len(instruments)==50 and universe.get('count_per_group')==5)
+    expected=['US.'+ticker for (market,ticker) in instruments if market=='US']
+    need(len(expected)==30 and len(set(expected))==30)
+    cutoff_time=_timestamp(cutoff,'report cutoff')
+    published=publication_time or datetime.now(timezone.utc).isoformat()
+    rights=(validate_market_rights(rights_evidence,published) if rights_evidence is not None else None)
+    selection=store.select_snapshots(run_id,cutoff,expected)
+    rows=[]
+    for group in universe['groups']:
+        for instrument in group['instruments']:
+            market,ticker=instrument['market'],instrument['ticker']
+            code=market+'.'+ticker
+            gaps=[];point=None;metrics={'provider_volume':None,'volume_unit':'unknown'}
+            if market=='MY':
+                status='unsupported';gaps=['market_not_supported_by_moomoo_rest_snapshot']
+            else:
+                selected=selection['quotes'][code]
+                reasons=selected['gap_reasons']+list(selected.get('excluded_counts',{}))
+                if selected['quote'] is not None:
+                    status='selected'
+                    point=_market_quote_point(selected,cutoff,ticker,run_id)
+                    metrics={'provider_volume':selected['quote']['volume'],
+                             'volume_unit':'provider unit/session not verified'}
+                    gaps=['provider_currency_unknown','session_unknown','adjustment_unknown','prior_close_unknown',
+                          'volume_unit_unknown','point_observation_not_bar']
+                elif 'same_time_conflict' in reasons:
+                    status='conflicted';gaps=list(dict.fromkeys(reasons))
+                elif selection['attempt_status_counts'].get('failed',0) and not selection['coverage']['returned']['count']:
+                    status='failed';gaps=list(dict.fromkeys(reasons+['collection_failed_attempt']))
+                else:
+                    status='missing';gaps=list(dict.fromkeys(reasons or ['no_eligible_quote']))
+            rows.append({
+                'market':market,'country':instrument['country'].upper(),'ticker':ticker,
+                'name':instrument['name'],'listing_currency':instrument['currency'],
+                'status':status,'gaps':gaps,'public_snapshot':point,'metrics':metrics,
+            })
+    attempts=store.attempts(cutoff,limit=1000)
+    news_rows=store.query('news',cutoff,limit=1000)
+    queries=[]
+    for keyword in NEWS_KEYWORDS:
+        matching=[item for item in attempts if item.get('run_id')==run_id and item.get('kind')=='news'
+                  and item.get('query',{}).get('symbol')==keyword]
+        if len(matching)>1:
+            status='unavailable';records=[]
+        elif not matching:
+            status='unavailable';records=[]
+        else:
+            attempt=matching[0]
+            status=('success' if attempt['status']=='success' else
+                    'empty' if attempt['status']=='successful-empty' else 'unavailable')
+            records=[]
+            if status=='success':
+                for item in news_rows:
+                    meta=item['observation'];record=item['record']
+                    if meta['run_id']!=run_id or meta['query'].get('symbol')!=keyword:
+                        continue
+                    if not item['eligible_for_temporal_evidence'] or item['source_ms'] is None:
+                        continue
+                    records.append({
+                        'provider':'moomoo-rest','endpoint':'/api/v1.0/quote/find-news',
+                        'title':record['title'],'url':record['url'],'news_type':record['news_type'],
+                        'published_at':epoch_time(item['source_ms']),
+                        'source_at':epoch_time(item['source_ms']),
+                        'observed_at':meta['observed_at'],'ingested_at':meta['ingested_at'],
+                        'known_at':epoch_time(meta['known_ms']),'cutoff':cutoff,
+                    })
+        deduped=[];seen=set()
+        for record in records:
+            identity=(record['title'],record['url'],record['published_at'])
+            if identity not in seen:seen.add(identity);deduped.append(record)
+        if status=='success' and not deduped:status='empty'
+        queries.append({'keyword':keyword,'status':status,'records':deduped})
+    report_date=cutoff_time.astimezone(timezone(timedelta(hours=8))).date().isoformat()
+    snapshot={
+        'schema_version':1,'report_date':report_date,'cutoff':cutoff,'provider':'moomoo-rest',
+        'rights':rights or {'status':'unverified','provider':'moomoo-rest'},
+        'coverage':{'expected_us':30,'selected_us':selection['coverage']['selected']['count'],
+                    'unsupported_my':20,'quote_attempt_statuses':selection['attempt_status_counts']},
+        'quotes':rows,'news_queries':queries,
+    }
+    validate_market_snapshot(snapshot,require_rights=rights is not None)
+    return snapshot
+
+
+def forecast_basis_error(forecast, report_as_of):
+    """Return a validation error when a rated SPY/QQQ forecast lacks frozen support."""
+    if forecast.get('ticker') not in {'SPY','QQQ'} or forecast.get('direction')=='unknown':
+        return None
+    basis=forecast.get('forecast_basis')
+    required={'reference_close_date','reference_close','reference_source','horizon_type',
+              'bull_case','bear_case','invalidation'}
+    if not isinstance(basis,dict) or set(basis)!=required:
+        return 'rated SPY/QQQ forecast requires complete forecast_basis'
+    try:
+        reference_date=datetime.fromisoformat(basis['reference_close_date']).date()
+        as_of=_timestamp(forecast.get('forecast_as_of'),'forecast_as_of')
+        report_cutoff=_timestamp(report_as_of,'report as_of')
+        price=basis['reference_close']
+        if (reference_date>as_of.date() or reference_date>=datetime.fromisoformat(forecast['target_date']).date()
+                or as_of>report_cutoff or type(price) not in (int,float) or not math.isfinite(price) or price<=0
+                or basis['horizon_type'] not in {'next_session','week_end'}):
+            return 'invalid forecast reference/horizon/time'
+        source=basis['reference_source']
+        parsed=urlparse(source)
+        if parsed.scheme!='https' or not parsed.netloc or parsed.username or parsed.password:
+            return 'forecast reference_source must be HTTPS'
+        if any(not isinstance(basis[key],str) or not basis[key].strip() for key in ('bull_case','bear_case','invalidation')):
+            return 'forecast basis needs bull_case, bear_case and invalidation'
+    except (ValueError,TypeError,KeyError,OverflowError):
+        return 'invalid forecast reference/horizon/time'
+    return None
+
+
+def validate_market_snapshot(snapshot, *, require_rights=True):
+    """Validate both private analysis snapshots and public publication snapshots."""
+    need(isinstance(snapshot,dict) and set(snapshot)==MARKET_SNAPSHOT_FIELDS
+         and type(snapshot['schema_version']) is int and snapshot['schema_version']==1
+         and snapshot['provider']=='moomoo-rest')
+    cutoff=_timestamp(snapshot['cutoff'],'snapshot cutoff')
+    report_date=cutoff.astimezone(timezone(timedelta(hours=8))).date().isoformat()
+    need(snapshot['report_date']==report_date)
+    rights=snapshot['rights']
+    if require_rights:
+        need(isinstance(rights,dict) and set(rights)==RIGHTS_OUTPUT_FIELDS
+             and rights.get('status')=='verified' and rights.get('provider')=='moomoo-rest'
+             and rights.get('markets')==['US'] and set(RIGHTS_FIELDS)<=set(rights.get('fields',[]))
+             and set(RIGHTS_USES)<=set(rights.get('uses',[])))
+        need(RIGHTS_URL.fullmatch(rights.get('evidence_url','')) is not None)
+        need(_timestamp(rights['verified_at'],'rights verified_at')
+             <=_timestamp(rights['published_at'],'rights published_at')
+             <_timestamp(rights['expires_at'],'rights expires_at'))
+    else:
+        need(isinstance(rights,dict) and rights=={'status':'unverified','provider':'moomoo-rest'})
+    coverage=snapshot['coverage']
+    need(isinstance(coverage,dict) and set(coverage)=={'expected_us','selected_us','unsupported_my','quote_attempt_statuses'}
+         and coverage['expected_us']==30 and coverage['unsupported_my']==20
+         and type(coverage['selected_us']) is int and 0<=coverage['selected_us']<=30
+         and isinstance(coverage['quote_attempt_statuses'],dict))
+    quotes=snapshot['quotes'];need(isinstance(quotes,list) and len(quotes)==50)
+    symbols=set();selected=0
+    for row in quotes:
+        need(isinstance(row,dict) and set(row)==MARKET_QUOTE_FIELDS)
+        need(row['market'] in {'US','MY'} and row['country']==row['market']
+             and isinstance(row['ticker'],str) and row['ticker'] and isinstance(row['name'],str) and row['name'])
+        symbol=(row['market'],row['ticker']);need(symbol not in symbols);symbols.add(symbol)
+        need(row['status'] in MARKET_QUOTE_STATUSES and isinstance(row['gaps'],list))
+        need(row['listing_currency']==('USD' if row['market']=='US' else 'MYR'))
+        need(isinstance(row['metrics'],dict) and set(row['metrics'])==MARKET_METRIC_FIELDS)
+        point=row['public_snapshot']
+        if row['market']=='MY':
+            need(row['status']=='unsupported' and point is None and row['metrics']['provider_volume'] is None)
+        elif row['status']=='selected':
+            selected+=1
+            need(point is not None and row['metrics']['provider_volume'] is not None
+                 and type(row['metrics']['provider_volume']) is int and row['metrics']['provider_volume']>=0)
+            validate_public_snapshot(point,snapshot['cutoff'],listing_currency='USD')
+        else:
+            need(point is None and row['metrics']['provider_volume'] is None)
+    need(selected==coverage['selected_us'] and sum(r['market']=='US' for r in quotes)==30
+         and sum(r['market']=='MY' for r in quotes)==20)
+    queries=snapshot['news_queries'];need(isinstance(queries,list) and len(queries)==2)
+    seen_queries=set()
+    for query in queries:
+        need(isinstance(query,dict) and set(query)==MARKET_NEWS_QUERY_FIELDS
+             and query['keyword'] in NEWS_KEYWORDS and query['keyword'] not in seen_queries)
+        seen_queries.add(query['keyword'])
+        need(query['status'] in {'success','empty','unavailable'} and isinstance(query['records'],list))
+        if query['status'] in {'empty','unavailable'}:need(not query['records'])
+        seen_news=set()
+        for item in query['records']:
+            need(isinstance(item,dict) and set(item)==MARKET_NEWS_FIELDS
+                 and item['provider']=='moomoo-rest' and item['endpoint']=='/api/v1.0/quote/find-news')
+            need(isinstance(item['title'],str) and item['title'] and len(item['title'])<=8192)
+            need(_safe_https_url(item['url']))
+            need(item['news_type'] in {'POST','NOTICE','REPORT'})
+            times={key:_timestamp(item[key],key) for key in ('published_at','source_at','observed_at','ingested_at','known_at','cutoff')}
+            need(times['published_at']==times['source_at']<=times['observed_at']<=times['ingested_at']<=times['known_at']<=times['cutoff']<=cutoff)
+            identity=(item['title'],item['url'],item['published_at']);need(identity not in seen_news);seen_news.add(identity)
+    need(seen_queries==set(NEWS_KEYWORDS))
+    validate_public_report_boundary(snapshot)
+    def has_markup(value):
+        if isinstance(value,dict):return any(has_markup(v) for v in value.values())
+        if isinstance(value,list):return any(has_markup(v) for v in value)
+        return isinstance(value,str) and bool(re.search(r'<\s*/?\s*[a-z][^>]*>',value,re.I))
+    need(not has_markup(snapshot),'html-rejected')
+    return True
 
 
 def project_report(store,template,universe,*,run_id,cutoff,expected_codes):

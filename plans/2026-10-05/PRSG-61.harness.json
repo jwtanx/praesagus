@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-61",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "frontend",
+      "skills",
+      "harness",
+      "docs"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 3,
+      "high": 6
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-61-trader-moomoo-market-snapshot-dashboard.md",
+  "objective": "Reuse the existing secure direct Moomoo REST collector at the existing 08:00 report run, preserve private raw storage and all 50 report forecasts, author SPY/QQQ forecasts from frozen quote/news evidence, and publish an allowlisted US snapshot only with verified market/field-specific rights evidence",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "5e9ec0cd51769b192cf45225596ae028258f79a7",
+  "allowed_paths": [
+    "scripts/daily-market-brief/publish_market_snapshot.py",
+    "ingest/daily_report_projection.py",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "artifacts/daily-market-brief/index.html",
+    "skills/daily-market-brief/SKILL.md",
+    "docs/PRIVATE_REPORT_PROJECTION.md",
+    "tests/test_market_snapshot_publication.py",
+    "tests/test_daily_report_projection.py",
+    "tests/test_daily_report.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "tests/market_snapshot_viewer_checks.cjs",
+    "artifacts/daily-market-brief/market-snapshots/",
+    "plans/2026-10-05/PRSG-61-trader-moomoo-market-snapshot-dashboard.md",
+    "plans/2026-10-05/PRSG-61.harness.json"
+  ],
+  "protected_paths": [
+    "backend/",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_rest_live.py",
+    "scripts/market_collect.py",
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py",
+    "scripts/daily-market-brief/run_private_quote_report.py",
+    "scripts/daily-market-brief/project_private_quotes.py",
+    "frontend/",
+    "agent-operations/",
+    ".github/",
+    "artifacts/daily-market-brief/reports.json",
+    "artifacts/daily-market-brief/2026-09-30.json",
+    "artifacts/daily-market-brief/2026-10-01.json",
+    "artifacts/daily-market-brief/2026-10-02.json",
+    "artifacts/daily-market-brief/2026-10-03.json",
+    "artifacts/daily-market-brief/2026-10-04.json",
+    "artifacts/daily-market-brief/2026-10-05.json",
+    "artifacts/daily-market-brief/watchlist-universe-five.json",
+    "artifacts/daily-market-brief/watchlist-universe.json",
+    "artifacts/financial-calendar/",
+    "harness/engineering/price-prediction/forecast-ledger.csv",
+    "scripts/daily-market-brief/monthly_calendar.py",
+    "plans/2026-10-05/PRSG-60",
+    "plans/2026-10-05/PRSG-60.harness.json",
+    "AGENTS.md"
+  ],
+  "checks": [
+    {
+      "id": "publication-tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_moomoo_rest.py",
+        "tests/test_moomoo_rest_live.py",
+        "tests/test_market_collector.py",
+        "tests/test_private_market_store.py",
+        "tests/test_market_snapshot_publication.py",
+        "tests/test_daily_report_projection.py",
+        "tests/test_daily_report.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT: Python 3.11.17 repo test environment; 514 tests passed. No live API or Keychain reads."
+      ]
+    },
+    {
+      "id": "viewer-tests",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT post-rebase: node tests/daily_report_viewer_checks.cjs passed. Includes malformed-cutoff fail-closed regression, rejects invalid/out-of-order point timestamps, prevents older-date news fallback, and covers desktop/mobile historical snapshot, forecast and news rendering."
+      ]
+    },
+    {
+      "id": "snapshot-viewer-tests",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/market_snapshot_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT post-rebase: node tests/market_snapshot_viewer_checks.cjs passed."
+      ]
+    },
+    {
+      "id": "report-validation",
+      "kind": "manual",
+      "description": "Validate safe public projection and rights gate from synthetic private-store records, including missing/conflicted/late quotes, unsupported MY symbols, empty/unavailable news, field/market permission coverage, private-field rejection, and legacy report compatibility",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT: synthetic private-store projection covers 50 rows, 30 US/20 unsupported MY, current/expired/missing/wrong-market/wrong-field rights evidence, and report validator accepts existing schema-2/schema-3 reports."
+      ]
+    },
+    {
+      "id": "forecast-review",
+      "kind": "manual",
+      "description": "Run offline forecast_review at an explicit timestamp on frozen next-session and week-end examples covering verified mature closes, missing actual/availability, abstention, immature target, repeated vintages, score denominators, and the 20-outcome display threshold",
+      "status": "passed",
+      "evidence": [
+        "Lead ran /Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python3 -m pytest -q tests/test_forecast_review.py: 11 tests passed, covering deterministic frozen-ledger scoring cases.",
+        "Lead ran harness/forecast_review.py at 2026-10-05T21:17:21+08:00: valid; 70 pending; 0 scored. No current outcomes are eligible at that review time."
+      ]
+    },
+    {
+      "id": "static-viewer-review",
+      "kind": "manual",
+      "description": "Inspect current/historical report fixtures with synthetic direct-REST/store data, failures, empty news, three-point warmup, missing captures, cutoff filtering, all 50 forecast rows/20 MY gaps and forecast evidence/confidence/abstention; confirm public artifacts contain no key/private path/hash/account identifiers",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT: jsdom replay confirmed same-origin snapshots no later than selected report cutoff, three-date trend threshold, Trader forecast context, source links, news empty/unavailable rendering, and existing report display."
+      ]
+    },
+    {
+      "id": "ticket-scope",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-05/PRSG-61.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT post-rebase: scripts/planning/validate_ticket.py accepted every supplied ticket-owned path. Frozen manifest base_sha remains 5e9ec0cd51769b192cf45225596ae028258f79a7; branch HEAD is 1b26df1ec7de2785aa474268d813f77be4261dc0."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead checks complete Git diff, frozen scope, tests, 50-name preservation, existing schedule use, provider limits, evidence quality, and live publication claims separately",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed the final 12-file PRSG-61 scope, direct-REST collector/projection, timestamp/rights-gate validation, viewer rendering/cutoff handling, test fixtures and docs; no out-of-scope paths found. Lead verified the existing 08:00 heartbeat ID, target, ACTIVE status and rrule are unchanged; its separately updated prompt directs REST with explicit locators, post-collection cutoff and rights-gated publication."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-61-D1",
+      "description": "Use the existing direct REST worker/secure credentials; Trader authors the existing SPY/QQQ forecast rows from this run's frozen evidence, with explicit abstention when unsupported",
+      "check_ids": [
+        "publication-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Implemented and verified in the accepted paths; focused tests and viewer replay pass."
+      ]
+    },
+    {
+      "id": "PRSG-61-D2",
+      "description": "Validate allowlisted snapshot provenance, timestamps, private-data boundary, and fail-closed field/market rights proof while retaining legacy reports",
+      "check_ids": [
+        "publication-tests",
+        "report-validation"
+      ],
+      "status": "done",
+      "evidence": [
+        "Implemented and verified in the accepted paths; focused tests and viewer replay pass."
+      ]
+    },
+    {
+      "id": "PRSG-61-D3",
+      "description": "Render historical-safe SPY/QQQ capture-time trends without changing the existing 50-name report",
+      "check_ids": [
+        "publication-tests",
+        "viewer-tests",
+        "snapshot-viewer-tests",
+        "static-viewer-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Implemented and verified in the accepted paths; focused tests and viewer replay pass."
+      ]
+    },
+    {
+      "id": "PRSG-61-D4",
+      "description": "Display Trader-authored sourced SPY/QQQ report forecasts at their frozen horizon and defensible offline outcomes with abstention/sample-size controls",
+      "check_ids": [
+        "publication-tests",
+        "forecast-review",
+        "static-viewer-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-61-D5",
+      "description": "Update the existing Trader report workflow, preserve the existing 08:00 automation identity/target/status/cadence without creating a duplicate, validate frozen scope, avoid PRSG-60 changes, and receive final Lead review",
+      "check_ids": [
+        "publication-tests",
+        "report-validation",
+        "ticket-scope",
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Updated workflow/docs and preserved the existing 08:00 heartbeat identity/target/status/cadence without a duplicate; Lead independently reviewed the final ticket scope and found no out-of-scope paths."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed the final 12-file PRSG-61 scope and confirmed no out-of-scope paths."
+    ]
+  }
+}

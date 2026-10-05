@@ -48,6 +48,17 @@ def test_five_name_shared_calendar(report):
     path, data = report
     assert validator.validate_report(path, data)[:2] == (10, 0)
 
+def test_rated_spy_forecast_needs_frozen_basis(report):
+    from ingest.daily_report_projection import forecast_basis_error
+    forecast={'ticker':'SPY','direction':'up','forecast_as_of':'2026-10-01T07:55:00+08:00',
+      'target_date':'2026-10-02','forecast_basis':{'reference_close_date':'2026-09-30',
+      'reference_close':100.0,'reference_source':'https://example.org/close','horizon_type':'next_session',
+      'bull_case':'Fixture demand evidence','bear_case':'Fixture rate risk','invalidation':'Below 95'}}
+    assert forecast_basis_error(forecast,'2026-10-01T08:00:00+08:00') is None
+    assert forecast_basis_error({**forecast,'forecast_basis':{}},'2026-10-01T08:00:00+08:00')
+    late={**forecast,'forecast_basis':{**forecast['forecast_basis'],'reference_close_date':'2026-10-02'}}
+    assert forecast_basis_error(late,'2026-10-01T08:00:00+08:00')
+
 
 @pytest.mark.parametrize('change', ['count', 'inline', 'confidence', 'reason', 'unknown_target', 'bad_ref', 'missing_calendar'])
 def test_reject_bad_contract(report, change):

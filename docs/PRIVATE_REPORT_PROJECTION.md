@@ -87,6 +87,42 @@ copy private drafts into `artifacts/` or update `reports.json`. This workflow do
 not establish live entitlement, real collection, operational daily delivery or
 better forecast accuracy.
 
+## PRSG-61 direct REST snapshot workflow
+
+The separate manual direct-REST collector is `scripts/market_collect.py`. At the
+existing Trader report workflow, first invoke it with the explicitly configured
+private store root, credential-directory locator, AppKeyID filename, approved
+30-US-symbol plan, SPY/QQQ English news queries and a unique run ID. The
+credential directory and Keychain passphrase setup are operator-managed. Reuse
+the configured locators; do not search for, copy, or read secret contents to
+discover them. If a locator was not supplied to this workflow, report that
+locator as unavailable and preserve data gaps. The collector does not schedule
+itself and this ticket does not change the 08:00 schedule.
+
+After collection, run `scripts/daily-market-brief/publish_market_snapshot.py`
+with the same private store and run ID. Only after collection has completed,
+freeze one timezone-aware report cutoff at or after its completion/retrieval time.
+Use that identical cutoff for private projection and the report's
+`metadata.as_of`; never backdate it to the scheduled start or to before a
+retrieval completed. Late or unavailable results remain explicit gaps.
+Its `--private-output`
+mode can supply a private analysis snapshot to Trader judgment. The Trader then
+authors the existing SPY/QQQ report forecasts manually with a frozen reference,
+horizon, linked evidence, visible qualitative confidence, bull/bear cases and
+invalidation; unsupported views remain explicit abstentions. Forecast content
+is separate from publishing vendor quote/news fields.
+
+Its `--public-output` mode requires an explicit operator-provisioned rights
+record outside the repository. That record must cover the US market, every
+exported field and both public website display and redistribution, with a
+current authoritative evidence URL and verifier/timestamps. The publisher fails
+closed when the record is missing, expired or incomplete. No live permission is
+asserted by implementation fixtures. Until the applicable field/market rights
+are independently verified, do not publish live Moomoo quote/news snapshots to
+Pages. The static viewer accepts only same-origin, validated dated artifacts;
+forecast reports can still show Trader-authored evidence/abstention without a
+public market snapshot.
+
 ## Offline validation
 
 ```sh

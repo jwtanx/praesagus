@@ -14,7 +14,8 @@ try:
 except ImportError:
     from monthly_calendar import validate_calendar
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from ingest.daily_report_projection import validate_observed_quote, validate_public_snapshot, validate_public_report_boundary
+from ingest.daily_report_projection import (validate_observed_quote, validate_public_snapshot,
+    validate_public_report_boundary, validate_market_snapshot, forecast_basis_error)
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
@@ -187,6 +188,9 @@ def validate_report(path: Path, d, universe_data=None, *, public=False):
             if not isinstance(f.get('confidence_reason'),str) or not f['confidence_reason'].strip():fail(path,f'forecasts[{i}] confidence_reason required')
             if f.get('forecast_status')=='unavailable' and (f['confidence']!='unavailable' or f['direction']!='unknown' or any(f.get(k) is not None for k in ('estimated_mid_case_value','range_low_value','range_high_value'))):fail(path,f'forecasts[{i}] unavailable forecast must be unknown/unrated with null targets')
         if f['ticker'] in symbols:fail(path,f'duplicate ticker: {f["ticker"]}')
+        if modern:
+            basis_error=forecast_basis_error(f,meta['as_of'])
+            if basis_error:fail(path,f'forecasts[{i}] {basis_error}')
         if f.get('public_snapshot') is not None:
             if not modern or f.get('observed_quote') is not None:fail(path,'public_snapshot requires a separate schema3 point')
             try:validate_public_snapshot(f['public_snapshot'],meta['as_of'],listing_currency=f['currency'])
@@ -277,6 +281,16 @@ def main():
         n,events,counts=validate_report(p,report,universes.get(taxonomy,universe_data),public=a.public);total+=1
         breakdown=', '.join(f'{key}={count}' for key,count in counts.items())
         print(f'OK {p}: {n} forecasts ({breakdown}), {events} calendar events')
+        snapshot_path=root/'market-snapshots'/f'{report["metadata"]["date"]}.json'
+        if snapshot_path.exists():
+            snapshot=read_json(snapshot_path)
+            try:
+                validate_market_snapshot(snapshot,require_rights=True)
+                if snapshot.get('report_date')!=report['metadata']['date']:
+                    fail(snapshot_path,'market snapshot date does not match daily report')
+            except (ValueError,TypeError,KeyError,OverflowError):
+                fail(snapshot_path,'public market snapshot invalid')
+            print(f'OK {snapshot_path}: public market snapshot and permission evidence valid')
     idx=root/'reports.json'
     validate_index(idx,read_json(idx),file_names)
     print(f'OK {idx}: {len(read_json(idx)["reports"])} report dates indexed')

@@ -247,6 +247,20 @@ async function publicSnapshotDisplay() {
   assert.equal(t.$('#forecast-rows tr').dataset.universeOrder,'1');
   assert.equal(t.errors.length,0);t.dom.window.close();
 }
+async function snapshotTrendAndForecast() {
+  const data=report('2026-10-02');
+  data.metadata.as_of='2026-10-02T08:00:00+08:00';
+  for(const ticker of ['SPY','QQQ'])data.forecasts.push({...data.forecasts[0],ticker,name:ticker,direction:'up',direction_label:'Up',forecast_status:'rated',confidence:'medium',confidence_reason:'Fixture evidence',target_date:'2026-10-05',estimated_range:'101–105',forecast_basis:{reference_close_date:'2026-10-01',reference_close:100,reference_source:'https://example.org/reference',horizon_type:'next_session',bull_case:'Fixture bull',bear_case:'Fixture bear',invalidation:'Below 95'}});
+  const snap=(date,price)=>{const cutoff=`${date}T08:00:00+08:00`;return {schema_version:1,report_date:date,cutoff,quotes:['SPY','QQQ'].map(ticker=>({market:'US',ticker,status:'selected',public_snapshot:{price,source_at:`${date}T07:58:00+08:00`,observed_at:`${date}T07:59:00+08:00`,ingested_at:`${date}T07:59:01+08:00`,known_at:`${date}T07:59:02+08:00`,cutoff}})),news_queries:[{keyword:'SPY',status:'success',records:[{title:'Fixture headline',url:'https://example.org/news',published_at:'2026-10-02T07:00:00+08:00'}]},{keyword:'QQQ',status:'empty',records:[]}]}};
+  const unavailable=snap('2026-10-01',100);unavailable.news_queries[1]={keyword:'QQQ',status:'unavailable',records:[]};
+  const previous=report('2026-10-01');previous.forecasts.push(...data.forecasts.slice(-2));
+  const t=mount({routes:{'./2026-10-01.json':previous,'./2026-10-02.json':data,'./market-snapshots/2026-09-30.json':snap('2026-09-30',99),'./market-snapshots/2026-10-01.json':unavailable,'./market-snapshots/2026-10-02.json':snap('2026-10-02',102),'./market-snapshots/2026-10-03.json':snap('2026-10-03',999)}});await settle();
+  t.click('#date-picker-button');t.click('button[data-report-date="2026-10-02"]');await settle();
+  const panel=t.$('#market-snapshot-panel');assert.match(panel.textContent,/SPY · Moomoo REST observed trend/);assert.match(panel.textContent,/Trader forecast/);assert.match(panel.textContent,/Fixture bull/);assert.match(panel.textContent,/Fixture bear/);assert.match(panel.textContent,/Below 95/);assert.match(panel.textContent,/Fixture headline/);assert.match(panel.textContent,/News query returned no items/);
+  assert.equal(panel.querySelectorAll('svg').length,2);assert.doesNotMatch(panel.textContent,/999/);assert.ok(t.requests.some(x=>x.url==='./market-snapshots/2026-10-02.json'));assert.ok(!t.requests.some(x=>x.url==='./market-snapshots/2026-10-03.json'));
+  unavailable.cutoff='invalid-cutoff';t.click('#date-picker-button');t.click('button[data-report-date="2026-10-01"]');await settle();assert.match(t.$('#market-snapshot-panel').textContent,/Trend warmup: 1 valid capture date/);assert.match(t.$('#market-snapshot-panel').textContent,/News snapshot unavailable/);assert.equal(t.$('#market-snapshot-panel').querySelectorAll('svg').length,0);
+  unavailable.cutoff='2026-10-01T08:00:00+08:00';t.click('#date-picker-button');t.click('button[data-report-date="2026-10-02"]');await settle();t.click('#date-picker-button');t.click('button[data-report-date="2026-10-01"]');await settle();assert.match(t.$('#market-snapshot-panel').textContent,/News query unavailable/);assert.equal(t.errors.length,0);t.dom.window.close();
+}
 if (process.argv.includes('--write-browser-fixture')) {
   const dir = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'praesagus-report-fixture-'));
   fs.mkdirSync(path.join(dir, 'daily-market-brief')); fs.mkdirSync(path.join(dir, 'financial-calendar'));
@@ -259,6 +273,7 @@ if (process.argv.includes('--write-browser-fixture')) {
   console.log(dir);
 } else (async () => {
   await publicSnapshotDisplay();
+  await snapshotTrendAndForecast();
   await observedQuoteDisplay();
   await countryFiltersAndLatest();
   await navigation(1280); await navigation(390); await historyAndSafety(); await activeRevisionsAndReportCalendarRace(); await staleAndFailures(); await calendarStaleAndInvalid(); await checkedInReports();
