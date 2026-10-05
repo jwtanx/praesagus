@@ -4,7 +4,7 @@ Type: feature · Modules: backend, frontend, connectors · Owner: Engineer · Pr
 
 Harness manifest: [PRSG-1.harness.json](PRSG-1.harness.json). Created 2026-10-01, Asia/Kuala_Lumpur. Owner: Engineer; acceptance: Lead.
 
-State: selected for implementation, assigned to Engineer on 1 October 2026. Target: a solo or small-team researcher reviewing tracked companies. Lead accepts the scope below; implementation remains pending.
+State: complete; D1–D5 accepted by Lead on 5 October 2026 after the PRSG-59 regression gate passed. Target: a solo or small-team researcher reviewing tracked companies. Original accepted scope and correction history remain below.
 
 ## Problem and value
 
@@ -59,11 +59,11 @@ Effort: normalization/API 1–1.5 days; frontend 0.75–1.25; failure/replay tes
 
 ## When it's considered done
 
-- [ ] PRSG-1-D1: Four datasets normalize with source/time precision, deduplication, filters and paging proved by replay tests.
-- [ ] PRSG-1-D2: Authentication, malformed/absent datasets, unsafe links and future-observed versus scheduled events pass rejection tests.
-- [ ] PRSG-1-D3: Desktop/mobile fixture review proves source links, partial warnings, stale-response handling and paging.
-- [ ] PRSG-1-D4: Focused tests, full pytest and frontend checks pass; commands/results recorded in manifest checks.
-- [ ] PRSG-1-D5: Lead reviews the scoped diff, records limitations and accepts release; commit/deployment evidence recorded where applicable.
+- [x] PRSG-1-D1: Four datasets normalize with source/time precision, deduplication, filters and paging proved by replay tests.
+- [x] PRSG-1-D2: Authentication, malformed/absent datasets, unsafe links and future-observed versus scheduled events pass rejection tests.
+- [x] PRSG-1-D3: Desktop/mobile fixture review proves source links, partial warnings, stale-response handling and paging.
+- [x] PRSG-1-D4: Focused tests, full pytest and frontend checks pass; commands/results recorded in manifest checks.
+- [x] PRSG-1-D5: Lead reviews the scoped diff, records limitations and accepts release; commit/deployment evidence recorded where applicable.
 
 Check items only with evidence; update corresponding manifest acceptance status/evidence in the same edit. User usability target is a separate post-release impact check and must be reported as unmeasured until tested.
 
@@ -83,3 +83,17 @@ Four-path manifest validation, correction-baseline scope assertion and `git diff
 ## Lead correction review and additional UI evidence
 
 Correction accepted independently: all four changed paths reviewed; focused replay30passed0.46s onPython3.9.6. Original ticket completion remains pending supported-runtime full suite and final full historical scope acceptance. CUA synthetic HTTP desktop/mobile390 proves safe source href/target/rel,53rowpaging,calendar1rowfilter,SLOW superseded byEMPTY retained after delay;mobileAAPL/news52rowsnext/previous,pagewidth390. Actual API query wiring exercised by browser; credentials/provider freshness untested. Viewport reset. Do not report correction acceptance as whole-ticket completion.
+
+## Engineer verification delivery — 2026-10-05 MYT
+
+Read all nine original implementation/test paths and reconciled them with the contract and existing Lead CUA evidence. Updated only this spec and its manifest; original frozen base and correction history remain unchanged. D1–D4 evidence is recorded; D5 and Lead review remain pending, so this is not whole-ticket acceptance.
+
+At main `72160e2222cb7bad18125d7649a159b60a0c2e8b`, `python3 -m pytest -q tests/test_catalyst_inbox.py` at repository root with PATH selecting `/Users/jwtan/.codex/venvs/praesagus-tests-311/bin` (Python 3.11.17): **30 passed, 2 dependency deprecation warnings in 0.34s**. Exact `node tests/catalyst_frontend_checks.cjs` at repository root passed source safety/provenance, warnings, loading, apply/refresh, stale responses, paging, empty/error and unmount checks. `npm run build` in `frontend` passed: Vite 5.4.21, 45 modules, 442ms. This script bundles production assets; it does not run a separate `tsc` type check.
+
+Per Lead instruction, reused Lead independently verified successful [CI run 37243610560](https://github.com/jwtanx/praesagus/actions/runs/37243610560) on that main head and actual supported-runtime full pytest hook evidence (**1155 passed in 26.82s**). Engineer did not rerun the full suite in this metadata-only pass. Existing Lead desktop/mobile synthetic HTTP review establishes source link attributes, query wiring, paging, filtering and stale-response suppression; current mocked frontend replay complements partial/error/unmount coverage. Engineer did not repeat browser review.
+
+Limits: synthetic fixtures do not establish production deployment, live data rights/entitlements, provider freshness or browser authentication. Multiple-upcoming-event soonest ordering is implemented and reviewed but lacks a dedicated multi-date assertion; shared API transport has no isolated client test. Existing authentication API tests and HTTP browser query evidence remain the relevant checks. No separate TypeScript type check or five-person/60-second usability study was performed; usability impact remains unmeasured. No code bug identified requiring a correction scope. No application edits, commit or push. Lead must independently review the complete historical ticket-owned diff and release limitations for D5.
+
+## Lead final acceptance — 2026-10-05 MYT
+
+2026-10-05 MYT Lead final acceptance: independently read all nine historical implementation/test paths and both plans, reviewed complete scoped diff from original frozen base and recorded CUA evidence. Supported Python3.11 focused30passed0.40s and exact Node replay independently passed; no application blocker. Existing D1-D4 evidence and limitations accepted. Final delivery gated on PRSG-59 stable regressions: Engineer focused58passed0.09s after controlled fixture correction. No provider freshness, production/browser auth, measured usability or deployment claim. Original base/correction history preserved; commit/push remains Lead integration.

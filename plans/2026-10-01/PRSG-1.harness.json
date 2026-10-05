@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-01/PRSG-1-catalyst-inbox.md",
   "objective": "Unify stored company catalysts with source provenance and timestamp precision.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -63,7 +63,8 @@
       "cwd": ".",
       "status": "passed",
       "evidence": [
-        "2026-10-05 MYT correction: python3 -m pytest -q tests/test_catalyst_inbox.py at repository root, Python3.9.6: before service fix7 failed/23 passed; after fix30 passed in0.41s. Direct invalid-port and nonobject metadata regressions plus dataset skipped counts, source timestamps/identity and read-only bytes; valid omitted/80/443/8443 ports and absent/null/object metadata retained. Focused only; no supported3.11 full-suite claim."
+        "2026-10-05 MYT correction: python3 -m pytest -q tests/test_catalyst_inbox.py at repository root, Python3.9.6: before service fix7 failed/23 passed; after fix30 passed in0.41s. Direct invalid-port and nonobject metadata regressions plus dataset skipped counts, source timestamps/identity and read-only bytes; valid omitted/80/443/8443 ports and absent/null/object metadata retained. Focused only; no supported3.11 full-suite claim.",
+        "2026-10-05 MYT verification at 72160e2222cb7bad18125d7649a159b60a0c2e8b: PATH selects /Users/jwtan/.codex/venvs/praesagus-tests-311/bin; python3 -m pytest -q tests/test_catalyst_inbox.py, cwd repository root: 30 passed, 2 dependency deprecation warnings in 0.34s on supported Python 3.11.17."
       ]
     },
     {
@@ -76,8 +77,10 @@
         "-q"
       ],
       "cwd": ".",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT: reused Lead independently verified SUCCESS CI run 37243610560 at main 72160e2222cb7bad18125d7649a159b60a0c2e8b (https://github.com/jwtanx/praesagus/actions/runs/37243610560) and actual full pytest hook gate: 1155 passed in 26.82s on persistent Python 3.11.17. Full suite was not rerun in this metadata-only verification; attribution is Lead verification/actual hook evidence."
+      ]
     },
     {
       "id": "frontend",
@@ -88,24 +91,29 @@
         "build"
       ],
       "cwd": "frontend",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT: npm run build, cwd frontend: Vite 5.4.21, 45 modules transformed, exit 0, built in 442ms. Production bundling succeeds; this script does not invoke tsc and is not separate TypeScript type-check evidence."
+      ]
     },
     {
       "id": "behavior",
       "kind": "manual",
       "description": "Review ticket-specific fixture behavior and required failure cases, including desktop/mobile UI where relevant.",
-      "status": "pending",
+      "status": "passed",
       "evidence": [
-        "Lead CUA synthetic HTTP fixture desktop/mobile390 on2026-10-05: source href/target/rel validated;53row Next51\u201353/Previous,calendarfilter1row;SLOW request superseded by EMPTY and empty retained after delay;mobileAAPL/news52rows Next51\u201352/Previous1\u201350,pagewidth390. Viewport reset. No provider data/auth/production deployment proof."
+        "Lead CUA synthetic HTTP fixture desktop/mobile390 on2026-10-05: source href/target/rel validated;53row Next51\u201353/Previous,calendarfilter1row;SLOW request superseded by EMPTY and empty retained after delay;mobileAAPL/news52rows Next51\u201352/Previous1\u201350,pagewidth390. Viewport reset. No provider data/auth/production deployment proof.",
+        "2026-10-05 MYT reconciliation: reuse recorded Lead CUA HTTP desktop/mobile 390px evidence above, complemented by current frontend replay for partial warnings and error/unmount cases. Engineer did not repeat CUA. Read all nine original implementation/test paths; source link attributes and original provenance, API query wiring, abort/generation guard, CSS mobile controls agree with fixture evidence."
       ]
     },
     {
       "id": "lead-review",
       "kind": "manual",
       "description": "Lead checks complete ticket diff against base, reviews results and records release/limitations.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT Lead final acceptance: independently read all nine historical implementation/test paths and both plans, reviewed complete scoped diff from original frozen base and recorded CUA evidence. Supported Python3.11 focused30passed0.40s and exact Node replay independently passed; no application blocker. Existing D1-D4 evidence and limitations accepted. Final delivery gated on PRSG-59 stable regressions: Engineer focused58passed0.09s after controlled fixture correction. No provider freshness, production/browser auth, measured usability or deployment claim. Original base/correction history preserved; commit/push remains Lead integration."
+      ]
     },
     {
       "id": "frontend-replay",
@@ -115,8 +123,10 @@
         "tests/catalyst_frontend_checks.cjs"
       ],
       "cwd": ".",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT: node tests/catalyst_frontend_checks.cjs, cwd repository root, exit 0. React replay verifies source safety/provenance, partial warnings, loading, apply/refresh, stale response suppression, paging, empty/error and unmount. Uses existing external temporary React renderer dependencies; mocked API replay is not live provider/auth evidence."
+      ]
     }
   ],
   "acceptance": [
@@ -126,8 +136,10 @@
       "check_ids": [
         "focused"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-05 MYT verification: Reviewed four-dataset service/API against 30 passing supported-runtime tests: original source/time precision, deterministic dedup and tie ordering, filtering before paging, null ticker and offset/empty behavior. Upcoming soonest ordering is implemented and reviewed; multiple upcoming dates have no dedicated ordering assertion."
+      ]
     },
     {
       "id": "PRSG-1-D2",
@@ -135,8 +147,10 @@
       "check_ids": [
         "focused"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-05 MYT verification: 30 passing tests cover API authentication/invalid bounds, absent/unreadable/malformed data, unsafe URL ports and nonobject metadata, future observed versus scheduled timestamps, retained original provenance and no provider calls/raw writes."
+      ]
     },
     {
       "id": "PRSG-1-D3",
@@ -145,8 +159,10 @@
         "behavior",
         "frontend-replay"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-05 MYT verification: Recorded Lead desktop/mobile HTTP fixture evidence plus passing frontend replay establishes source/provenance display, partial warnings, stale response suppression and paging. Synthetic fixture only; no production/provider freshness or browser authentication claim."
+      ]
     },
     {
       "id": "PRSG-1-D4",
@@ -156,8 +172,10 @@
         "suite",
         "frontend"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-05 MYT verification: Focused 30 passed on Python 3.11.17; frontend replay and Vite production build passed. Full 1155-test gate and successful current-head CI reused from Lead verified evidence, not rerun. Build is not a standalone tsc check."
+      ]
     },
     {
       "id": "PRSG-1-D5",
@@ -165,13 +183,17 @@
       "check_ids": [
         "lead-review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-05 MYT Lead final acceptance: independently read all nine historical implementation/test paths and both plans, reviewed complete scoped diff from original frozen base and recorded CUA evidence. Supported Python3.11 focused30passed0.40s and exact Node replay independently passed; no application blocker. Existing D1-D4 evidence and limitations accepted. Final delivery gated on PRSG-59 stable regressions: Engineer focused58passed0.09s after controlled fixture correction. No provider freshness, production/browser auth, measured usability or deployment claim. Original base/correction history preserved; commit/push remains Lead integration."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "2026-10-05 MYT Lead final acceptance: independently read all nine historical implementation/test paths and both plans, reviewed complete scoped diff from original frozen base and recorded CUA evidence. Supported Python3.11 focused30passed0.40s and exact Node replay independently passed; no application blocker. Existing D1-D4 evidence and limitations accepted. Final delivery gated on PRSG-59 stable regressions: Engineer focused58passed0.09s after controlled fixture correction. No provider freshness, production/browser auth, measured usability or deployment claim. Original base/correction history preserved; commit/push remains Lead integration."
+    ]
   },
   "dependencies": [],
   "diff_scope": "Complete ticket-owned tracked/untracked/deleted paths plus both rename endpoints; preserve unrelated pre-existing changes.",
