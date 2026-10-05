@@ -1,0 +1,237 @@
+{
+  "report_date": "2026-10-05",
+  "as_of": "2026-10-05T10:50:56.514538+08:00",
+  "scheduled_for": "2026-10-05T08:00:00+08:00",
+  "late_reason": "Usage-limit interruption; resumed existing task with recovered subagent evidence.",
+  "sources": [
+    {
+      "label": "BLS September employment",
+      "url": "https://www.bls.gov/news.release/archives/empsit_10022026.htm",
+      "provider": "BLS September employment (primary)",
+      "published_at": "2026-10-02T08:30:00-04:00",
+      "published_date": "2026-10-02",
+      "retrieved_at": "2026-10-05T10:48:50+08:00",
+      "data_period": "September 2026",
+      "connector": "web research extraction",
+      "limitation": "Release verified through web extraction; direct raw download failed. Revisions and consensus surprise require separate review."
+    },
+    {
+      "label": "New York Fed October calendar",
+      "url": "https://www.newyorkfed.org/research/calendars/i-oct26.html",
+      "provider": "New York Fed October calendar (primary)",
+      "published_at": null,
+      "published_date": null,
+      "retrieved_at": "2026-10-05T02:48:29.877938+00:00",
+      "data_period": "October 2026",
+      "connector": "public-https-urllib",
+      "limitation": "Source ET converted to MYT; tentative schedules are not outcomes."
+    },
+    {
+      "label": "DOSM advance release calendar",
+      "url": "https://storage.dosm.gov.my/meta/arc.csv",
+      "provider": "DOSM advance release calendar (primary)",
+      "published_at": null,
+      "published_date": null,
+      "retrieved_at": "2026-10-05T02:48:29.459636+00:00",
+      "data_period": "October 2026",
+      "connector": "public-https-urllib",
+      "limitation": "CSV has no timezone offset; noon interpreted as Malaysia local time. Not market-closure evidence."
+    },
+    {
+      "label": "Apple Full Disk Access notice",
+      "url": "https://developer.apple.com/news/?id=p6zjojqw",
+      "provider": "Apple Full Disk Access notice (primary)",
+      "published_at": null,
+      "published_date": "2026-10-02",
+      "retrieved_at": "2026-10-05T02:48:29.597063+00:00",
+      "data_period": "Planned macOS controls",
+      "connector": "public-https-urllib",
+      "limitation": "Publication clock/timezone unknown; date-only precision. Issuer statement, not independent outcome verification."
+    },
+    {
+      "label": "Microsoft Exchange security update",
+      "url": "https://techcommunity.microsoft.com/blog/exchange/released-september-2026-v2-exchange-server-security-updates/4561718/replies/4561812",
+      "provider": "Microsoft Exchange security update (primary)",
+      "published_at": null,
+      "published_date": "2026-10-02",
+      "retrieved_at": "2026-10-05T02:48:33.434435+00:00",
+      "data_period": "September V2 security updates",
+      "connector": "public-https-urllib",
+      "limitation": "Issuer post and official reply extraction; company statement on protection/exploitation is not independently verified."
+    },
+    {
+      "label": "Google September AI recap",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/",
+      "provider": "Google September AI recap (primary)",
+      "published_at": null,
+      "published_date": "2026-10-02",
+      "retrieved_at": "2026-10-05T02:48:30.231118+00:00",
+      "data_period": "September 2026 product announcements",
+      "connector": "public-https-urllib",
+      "limitation": "October2 roundup of September launches, not proof of new October2 launches; issuer performance claims unvalidated."
+    },
+    {
+      "label": "Meta model governance notice",
+      "url": "https://research.meta.ai/blog/developing-capable-models-responsibly",
+      "provider": "Meta model governance notice (primary)",
+      "published_at": null,
+      "published_date": "2026-10-02",
+      "retrieved_at": "2026-10-05T02:48:30.198104+00:00",
+      "data_period": "Framework and planned governance",
+      "connector": "public-https-urllib",
+      "limitation": "Issuer framework claims; planned board committee not treated as already formed."
+    },
+    {
+      "label": "Tesla Q3 operations",
+      "url": "https://ir.tesla.com/press-release/tesla-third-quarter-2026-production-deliveries-and-deployments",
+      "provider": "Tesla Q3 operations (primary)",
+      "published_at": null,
+      "published_date": "2026-10-02",
+      "retrieved_at": "2026-10-05T10:48:50+08:00",
+      "data_period": "Quarter ended September30 2026",
+      "connector": "web research extraction",
+      "limitation": "Web extraction verified; direct raw download failed. Operating volumes are not quarterly profit or cash flow."
+    },
+    {
+      "label": "NVIDIA repurchase authorization",
+      "url": "https://nvidianews.nvidia.com/news/nvidia-announces-a-150-billion-share-repurchase-authorization-increase",
+      "provider": "NVIDIA repurchase authorization (primary)",
+      "published_at": null,
+      "published_date": "2026-09-28",
+      "retrieved_at": "2026-10-05T02:48:30.262251+00:00",
+      "data_period": "Authorization through fiscal2028",
+      "connector": "public-https-urllib",
+      "limitation": "Older context newly verified today; authorization and expected execution are not completed purchases. Full SEC/update sweep incomplete."
+    },
+    {
+      "label": "Amazon Built Together announcement",
+      "url": "https://www.aboutamazon.com/news/company-news/amazon-data-centers-built-together",
+      "provider": "Amazon Built Together announcement (primary)",
+      "published_at": null,
+      "published_date": "2026-10-02",
+      "retrieved_at": "2026-10-05T02:48:30.130214+00:00",
+      "data_period": "Five-year community program",
+      "connector": "public-https-urllib",
+      "limitation": "Oct2 date established by issuer sustainability index; article retrieved directly. Future commitments are not realized returns."
+    },
+    {
+      "label": "JPM Q3 earnings schedule",
+      "url": "https://jpmorganchaseco.gcs-web.com/news-releases/news-release-details/jpmorganchase-host-third-quarter-2026-earnings-call/",
+      "provider": "JPM Q3 earnings schedule (primary)",
+      "published_at": null,
+      "published_date": "2026-09-17",
+      "retrieved_at": "2026-10-05T10:48:50+08:00",
+      "data_period": "October13 results and call",
+      "connector": "web research extraction",
+      "limitation": "Older schedule, not new operating results. Direct raw retrieval timed out; web extraction verified; current disclosure sweep incomplete."
+    }
+  ],
+  "raw_retrievals": [
+    {
+      "id": "bls",
+      "source_url": "https://www.bls.gov/news.release/archives/empsit_10022026.htm",
+      "connector": "public-https-urllib",
+      "status": "failed",
+      "error_category": "HTTPError",
+      "retrieved_at": "2026-10-05T02:48:29.705430+00:00"
+    },
+    {
+      "id": "nyfed",
+      "source_url": "https://www.newyorkfed.org/research/calendars/i-oct26.html",
+      "connector": "public-https-urllib",
+      "status": "retrieved",
+      "sha256": "efa376b6cab416e22fa08e2e9edbe437629c42c73c78cc5b59b89f7a9ab8db21",
+      "bytes": 117470,
+      "retrieved_at": "2026-10-05T02:48:29.877938+00:00"
+    },
+    {
+      "id": "dosm",
+      "source_url": "https://storage.dosm.gov.my/meta/arc.csv",
+      "connector": "public-https-urllib",
+      "status": "retrieved",
+      "sha256": "f6fc848c0c305f1185c24e7ec302b6bb590530609bc99d8a65afe49c788adeeb",
+      "bytes": 57017,
+      "retrieved_at": "2026-10-05T02:48:29.459636+00:00"
+    },
+    {
+      "id": "apple",
+      "source_url": "https://developer.apple.com/news/?id=p6zjojqw",
+      "connector": "public-https-urllib",
+      "status": "retrieved",
+      "sha256": "8fb5bcc8efab653f90f0274da8506fdfc67e389effcc899ea333edcf0acf8724",
+      "bytes": 108871,
+      "retrieved_at": "2026-10-05T02:48:29.597063+00:00"
+    },
+    {
+      "id": "google",
+      "source_url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/",
+      "connector": "public-https-urllib",
+      "status": "retrieved",
+      "sha256": "d42391fb23a7b7ca165eb8d617ce6b13b4e0680bd1e90edbdb34609beb3df62c",
+      "bytes": 420977,
+      "retrieved_at": "2026-10-05T02:48:30.231118+00:00"
+    },
+    {
+      "id": "meta",
+      "source_url": "https://research.meta.ai/blog/developing-capable-models-responsibly",
+      "connector": "public-https-urllib",
+      "status": "retrieved",
+      "sha256": "c879c3a7749e20a80fa0980f3f802bc16a7b625d6466aa40b2f772300fd422b8",
+      "bytes": 100490,
+      "retrieved_at": "2026-10-05T02:48:30.198104+00:00"
+    },
+    {
+      "id": "tesla",
+      "source_url": "https://ir.tesla.com/press-release/tesla-third-quarter-2026-production-deliveries-and-deployments",
+      "connector": "public-https-urllib",
+      "status": "failed",
+      "error_category": "HTTPError",
+      "retrieved_at": "2026-10-05T02:48:29.612214+00:00"
+    },
+    {
+      "id": "nvda",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-a-150-billion-share-repurchase-authorization-increase",
+      "connector": "public-https-urllib",
+      "status": "retrieved",
+      "sha256": "3acc6c9b1357e259be754721f8801049b689bd842dfa1d3daba6439fc02a7420",
+      "bytes": 71308,
+      "retrieved_at": "2026-10-05T02:48:30.262251+00:00"
+    },
+    {
+      "id": "amazon",
+      "source_url": "https://www.aboutamazon.com/news/company-news/amazon-data-centers-built-together",
+      "connector": "public-https-urllib",
+      "status": "retrieved",
+      "sha256": "d9013f1974c3543b027495ae3c81257a1e596bf62bfe9f7a4ebe22a4b5a93893",
+      "bytes": 269956,
+      "retrieved_at": "2026-10-05T02:48:30.130214+00:00"
+    },
+    {
+      "id": "jpm",
+      "source_url": "https://jpmorganchaseco.gcs-web.com/news-releases/news-release-details/jpmorganchase-host-third-quarter-2026-earnings-call/",
+      "connector": "public-https-urllib",
+      "status": "failed",
+      "error_category": "timeout",
+      "retrieved_at": "2026-10-05T02:48:41.963366+00:00"
+    },
+    {
+      "id": "microsoft",
+      "source_url": "https://techcommunity.microsoft.com/blog/exchange/released-september-2026-v2-exchange-server-security-updates/4561718/replies/4561812",
+      "connector": "public-https-urllib",
+      "status": "retrieved",
+      "sha256": "f206037019c59c7516ba88616a7e0c40146eebdee8e8bcf112a56f11efa8bf05",
+      "bytes": 412241,
+      "retrieved_at": "2026-10-05T02:48:33.434435+00:00"
+    }
+  ],
+  "raw_retention": "Raw public source pages retained privately; hashes above. Failed direct fetches use web extraction and disclosed limitations.",
+  "quote_limit": "No verified operational daily-capture locator; no fresh quote attempt or success claimed.",
+  "calendar_result": "Existing month unchanged; no supported correction/cancellation; Bursa closure retrieval failed.",
+  "research_models": {
+    "requested": "gpt-6.1-sol/low",
+    "returned": 3,
+    "synthesis_requested": "gpt-6.1-sol/medium",
+    "synthesis_runtime_settings_verified": false
+  },
+  "bounds": "Issuer research first collected08:02–08:03MYT; recovered after usage interruption and parent verified selected pages10:47–10:48MYT. No exhaustive SEC/overnight packet."
+}
