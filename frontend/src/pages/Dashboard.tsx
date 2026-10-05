@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { fetchDashboard, fetchSkills, postResearch } from '../services/api';
+import MoomooPriceTrend from '../components/MoomooPriceTrend';
 
 const DEFAULT_SKILL_ID = 'elite-ipo-equity-research';
 
@@ -89,6 +90,8 @@ export default function Dashboard() {
 
       {loading && <p>Loading dashboard...</p>}
       {error && <p className="error-message">{error}</p>}
+
+      <MoomooPriceTrend />
 
       <section className="trend-overview">
         <h3>Top trends</h3>

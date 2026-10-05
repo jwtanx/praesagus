@@ -1,5 +1,7 @@
 import os
+import re
 import uuid
+from calendar import monthrange
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Literal, Optional
 
@@ -59,6 +61,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 REQUESTS = Counter("praesagus_requests_total", "Total API requests")
+
+MOOMOO_US_CODE = re.compile(r"^US\.[A-Z0-9]+(?:[.-][A-Z0-9]+)*$")
+
+
+def _history_window(months: int, today):
+    month_index = today.year * 12 + today.month - 1 - months
+    year, month = divmod(month_index, 12)
+    month += 1
+    start = today.replace(year=year, month=month, day=min(today.day, monthrange(year, month)[1]))
+    return start.isoformat(), today.isoformat()
 
 
 def get_api_key(x_api_key: Optional[str] = Header(None), authorization: Optional[str] = Header(None)):
@@ -318,6 +330,43 @@ def get_moomoo_quotes(
         content=jsonable_encoder(
             {
                 "records": records,
+                "count": len(records),
+                "retrieved_at": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+    )
+
+
+@app.get("/api/v1/moomoo/history")
+def get_moomoo_history(
+    code: str = Query("US.AAPL", min_length=4, max_length=14),
+    window: Literal["1M", "3M"] = Query("1M"),
+    connector: MoomooOpenDConnector = Depends(configured_connector),
+    api_key: Optional[str] = Depends(get_api_key),
+):
+    """Fetch one bounded historical daily-close series through OpenD."""
+    REQUESTS.inc()
+    normalized_code = code.strip().upper()
+    if len(normalized_code) > 14 or not MOOMOO_US_CODE.fullmatch(normalized_code):
+        raise HTTPException(status_code=422, detail="Enter a valid US symbol, for example US.AAPL")
+    months = 1 if window == "1M" else 3
+    today = datetime.now(timezone.utc).date()
+    start, end = _history_window(months, today)
+    try:
+        records = connector.get_history(normalized_code, start, end, max_count=100)
+    except OpenDUnavailableError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except OpenDAPIError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    return JSONResponse(
+        content=jsonable_encoder(
+            {
+                "code": normalized_code,
+                "window": window,
+                "start": start,
+                "end": end,
+                "adjustment": "QFQ",
+                "series": records,
                 "count": len(records),
                 "retrieved_at": datetime.now(timezone.utc).isoformat(),
             }

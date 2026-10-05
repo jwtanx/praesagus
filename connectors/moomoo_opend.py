@@ -10,6 +10,7 @@ import math
 import os
 from collections import deque
 from contextlib import contextmanager
+from datetime import date, datetime
 from threading import Lock
 from time import monotonic
 from typing import Any, Callable, Iterator, Optional
@@ -99,6 +100,9 @@ class MoomooOpenDConnector:
         ret_ok: Optional[int] = None,
         quote_subtype: Any = None,
         news_rate_limiter: Optional[SlidingWindowRateLimiter] = None,
+        history_ktype: Any = None,
+        history_autype: Any = None,
+        history_close_field: Any = None,
     ) -> None:
         self.host = host or os.getenv("MOOMOO_OPEND_HOST", "127.0.0.1")
         self.port = int(port or os.getenv("MOOMOO_OPEND_PORT", "11111"))
@@ -106,6 +110,9 @@ class MoomooOpenDConnector:
         self._ret_ok = ret_ok
         self._quote_subtype = quote_subtype
         self._news_rate_limiter = news_rate_limiter or NEWS_SEARCH_RATE_LIMITER
+        self._history_ktype = history_ktype
+        self._history_autype = history_autype
+        self._history_close_field = history_close_field
 
     def _sdk(self) -> tuple[Callable[..., Any], int, Any]:
         if self._context_factory is not None:
@@ -171,6 +178,103 @@ class MoomooOpenDConnector:
             )
             data = self._check(context.get_stock_quote(codes), ret_ok, "quote lookup")
             return _rows(data)
+
+    def get_history(self, code: str, start: str, end: str, max_count: int = 100) -> list[dict[str, Any]]:
+        """Fetch one bounded page of adjusted daily closes from OpenD."""
+        if not isinstance(code, str) or not code.startswith("US.") or len(code) > 14:
+            raise OpenDAPIError("Invalid US symbol for historical data")
+        ticker = code[3:]
+        if (not ticker or not ticker[0].isascii() or not ticker[0].isalnum()
+                or not ticker[-1].isascii() or not ticker[-1].isalnum()
+                or any(not (char.isascii() and char.isalnum() or char in ".-") for char in ticker)
+                or any(left in ".-" and right in ".-" for left, right in zip(ticker, ticker[1:]))):
+            raise OpenDAPIError("Invalid US symbol for historical data")
+        try:
+            start_date = date.fromisoformat(start)
+            end_date = date.fromisoformat(end)
+        except (TypeError, ValueError) as exc:
+            raise OpenDAPIError("Invalid historical date range") from exc
+        if end_date < start_date or type(max_count) is not int or not 1 <= max_count <= 100:
+            raise OpenDAPIError("Invalid historical request bounds")
+
+        if any(value is None for value in (
+            self._history_ktype, self._history_autype, self._history_close_field
+        )):
+            try:
+                from moomoo import AuType, KLType, KL_FIELD
+            except ImportError as exc:
+                raise OpenDUnavailableError(
+                    "Moomoo SDK is missing; install moomoo-api and start OpenD"
+                ) from exc
+            ktype = self._history_ktype if self._history_ktype is not None else KLType.K_DAY
+            autype = self._history_autype if self._history_autype is not None else AuType.QFQ
+            close_field = self._history_close_field if self._history_close_field is not None else KL_FIELD.CLOSE
+        else:
+            ktype, autype, close_field = (
+                self._history_ktype, self._history_autype, self._history_close_field
+            )
+
+        with self._connection() as (context, ret_ok, _):
+            data = self._check(
+                context.request_history_kline(
+                    code,
+                    start=start,
+                    end=end,
+                    ktype=ktype,
+                    autype=autype,
+                    fields=[close_field],
+                    max_count=max_count,
+                    page_req_key=None,
+                    extended_time=False,
+                ),
+                ret_ok,
+                "historical k-line request",
+            )
+            rows = _rows(data)
+            if hasattr(data, "to_dict"):
+                try:
+                    original_rows = data.to_dict(orient="records")
+                except TypeError:
+                    original_rows = data.to_dict()
+            elif isinstance(data, dict):
+                original_rows = [data]
+            else:
+                original_rows = data
+            if not isinstance(original_rows, (list, tuple)) or any(not isinstance(row, dict) for row in original_rows):
+                raise OpenDAPIError("OpenD returned an invalid historical response shape")
+            if len(rows) > max_count:
+                raise OpenDAPIError("OpenD historical response exceeded the requested limit")
+            validated: list[dict[str, Any]] = []
+            previous: Optional[date] = None
+            for row in rows:
+                raw_time = row.get("time_key")
+                if not isinstance(raw_time, str):
+                    raise OpenDAPIError("OpenD returned an invalid historical date")
+                try:
+                    session_time = datetime.strptime(raw_time, "%Y-%m-%d %H:%M:%S")
+                except ValueError as exc:
+                    raise OpenDAPIError("OpenD returned an invalid historical timestamp") from exc
+                if session_time.strftime("%Y-%m-%d %H:%M:%S") != raw_time:
+                    raise OpenDAPIError("OpenD returned an invalid historical date")
+                # OpenD time_key is in the exchange session timezone. Keep its date
+                # portion as an exchange-local session label; do not convert to UTC.
+                session_day = session_time.date()
+                raw_close = row.get("close")
+                if isinstance(raw_close, bool) or not isinstance(raw_close, (int, float, str)):
+                    raise OpenDAPIError("OpenD returned an invalid historical close")
+                try:
+                    close = float(raw_close)
+                except (TypeError, ValueError, OverflowError) as exc:
+                    raise OpenDAPIError("OpenD returned an invalid historical close") from exc
+                if not math.isfinite(close) or close <= 0:
+                    raise OpenDAPIError("OpenD returned an invalid historical close")
+                if session_day < start_date or session_day > end_date:
+                    raise OpenDAPIError("OpenD returned a date outside the requested range")
+                if previous is not None and session_day <= previous:
+                    raise OpenDAPIError("OpenD returned duplicate or unordered history")
+                previous = session_day
+                validated.append({"date": session_day.isoformat(), "close": close})
+            return validated
 
 
 def configured_connector() -> MoomooOpenDConnector:

@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-60",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "connectors",
+      "backend",
+      "frontend",
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-05",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-05/PRSG-60-moomoo-dashboard-price-trend.md",
+  "objective": "Display an on-demand historical daily-close trend for a user-selected US symbol on Dashboard through Moomoo OpenD",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "9bf9cf334cc1c96e2ab6ec0c7c132c0c222558b2",
+  "allowed_paths": [
+    "connectors/moomoo_opend.py",
+    "backend/main.py",
+    "frontend/src/services/api.ts",
+    "frontend/src/pages/Dashboard.tsx",
+    "frontend/src/components/MoomooPriceTrend.tsx",
+    "tests/test_moomoo_opend.py",
+    "tests/test_moomoo_api.py",
+    "tests/dashboard_moomoo_checks.cjs",
+    "plans/2026-10-05/PRSG-60-moomoo-dashboard-price-trend.md",
+    "plans/2026-10-05/PRSG-60.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "backend/freshness_services.py",
+    "backend/services.py",
+    "frontend/src/pages/Financial.tsx",
+    "frontend/src/pages/Pipeline.tsx",
+    "frontend/src/pages/Platforms.tsx",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_rest_live.py",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_rest_live.py",
+    "ingest/",
+    "scripts/",
+    "tests/test_connector_freshness.py",
+    "tests/connector_freshness_checks.cjs",
+    "backend/services.py",
+    "backend/freshness_services.py",
+    "frontend/src/pages/Financial.tsx",
+    "frontend/src/pages/Pipeline.tsx",
+    "frontend/src/pages/Platforms.tsx",
+    "plans/2026-10-01/",
+    "plans/2026-10-02/",
+    "plans/2026-10-05/PRSG-1-",
+    "plans/2026-10-05/PRSG-31-",
+    "plans/2026-10-05/PRSG-34-",
+    "plans/2026-10-05/PRSG-37-",
+    "plans/2026-10-05/PRSG-38-",
+    "plans/2026-10-05/PRSG-39-"
+  ],
+  "checks": [
+    {
+      "id": "backend-tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_moomoo_opend.py",
+        "tests/test_moomoo_api.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT, fresh worktree at base 9bf9cf334cc1c96e2ab6ec0c7c132c0c222558b2: `PATH=/Users/jwtan/.codex/venvs/praesagus-tests-311/bin:$PATH python3 -m pytest -q tests/test_moomoo_opend.py tests/test_moomoo_api.py` passed 35 tests in 0.26s with 20 existing Starlette/httpx deprecation warnings. Includes empty-history response and timestamp/date-preservation cases; synthetic only, no OpenD login/network."
+      ]
+    },
+    {
+      "id": "frontend-regression",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/dashboard_moomoo_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT, fresh worktree at base 9bf9cf334cc1c96e2ab6ec0c7c132c0c222558b2: `node tests/dashboard_moomoo_checks.cjs` passed. Offline Dashboard source-contract regression only; no browser runtime/DOM claim."
+      ]
+    },
+    {
+      "id": "frontend-build",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "frontend",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT, fresh worktree at base 9bf9cf334cc1c96e2ab6ec0c7c132c0c222558b2: from frontend/, `npm run build` passed with Vite 5.4.21; 46 modules, 331ms. A temporary symlink to existing frontend/node_modules was removed in a finally block. No dependency installation; no symlink remains."
+      ]
+    },
+    {
+      "id": "scope",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-05/PRSG-60.harness.json",
+        "--changed-file",
+        "connectors/moomoo_opend.py",
+        "--changed-file",
+        "backend/main.py",
+        "--changed-file",
+        "frontend/src/services/api.ts",
+        "--changed-file",
+        "frontend/src/pages/Dashboard.tsx",
+        "--changed-file",
+        "frontend/src/components/MoomooPriceTrend.tsx",
+        "--changed-file",
+        "tests/test_moomoo_opend.py",
+        "--changed-file",
+        "tests/test_moomoo_api.py",
+        "--changed-file",
+        "tests/dashboard_moomoo_checks.cjs",
+        "--changed-file",
+        "plans/2026-10-05/PRSG-60-moomoo-dashboard-price-trend.md",
+        "--changed-file",
+        "plans/2026-10-05/PRSG-60.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT, fresh worktree at base 9bf9cf334cc1c96e2ab6ec0c7c132c0c222558b2: exact PRSG-60 validator with all ten manifest paths passed; `git diff --check` passed. Shared hooks path resolves to `.githooks`; executable pre-commit and pre-push hooks are present. The original detached worktree remains unchanged as backup."
+      ]
+    },
+    {
+      "id": "live-check",
+      "kind": "manual",
+      "description": "If OpenD is available, manually verify a US symbol/date-window request and label returned bars as historical daily closes with adjustment and source/retrieval timestamps; otherwise verify explicit offline/unavailable UI.",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT: OpenD live validation is unavailable in this environment. No live quote request was made and no quote success is asserted. The deterministic offline suite covers the unavailable/error behavior."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead reviews frozen scope, error/provenance semantics and evidence; no implementation begins until Lead accepts the freeze.",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: Lead independently accepted PRSG-60 in the fresh worktree at 9bf9cf334cc1c96e2ab6ec0c7c132c0c222558b2. Lead verified the ten-path scope, focused 35-test Python suite, Node Dashboard source-contract check, frontend build, ticket validation, diff checks and executable hooks. D2 is explicitly unavailable live OpenD validation; no quote success is claimed."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-60-D1",
+      "description": "Validated OpenD history endpoint, Dashboard source contract, and frontend build; no DOM/browser behavior claimed",
+      "check_ids": [
+        "backend-tests",
+        "frontend-regression",
+        "frontend-build",
+        "scope"
+      ],
+      "status": "done",
+      "evidence": [
+        "Exact focused Python3.11 connector/API suite passed 35 tests; offline Dashboard source-contract regression passed; Lead independently completed Vite build (Vite5.4.21,46 modules,418ms); all-ten-path scope validator and diff check passed. Empty history returns HTTP200 with series=[] and count=0. No actual browser DOM replay or visual browser check ran; frontend regression checks source contract only."
+      ]
+    },
+    {
+      "id": "PRSG-60-D2",
+      "description": "Live OpenD/US entitlement outcome recorded if available; otherwise unavailable state is explicit, with limitations documented",
+      "check_ids": [
+        "live-check"
+      ],
+      "status": "done",
+      "evidence": [
+        "OpenD live validation is unavailable in this environment; no live request was made and no quote success is claimed. Offline unavailable behavior is covered by the deterministic tests."
+      ]
+    },
+    {
+      "id": "PRSG-60-D3",
+      "description": "Lead accepts exact path scope, API contract, source labeling and test evidence",
+      "check_ids": [
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed and accepted the ten-path implementation, API/provenance contract, failure behavior, tests and build in the fresh worktree at the frozen base. No out-of-scope paths were added; final implementation acceptance recorded 2026-10-06 MYT."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-05 MYT Lead independently reviewed and accepted the exact PRSG-60 scope: bounded on-demand 1M/3M historical adjusted daily-close OpenD chart, separate from signal trends, exact ten paths, frozen base 9bf9cf334cc1c96e2ab6ec0c7c132c0c222558b2, separate worktree preserving dirty PRSG-2, mocked-only automated tests, and explicit OpenD login/US entitlement limitations. implementation_authorized=true. Lead authorized implementation in a separate worktree; PRSG-2 integration remains Lead-owned.",
+      "2026-10-06 MYT Lead independently accepted the completed implementation at the same frozen base after reviewing all ten paths, 35 focused Python tests, Node source-contract regression, frontend build, ticket/path validation, diff check and hooks. Live OpenD validation remains unavailable and is not claimed as a quote success."
+    ]
+  }
+}

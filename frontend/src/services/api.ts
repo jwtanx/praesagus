@@ -64,6 +64,23 @@ export type MoomooResponse = {
   retrieved_at: string;
 };
 
+export type MoomooHistoryPoint = { date: string; close: number };
+export type MoomooHistoryResponse = {
+  code: string;
+  window: '1M' | '3M';
+  start: string;
+  end: string;
+  adjustment: 'QFQ';
+  series: MoomooHistoryPoint[];
+  count: number;
+  retrieved_at: string;
+};
+
+export function fetchMoomooHistory(code: string, window: '1M' | '3M') {
+  const params = new URLSearchParams({ code, window });
+  return fetchJson<MoomooHistoryResponse>(`/api/v1/moomoo/history?${params}`);
+}
+
 export function fetchMoomooQuotes(code: string) {
   const params = new URLSearchParams({ codes: code });
   return fetchJson<MoomooResponse>(`/api/v1/moomoo/quotes?${params}`);
