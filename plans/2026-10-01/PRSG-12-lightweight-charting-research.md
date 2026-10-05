@@ -12,8 +12,14 @@ Deliver a sourced comparison, one MVP recommendation, missing capabilities and a
 
 ## When it's considered done
 
-- [ ] PRSG-12-D1: Sourced top-three comparison and reviewed MVP decision
+- [x] PRSG-12-D1: Sourced top-three comparison and reviewed MVP decision
 
 ## Research delivery for review
 
 Researcher produced [the comparison](../../docs/research/PRSG-12-lightweight-charting.md) at 18:44:18 MYT on 1 October 2026, within the three-hour ceiling. Official sources support Lightweight Charts, ECharts and Highcharts Stock tradeoffs, licensing/attribution, data contracts and React/mobile/accessibility considerations. Proposed a replayable performance experiment; no benchmark or implementation was run. Conditional preference: one selected-ticker Lightweight Charts MVP after historical-data rights and device/accessibility checks; alternative choices depend on dashboard breadth or built-in studies. Exact bundle/latency/fees and per-request source timing remain gaps. Findings ready; Lead review and acceptance remain pending.
+
+## Lead historical research acceptance — 2026-10-05 MYT
+
+2026-10-05 MYT Lead historical research acceptance: read the comparison/spec/manifest and reviewed all three historical ticket paths; inspected frontend baseline and absence of a chart dependency. Independently reopened official Lightweight Charts docs (5.2 and attribution), plugins/accessibility, ECharts selective imports, and Highcharts FAQ Stock licensing/Boost sources. Accept the sourced three-option comparison and proposed performance experiment as research only. No library implementation, benchmark, measured bundle/runtime/mobile/accessibility outcome, fee commitment or data-rights approval. Current hosted TradingView widget is the provisional display direction, superseding the dated conditional Lightweight Charts MVP recommendation pending feasibility; original dated findings remain unchanged. Preserve original source timing limitations and historical Researcher ownership/base/date. Metadata-only acceptance, no code/dependency/test/live calls or Engineer commit/push.
+
+State: complete for the research deliverable only. Earlier pending-review language above is retained as dated delivery history. Lead owns integration.
