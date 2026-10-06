@@ -15,7 +15,8 @@ except ImportError:
     from monthly_calendar import validate_calendar
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from ingest.daily_report_projection import (validate_observed_quote, validate_public_snapshot,
-    validate_public_report_boundary, validate_market_snapshot, forecast_basis_error)
+    validate_public_report_boundary, validate_market_snapshot, forecast_basis_error,
+    validate_moomoo_trend)
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
@@ -207,6 +208,9 @@ def validate_report(path: Path, d, universe_data=None, *, public=False):
                 fail(path,f'forecasts[{i}] observed units must remain unsortable')
             if f.get('direction')!='unknown' or f.get('forecast_status')!='unavailable' or f.get('confidence')!='unavailable':
                 fail(path,f'forecasts[{i}] observed quote cannot imply forecast')
+        if 'moomoo_trend' in f:
+            try:validate_moomoo_trend(f['moomoo_trend'],meta['as_of'])
+            except (ValueError,TypeError,KeyError,OverflowError):fail(path,f'forecasts[{i}].moomoo_trend invalid')
         symbols.add(f['ticker']);validate_sources(f.get('sources',[]),path,f'forecasts[{i}]')
     for key,count in sector_counts.items():
         if count!=(5 if modern else 10):fail(path,f'watchlist group {key} has {count} tickers; expected {5 if modern else 10}')

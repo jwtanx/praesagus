@@ -16,7 +16,7 @@ const source = { label: 'Official source', url: 'https://example.org/calendar' }
 const report = (date, version = 3) => {
   const data = { schema_version: version, metadata: { date, as_of: '2026-10-01T08:00:00+08:00', subtitle: `Fixture ${date}` }, summary: [{ label: 'Fixture', title: date, summary: 'Research only' }], footer: `Footer ${date}`, sections: {}, watchlist_config: { groups: [{ key: 'technology', label: 'Technology', emoji: '💻' }] }, forecasts: [] };
   for (const id of ['outlook', 'top10', 'swing', 'etfs', 'news', 'trends', 'score']) data.sections[id] = { title: `${date} ${id}`, kicker: id, description: [], notes: [], items: [], tables: [] };
-  data.forecasts = ['low', 'medium', 'high', null].map((confidence, i) => ({ ticker: `TEST${i}`, name: 'Fixture', market: 'US', country: 'us', asset_type: 'equity', sector: 'Technology', sector_category: 'technology', confidence, confidence_reason: `Reason ${i}`, direction: 'unknown', direction_label: 'Unrated', current_price_value: null, estimated_mid_case: 'Unavailable', estimated_range: 'Unavailable', sources: [source] }));
+  data.forecasts = ['low', 'medium', 'high', null].map((confidence, i) => ({ ticker: `TEST${i}`, name: 'Fixture', market: 'US', country: 'us', asset_type: 'equity', sector: 'Technology', sector_category: 'technology', confidence, confidence_reason: `Reason ${i}`, direction: 'unknown', direction_label: 'Unrated', current_price_value: null, estimated_mid_case: 'Unavailable', estimated_range: 'Unavailable', sources: [source], ...(i===0?{moomoo_trend:{status:'available',signal:'bullish',label:'Bullish',last_bar_date:'2026-09-30',sma5:12.5,sma20:11.5}}:{}) }));
   if (version === 3) data.calendar_ref = '../financial-calendar/2026-10.json';
   else { data.calendar = { month: '2026-09', timezone: 'Asia/Kuala_Lumpur', events: [{ country: 'US', date: '2026-09-30', title: 'Legacy event', kind: 'event', time: 'Date only', details: 'Legacy retained', sources: [source] }] }; data.sections.calendar = { description: [{ text: 'Legacy calendar description' }], notes: [] }; }
   return data;
@@ -202,6 +202,7 @@ async function checkedInReports() {
 }
 async function observedQuoteDisplay() {
   const data=report('2026-10-01');
+  data.forecasts[0].moomoo_trend={status:'available',signal:'bullish',label:'Bullish',last_bar_date:'2026-09-30',sma5:12.5,sma20:11.5};
   data.forecasts[0].current_price_value=1234; // Even malformed legacy sorting cannot promote unknown units.
   data.forecasts[0].data_gaps=['currency_unknown','session_unknown','adjustment_unknown','prior_close_unknown','<img src=x onerror=alert(1)>'];
   data.forecasts[0].observed_quote={price:10,volume:0,source_at:'2026-09-30T23:59:00Z',observed_at:'2026-09-30T23:59:00Z',ingested_at:'2026-10-01T00:00:00Z',known_at:'2026-10-01T00:00:00Z',cutoff:'2026-10-01T00:00:00Z',origin:'synthetic',provenance:{raw_hash:'private-hash',attempt_id:'private-attempt'}};
@@ -221,6 +222,16 @@ async function observedQuoteDisplay() {
   assert.equal(row.querySelector('img'),null);assert.match(row.textContent,/<img src=x/);
   assert.doesNotMatch(row.textContent,/private-hash|private-attempt|USD 10|US\$10/);
   assert.match(row.querySelector('.signal').textContent,/Unrated/);
+  assert.match(row.textContent,/Moomoo SMA-5\/SMA-20: Bullish/);
+  assert.match(row.textContent,/Forecast: \? Unrated/);
+  t.w.eval(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'));
+  const controls=t.w.PraesagusTA.create(t.w.document);controls.update(data);
+  const chip=t.$('#ta-chips button');
+  assert.match(chip.textContent,/TEST0 · Bullish/);
+  assert.match(chip.getAttribute('aria-label'),/Moomoo SMA trend Bullish · forecast Unrated/);
+  assert.match(chip.className,/ta-trend-bullish/);
+  assert.match(t.$('#ta-caption').textContent,/forecast direction remains separate/);
+  controls.destroy();
   t.$('#forecast-sort').value='price-desc';t.$('#forecast-sort').dispatchEvent(new t.w.Event('change'));
   assert.equal(t.$('#forecast-rows tr').dataset.universeOrder,'1','Unknown-unit point excluded from nominal sorting');
   assert.equal(t.errors.length,0);t.dom.window.close();

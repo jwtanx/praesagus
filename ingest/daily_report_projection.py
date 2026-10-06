@@ -1,6 +1,6 @@
 """Deterministic private quote overlay; no collection, publication or forecasts."""
 from copy import deepcopy
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from importlib import import_module
 import json
 import math
@@ -9,6 +9,7 @@ from pathlib import Path
 import re
 import tempfile
 from urllib.parse import parse_qsl, urlparse
+from zoneinfo import ZoneInfo
 
 from ingest.private_market_store import REPO, canonical, check_secrets, need, parse_aware, private, safe
 
@@ -17,8 +18,7 @@ QUOTE_KEYS = {'price','volume','source_at','observed_at','ingested_at','known_at
               'origin','currency','session','adjustment','prior_close','gaps','provenance'}
 EXCLUSIONS = {'source_time_unknown','source_time_after_cutoff','source_time_after_observation','price_unusable'}
 REASONS = set(GAPS) | {'no_eligible_quote','no_returned_quote','no_available_attempts','same_time_conflict'}
-PROVENANCE_KEYS = {'provider','connector','capture_authenticity','rights_status',
-                   'attempt_id','raw_hash','semantic_hash','run_id'}
+PROVENANCE_KEYS = {'provider','connector','capture_authenticity','rights_status'}
 
 
 def epoch_time(milliseconds):
@@ -44,10 +44,7 @@ def validate_observed_quote(quote, cutoff):
     need(isinstance(provenance,dict) and set(provenance)==PROVENANCE_KEYS
          and provenance['provider']=='moomoo-rest' and provenance['connector']=='moomoo-rest-capture'
          and provenance['capture_authenticity']=='caller-supplied-unverified'
-         and provenance['rights_status']=='unconfirmed'
-         and isinstance(provenance['run_id'],str) and re.fullmatch(r'[A-Za-z0-9_-]{1,128}',provenance['run_id']))
-    need(all(isinstance(provenance[k],str) and re.fullmatch(r'[0-9a-f]{64}',provenance[k])
-             for k in ('attempt_id','raw_hash','semantic_hash')))
+         and provenance['rights_status']=='unconfirmed')
     check_secrets(quote)
 
 
@@ -195,7 +192,7 @@ def _market_quote_point(entry, cutoff, ticker, run_id):
         'ingested_at':provenance['ingested_at'], 'known_at':epoch_time(provenance['known_ms']),
         'cutoff':cutoff, 'origin':provenance['origin'], 'currency':None, 'session':None,
         'adjustment':None, 'prior_close':None, 'gaps':list(GAPS),
-        'provenance':{key:provenance[key] for key in PROVENANCE_KEYS if key!='run_id'} | {'run_id':run_id},
+        'provenance':{key:provenance[key] for key in PROVENANCE_KEYS},
     }
     return map_public_snapshot(quote,cutoff,listing_currency='USD')
 
@@ -291,6 +288,131 @@ def project_public_market_snapshot(store, universe, *, run_id, cutoff, rights_ev
     }
     validate_market_snapshot(snapshot,require_rights=rights is not None)
     return snapshot
+
+
+MOOMOO_TREND_FIELDS={
+    'provider','endpoint','method','signal','label','status','reason','adjustment',
+    'bar_count','bar_dates','last_bar_date','last_bar_timezone_offset_minutes',
+    'sma5','sma20','observed_at','ingested_at','known_at','cutoff','source_url',
+    'rights_status','capture_authenticity'
+}
+MOOMOO_TREND_URL='https://open.moomoo.com/api/quote/basic-data/history-kline'
+
+
+def _unavailable_moomoo_trend(code,cutoff,reason='history-unavailable'):
+    return {'provider':'moomoo-rest' if code.startswith('US.') else 'unsupported',
+        'endpoint':'/api/v1.0/quote/{symbol}/history-kline' if code.startswith('US.') else None,
+        'method':'SMA-5-vs-SMA-20','signal':'unavailable','label':'Unavailable',
+        'status':'unavailable','reason':reason,'adjustment':'none' if code.startswith('US.') else None,
+        'bar_count':0,'bar_dates':[],'last_bar_date':None,'last_bar_timezone_offset_minutes':None,
+        'sma5':None,'sma20':None,'observed_at':None,'ingested_at':None,'known_at':None,
+        'cutoff':cutoff,'source_url':MOOMOO_TREND_URL if code.startswith('US.') else None,
+        'rights_status':'unconfirmed' if code.startswith('US.') else 'not-applicable',
+        'capture_authenticity':'caller-supplied-unverified' if code.startswith('US.') else 'not-collected'}
+
+
+def project_moomoo_trend(store,*,run_id,cutoff,code,history_entries=None,history_attempts=None):
+    """Derive a descriptive SMA trend from same-run completed Moomoo daily bars."""
+    def project():
+        need(isinstance(code,str) and re.fullmatch(r'(?:US\.[A-Z][A-Z0-9.-]{0,59}|MY\.[A-Z0-9]{1,14})',code))
+        frozen=parse_aware(cutoff)
+        result=_unavailable_moomoo_trend(code,cutoff,'unsupported-market' if code.startswith('MY.') else 'history-unavailable')
+        if code.startswith('MY.'):
+            validate_moomoo_trend(result,cutoff)
+            return result
+        attempts=[a for a in (history_attempts if history_attempts is not None else store.attempts(cutoff,limit=1000))
+                  if a.get('run_id')==run_id and a.get('kind')=='history'
+                  and a.get('query',{}).get('code')==code]
+        if len(attempts)>1:
+            result['reason']='ambiguous-history-attempts'
+            validate_moomoo_trend(result,cutoff);return result
+        if attempts and attempts[0]['status']=='failed':
+            result['reason']='history-request-failed'
+            validate_moomoo_trend(result,cutoff);return result
+        try:
+            entries=(history_entries if history_entries is not None else
+                     store.query('history',cutoff,mode='strict',limit=5000,run_id=run_id))
+        except Exception:
+            result['reason']='history-selection-failed'
+            validate_moomoo_trend(result,cutoff);return result
+        now_et=frozen.astimezone(ZoneInfo('America/New_York'))
+        latest_complete=now_et.date() if now_et.time()>=time(16,15) else now_et.date()-timedelta(days=1)
+        by_date={}
+        for item in entries:
+            meta=item['observation'];record=item['record']
+            if meta['run_id']!=run_id or meta.get('query',{}).get('code')!=code:continue
+            if (not item['eligible_for_temporal_evidence'] or item['source_ms'] is None
+                    or parse_aware(meta['observed_at'])>frozen or parse_aware(meta['ingested_at'])>frozen):continue
+            try:bar_date=date.fromisoformat(record['date'])
+            except (TypeError,ValueError):continue
+            if bar_date>latest_complete:continue
+            prior=by_date.get(bar_date)
+            candidate={'record':record,'meta':meta,'source_ms':item['source_ms'],
+                       'semantic_hash':item['semantic_hash']}
+            if prior is None or meta['known_ms']>prior['meta']['known_ms']:
+                by_date[bar_date]=candidate
+            elif meta['known_ms']==prior['meta']['known_ms'] and item['semantic_hash']!=prior['semantic_hash']:
+                result['reason']='same-time-bar-conflict'
+                validate_moomoo_trend(result,cutoff);return result
+        bars=sorted(by_date.items())
+        valid=[]
+        for bar_day,candidate in bars:
+            close=candidate['record']['close']
+            if type(close) in (int,float) and math.isfinite(close) and close>0:
+                valid.append((bar_day,candidate))
+        if len(valid)<20:
+            result['reason']='insufficient-completed-history' if attempts and attempts[0]['status']!='failed' else 'history-unavailable'
+            validate_moomoo_trend(result,cutoff);return result
+        latest=valid[-20:]
+        closes=[entry['record']['close'] for _,entry in latest]
+        sma5=math.fsum(closes[-5:])/5
+        sma20=math.fsum(closes)/20
+        signal='bullish' if sma5>sma20 else 'bearish' if sma5<sma20 else 'neutral'
+        last_record,last_meta=latest[-1][1]['record'],latest[-1][1]['meta']
+        result.update(signal=signal,label=signal.capitalize(),status='available',reason=None,
+            bar_count=20,bar_dates=[day.isoformat() for day,_ in latest],
+            last_bar_date=latest[-1][0].isoformat(),
+            last_bar_timezone_offset_minutes=last_record['time_zone'],
+            sma5=round(sma5,8),sma20=round(sma20,8),
+            observed_at=last_meta['observed_at'],ingested_at=last_meta['ingested_at'],
+            known_at=epoch_time(last_meta['known_ms']))
+        validate_moomoo_trend(result,cutoff)
+        return result
+    return safe(project,category='moomoo-trend-projection-failed')
+
+
+def validate_moomoo_trend(value,cutoff):
+    need(isinstance(value,dict) and set(value)==MOOMOO_TREND_FIELDS
+         and value['signal'] in {'bullish','bearish','neutral','unavailable'}
+         and value['status'] in {'available','unavailable'}
+         and value['method']=='SMA-5-vs-SMA-20' and value['cutoff']==cutoff
+         and value['adjustment'] in {'none',None})
+    need((value['provider']=='moomoo-rest' and value['endpoint']=='/api/v1.0/quote/{symbol}/history-kline'
+          and value['source_url']==MOOMOO_TREND_URL and value['rights_status']=='unconfirmed'
+          and value['capture_authenticity']=='caller-supplied-unverified')
+         or (value['provider']=='unsupported' and value['endpoint'] is None and value['source_url'] is None
+          and value['rights_status']=='not-applicable' and value['capture_authenticity']=='not-collected'))
+    need(value['source_url'] is None or value['source_url']==MOOMOO_TREND_URL)
+    if value['status']=='unavailable':
+        need(value['signal']=='unavailable' and value['label']=='Unavailable'
+             and value['bar_count']==0 and value['bar_dates']==[]
+             and all(value[k] is None for k in ('last_bar_date','last_bar_timezone_offset_minutes','sma5','sma20','observed_at','ingested_at','known_at')))
+        return True
+    need(value['signal'] in {'bullish','bearish','neutral'} and value['reason'] is None
+         and value['bar_count']==20 and isinstance(value['bar_dates'],list) and len(value['bar_dates'])==20
+         and all(isinstance(d,str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}',d) for d in value['bar_dates'])
+         and value['bar_dates']==sorted(set(value['bar_dates']))
+         and value['last_bar_date']==value['bar_dates'][-1]
+         and type(value['last_bar_timezone_offset_minutes']) is int
+         and -720<=value['last_bar_timezone_offset_minutes']<=840
+         and all(type(value[k]) in (int,float) and math.isfinite(value[k]) and value[k]>0 for k in ('sma5','sma20')))
+    times={k:parse_aware(value[k]) for k in ('observed_at','ingested_at','known_at','cutoff')}
+    need(times['observed_at']<=times['ingested_at']<=times['known_at']<=times['cutoff']
+         and times['cutoff']==parse_aware(cutoff))
+    need((value['signal']=='bullish' and value['sma5']>value['sma20'])
+         or (value['signal']=='bearish' and value['sma5']<value['sma20'])
+         or (value['signal']=='neutral' and value['sma5']==value['sma20']))
+    return True
 
 
 def forecast_basis_error(forecast, report_as_of):
@@ -427,6 +549,11 @@ def project_report(store,template,universe,*,run_id,cutoff,expected_codes):
                  and row.get('confidence')=='unavailable'
                  and all(row.get(k) is None for k in ('estimated_mid_case_value','range_low_value','range_high_value')))
         selection=store.select_snapshots(run_id,cutoff,expected_codes)
+        try:
+            history_entries=store.query('history',cutoff,mode='strict',limit=5000,run_id=run_id)
+            history_attempts=store.attempts(cutoff,limit=1000)
+        except Exception:
+            history_entries=[];history_attempts=[]
         output=deepcopy(template)
         output['metadata']['private_draft']=True
         output['metadata']['quote_cutoff']=cutoff
@@ -444,14 +571,16 @@ def project_report(store,template,universe,*,run_id,cutoff,expected_codes):
                     if selection['attempt_status_counts']['failed']:reasons.append('collection_failed_attempt')
                     if selection['attempt_status_counts']['all-missing']:reasons.append('all_missing_attempt')
             row['data_gaps']=list(dict.fromkeys([*row.get('data_gaps',[]),*reasons]))
+            row['moomoo_trend']=project_moomoo_trend(store,run_id=run_id,cutoff=cutoff,
+                code=('US.'+row['ticker'] if row['market']=='US' else 'MY.'+row['ticker']),
+                history_entries=history_entries,history_attempts=history_attempts)
             if point and point['quote'] is not None:
                 record=point['quote'];p=point['provenance']
                 need(record['code']=='US.'+row['ticker'])
                 quote=dict(price=record['price'],volume=record['volume'],source_at=epoch_time(p['source_ms']),
                     observed_at=p['observed_at'],ingested_at=p['ingested_at'],known_at=epoch_time(p['known_ms']),
                     cutoff=cutoff,origin=p['origin'],currency=None,session=None,adjustment=None,prior_close=None,
-                    gaps=list(GAPS),provenance={k:p[k] for k in PROVENANCE_KEYS if k!='run_id'})
-                quote['provenance']['run_id']=run_id
+                    gaps=list(GAPS),provenance={k:p[k] for k in PROVENANCE_KEYS})
                 validate_observed_quote(quote,cutoff)
                 row['observed_quote']=quote
         return output

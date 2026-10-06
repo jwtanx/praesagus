@@ -87,7 +87,7 @@ def observed_point(cutoff):
         origin='synthetic',currency=None,session=None,adjustment=None,prior_close=None,
         gaps=['currency_unknown','session_unknown','adjustment_unknown','prior_close_unknown'],
         provenance=dict(provider='moomoo-rest',connector='moomoo-rest-capture',capture_authenticity='caller-supplied-unverified',
-            rights_status='unconfirmed',attempt_id='a'*64,raw_hash='b'*64,semantic_hash='c'*64,run_id='synthetic'))
+            rights_status='unconfirmed'))
 
 
 def test_optional_observed_quote_preserves_legacy_contract(report):

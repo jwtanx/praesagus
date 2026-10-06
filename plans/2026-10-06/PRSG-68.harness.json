@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-68",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "connectors",
+      "financial-data",
+      "frontend",
+      "market-research",
+      "skills",
+      "harness"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 3,
+      "high": 5
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-06",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-06/PRSG-68-moomoo-report-trends.md",
+  "objective": "Collect Moomoo daily K-lines through the isolated REST worker, project a transparent per-symbol SMA-5/SMA-20 descriptive trend into the dated report, and show the trend separately from forecast direction.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c3c6b0fdac118bb702fae017016aa48b5af62f64",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/2026-10-06.json",
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/tradingview.js",
+    "connectors/moomoo_rest.py",
+    "ingest/daily_report_projection.py",
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py",
+    "plans/2026-10-06/PRSG-68-moomoo-report-trends.md",
+    "plans/2026-10-06/PRSG-68.harness.json",
+    "scripts/daily-market-brief/run_private_quote_report.py",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "skills/daily-market-brief/SKILL.md",
+    "tests/daily_report_viewer_checks.cjs",
+    "tests/test_daily_quote_report.py",
+    "tests/test_daily_report.py",
+    "tests/test_daily_report_projection.py",
+    "tests/test_market_collector.py",
+    "tests/test_moomoo_rest.py"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "backend/",
+    "frontend/src/",
+    "infra/",
+    "artifacts/daily-market-brief/revisions/"
+  ],
+  "checks": [
+    {
+      "id": "rest-history",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_moomoo_rest.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: python3 -m pytest -q tests/test_moomoo_rest.py — 140 passed, including bounded daily K-line request/response cases."
+      ]
+    },
+    {
+      "id": "private-collector",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_market_collector.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: python3 -m pytest -q tests/test_market_collector.py — 85 passed, including worker IPC and history capture/store validation."
+      ]
+    },
+    {
+      "id": "projection-report",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_daily_report_projection.py",
+        "tests/test_daily_quote_report.py",
+        "tests/test_daily_report.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: python3 -m pytest -q tests/test_daily_report_projection.py tests/test_daily_quote_report.py tests/test_daily_report.py — 131 passed, including 20-bar SMA projection and failed-history unavailable behavior."
+      ]
+    },
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/chart_asset_version_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: node tests/chart_asset_version_checks.cjs passed; node tests/daily_report_viewer_checks.cjs passed with separate SMA trend and Unrated forecast assertions."
+      ]
+    },
+    {
+      "id": "report-validator",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py",
+        "--date",
+        "2026-10-06",
+        "--public"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: python3 scripts/daily-market-brief/validate_report_json.py --date 2026-10-06 --public passed; 50 forecasts, seven indexed dates, 0/50 trend records available and no private capture identifiers."
+      ]
+    },
+    {
+      "id": "manifest",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-06/PRSG-68.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: python3 scripts/planning/validate_ticket.py plans/2026-10-06/PRSG-68.harness.json passed for supplied changed paths."
+      ]
+    },
+    {
+      "id": "live-capture",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: direct REST collector attempted 30 US daily-history jobs; all returned sanitized transport failures. No bar values were projected. All 30 US trends and 20 unsupported MY trends are marked unavailable in the published dated JSON."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-68-D1",
+      "description": "Bounded Moomoo daily-K-line request validates inputs, unique bars, timestamps, and finite positive price fields; failures are sanitized.",
+      "check_ids": [
+        "rest-history"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-06 MYT: python3 -m pytest -q tests/test_moomoo_rest.py — 140 passed, including bounded daily K-line request/response cases."
+      ]
+    },
+    {
+      "id": "PRSG-68-D2",
+      "description": "History is privately captured by the isolated worker and remains selectable only for its run and cutoff.",
+      "check_ids": [
+        "private-collector"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-06 MYT: python3 -m pytest -q tests/test_market_collector.py — 85 passed, including worker IPC and history capture/store validation."
+      ]
+    },
+    {
+      "id": "PRSG-68-D3",
+      "description": "Trend uses the latest twenty completed daily bars, records SMA method/provenance, and stays unavailable for incomplete or unusable inputs.",
+      "check_ids": [
+        "projection-report"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-06 MYT: python3 -m pytest -q tests/test_daily_report_projection.py tests/test_daily_quote_report.py tests/test_daily_report.py — 131 passed, including 20-bar SMA projection and failed-history unavailable behavior.",
+        "2026-10-06 MYT: direct REST collector attempted 30 US daily-history jobs; all returned sanitized transport failures. No bar values were projected. All 30 US trends and 20 unsupported MY trends are marked unavailable in the published dated JSON."
+      ]
+    },
+    {
+      "id": "PRSG-68-D4",
+      "description": "Viewer displays trend separately from the forecast and preserves explicit unavailable behavior.",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-06 MYT: node tests/chart_asset_version_checks.cjs passed; node tests/daily_report_viewer_checks.cjs passed with separate SMA trend and Unrated forecast assertions."
+      ]
+    },
+    {
+      "id": "PRSG-68-D5",
+      "description": "Dated report and ticket metadata validate; live report values come only from an actual captured response.",
+      "check_ids": [
+        "report-validator",
+        "manifest",
+        "live-capture"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-06 MYT: python3 scripts/daily-market-brief/validate_report_json.py --date 2026-10-06 --public passed; 50 forecasts, seven indexed dates, 0/50 trend records available and no private capture identifiers.",
+        "2026-10-06 MYT: direct REST collector attempted 30 US daily-history jobs; all returned sanitized transport failures. No bar values were projected. All 30 US trends and 20 unsupported MY trends are marked unavailable in the published dated JSON."
+      ]
+    },
+    {
+      "id": "PRSG-68-D6",
+      "description": "Lead independently reviews the complete ticket diff and delivery evidence.",
+      "check_ids": [
+        "manifest"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed every ticket-owned path, test result, source cutoff, report identifier boundary and the documented unavailable-data limitation."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed all changed paths. Implementation uses an isolated direct REST worker, append-only private capture and a same-run/as-of projection; the dated report records the 21:38 MYT cutoff, no private capture IDs and honest unavailable statuses after all 30 US history requests returned transport failures. Forecast rows remain Unrated. Focused tests, UI checks, public report validation and supplied-path validation passed. No quote bars or values were claimed from the failed capture."
+    ]
+  }
+}

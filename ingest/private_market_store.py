@@ -172,6 +172,26 @@ def request_meta(request):
              and all(isinstance(c, str) and re.fullmatch(r'US\.[A-Z][A-Z0-9.-]{0,59}', c) for c in codes)
              and len(set(codes)) == len(codes))
         return 'snapshot', {'codes': codes}, secrets
+    if request.method == 'GET' and re.fullmatch(r'/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,59}/history-kline', request.path):
+        need(not request.body)
+        query = parse_qsl(request.query, keep_blank_values=True, strict_parsing=True)
+        need(len(query) == len(dict(query)))
+        filters = dict(query)
+        allowed = {'end','ktype','autype','num'} | ({'start'} if 'start' in filters else set())
+        need(set(filters) == allowed
+             and all(re.fullmatch(r'\d{4}-\d{2}-\d{2}', filters[k]) for k in ('end',))
+             and ('start' not in filters or re.fullmatch(r'\d{4}-\d{2}-\d{2}',filters['start']))
+             and filters['ktype']=='2' and filters['autype'] in ('0','1','2')
+             and re.fullmatch(r'\d{1,3}',filters['num']) and 1<=int(filters['num'])<=370)
+        try:
+            end=date.fromisoformat(filters['end'])
+            start=date.fromisoformat(filters['start']) if 'start' in filters else None
+        except ValueError:
+            raise MarketStoreError('invalid-response') from None
+        need(start is None or start<=end)
+        code=request.path[len('/api/v1.0/quote/'):].removesuffix('/history-kline')
+        check_secrets(filters, secrets)
+        return 'history', {'code':code, **filters}, secrets
     need((request.method, request.path) == ('GET', '/api/v1.0/quote/find-news') and not request.body)
     query = parse_qsl(request.query, keep_blank_values=True, strict_parsing=True)
     need(len(query) == len(dict(query)))
@@ -187,7 +207,7 @@ def request_meta(request):
 
 
 def normalized(raw, kind, request, secrets=(), *, version=2):
-    need(type(version) is int and version in (1,2), 'invalid-response')
+    need(type(version) is int and version in (1,2,3), 'invalid-response')
     value = decode(raw, secrets)
     need(isinstance(value, dict) and set(value) == {'ret_code', 'ret_msg', 'data'}
          and type(value['ret_code']) is int and value['ret_code'] == 0
@@ -196,8 +216,17 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
     if kind == 'snapshot':
         need(isinstance(rows, dict) and set(rows) == {'snapshot_list'}, 'invalid-response')
         rows = rows['snapshot_list']
-    need(isinstance(rows, list) and len(rows) <= (len(request['codes']) if kind == 'snapshot' else int(request['size'])), 'invalid-response')
-    result, seen = [], set()
+    elif kind == 'history':
+        need(isinstance(rows, dict) and 'kline_list' in rows
+             and set(rows) <= {'kline_list','next_time','volume_precision'}, 'invalid-response')
+        need('next_time' not in rows or type(rows['next_time']) is int and 0<=rows['next_time']<=2**63-1,
+             'invalid-response')
+        need('volume_precision' not in rows or type(rows['volume_precision']) is int
+             and 0<=rows['volume_precision']<=18,'invalid-response')
+        rows = rows['kline_list']
+    need(isinstance(rows, list) and len(rows) <= (len(request['codes']) if kind == 'snapshot'
+         else int(request['num']) if kind == 'history' else int(request['size'])), 'invalid-response')
+    result, seen, seen_dates = [], set(), set()
     for row in rows:
         need(isinstance(row, dict), 'invalid-response')
         if kind == 'snapshot':
@@ -224,6 +253,26 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
             if version==2:
                 payload.update(normalization_version=2,provider_prev_close=row.get('prev_close_price'))
             identity = ['moomoo-rest', code, stamp]
+        elif kind == 'history':
+            code=request['code'];stamp=row.get('time_key');market_date=row.get('date');zone=row.get('time_zone')
+            need(code.startswith('US.') and type(stamp) is int and 0<=stamp<=2**63-1
+                 and type(market_date) is int and 19000101<=market_date<=21001231
+                 and type(zone) is int and -720<=zone<=840, 'invalid-response')
+            try:
+                parsed=date.fromisoformat(f'{market_date//10000:04d}-{market_date//100%100:02d}-{market_date%100:02d}')
+            except ValueError:
+                raise MarketStoreError('invalid-response') from None
+            need(parsed.strftime('%Y%m%d')==f'{market_date:08d}'
+                 and parsed.isoformat()<=request['end']
+                 and ('start' not in request or parsed.isoformat()>=request['start'])
+                 and stamp not in seen and parsed not in seen_dates, 'invalid-response')
+            seen.add(stamp);seen_dates.add(parsed)
+            close=row.get('close')
+            need(type(close) in (int,float) and math.isfinite(close) and close>0, 'invalid-response')
+            payload={'provider':'moomoo-rest','code':code,'date':parsed.isoformat(),
+                     'time_key':stamp,'time_zone':zone,'close':close,
+                     'endpoint':'history-kline','adjustment':int(request['autype'])}
+            identity=['moomoo-rest',code,stamp]
         else:
             key = row.get('news_id');need(text(key) and key not in seen, 'invalid-response');seen.add(key)
             need(isinstance(row.get('title'), str) and len(row['title']) <= 8192 and text(row.get('url'), 8192), 'invalid-response')
@@ -339,7 +388,7 @@ class PrivateMarketStore:
             kind, query, secrets = request_meta(request)
             need(isinstance(response, ReadResponse) and type(response.status) is int
                  and (response.status == 0 or 100 <= response.status <= 599))
-            version=2 if kind=='snapshot' else 1
+            version=2 if kind=='snapshot' else 3 if kind=='history' else 1
             records, raw_hash, raw = [], None, None
             reason = None
             if response.status != 200:
@@ -365,7 +414,7 @@ class PrivateMarketStore:
                     'raw_hash': raw_hash, 'status': status, 'reason': reason, 'missing_codes': missing,
                     'unsupported_markets': {'MY': 'unattempted-unsupported'}, 'record_count': len(records),
                     'rights_status': 'unconfirmed', 'connector': 'moomoo-rest-capture', 'endpoint': request.path}
-            if kind=='snapshot':meta['normalization_version']=version
+            if kind in ('snapshot','history'):meta['normalization_version']=version
             attempt_id = digest(canonical(meta).encode())
             if raw is not None:self._archive(raw, raw_hash)
             with self._connection() as db:
@@ -392,8 +441,10 @@ class PrivateMarketStore:
              and meta['observed_ms'] == aware_ms(meta['observed_at'], True) and meta['ingested_ms'] == aware_ms(meta['ingested_at'], True)
              and meta['run_id'] == row['run_id'] and meta['kind'] == row['kind'], 'database-integrity-failed')
         version=meta.get('normalization_version',1)
-        need(type(version) is int and version in (1,2)
-             and (meta['kind']=='snapshot' or version==1), 'database-integrity-failed')
+        need(type(version) is int and version in (1,2,3)
+             and (meta['kind']=='snapshot' and version in (1,2)
+                  or meta['kind']=='history' and version==3
+                  or meta['kind']=='news' and version==1), 'database-integrity-failed')
         return meta
 
     def attempts(self, cutoff, *, limit=1000):
@@ -408,23 +459,27 @@ class PrivateMarketStore:
                 return result
         return safe(query)
 
-    def query(self, kind, cutoff, *, mode='strict', limit=1000):
+    def query(self, kind, cutoff, *, mode='strict', limit=1000, run_id=None):
         def read():
-            need(kind in ('snapshot', 'news') and mode in ('strict', 'observation-known'))
-            stamp = aware_ms(cutoff);need(type(limit) is int and 1 <= limit <= 1000)
+            need(kind in ('snapshot', 'news', 'history') and mode in ('strict', 'observation-known'))
+            stamp = aware_ms(cutoff);need(type(limit) is int and 1 <= limit <= (5000 if kind=='history' else 1000))
+            need(run_id is None or isinstance(run_id,str) and re.fullmatch(r'[A-Za-z0-9_-]{1,128}',run_id))
             sql = '''SELECT v.*,a.id AS aid,a.run_id,a.kind AS akind,a.known_ms,a.metadata,o.ordinal
                 FROM versions v JOIN observations o ON o.version_id=v.id JOIN attempts a ON a.id=o.attempt_id
                 WHERE v.kind=? AND a.known_ms<=? AND (v.source_ms<=? OR (v.source_ms IS NULL AND ?='observation-known'))
+                AND (? IS NULL OR a.run_id=?)
                 ORDER BY v.identity,v.revision,a.known_ms,a.id LIMIT ?'''
             result = []
             with self._connection(readonly=True) as db:
-                for row in db.execute(sql, (kind, stamp, stamp, mode, limit)):
+                for row in db.execute(sql, (kind, stamp, stamp, mode, run_id, run_id, limit)):
                     meta = self._meta({'id': row['aid'], 'run_id': row['run_id'], 'kind': row['akind'], 'known_ms': row['known_ms'], 'metadata': row['metadata']})
                     need(row['semantic_hash'] == digest(row['payload'].encode()), 'database-integrity-failed')
                     record = json.loads(row['payload'])
                     exact = normalized(self.raw(meta['raw_hash']), kind, meta['query'], version=meta.get('normalization_version',1))
                     need(0 <= row['ordinal'] < len(exact) and exact[row['ordinal']] == (row['identity'], row['payload'], row['source_ms']), 'database-integrity-failed')
-                    quality = ['availability_unknown'] if kind == 'news' else ['currency_unknown', 'session_unknown', 'adjustment_unknown', 'point_observation_not_bar']
+                    quality = (['availability_unknown'] if kind == 'news' else
+                               ['currency_unknown', 'session_unknown', 'adjustment_unknown', 'point_observation_not_bar'] if kind == 'snapshot' else
+                               ['corporate_action_adjustment_none','current_session_excluded_by_projection'])
                     if row['source_ms'] is None:quality.append('source_time_unknown')
                     elif row['source_ms'] > aware_ms(meta['observed_at']):quality.append('source_time_after_observation')
                     if kind == 'snapshot' and record['price'] == 0:quality.append('price_unusable')

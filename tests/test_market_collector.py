@@ -20,6 +20,7 @@ JOB = {'kind': 'snapshot', 'codes': ['US.SYN']}
 LOCATOR = {'directory': str(Path('/tmp/synthetic-collector-credentials').resolve()), 'app_key_name': 'app-key-id'}
 PLAN = {'schema_version': 1, 'codes': ['US.SYN'], 'news': []}
 NEWS = {'kind': 'news', 'keyword': 'synthetic', 'size': 10, 'lang': 'en'}
+HISTORY = {'kind':'history','code':'US.SYN','end':'2026-10-02'}
 
 
 def wall_clock():
@@ -49,6 +50,23 @@ def test_caps_and_deterministic_jobs():
     jobs = c.validate_plan(plan)
     assert len(jobs) == 11 and len({c.job_digest(j) for j in jobs}) == 11
     assert c.job_request(jobs[0]).body == json.dumps({'code_list': plan['codes']}, separators=(',', ':')).encode()
+
+
+def test_history_job_is_daily_bounded_and_stored_through_worker():
+    request=c.job_request(HISTORY)
+    assert (request.method,request.path,request.query,request.body)==(
+        'GET','/api/v1.0/quote/US.SYN/history-kline','end=2026-10-02&ktype=2&autype=0&num=100',b'')
+    plan={**PLAN,'history':[{'code':'US.SYN','end':'2026-10-02'}]}
+    assert c.validate_plan(plan)==[JOB,HISTORY]
+    row={'time_key':1790899200000,'date':20261002,'time_zone':-240,'close':10.5}
+    payload={'ret_code':0,'ret_msg':'ok','data':{'kline_list':[row]}}
+    resp=ReadResponse(200,json.dumps(payload).encode())
+    calls=[]
+    raw=c.execute_job(HISTORY,LOCATOR,credentials=lambda _:('synthetic-api-key',lambda _:b'signature'),
+        transport_factory=lambda:lambda req:(calls.append(req) or resp),clock=lambda:OBS)
+    parsed=c.parse_reply(raw,HISTORY)
+    assert parsed.failure is None and parsed.response.body==resp.body and len(calls)==1
+    assert (calls[0].method,calls[0].path,calls[0].query,calls[0].body)==(request.method,request.path,request.query,request.body)
 
 
 @pytest.mark.parametrize('plan', [ {}, {**PLAN, 'extra': 1}, {**PLAN, 'schema_version': True},

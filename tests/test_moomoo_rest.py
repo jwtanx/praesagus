@@ -30,6 +30,12 @@ def snapshot(**changes):
                  "equity_valid": True, "trust_valid": False}, **changes)
 
 
+def kline(**changes):
+    return dict({"time_key": NOW, "date": 20261002, "time_zone": -240,
+                 "open": 12.0, "close": 12.5, "high": 13.0, "low": 11.5,
+                 "volume": 100, "turnover": 1250.0, "last_close": 11.75}, **changes)
+
+
 class Harness:
     def __init__(self, payload=None, *, status=200, body=None, headers=None, failure=None):
         self.requests, self.signed = [], []
@@ -90,6 +96,45 @@ def test_snapshot_exact_json_bytes_digest_partial_and_preserved_flags():
     assert result.data == [snapshot()]
     assert result.provider_time_unit == "milliseconds"
     assert "session_metrics" not in result.data[0]
+
+
+def test_daily_history_kline_uses_bounded_unadjusted_request_and_preserves_bars():
+    h = Harness(quote({"kline_list": [kline()], "volume_precision": 0}))
+    result = h.client.history_kline("US.AAPL", "2026-10-02", start="2026-10-01")
+    request = h.requests[0]
+    assert (request.method, request.path, request.query, request.body) == (
+        "GET", "/api/v1.0/quote/US.AAPL/history-kline",
+        "start=2026-10-01&end=2026-10-02&ktype=2&autype=0&num=100", b"")
+    assert h.signed == [f"{NOW}\nGET\n{request.path}\n{request.query}\n".encode()]
+    assert result.data == [kline()]
+    assert result.endpoint == "history-kline" and result.provider_time_unit == "milliseconds"
+
+
+@pytest.mark.parametrize("call", [
+    lambda c: c.history_kline("MY.1155", "2026-10-02"),
+    lambda c: c.history_kline("US.AAPL/../account", "2026-10-02"),
+    lambda c: c.history_kline("US.AAPL", "2026-02-30"),
+    lambda c: c.history_kline("US.AAPL", "2026-10-02", start="2026-10-03"),
+    lambda c: c.history_kline("US.AAPL", "2026-10-02", num=371),
+    lambda c: c.history_kline("US.AAPL", "2026-10-02", ktype=1),
+    lambda c: c.history_kline("US.AAPL", "2026-10-02", autype=True),
+])
+def test_daily_history_rejects_bad_request_before_io(call):
+    h = Harness()
+    with pytest.raises(RESTError, match="invalid-input"):
+        call(h.client)
+    assert h.requests == h.signed == []
+
+
+@pytest.mark.parametrize("rows", [
+    [kline(close=0)], [kline(close=float("nan"))],
+    [kline(time_zone=-900)], [kline(date=20260230)],
+    [kline(), kline()], [kline(time_key=NOW+1, date=20261003)],
+])
+def test_daily_history_rejects_malformed_or_future_duplicate_bars(rows):
+    h = Harness(quote({"kline_list": rows}))
+    with pytest.raises(RESTError, match="malformed-response"):
+        h.client.history_kline("US.AAPL", "2026-10-02")
 
 
 @pytest.mark.parametrize("method,payload,path,query", [
@@ -169,7 +214,7 @@ def test_bounds_accepted_and_no_mutation_surface():
     for name in ("request", "post", "create_group", "add_security", "place_order", "save", "poll"):
         assert not hasattr(h.client, name)
     public = {name for name in dir(h.client) if not name.startswith("_")}
-    assert public == {"search_news", "snapshot", "account_funds", "positions", "list_groups", "list_group_members"}
+    assert public == {"search_news", "snapshot", "history_kline", "account_funds", "positions", "list_groups", "list_group_members"}
 
 
 @pytest.mark.parametrize("call,payload", [

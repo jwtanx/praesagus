@@ -3,6 +3,7 @@ from copy import deepcopy
 from importlib import import_module
 import json
 from pathlib import Path
+from datetime import date, timedelta
 
 import pytest
 from connectors.moomoo_rest import ReadRequest,ReadResponse
@@ -31,11 +32,13 @@ def invocation(inputs,tmp_path):
 
 
 def synthetic_collector(kind='complete',seen=None):
-    def collect(store,plan,locator,*,run_id,wall):
+    def collect(store,plan,locator,*,run_id,wall,**kwargs):
         if seen is not None:seen.append(deepcopy((plan,locator,run_id)))
         if kind=='exception':raise RuntimeError('/private/synthetic-secret')
         if kind in ('storage-failed','cleanup-failed','clock-order'):
-            return [JobOutcome(job_digest({'kind':'snapshot','codes':plan['codes']}),'not-persisted',None,kind)]
+            return [JobOutcome(job_digest({'kind':'snapshot','codes':plan['codes']}),'not-persisted',None,kind),
+                    *[JobOutcome(job_digest({'kind':'history',**item}),'not-persisted',None,kind)
+                      for item in plan.get('history',[])]]
         codes=plan['codes']
         rows=[{'code':code,'name':'Synthetic','update_time':STAMP,'data_date':'2026-10-01',
                'last_price':10+i,'volume':0} for i,code in enumerate(codes)]
@@ -52,8 +55,24 @@ def synthetic_collector(kind='complete',seen=None):
             rows[0]['last_price']=99
             store.ingest(request,ReadResponse(200,canonical({'ret_code':0,'ret_msg':'ok','data':{'snapshot_list':rows}}).encode()),
                          run_id=run_id,observed_at=OBS,ingested_at='2026-10-01T23:59:30Z',origin='synthetic')
-        return [JobOutcome(job_digest({'kind':'snapshot','codes':codes}),stored.status,stored.attempt_id,
+        outcomes=[JobOutcome(job_digest({'kind':'snapshot','codes':codes}),stored.status,stored.attempt_id,
                            'transport' if kind=='transport' else 'upstream-failed' if kind=='failed' else None)]
+        for item in plan.get('history',[]):
+            code=item['code'];job={'kind':'history',**item}
+            if kind=='complete':
+                rows=[]
+                for i in range(20):
+                    bar_day=date.fromisoformat('2026-09-11')+timedelta(days=i)
+                    rows.append({'time_key':STAMP-(20-i)*86400000,'date':int(bar_day.strftime('%Y%m%d')),
+                                 'time_zone':-240,'close':float(10+i)})
+                request=ReadRequest('GET',f'/api/v1.0/quote/{code}/history-kline',
+                    f'end={item["end"]}&ktype=2&autype=0&num=100',b'',{},1)
+                response=ReadResponse(200,canonical({'ret_code':0,'ret_msg':'ok','data':{'kline_list':rows}}).encode())
+                history=store.ingest(request,response,run_id=run_id,observed_at=OBS,ingested_at=CUTOFF,origin='synthetic')
+                outcomes.append(JobOutcome(job_digest(job),history.status,history.attempt_id,None))
+            else:
+                outcomes.append(JobOutcome(job_digest(job),'failed',None,'upstream-failed'))
+        return outcomes
     return collect
 
 
@@ -65,11 +84,15 @@ def execute(invocation,kind='complete',**changes):
 def test_complete_exact_plan_one_run_private_50_rows(invocation):
     inputs,args=invocation;seen=[];template_before=Path(args['template_path']).read_bytes()
     result=runner.run_quote_report(**args,collector=synthetic_collector(seen=seen),wall=lambda:NOW)
-    assert seen==[({'schema_version':1,'codes':inputs[3],'news':[]},args['locator'],'daily-synthetic')]
+    expected_history=[{'code':code,'end':'2026-10-01'} for code in inputs[3]]
+    assert seen==[({'schema_version':1,'codes':inputs[3],'history':expected_history,'news':[]},args['locator'],'daily-synthetic')]
     assert result['status']=='us-coverage-complete' and result['selected_us']==30 and result['unsupported_my']==20
     draft=json.loads(Path(args['output']).read_text())
     assert len(draft['forecasts'])==50 and sum(r['observed_quote'] is not None for r in draft['forecasts'])==30
     assert all(r['current_price_value'] is None and r['direction']=='unknown' for r in draft['forecasts'])
+    trend=draft['forecasts'][0]['moomoo_trend']
+    assert trend['status']=='available' and trend['signal']=='bullish' and trend['bar_count']==20
+    assert len(trend['bar_dates'])==20 and trend['sma5']>trend['sma20']
     assert draft['metadata']['as_of']==CUTOFF and Path(args['template_path']).read_bytes()==template_before
     assert Path(args['output']).stat().st_mode&0o777==0o400
     serialized=canonical(draft)

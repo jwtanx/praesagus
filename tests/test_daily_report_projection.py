@@ -13,7 +13,7 @@ from ingest.daily_report_projection import project_report, validate_observed_quo
 from ingest.private_market_store import PrivateMarketStore, MarketStoreError, canonical
 
 REPO=Path(__file__).resolve().parents[1]
-CUTOFF='2026-10-02T00:00:00Z'
+CUTOFF='2026-10-02T00:00:00+00:00'
 OBS='2026-10-01T23:59:00Z'
 STAMP=1790899200000-60000
 
@@ -63,7 +63,8 @@ def test_deterministic_50_rows_input_unchanged_allowlist(inputs):
     assert q['price']==10 and q['volume']==0 and q['origin']=='synthetic'
     assert all(q[k] is None for k in ('currency','session','adjustment','prior_close'))
     assert q['source_at']==q['observed_at'].replace('Z','.000+00:00')
-    assert 'raw_hash' in q['provenance'] and 'raw' not in q['provenance']
+    assert set(q['provenance']) == {'provider','connector','capture_authenticity','rights_status'}
+    assert not {'attempt_id','raw_hash','semantic_hash','run_id'} & set(q['provenance'])
     for row in first['forecasts']:
         assert row['current_price_value'] is None and row['quote_status']=='missing'
         assert row['direction']=='unknown' and row['confidence']=='unavailable'

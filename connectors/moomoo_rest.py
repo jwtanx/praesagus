@@ -321,6 +321,56 @@ class MoomooRESTConnector:
         missing = tuple(code for code in codes if code not in returned)
         return self._result(rows, start, end, "snapshot", unit="milliseconds", missing=missing)
 
+    def history_kline(self, code: str, end: str, *, start: str | None = None,
+                      num: int = 100, ktype: int = 2, autype: int = 0) -> ReadResult:
+        """Read bounded US daily K-lines; no account or order capability is used."""
+        _require(isinstance(code, str) and re.fullmatch(r"US\.[A-Z][A-Z0-9.-]*", code) is not None)
+        _require(_date(end) and (start is None or _date(start) and start <= end))
+        _require(_integer(num, 1, 370) and _integer(ktype, 2, 2)
+                 and _integer(autype, 0, 2))
+        query = [("end", end), ("ktype", ktype), ("autype", autype), ("num", num)]
+        if start is not None:
+            query.insert(0, ("start", start))
+        path = f"/api/v1.0/quote/{code}/history-kline"
+        data, requested, retrieved = self._read("GET", path, query)
+        _require(isinstance(data, dict) and "kline_list" in data
+                 and set(data) <= {"kline_list", "next_time", "volume_precision"},
+                 "malformed-response")
+        rows = self._rows(data, "kline_list")
+        _require(len(rows) <= num, "malformed-response")
+        dates, times = set(), set()
+        for row in rows:
+            stamp, market_date, zone = row.get("time_key"), row.get("date"), row.get("time_zone")
+            _require(_integer(stamp, 0, 2**63 - 1)
+                     and _integer(market_date, 19000101, 21001231)
+                     and type(zone) is int and -720 <= zone <= 840, "malformed-response")
+            try:
+                parsed = date.fromisoformat(f"{market_date // 10000:04d}-{market_date // 100 % 100:02d}-{market_date % 100:02d}")
+            except ValueError:
+                raise RESTError("malformed-response") from None
+            _require(parsed.strftime("%Y%m%d") == f"{market_date:08d}"
+                     and (start is None or parsed.isoformat() >= start),
+                     "malformed-response")
+            _require(parsed.isoformat() <= end and stamp not in times and parsed not in dates,
+                     "malformed-response")
+            dates.add(parsed);times.add(stamp)
+            _require(type(row.get("close")) in (int, float)
+                     and math.isfinite(row["close"]) and row["close"] > 0,
+                     "malformed-response")
+            for key in ("open", "high", "low", "last_close", "turnover", "turnover_rate",
+                        "change_rate", "pe_ratio"):
+                if key in row:
+                    _require(type(row[key]) in (int, float) and math.isfinite(row[key]),
+                             "malformed-response")
+            if "volume" in row:
+                _require(_integer(row["volume"], 0, 2**63 - 1), "malformed-response")
+        for key in ("next_time",):
+            if key in data:
+                _require(_integer(data[key], 0, 2**63 - 1), "malformed-response")
+        if "volume_precision" in data:
+            _require(_integer(data["volume_precision"], 0, 18), "malformed-response")
+        return self._result(rows, requested, retrieved, "history-kline", unit="milliseconds")
+
     @staticmethod
     def _account_id(account_id: str) -> str:
         _require(isinstance(account_id, str) and re.fullmatch(r"\d{1,64}", account_id,

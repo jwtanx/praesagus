@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import re
 import sys
+from zoneinfo import ZoneInfo
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
 from ingest.daily_report_projection import project_report, write_private_draft
@@ -49,10 +50,14 @@ def run_quote_report(*,root,template_path,universe_path,locator,run_id,cutoff,wi
             need(db.execute('SELECT 1 FROM runs WHERE id=?',(run_id,)).fetchone() is None)
         project_report(store,template,universe,run_id=run_id,cutoff=cutoff,expected_codes=codes)
         current=parse_aware(wall());need(first<=current and start<=current<end)
-        outcomes=collector(store,{'schema_version':1,'codes':codes,'news':[]},locator,
-                           run_id=run_id,wall=wall)
-        need(isinstance(outcomes,list) and len(outcomes)==1
-             and outcomes[0].job_id==job_digest({'kind':'snapshot','codes':codes}))
+        history_end=end.astimezone(ZoneInfo('America/New_York')).date().isoformat()
+        history=[{'code':code,'end':history_end} for code in codes]
+        outcomes=collector(store,{'schema_version':1,'codes':codes,'history':history,'news':[]},locator,
+                           run_id=run_id,wall=wall,job_seconds=5.0,run_seconds=300.0)
+        expected_jobs=[{'kind':'snapshot','codes':codes},
+                       *({'kind':'history',**item} for item in history)]
+        need(isinstance(outcomes,list) and len(outcomes)==len(expected_jobs)
+             and [item.job_id for item in outcomes]==[job_digest(job) for job in expected_jobs])
         need(not any(o.status=='not-persisted' or o.failure in FATAL_FAILURES for o in outcomes))
         selection=store.select_snapshots(run_id,cutoff,codes)
         # A nominal successful collector result without cutoff-available storage is degraded.
@@ -61,11 +66,15 @@ def run_quote_report(*,root,template_path,universe_path,locator,run_id,cutoff,wi
         write_private_draft(output,draft)
         coverage=selection['coverage']
         us_selected=coverage['selected']['count']
-        degraded=(us_selected!=30 or any(o.status!='success' or o.failure is not None for o in outcomes))
+        trend_counts={key:sum(row['moomoo_trend']['signal']==key for row in draft['forecasts'] if row['market']=='US')
+                      for key in ('bullish','bearish','neutral','unavailable')}
+        degraded=(us_selected!=30 or any(o.status!='success' or o.failure is not None for o in outcomes)
+                  or trend_counts['unavailable']>0)
         return dict(private_draft_written=True,status='degraded' if degraded else 'us-coverage-complete',
                     expected_us=30,selected_us=us_selected,unselected_us=30-us_selected,
                     conflicted_us=coverage['conflicted']['count'],unsupported_my=20,
-                    available_attempt_status_counts=selection['attempt_status_counts'])
+                    available_attempt_status_counts=selection['attempt_status_counts'],
+                    trend_signal_counts=trend_counts,trend_end_date=history_end)
     return safe(run,category='daily-quote-report-failed')
 
 

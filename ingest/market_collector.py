@@ -50,6 +50,12 @@ def job_request(job):
         require(set(job) == {'kind', 'codes'})
         request = ReadRequest('POST', '/api/v1.0/quote/snapshot', '',
             canonical({'code_list': job['codes']}).encode(), {}, 10)
+    elif job.get('kind') == 'history':
+        require(set(job) == {'kind','code','end'} and isinstance(job['code'],str)
+                and re.fullmatch(r'US\.[A-Z][A-Z0-9.-]*',job['code'])
+                and isinstance(job['end'],str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}',job['end']))
+        request = ReadRequest('GET',f"/api/v1.0/quote/{job['code']}/history-kline",
+            urlencode([('end',job['end']),('ktype',2),('autype',0),('num',100)]),b'',{},10)
     else:
         require(set(job) == {'kind', 'keyword', 'size', 'lang'} and job['kind'] == 'news'
                 and type(job['size']) is int and isinstance(job['keyword'], str))
@@ -60,12 +66,18 @@ def job_request(job):
 
 
 def validate_plan(plan):
-    require(isinstance(plan, dict) and set(plan) == {'schema_version', 'codes', 'news'}
+    require(isinstance(plan, dict) and set(plan) in ({'schema_version', 'codes', 'news'},
+            {'schema_version', 'codes', 'news', 'history'})
             and type(plan['schema_version']) is int and plan['schema_version'] == 1
             and isinstance(plan['codes'], list) and isinstance(plan['news'], list)
             and len(plan['news']) <= 10)
     jobs = []
     if plan['codes']:jobs.append({'kind': 'snapshot', 'codes': plan['codes']})
+    history=plan.get('history',[])
+    require(isinstance(history,list) and len(history)<=30
+            and all(isinstance(item,dict) and set(item)=={'code','end'} for item in history)
+            and len({item.get('code') for item in history})==len(history))
+    for item in history:jobs.append({'kind':'history',**item})
     for query in plan['news']:
         require(isinstance(query, dict) and set(query) == {'keyword', 'size', 'lang'})
         jobs.append({'kind': 'news', **query})
@@ -158,7 +170,8 @@ def parse_reply(raw, job):
     body = raw[4+size:]
     if header['failure'] is None:
         require(header['status'] == 200)
-        kind, query, _ = request_meta(job_request(job));normalized(body, kind, query)
+        kind, query, _ = request_meta(job_request(job))
+        normalized(body, kind, query, version=3 if kind=='history' else 2 if kind=='snapshot' else 1)
     else:require(not body)
     return WorkerReply(ReadResponse(header['status'], body), header['observed_at'], header['failure'])
 
@@ -184,7 +197,8 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
         if response.status == 200:
             kind, query, secrets = request_meta(request)
             try:
-                normalized(response.body, kind, query, (*secrets, key, locator['directory']))
+                normalized(response.body, kind, query, (*secrets, key, locator['directory']),
+                           version=3 if kind=='history' else 2 if kind=='snapshot' else 1)
             except Exception:
                 screening_rejected = True
                 raise
@@ -195,6 +209,7 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
         client = MoomooRESTConnector(api_key=key, signer=signer, transport=capture,
             clock_ms=lambda: time.time_ns() // 1000000, nonce_factory=lambda: os.urandom(16).hex(), timeout=10)
         if job['kind'] == 'snapshot':client.snapshot(job['codes'])
+        elif job['kind']=='history':client.history_kline(job['code'],job['end'],num=100,ktype=2,autype=0)
         else:client.search_news(job['keyword'], size=job['size'], sort_type=2, lang=job['lang'])
     except RESTError as error:
         failure = {'timeout':'timeout', 'rate-limited':'rate-limited', 'upstream-failed':'upstream-failed',
