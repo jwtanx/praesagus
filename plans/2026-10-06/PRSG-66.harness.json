@@ -22,7 +22,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-06/PRSG-66-moomoo-quote-trend-api.md",
   "objective": "Add a bounded read-only Moomoo API endpoint returning a transparent SMA-5/SMA-20 trend label for each requested US quote symbol, with descriptive-only provenance and explicit unavailable behavior.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -54,7 +54,8 @@
       "kind": "manual",
       "status": "passed",
       "evidence": [
-        "2026-10-06 MYT: `python3 -m pytest -q tests/test_moomoo_api.py tests/test_moomoo_opend.py` passed 49 tests. Tests use mocked connectors only; no OpenD/provider calls, credentials, or trades."
+        "2026-10-06 MYT: `python3 -m pytest -q tests/test_moomoo_api.py tests/test_moomoo_opend.py` passed 49 tests. The suite uses mocked connectors only; no OpenD/provider calls, credentials, or trades.",
+        "The repository pre-commit hook ran the full suite successfully: 1,206 passed, 40 deprecation warnings. No live provider data was fetched."
       ]
     },
     {
@@ -70,7 +71,7 @@
       "kind": "manual",
       "status": "passed",
       "evidence": [
-        "2026-10-06 MYT: working-tree changes are confined to PRSG-66's four allowed paths; protected paths are unchanged. PRSG-67 commits on main were preserved. No live request was made. Lead review remains pending."
+        "2026-10-06 MYT: Lead independently reviewed the implementation; changes are confined to the four allowed PRSG-66 paths and protected paths are unchanged. Main commit df4d420945fe5fa481683bac8efc1712fe67d46d was pushed. Pages deployment succeeded; backend hosting is not established. A local API probe returned opend_unavailable, so no report signal update was claimed."
       ]
     }
   ],
@@ -116,14 +117,19 @@
         "ticket-validation",
         "scope-review"
       ],
-      "status": "in_progress",
+      "status": "done",
       "evidence": [
-        "2026-10-06 MYT: focused mocked API/OpenD suite passed 49 tests; ticket validator passed; git diff --check passed; all working-tree changes are within the frozen four-path scope. Lead independent acceptance and commit/push evidence remain pending. Live API and OpenD are unavailable on this host (local API connection refused); no market data was queried or claimed."
+        "Lead scope review accepted; focused 49-test suite and full 1,206-test pre-commit suite passed; ticket validation and whitespace check passed; commit df4d420945fe5fa481683bac8efc1712fe67d46d was pushed to main. Pages run 37465466939 succeeded. Backend hosting and live OpenD availability are unverified; local endpoint result was opend_unavailable, so no fresh report values were claimed."
       ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed the route, validation, tests, and frozen-scope diff on 2026-10-06 MYT. PRSG-66 adds only the documented read-only SMA-5/SMA-20 descriptive trend endpoint; it does not claim forecasts or trade recommendations.",
+      "Code commit df4d420945fe5fa481683bac8efc1712fe67d46d was pushed to main. GitHub Pages run 37465466939 completed successfully; this static-site deployment does not establish a hosted backend deployment.",
+      "The full local pre-commit suite passed 1,206 tests. The repository CI run 37465466849 was still in progress at the time this evidence was recorded.",
+      "A local API probe returned status 200 with per-symbol reason opend_unavailable. No current Moomoo trend values were fetched; report forecasts were not modified or presented as refreshed."
+    ]
   }
 }
