@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-63",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "connectors",
+      "financial-data",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P2",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-06",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-06/PRSG-63-moomoo-opend-my-quote-feasibility.md",
+  "objective": "Determine whether the existing read-only OpenD quote path can return one interpretable Malaysian quote under operator-provisioned connectivity and confirmed entitlement, without changing code or US REST behavior.",
+  "status": "in_progress",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6d87c154dff3b3ec7c15e41ea971210c1c547e91",
+  "implementation_authorized": false,
+  "allowed_paths": [
+    "plans/2026-10-06/PRSG-63-moomoo-opend-my-quote-feasibility.md",
+    "plans/2026-10-06/PRSG-63.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/moomoo_opend.py",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_rest_live.py",
+    "backend/",
+    "frontend/",
+    "tests/",
+    "ingest/",
+    "scripts/",
+    "artifacts/",
+    "agent-operations/",
+    ".github/",
+    "AGENTS.md",
+    "plans/2026-10-05/PRSG-62-moomoo-cross-market-snapshot-contract.md",
+    "plans/2026-10-05/PRSG-62.harness.json",
+    "plans/2026-10-05/PRSG-60-moomoo-dashboard-price-trend.md",
+    "plans/2026-10-05/PRSG-60.harness.json"
+  ],
+  "checks": [
+    {
+      "id": "base-and-ticket-key",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: PRSG-63 was absent from repository search and checked worktree inventory. Isolated worktree rebased to 6d87c154dff3b3ec7c15e41ea971210c1c547e91, equal to origin/main after fetch. Existing PRSG-62 proposal was inspected in its separate worktree and left untouched."
+      ]
+    },
+    {
+      "id": "opend-readiness",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: local-only TCP connect to 127.0.0.1:11111 raised ConnectionRefusedError. No OpenD API request, credential access, or process launch occurred. This proves only that the configured endpoint was not accepting TCP connections at check time; it does not establish MY support or entitlement."
+      ]
+    },
+    {
+      "id": "ticket-validation",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-06/PRSG-63.harness.json",
+        "--changed-file",
+        "plans/2026-10-06/PRSG-63-moomoo-opend-my-quote-feasibility.md",
+        "--changed-file",
+        "plans/2026-10-06/PRSG-63.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT, base 6d87c154dff3b3ec7c15e41ea971210c1c547e91: the exact ticket validator with both PRSG-63 planning paths passed."
+      ]
+    },
+    {
+      "id": "diff-check",
+      "kind": "command",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT, base 6d87c154dff3b3ec7c15e41ea971210c1c547e91: git diff --check passed; both new untracked planning files also passed explicit no-index whitespace and final-newline checks."
+      ]
+    },
+    {
+      "id": "bounded-my-live-check",
+      "kind": "manual",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: Lead accepted the planning-only two-file write scope on base 6d87c154dff3b3ec7c15e41ea971210c1c547e91 with implementation_authorized=false. Current decision: configured OpenD endpoint unavailable until operator provisioning; MY live result and follow-on implementation remain blocked. D3 remains pending until provisioning and separate safe-check authorization."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-63-D1",
+      "description": "Lead accepts the planning-only scope, frozen base, and explicit implementation_authorized=false boundary.",
+      "check_ids": [
+        "base-and-ticket-key",
+        "ticket-validation",
+        "diff-check",
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead accepted only the two planning-file paths on frozen base 6d87c154dff3b3ec7c15e41ea971210c1c547e91. implementation_authorized=false remains explicit."
+      ]
+    },
+    {
+      "id": "PRSG-63-D2",
+      "description": "Current local OpenD readiness blocker and limitations are recorded without inferring MY support or entitlement.",
+      "check_ids": [
+        "opend-readiness"
+      ],
+      "status": "done",
+      "evidence": [
+        "Local TCP connection to configured 127.0.0.1:11111 raised ConnectionRefusedError on 2026-10-06 MYT; no API request occurred. A TCP refusal does not distinguish OpenD setup from MY entitlement or provider support."
+      ]
+    },
+    {
+      "id": "PRSG-63-D3",
+      "description": "Only after operator provisioning and a separate safe-check authorization, record at most one MY read-only quote attempt against the specified identity, timestamp, provenance, and fail-closed evidence contract; otherwise leave it blocked with the exact setup blocker.",
+      "check_ids": [
+        "bounded-my-live-check"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-63-D4",
+      "description": "Lead records the supportable decision that MY live feasibility and follow-on implementation remain blocked until operator-provisioned OpenD can be checked; US REST behavior and PRSG-62 remain outside the spike.",
+      "check_ids": [
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "The prior local readiness check returned ConnectionRefusedError at 127.0.0.1:11111. This establishes endpoint unavailability only, not MY support or entitlement. No MY live result exists; follow-on implementation remains blocked pending a separate authorized check and new accepted scope."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-06 MYT: Lead accepted the planning-only scope and current blocked feasibility decision on base 6d87c154dff3b3ec7c15e41ea971210c1c547e91. No implementation, live request, OpenD installation/start, or credential access is authorized."
+    ]
+  }
+}
