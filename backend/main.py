@@ -1,8 +1,9 @@
 import os
 import re
 import uuid
+import math
 from calendar import monthrange
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Any, Dict, List, Literal, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
@@ -372,6 +373,128 @@ def get_moomoo_history(
             }
         )
     )
+
+
+def _unavailable_moomoo_trend(code: str, retrieved_at: str, reason: str) -> Dict[str, Any]:
+    return {
+        "code": code,
+        "status": "unavailable",
+        "method": "SMA-5 vs SMA-20",
+        "fast_window": 5,
+        "slow_window": 20,
+        "fast_sma": None,
+        "slow_sma": None,
+        "spread_pct": None,
+        "latest_bar_date": None,
+        "retrieved_at": retrieved_at,
+        "reason": reason,
+    }
+
+
+def _calculate_moomoo_trend(code: str, records: Any, retrieved_at: str,
+                            start: str, end: str) -> Dict[str, Any]:
+    if not isinstance(records, (list, tuple)):
+        return _unavailable_moomoo_trend(code, retrieved_at, "invalid_history")
+
+    bars: List[tuple[date, float]] = []
+    try:
+        start_date = date.fromisoformat(start)
+        end_date = date.fromisoformat(end)
+        for record in records:
+            if not isinstance(record, dict):
+                raise ValueError
+            raw_date = record.get("date")
+            close = record.get("close")
+            if not isinstance(raw_date, str):
+                raise ValueError
+            bar_date = date.fromisoformat(raw_date)
+            if (bar_date.isoformat() != raw_date or not start_date <= bar_date <= end_date
+                    or type(close) not in (int, float) or not math.isfinite(close) or close <= 0):
+                raise ValueError
+            # The requested end date is today in UTC; its daily bar may still be forming.
+            if bar_date < end_date:
+                bars.append((bar_date, float(close)))
+    except (OverflowError, TypeError, ValueError):
+        return _unavailable_moomoo_trend(code, retrieved_at, "invalid_history")
+
+    if any(left[0] >= right[0] for left, right in zip(bars, bars[1:])):
+        return _unavailable_moomoo_trend(code, retrieved_at, "invalid_history")
+    if len(bars) < 20:
+        return _unavailable_moomoo_trend(code, retrieved_at, "insufficient_history")
+
+    latest = bars[-20:]
+    try:
+        fast_sma = math.fsum(close for _, close in latest[-5:]) / 5
+        slow_sma = math.fsum(close for _, close in latest) / 20
+        spread_pct = (fast_sma - slow_sma) / slow_sma * 100
+    except (OverflowError, ZeroDivisionError):
+        return _unavailable_moomoo_trend(code, retrieved_at, "invalid_history")
+    if not all(math.isfinite(value) for value in (fast_sma, slow_sma, spread_pct)):
+        return _unavailable_moomoo_trend(code, retrieved_at, "invalid_history")
+
+    status = "bullish" if fast_sma > slow_sma else "bearish" if fast_sma < slow_sma else "neutral"
+    return {
+        "code": code,
+        "status": status,
+        "method": "SMA-5 vs SMA-20",
+        "fast_window": 5,
+        "slow_window": 20,
+        "fast_sma": fast_sma,
+        "slow_sma": slow_sma,
+        "spread_pct": spread_pct,
+        "latest_bar_date": latest[-1][0].isoformat(),
+        "retrieved_at": retrieved_at,
+    }
+
+
+@app.get("/api/v1/moomoo/trends")
+def get_moomoo_trends(
+    codes: List[str] = Query(..., min_length=1, max_length=20),
+    connector: MoomooOpenDConnector = Depends(configured_connector),
+    api_key: Optional[str] = Depends(get_api_key),
+):
+    """Compare SMA-5 and SMA-20 from bounded OpenD daily closes; descriptive only."""
+    REQUESTS.inc()
+    normalized_codes = list(dict.fromkeys(code.strip().upper() for code in codes))
+    if any(not MOOMOO_US_CODE.fullmatch(code) for code in normalized_codes):
+        raise HTTPException(status_code=422, detail="Each code must be a valid US symbol, for example US.AAPL")
+    if len(normalized_codes) > 20:
+        raise HTTPException(status_code=422, detail="At most 20 unique US symbols may be requested")
+
+    today = datetime.now(timezone.utc).date()
+    start, end = _history_window(3, today)
+    results = []
+    for code in normalized_codes:
+        try:
+            records = connector.get_history(code, start, end, max_count=100)
+        except OpenDUnavailableError:
+            results.append(_unavailable_moomoo_trend(
+                code, datetime.now(timezone.utc).isoformat(), "opend_unavailable"
+            ))
+        except OpenDAPIError:
+            results.append(_unavailable_moomoo_trend(
+                code, datetime.now(timezone.utc).isoformat(), "history_unavailable"
+            ))
+        except Exception:
+            results.append(_unavailable_moomoo_trend(
+                code, datetime.now(timezone.utc).isoformat(), "history_unavailable"
+            ))
+        else:
+            results.append(_calculate_moomoo_trend(
+                code, records, datetime.now(timezone.utc).isoformat(), start, end
+            ))
+
+    retrieved_at = datetime.now(timezone.utc).isoformat()
+    return JSONResponse(content=jsonable_encoder({
+        "results": results,
+        "count": len(results),
+        "window": "3M",
+        "adjustment": "QFQ",
+        "provider": "Moomoo OpenD",
+        "method": "SMA-5 vs SMA-20 on daily adjusted closes",
+        "note": "Descriptive trend context only; not a forecast or recommendation.",
+        "retrieved_at": retrieved_at,
+    }))
 
 
 @app.get("/metrics")

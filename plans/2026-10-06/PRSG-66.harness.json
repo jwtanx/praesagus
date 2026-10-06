@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-66",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "backend",
+      "connectors",
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-06",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-06/PRSG-66-moomoo-quote-trend-api.md",
+  "objective": "Add a bounded read-only Moomoo API endpoint returning a transparent SMA-5/SMA-20 trend label for each requested US quote symbol, with descriptive-only provenance and explicit unavailable behavior.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "e45050f6957e045800c3a45121b68176ded64463",
+  "implementation_authorized": true,
+  "allowed_paths": [
+    "backend/main.py",
+    "tests/test_moomoo_api.py",
+    "plans/2026-10-06/PRSG-66-moomoo-quote-trend-api.md",
+    "plans/2026-10-06/PRSG-66.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/moomoo_opend.py",
+    "frontend/",
+    "artifacts/",
+    "agent-operations/",
+    "skills/",
+    "ingest/",
+    "scripts/",
+    "AGENTS.md",
+    "plans/2026-10-05/PRSG-60-moomoo-dashboard-price-trend.md",
+    "plans/2026-10-05/PRSG-60.harness.json",
+    "plans/2026-10-05/PRSG-61-trader-moomoo-market-snapshot-dashboard.md",
+    "plans/2026-10-05/PRSG-61.harness.json"
+  ],
+  "checks": [
+    {
+      "id": "api-behavior",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: `python3 -m pytest -q tests/test_moomoo_api.py tests/test_moomoo_opend.py` passed 49 tests. Tests use mocked connectors only; no OpenD/provider calls, credentials, or trades."
+      ]
+    },
+    {
+      "id": "ticket-validation",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: exact PRSG-66 ticket validator passed with all four frozen paths supplied; `git diff --check` passed."
+      ]
+    },
+    {
+      "id": "scope-review",
+      "kind": "manual",
+      "status": "passed",
+      "evidence": [
+        "2026-10-06 MYT: working-tree changes are confined to PRSG-66's four allowed paths; protected paths are unchanged. PRSG-67 commits on main were preserved. No live request was made. Lead review remains pending."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-66-D1",
+      "description": "Batch trends endpoint validates/deduplicates at most 20 US symbols and returns one explicit row per input symbol.",
+      "check_ids": [
+        "api-behavior"
+      ],
+      "status": "done",
+      "evidence": [
+        "The batch endpoint uppercases and deduplicates valid US codes, rejects invalid codes before history requests, enforces a 20-code query bound, and returns one result for each normalized code. Covered by the focused mocked API suite."
+      ]
+    },
+    {
+      "id": "PRSG-66-D2",
+      "description": "SMA-5/SMA-20 trend status is computed from validated Moomoo daily bars with null/unavailable behavior for insufficient or failed history.",
+      "check_ids": [
+        "api-behavior"
+      ],
+      "status": "done",
+      "evidence": [
+        "SMA-5/SMA-20 uses validated positive finite daily closes, excludes the requested current UTC-date bar, reports insufficient history or per-symbol failures as unavailable with null metrics, and covers bullish/bearish/neutral outcomes in mocked tests."
+      ]
+    },
+    {
+      "id": "PRSG-66-D3",
+      "description": "Response exposes method, QFQ basis, latest bar date and retrieval timestamp, and labels the indicator as descriptive rather than a forecast/recommendation.",
+      "check_ids": [
+        "api-behavior"
+      ],
+      "status": "done",
+      "evidence": [
+        "Per-symbol and request responses include method, QFQ basis, latest included bar date, retrieval timestamps, and explicit descriptive-only/non-forecast wording. Assertions passed in tests/test_moomoo_api.py."
+      ]
+    },
+    {
+      "id": "PRSG-66-D4",
+      "description": "Focused mock tests, ticket validation, scope review and git diff --check pass; no live requests or protected-path changes occur.",
+      "check_ids": [
+        "api-behavior",
+        "ticket-validation",
+        "scope-review"
+      ],
+      "status": "in_progress",
+      "evidence": [
+        "2026-10-06 MYT: focused mocked API/OpenD suite passed 49 tests; ticket validator passed; git diff --check passed; all working-tree changes are within the frozen four-path scope. Lead independent acceptance and commit/push evidence remain pending. Live API and OpenD are unavailable on this host (local API connection refused); no market data was queried or claimed."
+      ]
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

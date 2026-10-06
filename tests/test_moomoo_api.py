@@ -1,4 +1,7 @@
 from fastapi.testclient import TestClient
+from datetime import date, timedelta
+import math
+import pytest
 
 from backend.main import app
 from connectors.moomoo_opend import OpenDAPIError, OpenDUnavailableError, configured_connector
@@ -215,3 +218,202 @@ def test_moomoo_history_maps_unavailable_and_provider_errors():
         finally:
             app.dependency_overrides.pop(configured_connector, None)
         assert response.status_code == status
+
+
+def trend_history(closes):
+    start = date(2026, 9, 1)
+    return [
+        {"date": (start + timedelta(days=index)).isoformat(), "close": close}
+        for index, close in enumerate(closes)
+    ]
+
+
+class TrendConnector:
+    def __init__(self, histories=None, failures=None):
+        self.histories = histories or {}
+        self.failures = failures or {}
+        self.calls = []
+
+    def get_history(self, code, start, end, max_count=100):
+        self.calls.append((code, start, end, max_count))
+        if code in self.failures:
+            raise self.failures[code]
+        return self.histories.get(code, trend_history([100.0] * 20))
+
+
+def test_moomoo_trends_labels_sma5_vs_sma20_and_returns_provenance():
+    connector = TrendConnector({
+        "US.BULL": trend_history([100.0] * 15 + [110.0] * 5),
+        "US.BEAR": trend_history([110.0] * 5 + [100.0] * 15),
+        "US.FLAT": trend_history([100.0] * 20),
+    })
+    app.dependency_overrides[configured_connector] = lambda: connector
+    try:
+        response = TestClient(app).get(
+            "/api/v1/moomoo/trends",
+            params=[("codes", "US.BULL"), ("codes", "US.BEAR"), ("codes", "US.FLAT")],
+        )
+    finally:
+        app.dependency_overrides.pop(configured_connector, None)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert [row["status"] for row in body["results"]] == ["bullish", "bearish", "neutral"]
+    assert body["count"] == 3
+    assert body["window"] == "3M" and body["adjustment"] == "QFQ"
+    assert body["provider"] == "Moomoo OpenD"
+    assert body["method"] == "SMA-5 vs SMA-20 on daily adjusted closes"
+    assert "not a forecast or recommendation" in body["note"]
+    assert body["retrieved_at"].endswith("+00:00")
+    bull = body["results"][0]
+    assert bull["method"] == "SMA-5 vs SMA-20"
+    assert (bull["fast_window"], bull["slow_window"]) == (5, 20)
+    assert bull["fast_sma"] == 110.0 and bull["slow_sma"] == 102.5
+    assert math.isclose(bull["spread_pct"], (110.0 / 102.5 - 1) * 100)
+    assert bull["latest_bar_date"] == "2026-09-20"
+    assert bull["retrieved_at"].endswith("+00:00")
+    assert [call[0] for call in connector.calls] == ["US.BULL", "US.BEAR", "US.FLAT"]
+    assert all(start < end and max_count == 100
+               for _, start, end, max_count in connector.calls)
+
+
+def test_moomoo_trends_marks_nineteen_bars_unavailable_not_bearish():
+    connector = TrendConnector({"US.SHORT": trend_history([100.0] * 19)})
+    app.dependency_overrides[configured_connector] = lambda: connector
+    try:
+        response = TestClient(app).get("/api/v1/moomoo/trends", params={"codes": "US.SHORT"})
+    finally:
+        app.dependency_overrides.pop(configured_connector, None)
+
+    row = response.json()["results"][0]
+    assert row["status"] == "unavailable"
+    assert row["reason"] == "insufficient_history"
+    assert row["fast_sma"] is row["slow_sma"] is row["spread_pct"] is None
+    assert row["latest_bar_date"] is None
+
+
+def test_moomoo_trends_excludes_current_utc_date_bar(monkeypatch):
+    import backend.main as main
+    from datetime import datetime, timezone
+
+    class FrozenDateTime:
+        @staticmethod
+        def now(tz=None):
+            assert tz is timezone.utc
+            return datetime(2026, 3, 31, 9, 0, tzinfo=timezone.utc)
+
+    monkeypatch.setattr(main, "datetime", FrozenDateTime)
+    start = date(2026, 3, 1)
+    rows = [
+        {"date": (start + timedelta(days=index)).isoformat(), "close": 100.0}
+        for index in range(20)
+    ]
+    rows.append({"date": "2026-03-31", "close": 10000.0})
+    connector = TrendConnector({"US.TODAY": rows})
+    app.dependency_overrides[configured_connector] = lambda: connector
+    try:
+        response = TestClient(app).get("/api/v1/moomoo/trends", params={"codes": "US.TODAY"})
+    finally:
+        app.dependency_overrides.pop(configured_connector, None)
+
+    row = response.json()["results"][0]
+    assert row["status"] == "neutral"
+    assert row["fast_sma"] == row["slow_sma"] == 100.0
+    assert row["latest_bar_date"] == "2026-03-20"
+    assert connector.calls[0][2] == "2026-03-31"
+
+
+@pytest.mark.parametrize("bad_bar", [
+    {"date": "not-a-date", "close": 100.0},
+    {"date": "2026-09-01", "close": 0.0},
+    {"date": "2026-09-01", "close": -1.0},
+    {"date": "2026-09-01", "close": float("nan")},
+    {"date": "2026-09-01", "close": float("inf")},
+    {"date": "2026-09-01", "close": True},
+])
+def test_moomoo_trends_rejects_malformed_or_unusable_bars(bad_bar):
+    connector = TrendConnector({"US.BAD": [*trend_history([100.0] * 19), bad_bar]})
+    app.dependency_overrides[configured_connector] = lambda: connector
+    try:
+        response = TestClient(app).get("/api/v1/moomoo/trends", params={"codes": "US.BAD"})
+    finally:
+        app.dependency_overrides.pop(configured_connector, None)
+
+    row = response.json()["results"][0]
+    assert row["status"] == "unavailable"
+    assert row["reason"] == "invalid_history"
+    assert row["fast_sma"] is row["slow_sma"] is row["spread_pct"] is None
+
+
+def test_moomoo_trends_normalizes_and_deduplicates_before_history_calls():
+    connector = TrendConnector()
+    app.dependency_overrides[configured_connector] = lambda: connector
+    try:
+        response = TestClient(app).get(
+            "/api/v1/moomoo/trends",
+            params=[("codes", "us.aapl"), ("codes", "US.AAPL"), ("codes", "us.msft")],
+        )
+    finally:
+        app.dependency_overrides.pop(configured_connector, None)
+
+    assert response.status_code == 200
+    assert [row["code"] for row in response.json()["results"]] == ["US.AAPL", "US.MSFT"]
+    assert [call[0] for call in connector.calls] == ["US.AAPL", "US.MSFT"]
+
+
+def test_moomoo_trends_rejects_invalid_symbols_before_provider_call():
+    class MustNotCall:
+        def get_history(self, *args, **kwargs):
+            pytest.fail("invalid symbol reached OpenD")
+
+    app.dependency_overrides[configured_connector] = MustNotCall
+    try:
+        for code in ("AAPL", "MY.1155", "US.", "US.AAPL extra"):
+            response = TestClient(app).get("/api/v1/moomoo/trends", params={"codes": code})
+            assert response.status_code == 422
+    finally:
+        app.dependency_overrides.pop(configured_connector, None)
+
+
+def test_moomoo_trends_rejects_batches_over_twenty_symbols():
+    response = TestClient(app).get(
+        "/api/v1/moomoo/trends",
+        params=[("codes", f"US.S{i}") for i in range(21)],
+    )
+    assert response.status_code == 422
+
+
+def test_moomoo_trends_preserves_per_symbol_unavailability_and_continues_batch():
+    connector = TrendConnector(
+        failures={"US.DOWN": OpenDUnavailableError("offline")},
+    )
+    app.dependency_overrides[configured_connector] = lambda: connector
+    try:
+        response = TestClient(app).get(
+            "/api/v1/moomoo/trends",
+            params=[("codes", "US.DOWN"), ("codes", "US.OK")],
+        )
+    finally:
+        app.dependency_overrides.pop(configured_connector, None)
+
+    assert response.status_code == 200
+    rows = response.json()["results"]
+    assert rows[0]["status"] == "unavailable" and rows[0]["reason"] == "opend_unavailable"
+    assert rows[1]["status"] == "neutral"
+    assert [call[0] for call in connector.calls] == ["US.DOWN", "US.OK"]
+
+
+def test_moomoo_trends_honors_api_key(monkeypatch):
+    monkeypatch.setenv("PRAESAGUS_API_KEY", "test-secret")
+    app.dependency_overrides[configured_connector] = TrendConnector
+    client = TestClient(app)
+    try:
+        denied = client.get("/api/v1/moomoo/trends", params={"codes": "US.AAPL"})
+        allowed = client.get(
+            "/api/v1/moomoo/trends", params={"codes": "US.AAPL"},
+            headers={"X-API-Key": "test-secret"},
+        )
+    finally:
+        app.dependency_overrides.pop(configured_connector, None)
+    assert denied.status_code == 401
+    assert allowed.status_code == 200
