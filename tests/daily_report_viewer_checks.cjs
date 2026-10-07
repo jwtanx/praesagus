@@ -212,10 +212,12 @@ async function observedQuoteDisplay() {
   data.forecasts.push({...data.forecasts[0],ticker:'TEST5',moomoo_trend:{status:'available',signal:'bullish'}});
   data.forecasts.push({...data.forecasts[0],ticker:'TEST6',moomoo_trend:{status:'available',signal:'down'}});
   data.forecasts.push({...data.forecasts[0],ticker:'TEST7',moomoo_trend:{status:'available',signal:'neutral'}});
+  data.forecasts.push({...data.forecasts[4],ticker:'TEST8',moomoo_session_direction:{status:'available',signal:'bullish',label:'Bullish',source_at:'2026-10-01T07:59:00Z',retrieved_at:'2026-10-01T08:00:00Z'}});
+  const noSignal={...data.forecasts[0],ticker:'TEST9'};delete noSignal.moomoo_trend;delete noSignal.moomoo_session_direction;data.forecasts.push(noSignal);
   data.forecasts[0].current_price_value=1234; // Even malformed legacy sorting cannot promote unknown units.
   data.forecasts[0].data_gaps=['currency_unknown','session_unknown','adjustment_unknown','prior_close_unknown','<img src=x onerror=alert(1)>'];
   data.forecasts[0].observed_quote={price:10,volume:0,source_at:'2026-09-30T23:59:00Z',observed_at:'2026-09-30T23:59:00Z',ingested_at:'2026-10-01T00:00:00Z',known_at:'2026-10-01T00:00:00Z',cutoff:'2026-10-01T00:00:00Z',origin:'synthetic',provenance:{raw_hash:'private-hash',attempt_id:'private-attempt'}};
-  data.forecasts[1].current_price_value=9;
+  data.forecasts[1].current_price_value=9;data.forecasts[1].direction='up';data.forecasts[1].direction_label='Bullish';data.forecasts[2].direction='flat';data.forecasts[2].direction_label='Sideways';data.forecasts[3].direction='down';data.forecasts[3].direction_label='Bearish';
   const t=mount({routes:{'./2026-10-01.json':data}});await settle();
   const row=t.$('#forecast-rows tr');
   assert.equal(row.dataset.price,'');assert.equal(row.dataset.trend,undefined);
@@ -230,17 +232,22 @@ async function observedQuoteDisplay() {
   assert.match(row.textContent,/currency_unknown/);
   assert.equal(row.querySelector('img'),null);assert.match(row.textContent,/<img src=x/);
   assert.doesNotMatch(row.textContent,/private-hash|private-attempt|USD 10|US\$10/);
-  assert.match(row.querySelector('.signal').textContent,/Unrated/);
+  assert.match(row.querySelector('.forecast-trend').textContent,/Unrated/);
   assert.match(row.textContent,/Moomoo quote direction vs previous close: ↓ Bearish/);
   assert.match(row.textContent,/Historical SMA-5\/SMA-20: Bullish/);
   assert.match(t.$('#forecast-rows tr:nth-child(2)').textContent,/Moomoo quote direction vs previous close: \? Unavailable/);
   assert.match(t.$('#forecast-rows tr:nth-child(2)').textContent,/Historical SMA-5\/SMA-20: Bullish/);
   assert.match(row.textContent,/Forecast: \? Unrated/);
+  assert.match(t.$('.archived-forecast-note').textContent,/30 September 2026 forecast archive.*not current forecasts/);
+  assert.equal(t.$('.archived-forecast-note a').getAttribute('href'),'?date=2026-09-30');
+  assert.match(t.$('#forecast-rows tr:nth-child(2)').className,/up/);assert.match(t.$('#forecast-rows tr:nth-child(2) .forecast-trend').textContent,/Forecast: ↑ Bullish/);
+  assert.match(t.$('#forecast-rows tr:nth-child(3)').className,/flat/);assert.match(t.$('#forecast-rows tr:nth-child(3) .forecast-trend').textContent,/Forecast: ↔ Sideways/);
+  assert.match(t.$('#forecast-rows tr:nth-child(4)').className,/down/);assert.match(t.$('#forecast-rows tr:nth-child(4) .forecast-trend').textContent,/Forecast: ↓ Bearish/);
   t.w.eval(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'));
   const controls=t.w.PraesagusTA.create(t.w.document);controls.update(data);
   const chip=t.$('#ta-chips button');
   assert.equal(chip.textContent,'💻 TEST0 ↑','chip uses historical SMA trend even when same-session quote direction conflicts');
-  assert.match(chip.getAttribute('aria-label'),/Moomoo historical SMA-5\/SMA-20 trend: Up.*last bar 2026-09-30.*forecast Unrated/);
+  assert.match(chip.getAttribute('aria-label'),/historical SMA-5\/SMA-20 trend: Up.*last bar 2026-09-30.*forecast Unrated/);
   assert.match(chip.title,/Up/);assert.match(chip.title,/forecast Unrated/);assert.doesNotMatch(chip.title,/Bullish|Bearish|Neutral/);
   assert.match(chip.className,/ta-trend-bullish/);
   const upChip=t.$('#ta-chips button:nth-child(2)');
@@ -250,13 +257,20 @@ async function observedQuoteDisplay() {
   assert.equal(sidewaysChip.textContent,'💻 TEST2 ↔');
   assert.match(sidewaysChip.getAttribute('aria-label'),/: Sideways/);
   const invalidSignalChip=t.$('#ta-chips button:nth-child(4)');
-  assert.equal(invalidSignalChip.textContent,'💻 TEST3 ?');
-  assert.match(invalidSignalChip.getAttribute('aria-label'),/Moomoo historical SMA-5\/SMA-20 trend: Unavailable.*Unsupported signal/);
-  assert.match(invalidSignalChip.className,/ta-trend-unavailable/);
+  assert.equal(invalidSignalChip.textContent,'💻 TEST3 ↓');assert.match(invalidSignalChip.getAttribute('aria-label'),/saved forecast direction: Down/);
+  assert.match(invalidSignalChip.getAttribute('aria-label'),/Unsupported signal/);
+  assert.match(invalidSignalChip.className,/ta-trend-bearish/);
   const missingSignalChip=t.$('#ta-chips button:nth-child(5)');
-  assert.equal(missingSignalChip.textContent,'🧪 TEST4 ?','row sector_emoji takes precedence when its group key is absent');
-  assert.match(missingSignalChip.getAttribute('aria-label'),/Moomoo historical SMA-5\/SMA-20 trend: Unavailable/);
-  assert.match(missingSignalChip.className,/ta-trend-unavailable/);
+  assert.equal(missingSignalChip.textContent,'🧪 TEST4 ↑','row sector_emoji takes precedence when its group key is absent');
+  assert.match(missingSignalChip.getAttribute('aria-label'),/saved forecast direction: Up/);
+  assert.match(missingSignalChip.className,/ta-trend-bullish/);
+  const noSignalChip=[...t.w.document.querySelectorAll('#ta-chips button')].find(b=>b.textContent.includes('TEST9'));
+  assert.equal(noSignalChip.textContent,'💻 TEST9 —','no evidence uses an explicit unavailable marker, never a fabricated trend');
+  assert.match(noSignalChip.className,/ta-trend-unavailable/);
+  const quoteOnlyChip=[...t.w.document.querySelectorAll('#ta-chips button')].find(b=>b.textContent.includes('TEST8'));
+  assert.equal(quoteOnlyChip.textContent,'🧪 TEST8 ↑','timestamped quote direction supplies an arrow when historical SMA is missing');
+  assert.match(quoteOnlyChip.getAttribute('aria-label'),/quote direction vs previous close: Up.*source 2026-10-01T07:59:00Z/);
+  assert.match(quoteOnlyChip.className,/ta-trend-bullish/);
   const bullishAliasChip=t.$('#ta-chips button:nth-child(6)'),downAliasChip=t.$('#ta-chips button:nth-child(7)'),neutralAliasChip=t.$('#ta-chips button:nth-child(8)');
   assert.equal(bullishAliasChip.textContent,'💻 TEST5 ↑');assert.match(bullishAliasChip.getAttribute('aria-label'),/: Up/);
   assert.equal(downAliasChip.textContent,'💻 TEST6 ↓');assert.match(downAliasChip.getAttribute('aria-label'),/: Down/);
@@ -265,11 +279,46 @@ async function observedQuoteDisplay() {
   chip.dispatchEvent(new t.w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
   assert.equal(t.w.document.activeElement,upChip,'ArrowRight still moves focus between ticker chips');
   upChip.click();assert.equal(upChip.getAttribute('aria-pressed'),'true','Ticker selection remains available');
-  assert.match(t.$('#ta-caption').textContent,/historical SMA-5\/SMA-20 trend.*Quote movement and forecast direction remain separate/);
+  assert.match(t.$('#ta-caption').textContent,/historical SMA trend when available.*timestamped quote direction.*Forecast direction remains separate/);
   controls.destroy();
   t.$('#forecast-sort').value='price-desc';t.$('#forecast-sort').dispatchEvent(new t.w.Event('change'));
   assert.equal(t.$('#forecast-rows tr').dataset.universeOrder,'1','Unknown-unit point excluded from nominal sorting');
   assert.equal(t.errors.length,0);t.dom.window.close();
+}
+async function historicalForecastArchive() {
+  const archive=JSON.parse(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/2026-09-30.json'),'utf8'));
+  assert.equal(archive.metadata.date,'2026-09-30');
+  assert.equal(archive.forecasts.length,60);
+  const aapl=archive.forecasts.find(x=>x.ticker==='AAPL');
+  assert.ok(aapl?.estimated_range&&aapl.estimated_range!=='Unavailable','Sep 30 preserves AAPL prediction range');
+  const t=mount({search:'?date=2026-09-30',routes:{'./2026-09-30.json':archive}});
+  await settle();
+  const aaplRow=[...t.w.document.querySelectorAll('#forecast-rows tr')].find(x=>x.textContent.includes('AAPL'));
+  assert.ok(aaplRow);assert.match(aaplRow.textContent,new RegExp(aapl.estimated_range.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
+  assert.match(aaplRow.className,/up/);
+  const spyRow=[...t.w.document.querySelectorAll('#forecast-rows tr')].find(x=>x.textContent.includes('SPY'));
+  assert.ok(spyRow);assert.match(spyRow.className,/flat/);
+  t.w.eval(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'));
+  const controls=t.w.PraesagusTA.create(t.w.document);controls.update(archive);
+  const chips=[...t.w.document.querySelectorAll('#ta-chips button')];
+  const aaplChip=chips.find(x=>x.textContent.includes('AAPL'));
+  assert.ok(aaplChip);assert.match(aaplChip.textContent,/AAPL ↑/);assert.match(aaplChip.getAttribute('aria-label'),/saved forecast direction: Up/);
+  const spyChip=chips.find(x=>x.textContent.includes('SPY'));
+  assert.ok(spyChip);assert.match(spyChip.textContent,/SPY ↔/);assert.match(spyChip.className,/ta-trend-neutral/);
+  controls.destroy();assert.equal(t.errors.length,0);t.dom.window.close();
+}
+async function currentReportTrendChips() {
+  const data=JSON.parse(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/2026-10-07.json'),'utf8'));
+  assert.equal(data.forecasts.filter(x=>x.moomoo_session_direction?.status==='available').length,30);
+  const t=mount({search:'?date=2026-10-07',routes:{'./2026-10-07.json':data}});await settle();
+  t.w.eval(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'));
+  const controls=t.w.PraesagusTA.create(t.w.document);controls.update(data);
+  const chips=[...t.w.document.querySelectorAll('#ta-chips button')];
+  const spy=chips.find(x=>x.textContent.includes('SPY'));
+  assert.ok(spy);assert.match(spy.textContent,/SPY ↓/);assert.match(spy.getAttribute('aria-label'),/quote direction vs previous close: Down.*source 2026-10-07/);assert.match(spy.className,/ta-trend-bearish/);
+  const my=chips.find(x=>x.textContent.includes('0820EA'));
+  assert.ok(my);assert.match(my.textContent,/0820EA —/);assert.match(my.className,/ta-trend-unavailable/);
+  controls.destroy();assert.equal(t.errors.length,0);t.dom.window.close();
 }
 async function publicSnapshotDisplay() {
   const data=report('2026-10-01');
@@ -277,7 +326,7 @@ async function publicSnapshotDisplay() {
   data.forecasts[0].direction='up';data.forecasts[0].direction_label='Independent forecast';
   data.forecasts[0].public_snapshot={price:10,volume:999,source_at:'2026-09-30T23:59:00Z',observed_at:'2026-09-30T23:59:00Z',ingested_at:'2026-10-01T00:00:00Z',known_at:'2026-10-01T00:00:00Z',cutoff:'2026-10-01T00:00:00Z',listing_currency:'USD',reference_url:'javascript:alert(1)',attempt_id:'private-attempt',provider:'<img src=x>',rights_status:'licensed'};
   data.forecasts[0].data_gaps=['provider_currency_unknown','<img src=x onerror=alert(1)>'];
-  data.forecasts[1].current_price_value=9;
+  data.forecasts[1].current_price_value=9;data.forecasts[1].direction='up';data.forecasts[1].direction_label='Bullish';data.forecasts[2].direction='flat';data.forecasts[2].direction_label='Sideways';data.forecasts[3].direction='down';data.forecasts[3].direction_label='Bearish';
   const t=mount({routes:{'./2026-10-01.json':data}});await settle();
   const row=t.$('#forecast-rows tr');
   assert.equal(row.dataset.price,'');assert.match(row.textContent,/Provider: moomoo-rest/);
@@ -321,6 +370,8 @@ if (process.argv.includes('--write-browser-fixture')) {
   await publicSnapshotDisplay();
   await snapshotTrendAndForecast();
   await observedQuoteDisplay();
+  await historicalForecastArchive();
+  await currentReportTrendChips();
   await countryFiltersAndLatest();
   await navigation(1280); await navigation(390); await historyAndSafety(); await activeRevisionsAndReportCalendarRace(); await staleAndFailures(); await calendarStaleAndInvalid(); await checkedInReports();
   console.log('Daily report DOM checks passed: desktop/mobile date switching, schema2/3, confidence, as-of revisions/cancellations, safe sources, missing months, stale/error handling, private/public quote frozen age/units/gaps/unsortability and price-only public reference safety.');

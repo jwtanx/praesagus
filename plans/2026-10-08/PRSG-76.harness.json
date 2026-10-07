@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-76",
+  "tags": {
+    "type": "feature",
+    "modules": ["frontend", "market-research"],
+    "owner_role": "Trader",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {"low": 0.5, "high": 2},
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-08",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-08/PRSG-76-technical-chips-and-forecast-colors.md",
+  "objective": "Render available trend symbols and colored forecast direction in the daily brief and expose the preserved Sep 30 forecast ranges as a historical archive.",
+  "status": "review",
+  "owner": "Trader",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6e08d0da39aba2f18747d09bca8ebd00385ee6fe",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/tradingview.js",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-08/PRSG-76-technical-chips-and-forecast-colors.md",
+    "plans/2026-10-08/PRSG-76.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "artifacts/daily-market-brief/2026-10-07.json",
+    "artifacts/daily-market-brief/2026-09-30.json",
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/src/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": ["node", "tests/daily_report_viewer_checks.cjs"],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["2026-10-08 MYT: node tests/daily_report_viewer_checks.cjs passed with regressions for SMA, actual Oct 7 timestamped quote arrows, saved forecast and explicit unavailable marker, colored forecast directions, and rendering actual Sep 30 AAPL/SPY ranges and forecast-only chips."]
+    },
+    {
+      "id": "oct7-report",
+      "kind": "command",
+      "argv": ["python3", "scripts/daily-market-brief/validate_report_json.py", "--date", "2026-10-07", "--public"],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["2026-10-08 MYT: Oct 7 public report validator passed; its data was not modified."]
+    },
+    {
+      "id": "sep30-report",
+      "kind": "command",
+      "argv": ["python3", "scripts/daily-market-brief/validate_report_json.py", "--date", "2026-09-30"],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["2026-10-08 MYT: Sep 30 legacy report validator passed; its saved ranges were not modified."]
+    },
+    {
+      "id": "scope",
+      "kind": "command",
+      "argv": ["python3", "scripts/planning/validate_ticket.py", "plans/2026-10-08/PRSG-76.harness.json", "--changed-file", "artifacts/daily-market-brief/index.html", "--changed-file", "artifacts/daily-market-brief/tradingview.js", "--changed-file", "tests/daily_report_viewer_checks.cjs", "--changed-file", "plans/2026-10-08/PRSG-76-technical-chips-and-forecast-colors.md", "--changed-file", "plans/2026-10-08/PRSG-76.harness.json"],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["2026-10-08 MYT: manifest scope validated with all five changed paths against frozen base 6e08d0da39aba2f18747d09bca8ebd00385ee6fe."]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews the exact viewer changes, evidence-basis labels, historical archive wording, and report data preservation.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-76-D1",
+      "description": "Trend chips prefer historical SMA, then timestamped quote direction, then saved forecast direction; unavailable remains explicit.",
+      "check_ids": ["viewer"],
+      "status": "done",
+      "evidence": ["Viewer regression renders the actual Sep 30 AAPL price range; report and technical analysis surfaces preserve it as dated historical output."]
+    },
+    {
+      "id": "PRSG-76-D2",
+      "description": "Forecast direction has red/green/yellow styling and Sep 30 estimate ranges remain reachable as dated historical output.",
+      "check_ids": ["viewer", "sep30-report"],
+      "status": "done",
+      "evidence": ["Viewer regression covers SMA > timestamped quote > saved forecast basis, all direction colors, and an explicit em dash when no directional evidence exists."]
+    },
+    {
+      "id": "PRSG-76-D3",
+      "description": "Lead independently reviews scope, presentation, and historical forecast handling.",
+      "check_ids": ["scope", "review"],
+      "status": "pending"
+    }
+  ],
+  "review": {"status": "pending"}
+}
