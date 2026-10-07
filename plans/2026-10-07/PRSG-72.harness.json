@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-72",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.25,
+      "high": 0.49
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-07",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-07/PRSG-72-compact-trend-chips.md",
+  "objective": "Render compact ticker chips with sector emoji, ticker, and quote-direction arrows",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "26712926a2d1cef1fc4edaf97f31d77739691000",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/tradingview.js",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-07/PRSG-72-compact-trend-chips.md",
+    "plans/2026-10-07/PRSG-72.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "artifacts/daily-market-brief/2026-10-07.json",
+    "artifacts/daily-market-brief/reports.json",
+    "artifacts/daily-market-brief/index.html",
+    "ingest/daily_report_projection.py",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_opend.py",
+    "backend/",
+    "frontend/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/daily_report_viewer_checks.cjs \u2014 passed (2026-10-07 MYT); direction aliases, Up/Down/Sideways accessible and hover wording, unavailable states, legacy emoji fallback, keyboard focus/selection, and preserved status colors covered."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews exact compact rendering, fail-closed unavailable state, accessibility, and scope",
+      "status": "passed",
+      "evidence": [
+        "2026-10-07 MYT Lead independently reviewed all four ticket-owned paths; focused viewer regression, ticket-scope validation and diff checks passed. Synthetic local browser preview confirmed the visible sector emoji/ticker/arrow presentation and no direction words. The public October 7 artifact remains without an authorized session-direction field (0/50 rows), which the renderer correctly leaves unavailable."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-72-D1",
+      "description": "Available quote-direction values render sector emoji, ticker and arrow without word labels",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "Viewer check passed: bullish/up, bearish/down, and neutral/sideways render as sector emoji + ticker + arrow, with Up/Down/Sideways accessible and hover wording and no Bullish/Bearish/Neutral terms."
+      ]
+    },
+    {
+      "id": "PRSG-72-D2",
+      "description": "Missing and invalid values stay unavailable, with no SMA/forecast fallback and accessible detail preserved",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "Viewer check passed: missing/unsupported values stay unavailable despite forecast/SMA data; row sector_emoji fallback, accessible reason/timestamps/forecast, keyboard/selection and unchanged status colors are covered."
+      ]
+    },
+    {
+      "id": "PRSG-72-D3",
+      "description": "Lead independently accepts the scoped behavior and evidence",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead review accepted the four-path diff, regression evidence, rendered preview, and separate public-data limitation."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-07 MYT Lead independently reviewed all four ticket-owned paths; focused viewer regression, ticket-scope validation and diff checks passed. Synthetic local browser preview confirmed the visible sector emoji/ticker/arrow presentation and no direction words. The public October 7 artifact remains without an authorized session-direction field (0/50 rows), which the renderer correctly leaves unavailable."
+    ]
+  }
+}
