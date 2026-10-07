@@ -16,7 +16,7 @@ except ImportError:
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from ingest.daily_report_projection import (validate_observed_quote, validate_public_snapshot,
     validate_public_report_boundary, validate_market_snapshot, forecast_basis_error,
-    validate_moomoo_trend)
+    validate_moomoo_trend, validate_moomoo_session_direction)
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
@@ -211,6 +211,9 @@ def validate_report(path: Path, d, universe_data=None, *, public=False):
         if 'moomoo_trend' in f:
             try:validate_moomoo_trend(f['moomoo_trend'],meta['as_of'])
             except (ValueError,TypeError,KeyError,OverflowError):fail(path,f'forecasts[{i}].moomoo_trend invalid')
+        if 'moomoo_session_direction' in f:
+            try:validate_moomoo_session_direction(f['moomoo_session_direction'],meta['as_of'])
+            except (ValueError,TypeError,KeyError,OverflowError):fail(path,f'forecasts[{i}].moomoo_session_direction invalid')
         symbols.add(f['ticker']);validate_sources(f.get('sources',[]),path,f'forecasts[{i}]')
     for key,count in sector_counts.items():
         if count!=(5 if modern else 10):fail(path,f'watchlist group {key} has {count} tickers; expected {5 if modern else 10}')

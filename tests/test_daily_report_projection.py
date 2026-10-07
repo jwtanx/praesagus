@@ -43,7 +43,7 @@ def inputs(tmp_path):
     codes=['US.'+i['ticker'] for g in universe['groups'] for i in g['instruments'] if i['market']=='US']
     store=PrivateMarketStore(tmp_path/'private-store',create=True)
     request=ReadRequest('POST','/api/v1.0/quote/snapshot','',canonical({'code_list':codes}).encode(),{},1)
-    row={'code':codes[0],'name':'Synthetic','update_time':STAMP,'data_date':'2026-10-01','last_price':10,'volume':0}
+    row={'code':codes[0],'name':'Synthetic','update_time':STAMP,'data_date':'2026-10-01','last_price':10,'prev_close_price':9,'volume':0}
     response=ReadResponse(200,canonical({'ret_code':0,'ret_msg':'ok','data':{'snapshot_list':[row]}}).encode())
     store.ingest(request,response,run_id='synthetic',observed_at=OBS,ingested_at=CUTOFF,origin='synthetic')
     return store,report,universe,codes
@@ -63,6 +63,10 @@ def test_deterministic_50_rows_input_unchanged_allowlist(inputs):
     assert q['price']==10 and q['volume']==0 and q['origin']=='synthetic'
     assert all(q[k] is None for k in ('currency','session','adjustment','prior_close'))
     assert q['source_at']==q['observed_at'].replace('Z','.000+00:00')
+    session=next(r['moomoo_session_direction'] for r in first['forecasts'] if r['market']=='US')
+    assert session['signal']=='bullish' and session['method']=='last_price-vs-prev_close_price'
+    assert session['source_at']<=session['retrieved_at']<=session['cutoff']
+    assert session['market_date']=='2026-10-01'
     assert set(q['provenance']) == {'provider','connector','capture_authenticity','rights_status'}
     assert not {'attempt_id','raw_hash','semantic_hash','run_id'} & set(q['provenance'])
     for row in first['forecasts']:
@@ -89,7 +93,41 @@ def test_reject_inconsistent_input(inputs,change):
 def test_missing_run_no_previous_quote_fallback(inputs):
     result=project(inputs,run='missing')
     assert all(r['observed_quote'] is None and r['current_price_value'] is None for r in result['forecasts'])
+    assert all(r['moomoo_session_direction']['signal']=='unavailable' for r in result['forecasts'])
     assert all('no_available_attempts' in r['data_gaps'] for r in result['forecasts'] if r['market']=='US')
+
+
+@pytest.mark.parametrize('price,previous,signal',[(11,10,'bullish'),(9,10,'bearish'),(10,10,'neutral')])
+def test_session_direction_uses_same_eligible_quote_snapshot(inputs,price,previous,signal):
+    store,template,universe,codes=inputs
+    row={'code':codes[0],'name':'Synthetic','update_time':STAMP,'data_date':'2026-10-01',
+         'last_price':price,'prev_close_price':previous,'volume':0}
+    response=ReadResponse(200,canonical({'ret_code':0,'ret_msg':'ok','data':{'snapshot_list':[row]}}).encode())
+    store.ingest(ReadRequest('POST','/api/v1.0/quote/snapshot','',canonical({'code_list':codes}).encode(),{},1),
+                 response,run_id='direction',observed_at=OBS,ingested_at=CUTOFF,origin='synthetic')
+    result=project(inputs,run='direction')
+    session=next(r['moomoo_session_direction'] for r in result['forecasts'] if r['market']=='US')
+    assert session['signal']==signal and session['status']=='available'
+    assert all(r['direction']=='unknown' for r in result['forecasts'])
+
+
+def test_missing_previous_close_keeps_direction_unavailable_with_timestamp(inputs):
+    store,template,universe,codes=inputs
+    row={'code':codes[0],'name':'Synthetic','update_time':STAMP,'data_date':'2026-10-01',
+         'last_price':10,'volume':0}
+    response=ReadResponse(200,canonical({'ret_code':0,'ret_msg':'ok','data':{'snapshot_list':[row]}}).encode())
+    store.ingest(ReadRequest('POST','/api/v1.0/quote/snapshot','',canonical({'code_list':codes}).encode(),{},1),
+                 response,run_id='missing-previous',observed_at=OBS,ingested_at=CUTOFF,origin='synthetic')
+    result=project(inputs,run='missing-previous')
+    session=next(r['moomoo_session_direction'] for r in result['forecasts'] if r['market']=='US')
+    assert session['signal']=='unavailable' and session['reason']=='previous-close-unavailable'
+    assert session['source_at'] and session['retrieved_at']
+
+
+def test_public_report_boundary_rejects_private_session_direction():
+    from ingest.daily_report_projection import validate_public_report_boundary
+    with pytest.raises(ValueError):
+        validate_public_report_boundary({'forecasts':[{'moomoo_session_direction':{'signal':'bullish'}}]})
 
 
 @pytest.mark.parametrize('kind',['conflict','zero','unknown-source','after-observation','late-ingest','failed','empty'])

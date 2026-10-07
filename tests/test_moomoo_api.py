@@ -3,7 +3,7 @@ from datetime import date, timedelta
 import math
 import pytest
 
-from backend.main import app
+from backend.main import app, _calculate_moomoo_session_direction
 from connectors.moomoo_opend import OpenDAPIError, OpenDUnavailableError, configured_connector
 
 
@@ -99,7 +99,27 @@ def test_moomoo_quotes_endpoint_returns_per_quote_moomoo_trend():
     assert records[5]["moomoo_trend"]["reason"] == "unsupported_market_or_code"
     assert records[0]["last_price"] < records[0]["prev_close_price"]
     assert records[0]["moomoo_trend"]["status"] == "bullish"
+    assert records[0]["moomoo_session_direction"]["signal"] == "bearish"
+    assert records[0]["moomoo_session_direction"]["method"] == "last_price-vs-prev_close_price"
     assert records[-1]["code"] == "MY.1155" and records[-1]["last_price"] == 110.0
+
+
+@pytest.mark.parametrize(
+    "record,expected",
+    [
+        ({"last_price": 101.0, "prev_close_price": 100.0}, "bullish"),
+        ({"last_price": 99.0, "prev_close_price": 100.0}, "bearish"),
+        ({"last_price": 100.0, "prev_close_price": 100.0}, "neutral"),
+        ({"last_price": 100.0}, "unavailable"),
+        ({"last_price": True, "prev_close_price": 100.0}, "unavailable"),
+        ({"last_price": float("nan"), "prev_close_price": 100.0}, "unavailable"),
+        ({"last_price": 100.0, "prev_close_price": 0.0}, "unavailable"),
+    ],
+)
+def test_moomoo_session_direction_uses_latest_vs_previous_close(record, expected):
+    result = _calculate_moomoo_session_direction(record)
+    assert result["signal"] == expected
+    assert result["status"] == ("available" if expected != "unavailable" else "unavailable")
 
 
 def test_moomoo_quotes_rejects_unqualified_or_incomplete_codes():

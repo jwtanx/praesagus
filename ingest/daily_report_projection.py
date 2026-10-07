@@ -57,6 +57,7 @@ PUBLIC_KEYS = {'price',*PUBLIC_TIMES,'provider','reference_url','listing_currenc
 PRIVATE_PUBLIC_KEYS = {'private_draft','observed_quote','quote_provenance','attempt_id',
                        'raw_hash','semantic_hash','run_id','raw_body','raw_response',
                        'credential_directory','credential_path','account_id','account',
+                       'moomoo_session_direction',
                        'private_path','private_store','provenance'}
 
 
@@ -297,6 +298,78 @@ MOOMOO_TREND_FIELDS={
     'rights_status','capture_authenticity'
 }
 MOOMOO_TREND_URL='https://open.moomoo.com/api/quote/basic-data/history-kline'
+MOOMOO_SESSION_DIRECTION_FIELDS={
+    'provider','method','signal','label','status','reason','market_date',
+    'source_at','retrieved_at','cutoff'
+}
+
+
+def _unavailable_moomoo_session_direction(code,cutoff,reason):
+    provider='moomoo-rest' if isinstance(code,str) and code.startswith('US.') else 'unsupported'
+    return {'provider':provider,'method':'last_price-vs-prev_close_price',
+        'signal':'unavailable','label':'Unavailable','status':'unavailable','reason':reason,
+        'market_date':None,'source_at':None,'retrieved_at':None,'cutoff':cutoff}
+
+
+def project_moomoo_session_direction(point,*,code,cutoff):
+    """Project eligible quote direction from same-run latest and provider previous close."""
+    def project():
+        need(isinstance(code,str) and re.fullmatch(r'(?:US\.[A-Z][A-Z0-9.-]{0,59}|MY\.[A-Z0-9]{1,14})',code))
+        frozen=parse_aware(cutoff)
+        result=_unavailable_moomoo_session_direction(
+            code,cutoff,'unsupported-market' if code.startswith('MY.') else 'no-eligible-quote')
+        if code.startswith('MY.') or point is None or point.get('quote') is None:
+            validate_moomoo_session_direction(result,cutoff)
+            return result
+        record=point['quote'];provenance=point['provenance']
+        previous=record.get('provider_prev_close')
+        price=record.get('price')
+        source=epoch_time(provenance['source_ms'])
+        retrieved=provenance['observed_at']
+        market_date=record.get('market_date')
+        if not isinstance(market_date,str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}',market_date):
+            market_date=frozen.astimezone(timezone(timedelta(hours=8))).date().isoformat()
+        if (type(price) not in (int,float) or not math.isfinite(price) or price<=0
+                or type(previous) not in (int,float) or not math.isfinite(previous) or previous<=0):
+            result.update(reason='previous-close-unavailable',market_date=market_date,
+                          source_at=source,retrieved_at=retrieved)
+            validate_moomoo_session_direction(result,cutoff)
+            return result
+        signal='bullish' if price>previous else 'bearish' if price<previous else 'neutral'
+        result.update(signal=signal,label=signal.capitalize(),status='available',reason=None,
+                      market_date=market_date,source_at=source,retrieved_at=retrieved)
+        validate_moomoo_session_direction(result,cutoff)
+        return result
+    return safe(project,category='projection-failed')
+
+
+def validate_moomoo_session_direction(value,cutoff):
+    need(isinstance(value,dict) and set(value)==MOOMOO_SESSION_DIRECTION_FIELDS
+         and value['method']=='last_price-vs-prev_close_price'
+         and value['provider'] in {'moomoo-rest','unsupported'}
+         and value['status'] in {'available','unavailable'}
+         and value['signal'] in {'bullish','bearish','neutral','unavailable'}
+         and value['label']==(value['signal'].capitalize() if value['signal']!='unavailable' else 'Unavailable'))
+    need((value['status']=='available') == (value['signal']!='unavailable'))
+    if value['status']=='unavailable':
+        need(isinstance(value['reason'],str) and bool(value['reason']))
+        if value['source_at'] is None:
+            need(value['retrieved_at'] is None and value['market_date'] is None)
+        else:
+            need(isinstance(value['market_date'],str)
+                 and re.fullmatch(r'\d{4}-\d{2}-\d{2}',value['market_date']))
+            date.fromisoformat(value['market_date'])
+            times={k:parse_aware(value[k]) for k in ('source_at','retrieved_at','cutoff')}
+            need(times['source_at']<=times['retrieved_at']<=times['cutoff']
+                 and times['cutoff']==parse_aware(cutoff))
+    else:
+        need(value['reason'] is None and isinstance(value['market_date'],str)
+             and re.fullmatch(r'\d{4}-\d{2}-\d{2}',value['market_date']))
+        date.fromisoformat(value['market_date'])
+        times={k:parse_aware(value[k]) for k in ('source_at','retrieved_at','cutoff')}
+        need(times['source_at']<=times['retrieved_at']<=times['cutoff']
+             and times['cutoff']==parse_aware(cutoff))
+    return True
 
 
 def _unavailable_moomoo_trend(code,cutoff,reason='history-unavailable'):
@@ -571,6 +644,9 @@ def project_report(store,template,universe,*,run_id,cutoff,expected_codes):
                     if selection['attempt_status_counts']['failed']:reasons.append('collection_failed_attempt')
                     if selection['attempt_status_counts']['all-missing']:reasons.append('all_missing_attempt')
             row['data_gaps']=list(dict.fromkeys([*row.get('data_gaps',[]),*reasons]))
+            row['moomoo_session_direction']=project_moomoo_session_direction(
+                point,code=('US.'+row['ticker'] if row['market']=='US' else 'MY.'+row['ticker']),
+                cutoff=cutoff)
             row['moomoo_trend']=project_moomoo_trend(store,run_id=run_id,cutoff=cutoff,
                 code=('US.'+row['ticker'] if row['market']=='US' else 'MY.'+row['ticker']),
                 history_entries=history_entries,history_attempts=history_attempts)

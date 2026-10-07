@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-71",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "backend",
+      "frontend",
+      "market-research"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2.0
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-07",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-07/PRSG-71-moomoo-session-direction-chips.md",
+  "objective": "Use Moomoo's per-quote latest-versus-previous-close direction in the API and report chips",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "37903a52e0197092e271fe564f39503b5e3f6f0a",
+  "allowed_paths": [
+    "backend/main.py",
+    "tests/test_moomoo_api.py",
+    "ingest/daily_report_projection.py",
+    "tests/test_daily_report_projection.py",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/tradingview.js",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-07/PRSG-71-moomoo-session-direction-chips.md",
+    "plans/2026-10-07/PRSG-71.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "artifacts/daily-market-brief/2026-10-07.json",
+    "artifacts/daily-market-brief/reports.json",
+    "ingest/private_market_store.py",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_opend.py",
+    "backend/services.py",
+    "skills/",
+    "plans/2026-10-07/PRSG-70-moomoo-api-trend-signal.md",
+    "plans/2026-10-07/PRSG-70.harness.json"
+  ],
+  "checks": [
+    {
+      "id": "focused-api",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_moomoo_api.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "python3 -m pytest -q tests/test_moomoo_api.py: 36 passed (2026-10-07 MYT)."
+      ]
+    },
+    {
+      "id": "focused-report",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_daily_report_projection.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "python3 -m pytest -q tests/test_daily_report_projection.py: 56 passed (2026-10-07 MYT)."
+      ]
+    },
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "node tests/daily_report_viewer_checks.cjs: passed; conflicting SMA/session fixture verifies chips use session-direction only (2026-10-07 MYT)."
+      ]
+    },
+    {
+      "id": "scope",
+      "kind": "manual",
+      "description": "Validate manifest paths and inspect exact diff against the accepted session-direction contract",
+      "status": "passed",
+      "evidence": [
+        "scripts/planning/validate_ticket.py accepted manifest and all ten supplied changed paths. git diff --check passed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead review of source mapping, report separation, timestamps, privacy and limitations",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed quote field mapping, same-snapshot cutoff/provenance, private-data boundary, UI separation of quote direction/SMA/forecast, and fail-closed missing/invalid values."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-71-D1",
+      "description": "API quote records expose Moomoo latest-versus-previous-close direction and reject unusable prices",
+      "check_ids": [
+        "focused-api"
+      ],
+      "status": "done",
+      "evidence": [
+        "36 tests passed"
+      ]
+    },
+    {
+      "id": "PRSG-71-D2",
+      "description": "Schema-3 report projection preserves the signal only from cutoff-eligible snapshots with timestamp provenance",
+      "check_ids": [
+        "focused-report"
+      ],
+      "status": "done",
+      "evidence": [
+        "56 tests passed"
+      ]
+    },
+    {
+      "id": "PRSG-71-D3",
+      "description": "Report row and ticker chips use the point-direction signal, keeping SMA and forecast fields separate",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "viewer contract checks passed"
+      ]
+    },
+    {
+      "id": "PRSG-71-D4",
+      "description": "Exact scope, focused checks and truthful limitations receive independent Lead review",
+      "check_ids": [
+        "scope",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "supplied changed paths validated; exact scope reviewed",
+        "Lead accepted source mapping and separation"
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Reviewed the full ticket-owned diff against the frozen manifest. The private report artifact is outside scope and remains unchanged. No public deployment or provider calls."
+    ]
+  }
+}

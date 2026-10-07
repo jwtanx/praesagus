@@ -333,7 +333,10 @@ def get_moomoo_quotes(
     for record in records:
         code = record.get("code") if isinstance(record, dict) else None
         trend = _get_moomoo_trend(connector, code, trend_start, trend_end_str)
-        enriched.append({**record, "moomoo_trend": trend} if isinstance(record, dict) else record)
+        session_direction = _calculate_moomoo_session_direction(record)
+        enriched.append({**record, "moomoo_trend": trend,
+                         "moomoo_session_direction": session_direction}
+                        if isinstance(record, dict) else record)
     return JSONResponse(
         content=jsonable_encoder(
             {
@@ -343,6 +346,29 @@ def get_moomoo_quotes(
             }
         )
     )
+
+
+def _calculate_moomoo_session_direction(record: Any) -> Dict[str, Any]:
+    """Compare a quote's latest and provider previous-close values, not its SMA trend."""
+    result = {
+        "provider": "moomoo-opend",
+        "method": "last_price-vs-prev_close_price",
+        "signal": "unavailable",
+        "label": "Unavailable",
+        "status": "unavailable",
+        "reason": "invalid_or_missing_quote_fields",
+    }
+    if not isinstance(record, dict):
+        return result
+    price = record.get("last_price")
+    previous = record.get("prev_close_price")
+    if (type(price) not in (int, float) or type(previous) not in (int, float)
+            or not math.isfinite(price) or not math.isfinite(previous)
+            or price <= 0 or previous <= 0):
+        return result
+    signal = "bullish" if price > previous else "bearish" if price < previous else "neutral"
+    return {**result, "signal": signal, "label": signal.capitalize(),
+            "status": "available", "reason": None}
 
 
 @app.get("/api/v1/moomoo/history")
