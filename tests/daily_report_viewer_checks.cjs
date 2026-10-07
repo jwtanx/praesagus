@@ -231,9 +231,9 @@ async function observedQuoteDisplay() {
   assert.equal(row.querySelector('img'),null);assert.match(row.textContent,/<img src=x/);
   assert.doesNotMatch(row.textContent,/private-hash|private-attempt|USD 10|US\$10/);
   assert.match(row.querySelector('.signal').textContent,/Unrated/);
-  assert.match(row.textContent,/Moomoo quote direction vs previous close: Bearish/);
+  assert.match(row.textContent,/Moomoo quote direction vs previous close: ↓ Bearish/);
   assert.match(row.textContent,/Historical SMA-5\/SMA-20: Bullish/);
-  assert.match(t.$('#forecast-rows tr:nth-child(2)').textContent,/Moomoo quote direction vs previous close: Unavailable/);
+  assert.match(t.$('#forecast-rows tr:nth-child(2)').textContent,/Moomoo quote direction vs previous close: \? Unavailable/);
   assert.match(t.$('#forecast-rows tr:nth-child(2)').textContent,/Historical SMA-5\/SMA-20: Bullish/);
   assert.match(row.textContent,/Forecast: \? Unrated/);
   t.w.eval(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'));

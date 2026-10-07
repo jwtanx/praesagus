@@ -57,7 +57,6 @@ PUBLIC_KEYS = {'price',*PUBLIC_TIMES,'provider','reference_url','listing_currenc
 PRIVATE_PUBLIC_KEYS = {'private_draft','observed_quote','quote_provenance','attempt_id',
                        'raw_hash','semantic_hash','run_id','raw_body','raw_response',
                        'credential_directory','credential_path','account_id','account',
-                       'moomoo_session_direction',
                        'private_path','private_store','provenance'}
 
 

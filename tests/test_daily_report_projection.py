@@ -124,10 +124,9 @@ def test_missing_previous_close_keeps_direction_unavailable_with_timestamp(input
     assert session['source_at'] and session['retrieved_at']
 
 
-def test_public_report_boundary_rejects_private_session_direction():
+def test_public_report_boundary_allows_session_direction():
     from ingest.daily_report_projection import validate_public_report_boundary
-    with pytest.raises(ValueError):
-        validate_public_report_boundary({'forecasts':[{'moomoo_session_direction':{'signal':'bullish'}}]})
+    validate_public_report_boundary({'forecasts':[{'moomoo_session_direction':{'signal':'bullish'}}]})
 
 
 @pytest.mark.parametrize('kind',['conflict','zero','unknown-source','after-observation','late-ingest','failed','empty'])
