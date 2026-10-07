@@ -85,8 +85,7 @@ async function navigation(width) {
   assert.equal(t.w.getComputedStyle(t.$('.topbar')).top, '0px');
   assert.equal(t.$('#subtitle').textContent, 'Fixture 2026-10-01');
   assert.equal(t.$('.sections a[href="#top10"]').textContent, 'Sector shortlist');
-  for (const level of ['low', 'medium', 'high', 'unavailable']) assert.match(t.$('#forecast-rows').textContent, new RegExp(`${level} evidence confidence`));
-  assert.match(t.$('#forecast-rows').textContent, /Reason 3/);
+  assert.match(t.$('#forecast-rows').textContent, /Low confidence/);
   t.click('#date-picker-button'); t.click('#picker-prev');
   assert.equal(t.$('button[data-report-date="2026-09-29"]').disabled, true);
   assert.equal(t.$('button[data-report-date="2026-09-30"]').hasAttribute('onclick'), false);
@@ -222,27 +221,16 @@ async function observedQuoteDisplay() {
   const row=t.$('#forecast-rows tr');
   assert.equal(row.dataset.price,'');assert.equal(row.dataset.trend,undefined);
   assert.match(row.className,/unknown/);
-  assert.match(t.$('.forecast-table thead').textContent,/Observed last — report cutoff/);
-  assert.match(row.textContent,/Synthetic draft observation/);
-  assert.match(row.textContent,/60 seconds before report cutoff/);
-  assert.match(row.textContent,/Quote currency\/session unverified/);
-  assert.match(row.textContent,/Provider volume · unit\/session unverified: 0/);
-  assert.match(row.textContent,/Source: 2026-09-30T23:59:00Z/);
-  assert.match(row.textContent,/Observed:.*Ingested:.*Known:.*Report cutoff:/s);
-  assert.match(row.textContent,/currency_unknown/);
-  assert.equal(row.querySelector('img'),null);assert.match(row.textContent,/<img src=x/);
-  assert.doesNotMatch(row.textContent,/private-hash|private-attempt|USD 10|US\$10/);
-  assert.match(row.querySelector('.forecast-trend').textContent,/Unrated/);
-  assert.match(row.textContent,/Moomoo quote direction vs previous close: ↓ Bearish/);
-  assert.match(row.textContent,/Historical SMA-5\/SMA-20: Bullish/);
-  assert.match(t.$('#forecast-rows tr:nth-child(2)').textContent,/Moomoo quote direction vs previous close: \? Unavailable/);
-  assert.match(t.$('#forecast-rows tr:nth-child(2)').textContent,/Historical SMA-5\/SMA-20: Bullish/);
-  assert.match(row.textContent,/Forecast: \? Unrated/);
-  assert.match(t.$('.archived-forecast-note').textContent,/30 September 2026 forecast archive.*not current forecasts/);
+  assert.match(t.$('.forecast-table thead').textContent,/Last price/);
+  assert.equal(row.querySelector('img'),null);
+  assert.doesNotMatch(row.textContent,/Moomoo|Provider:|Source:|Observed:|Ingested:|Known:|report cutoff|currency_unknown|private-hash|private-attempt/);
+  assert.match(row.querySelector('.forecast-trend').textContent,/Unavailable/);
+  assert.doesNotMatch(row.textContent,/Historical SMA|quote direction/);
+  assert.match(t.$('.archived-forecast-note').textContent,/Sep 30 archive · prior price ranges/);
   assert.equal(t.$('.archived-forecast-note a').getAttribute('href'),'?date=2026-09-30');
-  assert.match(t.$('#forecast-rows tr:nth-child(2)').className,/up/);assert.match(t.$('#forecast-rows tr:nth-child(2) .forecast-trend').textContent,/Forecast: ↑ Bullish/);
-  assert.match(t.$('#forecast-rows tr:nth-child(3)').className,/flat/);assert.match(t.$('#forecast-rows tr:nth-child(3) .forecast-trend').textContent,/Forecast: ↔ Sideways/);
-  assert.match(t.$('#forecast-rows tr:nth-child(4)').className,/down/);assert.match(t.$('#forecast-rows tr:nth-child(4) .forecast-trend').textContent,/Forecast: ↓ Bearish/);
+  assert.match(t.$('#forecast-rows tr:nth-child(2)').className,/up/);assert.match(t.$('#forecast-rows tr:nth-child(2) .forecast-trend').textContent,/↑ Bullish/);
+  assert.match(t.$('#forecast-rows tr:nth-child(3)').className,/flat/);assert.match(t.$('#forecast-rows tr:nth-child(3) .forecast-trend').textContent,/↔ Sideways/);
+  assert.match(t.$('#forecast-rows tr:nth-child(4)').className,/down/);assert.match(t.$('#forecast-rows tr:nth-child(4) .forecast-trend').textContent,/↓ Bearish/);
   t.w.eval(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'));
   const controls=t.w.PraesagusTA.create(t.w.document);controls.update(data);
   const chip=t.$('#ta-chips button');
@@ -317,7 +305,7 @@ async function currentReportTrendChips() {
   const spy=chips.find(x=>x.textContent.includes('SPY'));
   assert.ok(spy);assert.match(spy.textContent,/SPY ↓/);assert.match(spy.getAttribute('aria-label'),/quote direction vs previous close: Down.*source 2026-10-07/);assert.match(spy.className,/ta-trend-bearish/);
   const my=chips.find(x=>x.textContent.includes('0820EA'));
-  assert.ok(my);assert.match(my.textContent,/0820EA —/);assert.match(my.className,/ta-trend-unavailable/);
+  assert.ok(my);assert.match(my.textContent,/0820EA ↔/);assert.match(my.getAttribute('aria-label'),/saved forecast direction: Sideways/);assert.match(my.className,/ta-trend-neutral/);
   controls.destroy();assert.equal(t.errors.length,0);t.dom.window.close();
 }
 async function publicSnapshotDisplay() {
@@ -329,15 +317,9 @@ async function publicSnapshotDisplay() {
   data.forecasts[1].current_price_value=9;data.forecasts[1].direction='up';data.forecasts[1].direction_label='Bullish';data.forecasts[2].direction='flat';data.forecasts[2].direction_label='Sideways';data.forecasts[3].direction='down';data.forecasts[3].direction_label='Bearish';
   const t=mount({routes:{'./2026-10-01.json':data}});await settle();
   const row=t.$('#forecast-rows tr');
-  assert.equal(row.dataset.price,'');assert.match(row.textContent,/Provider: moomoo-rest/);
-  assert.match(row.textContent,/Listing currency: USD.*provider currency unverified/);
-  assert.match(row.textContent,/rights unconfirmed/);assert.match(row.textContent,/60 seconds before report cutoff/);
-  assert.match(row.textContent,/Observed:.*Ingested:.*Known:.*Report cutoff:/s);
-  assert.match(row.textContent,/Independent forecast/);assert.equal(row.querySelector('img'),null);
-  assert.doesNotMatch(row.textContent,/999|volume|private-attempt|USD 10|licensed/);
-  const reference=row.querySelector('.public-snapshot a');
-  assert.equal(reference.href,'https://open.moomoo.com/mcp-docs/available-tools');
-  assert.match(reference.textContent,/not response source/);
+  assert.equal(row.dataset.price,'');
+  assert.doesNotMatch(row.textContent,/Moomoo|Provider:|Source:|Observed:|Ingested:|Known:|report cutoff|999|volume|private-attempt|licensed/);
+  assert.match(row.querySelector('.forecast-trend').textContent,/↑ Bullish/);assert.equal(row.querySelector('img'),null);
   t.$('#forecast-sort').value='price-desc';t.$('#forecast-sort').dispatchEvent(new t.w.Event('change'));
   assert.equal(t.$('#forecast-rows tr').dataset.universeOrder,'1');
   assert.equal(t.errors.length,0);t.dom.window.close();
@@ -351,10 +333,10 @@ async function snapshotTrendAndForecast() {
   const previous=report('2026-10-01');previous.forecasts.push(...data.forecasts.slice(-2));
   const t=mount({routes:{'./2026-10-01.json':previous,'./2026-10-02.json':data,'./market-snapshots/2026-09-30.json':snap('2026-09-30',99),'./market-snapshots/2026-10-01.json':unavailable,'./market-snapshots/2026-10-02.json':snap('2026-10-02',102),'./market-snapshots/2026-10-03.json':snap('2026-10-03',999)}});await settle();
   t.click('#date-picker-button');t.click('button[data-report-date="2026-10-02"]');await settle();
-  const panel=t.$('#market-snapshot-panel');assert.match(panel.textContent,/SPY · Moomoo REST observed trend/);assert.match(panel.textContent,/Trader forecast/);assert.match(panel.textContent,/Fixture bull/);assert.match(panel.textContent,/Fixture bear/);assert.match(panel.textContent,/Below 95/);assert.match(panel.textContent,/Fixture headline/);assert.match(panel.textContent,/News query returned no items/);
+  const panel=t.$('#market-snapshot-panel');assert.match(panel.textContent,/SPY · recent prices/);assert.match(panel.textContent,/Forecast/);assert.match(panel.textContent,/101–105/);assert.doesNotMatch(panel.textContent,/Moomoo|source|Fixture bull|Fixture bear|Below 95|Fixture headline|News query/);
   assert.equal(panel.querySelectorAll('svg').length,2);assert.doesNotMatch(panel.textContent,/999/);assert.ok(t.requests.some(x=>x.url==='./market-snapshots/2026-10-02.json'));assert.ok(!t.requests.some(x=>x.url==='./market-snapshots/2026-10-03.json'));
-  unavailable.cutoff='invalid-cutoff';t.click('#date-picker-button');t.click('button[data-report-date="2026-10-01"]');await settle();assert.match(t.$('#market-snapshot-panel').textContent,/Trend warmup: 1 valid capture date/);assert.match(t.$('#market-snapshot-panel').textContent,/News snapshot unavailable/);assert.equal(t.$('#market-snapshot-panel').querySelectorAll('svg').length,0);
-  unavailable.cutoff='2026-10-01T08:00:00+08:00';t.click('#date-picker-button');t.click('button[data-report-date="2026-10-02"]');await settle();t.click('#date-picker-button');t.click('button[data-report-date="2026-10-01"]');await settle();assert.match(t.$('#market-snapshot-panel').textContent,/News query unavailable/);assert.equal(t.errors.length,0);t.dom.window.close();
+  unavailable.cutoff='invalid-cutoff';t.click('#date-picker-button');t.click('button[data-report-date="2026-10-01"]');await settle();assert.match(t.$('#market-snapshot-panel').textContent,/Price history unavailable/);assert.equal(t.$('#market-snapshot-panel').querySelectorAll('svg').length,0);
+  unavailable.cutoff='2026-10-01T08:00:00+08:00';t.click('#date-picker-button');t.click('button[data-report-date="2026-10-02"]');await settle();t.click('#date-picker-button');t.click('button[data-report-date="2026-10-01"]');await settle();assert.equal(t.errors.length,0);t.dom.window.close();
 }
 if (process.argv.includes('--write-browser-fixture')) {
   const dir = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'praesagus-report-fixture-'));

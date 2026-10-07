@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-77",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend",
+      "market-research"
+    ],
+    "owner_role": "Trader",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 7
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-08",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-08/PRSG-77-compact-forecast-display.md",
+  "objective": "Populate the Oct 7 report with concise low-confidence statistical forecast ranges and colored directions, keeping provenance in report data while hiding provider/date details from the viewer.",
+  "status": "review",
+  "owner": "Trader",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "93da9925f238b63d53b29673624de062323b00cd",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/2026-10-07.json",
+    "artifacts/daily-market-brief/index.html",
+    "scripts/daily-market-brief/statistical_baseline.py",
+    "scripts/daily-market-brief/refresh_statistical_baseline.py",
+    "tests/test_statistical_baseline.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-08/PRSG-77-compact-forecast-display.md",
+    "plans/2026-10-08/PRSG-77.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "artifacts/daily-market-brief/2026-09-30.json",
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/src/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "baseline-tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_statistical_baseline.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-08 MYT: python3 -m pytest -q tests/test_statistical_baseline.py passed (3 tests)."
+      ]
+    },
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-08 MYT: node tests/daily_report_viewer_checks.cjs passed with compact no-provider/no-timestamp UI assertions, forecast colors, and existing desktop/mobile report/calendar regressions."
+      ]
+    },
+    {
+      "id": "oct7-report",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py",
+        "--date",
+        "2026-10-07",
+        "--public"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-08 MYT: public Oct 7 report validation passed with 50 rated forecast rows and ranges."
+      ]
+    },
+    {
+      "id": "archive-report",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py",
+        "--date",
+        "2026-09-30"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-08 MYT: Sep 30 archive validation passed; historical report was unchanged."
+      ]
+    },
+    {
+      "id": "scope",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-08/PRSG-77.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-08 MYT: validate_ticket.py passed for all eight scoped changed paths against base 93da9925f238b63d53b29673624de062323b00cd."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead independently reviews forecast method limitations, display scope and report provenance.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-77-D1",
+      "description": "Baseline uses only completed closes, matches listing currency and requires 20 historical returns.",
+      "check_ids": [
+        "baseline-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Historical bar cutoff, currency and minimum-sample cases covered by focused unit tests."
+      ]
+    },
+    {
+      "id": "PRSG-77-D2",
+      "description": "All 50 Oct 7 rows have low-confidence statistical ranges with source provenance retained.",
+      "check_ids": [
+        "oct7-report"
+      ],
+      "status": "done",
+      "evidence": [
+        "Public report validator passes; report inspection shows 50 rated rows with ranges and source timestamps retained."
+      ]
+    },
+    {
+      "id": "PRSG-77-D3",
+      "description": "Forecast table and cards show short text and colored directional states without provider/date clutter.",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "Viewer replay verifies visible text omits provider/source timestamps and renders up/down/sideways classes."
+      ]
+    },
+    {
+      "id": "PRSG-77-D4",
+      "description": "Checks and frozen manifest scope validate; independent Lead review is recorded.",
+      "check_ids": [
+        "scope",
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}
