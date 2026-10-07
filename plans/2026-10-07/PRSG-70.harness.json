@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-70",
+  "tags": {
+    "type": "feature",
+    "modules": ["backend", "market-research"],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {"low": 0.2, "high": 0.5},
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-07",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-07/PRSG-70-moomoo-api-trend-signal.md",
+  "objective": "Return the established SMA-5/SMA-20 Moomoo trend signal alongside each quote",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "89e2a5017cf14b97cf9ec09124237e70f61c30a4",
+  "allowed_paths": [
+    "backend/main.py",
+    "tests/test_moomoo_api.py",
+    "plans/2026-10-07/PRSG-70-moomoo-api-trend-signal.md",
+    "plans/2026-10-07/PRSG-70.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "artifacts/",
+    "frontend/",
+    "ingest/",
+    "infra/",
+    "skills/",
+    "scripts/",
+    "docs/",
+    "connectors/moomoo_rest.py",
+    "backend/services.py",
+    "backend/freshness_services.py",
+    "tests/test_daily_report.py",
+    "tests/test_daily_report_projection.py",
+    "tests/test_private_market_store.py"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": ["python3", "-m", "pytest", "-q", "tests/test_moomoo_opend.py", "tests/test_moomoo_api.py"],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["2026-10-07: python3 -m pytest -q tests/test_moomoo_api.py tests/test_moomoo_opend.py — 50 passed"]
+    },
+    {
+      "id": "scope",
+      "kind": "manual",
+      "description": "Validate exact manifest and all ticket-owned changed paths; preserve unrelated work",
+      "status": "passed",
+      "evidence": ["2026-10-07: scripts/planning/validate_ticket.py accepted all supplied changed paths; git diff --check clean"]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead review of derivation semantics, API response and missing-data behavior",
+      "status": "passed",
+      "evidence": ["Lead review: quote records use the existing SMA-5/SMA-20 trend calculation; insufficient/error history and non-US codes remain explicitly unavailable; no live data was fetched."]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-70-D1",
+      "description": "Each returned quote carries the established SMA-5/SMA-20 Moomoo trend signal; same-day price movement is not substituted",
+      "check_ids": ["focused"],
+      "status": "done",
+      "evidence": ["2026-10-07: mocked API regression verifies each quote gets the existing historical trend and keeps quote fields; same-day price comparison is not used."]
+    },
+    {
+      "id": "PRSG-70-D2",
+      "description": "Focused deterministic API cases cover bullish, bearish, neutral, unavailable history, unsupported markets and record preservation",
+      "check_ids": ["focused"],
+      "status": "done",
+      "evidence": ["2026-10-07: regression covers bullish, bearish, neutral, insufficient history, upstream history failure, and unsupported MY market."]
+    },
+    {
+      "id": "PRSG-70-D3",
+      "description": "Lead independently accepts complete ticket scope and records limitations",
+      "check_ids": ["scope", "review"],
+      "status": "done",
+      "evidence": ["2026-10-07: Lead reviewed all ticket paths, focused test output and bounded-history/US-only limitations."]
+    }
+  ],
+  "review": {"status": "accepted", "evidence": ["2026-10-07: Lead review complete; signal semantics match the existing trend API and missing data stays unavailable."]}
+}

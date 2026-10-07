@@ -327,11 +327,18 @@ def get_moomoo_quotes(
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except OpenDAPIError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
+    trend_end = datetime.now(timezone.utc).date()
+    trend_start, trend_end_str = _history_window(3, trend_end)
+    enriched = []
+    for record in records:
+        code = record.get("code") if isinstance(record, dict) else None
+        trend = _get_moomoo_trend(connector, code, trend_start, trend_end_str)
+        enriched.append({**record, "moomoo_trend": trend} if isinstance(record, dict) else record)
     return JSONResponse(
         content=jsonable_encoder(
             {
-                "records": records,
-                "count": len(records),
+                "records": enriched,
+                "count": len(enriched),
                 "retrieved_at": datetime.now(timezone.utc).isoformat(),
             }
         )
@@ -447,6 +454,23 @@ def _calculate_moomoo_trend(code: str, records: Any, retrieved_at: str,
     }
 
 
+def _get_moomoo_trend(connector: MoomooOpenDConnector, code: Any,
+                      start: str, end: str) -> Dict[str, Any]:
+    """Fetch and classify one symbol's historical Moomoo trend, failing closed."""
+    retrieved_at = datetime.now(timezone.utc).isoformat()
+    if not isinstance(code, str) or not MOOMOO_US_CODE.fullmatch(code):
+        return _unavailable_moomoo_trend(str(code or ""), retrieved_at, "unsupported_market_or_code")
+    try:
+        records = connector.get_history(code, start, end, max_count=100)
+    except OpenDUnavailableError:
+        return _unavailable_moomoo_trend(code, retrieved_at, "opend_unavailable")
+    except OpenDAPIError:
+        return _unavailable_moomoo_trend(code, retrieved_at, "history_unavailable")
+    except Exception:
+        return _unavailable_moomoo_trend(code, retrieved_at, "history_unavailable")
+    return _calculate_moomoo_trend(code, records, retrieved_at, start, end)
+
+
 @app.get("/api/v1/moomoo/trends")
 def get_moomoo_trends(
     codes: List[str] = Query(..., min_length=1, max_length=20),
@@ -463,26 +487,7 @@ def get_moomoo_trends(
 
     today = datetime.now(timezone.utc).date()
     start, end = _history_window(3, today)
-    results = []
-    for code in normalized_codes:
-        try:
-            records = connector.get_history(code, start, end, max_count=100)
-        except OpenDUnavailableError:
-            results.append(_unavailable_moomoo_trend(
-                code, datetime.now(timezone.utc).isoformat(), "opend_unavailable"
-            ))
-        except OpenDAPIError:
-            results.append(_unavailable_moomoo_trend(
-                code, datetime.now(timezone.utc).isoformat(), "history_unavailable"
-            ))
-        except Exception:
-            results.append(_unavailable_moomoo_trend(
-                code, datetime.now(timezone.utc).isoformat(), "history_unavailable"
-            ))
-        else:
-            results.append(_calculate_moomoo_trend(
-                code, records, datetime.now(timezone.utc).isoformat(), start, end
-            ))
+    results = [_get_moomoo_trend(connector, code, start, end) for code in normalized_codes]
 
     retrieved_at = datetime.now(timezone.utc).isoformat()
     return JSONResponse(content=jsonable_encoder({

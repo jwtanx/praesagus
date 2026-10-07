@@ -12,7 +12,10 @@ class FakeMoomooConnector:
         return [{"title": f"News for {keyword}", "publish_time": "2026-09-30 09:00:00"}]
 
     def get_quotes(self, codes):
-        return [{"code": code, "cur_price": 100.0} for code in codes]
+        return [
+            {"code": code, "last_price": 100.0, "prev_close_price": 99.0}
+            for code in codes
+        ]
 
     def get_history(self, code, start, end, max_count=100):
         self.history_call = (code, start, end, max_count)
@@ -45,12 +48,58 @@ def test_moomoo_quotes_endpoint_deduplicates_codes():
 
     assert response.status_code == 200
     body = response.json()
-    assert body["records"] == [
-        {"code": "US.AAPL", "cur_price": 100.0},
-        {"code": "US.MSFT", "cur_price": 100.0},
-    ]
+    assert [row["moomoo_trend"]["status"] for row in body["records"]] == ["unavailable", "unavailable"]
+    assert all(row["moomoo_trend"]["reason"] == "insufficient_history" for row in body["records"])
+    assert all(row["last_price"] == 100.0 and row["prev_close_price"] == 99.0
+               for row in body["records"])
     assert body["count"] == 2
     assert body["retrieved_at"].endswith("+00:00")
+
+
+def test_moomoo_quotes_endpoint_returns_per_quote_moomoo_trend():
+    class DirectionConnector:
+        def get_quotes(self, codes):
+            assert codes == ["US.BULL", "US.BEAR", "US.FLAT", "US.SHORT", "US.FAIL", "MY.1155"]
+            # Bullish SMA trend intentionally conflicts with same-day down movement.
+            return [
+                {"code": code, "last_price": 90.0, "prev_close_price": 100.0}
+                if code == "US.BULL"
+                else {"code": code, "last_price": 110.0, "prev_close_price": 100.0}
+                for code in codes
+            ]
+
+        def get_history(self, code, start, end, max_count=100):
+            assert max_count == 100
+            if code == "US.FAIL":
+                raise OpenDAPIError("fixture history failure")
+            histories = {
+                "US.BULL": [100.0] * 15 + [110.0] * 5,
+                "US.BEAR": [110.0] * 5 + [100.0] * 15,
+                "US.FLAT": [100.0] * 20,
+                "US.SHORT": [100.0] * 19,
+            }
+            return trend_history(histories[code])
+
+    app.dependency_overrides[configured_connector] = DirectionConnector
+    try:
+        response = TestClient(app).get(
+            "/api/v1/moomoo/quotes",
+            params=[("codes", code) for code in ("US.BULL", "US.BEAR", "US.FLAT", "US.SHORT", "US.FAIL", "MY.1155")],
+        )
+    finally:
+        app.dependency_overrides.pop(configured_connector, None)
+
+    assert response.status_code == 200
+    records = response.json()["records"]
+    assert [record["moomoo_trend"]["status"] for record in records] == [
+        "bullish", "bearish", "neutral", "unavailable", "unavailable", "unavailable"
+    ]
+    assert records[3]["moomoo_trend"]["reason"] == "insufficient_history"
+    assert records[4]["moomoo_trend"]["reason"] == "history_unavailable"
+    assert records[5]["moomoo_trend"]["reason"] == "unsupported_market_or_code"
+    assert records[0]["last_price"] < records[0]["prev_close_price"]
+    assert records[0]["moomoo_trend"]["status"] == "bullish"
+    assert records[-1]["code"] == "MY.1155" and records[-1]["last_price"] == 110.0
 
 
 def test_moomoo_quotes_rejects_unqualified_or_incomplete_codes():
