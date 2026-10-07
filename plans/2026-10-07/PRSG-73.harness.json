@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-73",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend",
+      "market-research"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.25,
+      "high": 0.49
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-07",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-07/PRSG-73-technical-trend-chips.md",
+  "objective": "Render compact ticker chips from the report's historical SMA-5/SMA-20 trend field",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "5f12f29555b53788afa98bc1bd3a8ce8b33e3ec2",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/tradingview.js",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-07/PRSG-73-technical-trend-chips.md",
+    "plans/2026-10-07/PRSG-73.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "artifacts/daily-market-brief/2026-10-07.json",
+    "artifacts/daily-market-brief/reports.json",
+    "artifacts/daily-market-brief/index.html",
+    "ingest/daily_report_projection.py",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_opend.py",
+    "backend/",
+    "frontend/",
+    "skills/"
+  ],
+  "checks": [
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-07 MYT: node tests/daily_report_viewer_checks.cjs \u2014 passed; conflict case confirms historical SMA trend controls chip over opposite quote movement; neutral, unsupported/missing, accessible basis/date, keyboard focus and selection covered."
+      ]
+    },
+    {
+      "id": "scope",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-07/PRSG-73.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-07 MYT: python3 scripts/planning/validate_ticket.py plans/2026-10-07/PRSG-73.harness.json with all four changed paths \u2014 passed; git diff --check \u2014 passed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead reviews technical trend mapping, unavailable behavior, accessibility, exact diff and report data limitation",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed exact four-path diff. Public 2026-10-07 JSON has 50 forecasts and no moomoo_trend fields; loopback OpenD is unavailable, so this UI correction cannot populate the dated report."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-73-D1",
+      "description": "Available chip arrows use historical SMA-5/SMA-20 trend despite conflicting session direction",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "Viewer regression proves bullish SMA trend displays \u2191 despite bearish same-session quote; neutral trend displays \u2194."
+      ]
+    },
+    {
+      "id": "PRSG-73-D2",
+      "description": "Missing/invalid trend remains unavailable with no quote or forecast fallback, while accessible basis/date and interactions are retained",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "Viewer regression confirms missing/unsupported technical trend displays ? with no quote/forecast fallback, and retains SMA basis, last-bar date, keyboard navigation and selection."
+      ]
+    },
+    {
+      "id": "PRSG-73-D3",
+      "description": "Lead independently reviews ticket scope, evidence and the public report's missing trend values",
+      "check_ids": [
+        "scope",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed all ticket paths and checks; report data limitation and unavailable OpenD source are explicitly recorded."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "2026-10-07 MYT Lead review: compact chips now read moomoo_trend SMA-5/SMA-20, not moomoo_session_direction; missing values stay ?; focused regression, manifest scope validation and diff check passed. Oct 7 report still has no trend rows and data was not fabricated."
+    ]
+  }
+}
