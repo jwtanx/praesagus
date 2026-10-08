@@ -8,14 +8,14 @@
     "missing_us": 30,
     "missing_my": 20,
     "supplemental_quote_count": 0,
-    "forecast_status": "low_confidence_statistical_baseline",
+    "forecast_status": "mixed_low_confidence_with_late_source_unavailable",
     "current_run_status": "ad_hoc_historical_baseline",
-    "source_timing_limit": "Current-price fields are missing because a provider source timestamp and known-at time were not validated. Forecasts use explicit historical close dates; 20-session returns and low-confidence ranges are uncalibrated.",
+    "source_timing_limit": "Current-price fields are missing because provider source time and known-at time were not validated. Forty-nine rows retain low-confidence baselines from 20-session historical returns; MY 5246 is Unrated because its source was retrieved after cutoff without source-side availability evidence. Remaining ranges are uncalibrated.",
     "observed_my": 0,
     "stale_reference_us": 30,
     "stale_reference_my": 2
   },
-  "footer": "As of 2026-10-08T08:09:38+08:00 (Asia/Kuala_Lumpur). The report retains 50 curated listings (30 US, 20 MY) and the shared October financial calendar. All 50 rows have low-confidence statistical ranges from 20 completed adjusted returns; these are not calibrated or out-of-sample validated. Current-price fields remain missing without verified source timing. Ledger review found no matured target; prior forecasts remain pending. Research only; no personalized allocations or order instructions.",
+  "footer": "As of 2026-10-08T08:09:38+08:00 (Asia/Kuala_Lumpur). The report retains 50 curated listings (30 US, 20 MY) and the shared October financial calendar. Forty-nine rows have low-confidence statistical ranges from 20 completed adjusted returns; these are not calibrated or out-of-sample validated. MY 5246 is Unrated because its source arrived after cutoff and source-side availability is unverified. Current-price fields remain missing without verified source timing. Ledger review found no matured target; prior forecasts remain pending. Research only; no personalized allocations or order instructions.",
   "forecasts": [
     {
       "market": "US",
@@ -2652,23 +2652,24 @@
       "currency": "MYR",
       "current_price": "Unavailable",
       "current_price_value": null,
-      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "price_as_of": "No eligible current quote at report cutoff; the historical October 7 bar was retrieved after cutoff and is not used as a forecast anchor.",
       "quote_status": "missing",
-      "direction": "flat",
-      "direction_label": "Sideways",
-      "estimated_mid_case": "MYR 6.86",
-      "estimated_mid_case_value": 6.86,
-      "estimated_range": "MYR 6.68–MYR 7.05",
-      "range_low_value": 6.68,
-      "range_high_value": 7.05,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
-      "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
-      "forecast_status": "rated",
+      "direction": "unknown",
+      "direction_label": "Unrated",
+      "estimated_mid_case": "Not estimated",
+      "estimated_mid_case_value": null,
+      "estimated_range": "Unavailable: source arrived after report cutoff",
+      "range_low_value": null,
+      "range_high_value": null,
+      "scenario": "Forecast withheld from the 08:09:38 MYT cutoff cohort: the historical source response was retrieved after cutoff, and no source-side availability timestamp establishes that the October 7 bar was available by cutoff. The October 9 week-end target and two-session horizon are retained for audit; no direction or price range is published.",
+      "confidence": "unavailable",
+      "confidence_reason": "Late-source evidence: retrieved_at and known_at are 2026-10-08T00:09:38.040577Z, after the 2026-10-08T00:09:38Z report cutoff. No source-side availability timestamp proves this bar was available at cutoff, so this forecast is withheld and remains Unrated.",
+      "forecast_status": "unavailable",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null.",
+        "Forecast excluded from the decision-time cohort: source retrieval/known-at is 40.577 ms after cutoff; source-side availability is unverified."
       ],
       "sources": [
         {
@@ -2679,7 +2680,7 @@
           "retrieved_at": "2026-10-08T00:09:38.040577+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "limitation": "Historical vendor data; retrieved_at/known_at are 40.577 ms after the report cutoff. No source-side availability time is recorded, so this bar is excluded from the cutoff forecast cohort. Vendor history may be revised; no redistribution rights or predictive performance are claimed.",
           "provider_session_date": "2026-10-07",
           "observed_at": "2026-10-08T00:09:38.040577+00:00",
           "known_at": "2026-10-08T00:09:38.040577+00:00",
@@ -2688,18 +2689,7 @@
       ],
       "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
       "classification_action": "watchlist",
-      "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
-      "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
-      "forecast_basis": {
-        "reference_close_date": "2026-10-07",
-        "reference_close": 6.86,
-        "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/5246.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
-        "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is MYR 7.05.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 6.68.",
-        "invalidation": "Target close outside MYR 6.68–MYR 7.05 invalidates this statistical range."
-      }
+      "forecast_horizon_sessions": 2
     },
     {
       "market": "MY",
@@ -3408,7 +3398,7 @@
       "kicker": "SHORTLIST",
       "description": [
         {
-          "text": "50 of 50 rows have low-confidence statistical baseline ranges from 20 completed adjusted returns; 0 remain Unrated where coverage or validation failed. Yahoo Finance is ad hoc vendor history. These ranges are not calibrated or out-of-sample validated.",
+          "text": "49 of 50 rows have low-confidence statistical baseline ranges from 20 completed adjusted returns; MY 5246 is Unrated because its source retrieval was after cutoff and source-side availability is unverified. Yahoo Finance is ad hoc vendor history. The remaining ranges are not calibrated or out-of-sample validated.",
           "sources": []
         }
       ],
@@ -3498,8 +3488,8 @@
     },
     {
       "label": "Forecast coverage",
-      "title": "All 50 rows carry a low-confidence range",
-      "summary": "Each range is a statistical baseline from recent adjusted returns. These are uncalibrated scenarios, not probabilities or trading signals."
+      "title": "49 ranges; 1 row Unrated for late source",
+      "summary": "Forty-nine rows retain low-confidence statistical baselines from recent adjusted returns. MY 5246 is Unrated because its source was retrieved after cutoff, with no source-side availability timestamp. The ranges are uncalibrated scenarios, not probabilities or trading signals."
     }
   ],
   "watchlist_config": {

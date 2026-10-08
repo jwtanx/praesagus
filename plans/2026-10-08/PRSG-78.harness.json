@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-08/PRSG-78-daily-market-brief.md",
   "objective": "Publish the October 8 daily market brief and append verified Federal Reserve release events to the shared monthly calendar",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Trader",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -63,7 +63,7 @@
       "cwd": ".",
       "status": "passed",
       "evidence": [
-        "Revalidated on the clean origin/main worktree after browser review: 50 forecast rows, all ten five-name groups, seven required sections, 65 calendar records. All current-price fields are null where provider source time and known-at time are unverified; historical range anchors are dated and labeled."
+        "Public report validator passes with 50 rows and all ten groups. Static consistency check confirms 49 low-confidence forecast ranges, one retained but Unrated MY 5246 row with null numeric forecast fields, and no other forecast-row changes; 5246 source timing exceeds cutoff by 40.577 ms. Calendar remains unchanged."
       ]
     },
     {
@@ -96,7 +96,10 @@
       "id": "lead-review",
       "kind": "manual",
       "description": "Lead independently reviews the dated report and calendar evidence.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed the corrected report diff and independently confirmed MY 5246 source retrieval/known-at is 40.577 ms after the frozen cutoff, with no source-side availability evidence. The row remains in the 50-name universe but is Unrated with null numeric forecast outputs; other 49 forecast rows and all 65 calendar entries are unchanged. Public report validation, PRSG-78 supplied-path validation and git diff --check passed."
+      ]
     }
   ],
   "acceptance": [
@@ -108,7 +111,7 @@
       ],
       "status": "done",
       "evidence": [
-        "Daily market brief validator passed on the clean origin/main worktree."
+        "Daily market brief public validator passes; MY 5246 remains in the 50-row universe but is Unrated and excluded from the cutoff cohort because its recorded retrieval/known-at is after cutoff without source-side availability evidence. Its October 9 target date/two-session horizon are retained, and numeric forecast outputs are null."
       ]
     },
     {
@@ -140,11 +143,16 @@
       "check_ids": [
         "lead-review"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead reviewed scope, the 5246 late-source correction, the 49 remaining ranges, forecast/quote labeling and the append-only October calendar."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "Lead independent review completed after correcting MY 5246 to Unrated due to a recorded retrieval 40.577 ms after cutoff and absent source-side availability evidence. All other forecast rows and calendar records were preserved. Report and scope validators passed."
+    ]
   }
 }
