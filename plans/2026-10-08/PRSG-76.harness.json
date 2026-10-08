@@ -14,7 +14,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-08/PRSG-76-technical-chips-and-forecast-colors.md",
   "objective": "Render available trend symbols and colored forecast direction in the daily brief and expose the preserved Sep 30 forecast ranges as a historical archive.",
-  "status": "review",
+  "status": "complete",
   "owner": "Trader",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -73,7 +73,8 @@
       "id": "review",
       "kind": "manual",
       "description": "Lead reviews the exact viewer changes, evidence-basis labels, historical archive wording, and report data preservation.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": ["2026-10-09 MYT: Lead independently reviewed commit 93da9925f238b63d53b29673624de062323b00cd against the accepted five-path scope. Trend-chip evidence priority and accessible basis/timestamp labels are correct; missing evidence remains explicit. Forecast colors match up/down/flat direction, and newer reports link to the unchanged Sep 30 archive with clear historical wording. The implementation commit changes only the five allowed paths; git diff --check is clean. Existing manifest records viewer regression, both report validations and ticket-scope validation as passed. No report JSON or archived forecast was changed by PRSG-76."]
     }
   ],
   "acceptance": [
@@ -95,8 +96,9 @@
       "id": "PRSG-76-D3",
       "description": "Lead independently reviews scope, presentation, and historical forecast handling.",
       "check_ids": ["scope", "review"],
-      "status": "pending"
+      "status": "done",
+      "evidence": ["Lead review recorded 2026-10-09 MYT after independently inspecting the exact ticket commit and verifying its allowed-path boundary and report-data preservation."]
     }
   ],
-  "review": {"status": "pending"}
+  "review": {"status": "accepted", "evidence": ["Lead review recorded 2026-10-09 MYT: ticket commit 93da9925f238b63d53b29673624de062323b00cd passed exact five-path scope inspection, trend evidence-basis review, historical archive wording review, report-data preservation review, and git diff --check. The committed manifest includes passing evidence for viewer regression, Oct 7 and Sep 30 report validation, and scope validation."]}
 }
