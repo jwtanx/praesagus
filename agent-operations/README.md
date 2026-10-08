@@ -5,10 +5,10 @@ The permanent team is Lead, Trader and Engineer. Adopt the current human-started
 | Role | Startup prompt | Model |
 |---|---|---|
 | Lead | [lead.md](startup-prompts/lead.md) | Keep current setting unless human specifies |
-| Trader | [trader.md](startup-prompts/trader.md) | gpt-6.1-sol, medium |
+| Trader | [trader.md](startup-prompts/trader.md) | Preferred: gpt-6.1-sol, medium; report work proceeds on the current model if unavailable |
 | Engineer | [engineer.md](startup-prompts/engineer.md) | Keep current setting unless human specifies |
 
-Use [roles.json](roles.json) as the configured role list for `all`. Temporary researchers are subagents, not permanent chats: long-context extraction/comparison uses gpt-6-luna with low reasoning; research needing stronger reasoning uses gpt-6.1-sol with low reasoning. Trader report subagents use gpt-6.1-sol with low reasoning. Keep financial judgment and final report acceptance with Trader; Lead owns project scope and delivery acceptance. Do not silently raise effort or substitute unavailable models.
+Use [roles.json](roles.json) as the configured role list for `all`. Temporary researchers are subagents, not permanent chats: long-context extraction/comparison uses gpt-6-luna with low reasoning; research needing stronger reasoning prefers gpt-6.1-sol with low reasoning. Trader report subagents prefer gpt-6.1-sol with low reasoning, but an unavailable model must not delay report generation: use an available supported model or perform the bounded evidence work directly. Keep financial judgment and final report acceptance with Trader; Lead owns project scope and delivery acceptance. Do not claim an unverified runtime setting.
 
 ## Handoff templates
 
