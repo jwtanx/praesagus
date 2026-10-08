@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-78",
+  "tags": {
+    "type": "chore",
+    "modules": ["financial-data", "market-research", "docs"],
+    "owner_role": "Trader",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {"low": 0.3, "high": 0.8},
+    "impact": "medium"
+  },
+  "created_on": "2026-10-08",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-08/PRSG-78-daily-market-brief.md",
+  "objective": "Publish the October 8 daily market brief and append verified Federal Reserve release events to the shared monthly calendar",
+  "status": "in_progress",
+  "owner": "Trader",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "93da9925f238b63d53b29673624de062323b00cd",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/2026-10-08.json",
+    "artifacts/daily-market-brief/reports.json",
+    "artifacts/financial-calendar/2026-10.json",
+    "plans/2026-10-08/PRSG-78-daily-market-brief.md",
+    "plans/2026-10-08/PRSG-78.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/2026-10-07.json",
+    "artifacts/daily-market-brief/2026-10-06.json",
+    "artifacts/daily-market-brief/watchlist-universe-five.json",
+    "artifacts/daily-market-brief/market-snapshots/",
+    "harness/engineering/price-prediction/forecast-ledger.csv",
+    "scripts/",
+    "skills/",
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "ingest/",
+    ".github/"
+  ],
+  "checks": [
+    {
+      "id": "report-validation",
+      "kind": "command",
+      "argv": ["python3", "scripts/daily-market-brief/validate_report_json.py", "--date", "2026-10-08", "--public"],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["Validated on the clean origin/main worktree after the report cutoff was frozen: 50 forecast rows, all ten five-name groups, 65 calendar revisions, report index dates consistent."]
+    },
+    {
+      "id": "calendar-append",
+      "kind": "manual",
+      "description": "Append FOMC minutes and G.19 events with stable IDs, source timestamps and actual discovery time.",
+      "status": "passed",
+      "evidence": ["monthly_calendar.py appended two source-backed events to the existing October ledger; prior 63 entries were retained. Report validation checked the full 65-entry ledger."]
+    },
+    {
+      "id": "ledger-review",
+      "kind": "command",
+      "argv": ["python3", "harness/forecast_review.py", "--ledger", "harness/engineering/price-prediction/forecast-ledger.csv", "--as-of", "2026-10-08T00:09:38Z"],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["Valid review: 70 issuances, 67 unique instrument-target pairs, 0 scored, 70 pending, 0 eligible matured targets; no ledger edits."]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead independently reviews the dated report and calendar evidence.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {"id": "PRSG-78-D1", "description": "The schema-3 report contains the required 50 rows and passes public validation.", "check_ids": ["report-validation"], "status": "done", "evidence": ["Daily market brief validator passed on the clean origin/main worktree."]},
+    {"id": "PRSG-78-D2", "description": "Verified event records append to the shared calendar without altering prior entries.", "check_ids": ["calendar-append", "report-validation"], "status": "done", "evidence": ["Two additions retained all 63 prior records; full calendar schema passed report validation."]},
+    {"id": "PRSG-78-D3", "description": "The ledger is reviewed at report cutoff without changing unexpired forecasts.", "check_ids": ["ledger-review"], "status": "done", "evidence": ["All 70 rows remained pending; no matured eligible target or actual was available."]},
+    {"id": "PRSG-78-D4", "description": "Lead reviews scope, forecast presentation and calendar provenance.", "check_ids": ["lead-review"], "status": "pending"}
+  ],
+  "review": {"status": "pending", "evidence": []}
+}

@@ -1406,6 +1406,54 @@
       "country": "US",
       "revision": 3,
       "recorded_at": "2026-10-04T12:41:46.251745+08:00"
+    },
+    {
+      "event_id": "fomc-minutes-september-2026",
+      "date": "2026-10-08",
+      "title": "FOMC minutes — September 15–16 meeting",
+      "kind": "event",
+      "time": "02:00 MYT (Oct 7 2:00 pm ET)",
+      "summary": "Minutes describe participants’ policy discussion; not a new rate decision.",
+      "details": "The Federal Reserve released minutes of the September 15–16, 2026 FOMC meeting. Most participants judged another increase likely appropriate by year-end, subject to incoming data.",
+      "exposures": "Rates, broad equities, banks, duration-sensitive sectors",
+      "sources": [
+        {
+          "label": "FOMC minutes, September 15–16, 2026",
+          "url": "https://www.federalreserve.gov/monetarypolicy/fomcminutes20260916.htm",
+          "provider": "Federal Reserve (primary)",
+          "published_at": "2026-10-07T14:00:00-04:00",
+          "retrieved_at": "2026-10-08T08:04:52+08:00",
+          "timezone": "America/New_York"
+        }
+      ],
+      "status": "scheduled",
+      "change_reason": "Added verified official publication and MYT release time; release outcome recorded in daily report.",
+      "revision": 1,
+      "recorded_at": "2026-10-08T08:07:50+08:00"
+    },
+    {
+      "event_id": "fed-g19-consumer-credit-october-2026",
+      "date": "2026-10-08",
+      "title": "U.S. Consumer Credit (G.19), August 2026",
+      "kind": "event",
+      "time": "03:00 MYT (Oct 7 3:00 pm ET)",
+      "summary": "Scheduled Federal Reserve credit data release; outcome not verified in the report evidence.",
+      "details": "The Federal Reserve release calendar listed August consumer credit for October 7 at 3:00 p.m. ET.",
+      "exposures": "Consumer finance, banks, retail, broad demand context",
+      "sources": [
+        {
+          "label": "Federal Reserve G.19 release calendar",
+          "url": "https://www.federalreserve.gov/releases/g19/20261007/",
+          "provider": "Federal Reserve (primary)",
+          "published_at": "2026-10-07T15:00:00-04:00",
+          "retrieved_at": "2026-10-08T08:04:52+08:00",
+          "timezone": "America/New_York"
+        }
+      ],
+      "status": "scheduled",
+      "change_reason": "Added from the official Federal Reserve release schedule; result not confirmed.",
+      "revision": 1,
+      "recorded_at": "2026-10-08T08:07:50+08:00"
     }
   ]
 }
