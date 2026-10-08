@@ -21,7 +21,7 @@ export default function Pipeline() {
     <div className="page-content">
       <div className="page-header">
         <h2>Pipeline Monitor</h2>
-        <p>Review ingestion and processing pipeline state, including Airflow DAGs.</p>
+        <p>Configured pipeline definitions; no verified scheduler or execution evidence.</p>
       </div>
 
       {loading && <p>Loading pipeline status...</p>}
@@ -31,13 +31,13 @@ export default function Pipeline() {
         <div className="pipeline-card">
           <h3>Pipeline Health</h3>
           <p>Status: {pipeline?.health ?? 'n/a'}</p>
-          <p>Updated at: {pipeline?.updated_at ?? 'n/a'}</p>
+          <p>Inspected at (response time, not a run): {pipeline?.updated_at ?? 'n/a'}</p>
         </div>
         <div className="pipeline-card">
-          <h3>Scheduled DAGs</h3>
+          <h3>Configured definitions</h3>
           <ul>
             {pipeline?.dags?.map((dag: any) => (
-              <li key={dag.dag_id}>{dag.dag_id} – {dag.status} – next {dag.next_run}</li>
+              <li key={dag.dag_id}>{dag.dag_id} – {dag.status} – next run {dag.next_run ?? 'unknown'}</li>
             ))}
           </ul>
         </div>

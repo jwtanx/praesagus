@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import CatalystInbox from '../components/CatalystInbox';
 import {
   fetchFinancialCalendar,
+  fetchFinancialFreshness,
+  FreshnessResponse,
   fetchFinancialFilings,
   fetchFinancialInsiderTrades,
   fetchFinancialNews,
@@ -40,6 +42,42 @@ function externalUrl(record: Record<string, unknown>) {
   } catch {
     return null;
   }
+}
+
+export function FinancialFreshness() {
+  const [data, setData] = useState<FreshnessResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [revision, setRevision] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    let current = true;
+    setData(null); setError(null); setLoading(true);
+    fetchFinancialFreshness(controller.signal)
+      .then(result => { if (current) setData(result); })
+      .catch(err => { if (current) setError(err instanceof Error ? err.message : 'Status unavailable'); })
+      .finally(() => { if (current) setLoading(false); });
+    return () => { current = false; controller.abort(); };
+  }, [revision]);
+  return <section className="financial-card" aria-labelledby="freshness-heading">
+    <h3 id="freshness-heading">Stored financial evidence status</h3>
+    <p>SEC invocation metadata only. Other scripts uninstrumented; source coverage unknown. Moomoo remains on demand.</p>
+    <button type="button" onClick={() => { setData(null); setError(null); setRevision(v => v + 1); }}>Refresh status</button>
+    {loading && <p role="status">Reading invocation status…</p>}
+    {error && <p role="alert">{error}</p>}
+    {data && <>
+      <p>Inspected at {data.read_at} · API read time, not provider freshness.</p>
+      {data.datasets.map(item => <article key={item.dataset}>
+        <h4>{item.dataset.replace(/_/g, ' ')}</h4>
+        <p>Tracking: {item.instrumented ? item.ledger : 'uninstrumented'} · Invocation: {item.invocation_state} · Invocation age: {item.freshness}</p>
+        <p>Last attempt: {item.last_attempt?.started_at ?? 'Unknown'} · Result: {item.last_attempt?.state ?? 'Unknown'} · Finished: {item.last_attempt?.finished_at ?? 'Unknown'}</p>
+        <p>Last success: {item.last_success ?? 'Unknown'} · Yielded / stored: {item.last_attempt ? `${item.last_attempt.yielded} / ${item.last_attempt.stored}` : 'Unknown'} · Rejected: unknown</p>
+        {item.last_attempt?.error_code && <p>Failure: {item.last_attempt.error_code}</p>}
+        <p>Dataset: {item.data.state} · Source time: {item.data.latest_data_time ?? 'Unknown'} ({item.data.time_precision}) · Future / invalid source times: {item.data.future_times} / {item.data.invalid_times}</p>
+        <p>{item.coverage_warning}</p>
+      </article>)}
+    </>}
+  </section>;
 }
 
 export default function Financial() {
@@ -133,6 +171,7 @@ export default function Financial() {
         <p>SEC filings, insider activity, earliest news signals, and upcoming events.</p>
       </div>
 
+      <FinancialFreshness />
       <CatalystInbox />
 
       <div className="financial-filters">

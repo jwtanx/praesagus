@@ -8,7 +8,7 @@ Praesagus is a market-intelligence research platform. Current repository capabil
 
 - FastAPI services in `backend/` and a Vite/React interface in `frontend/`.
 - Configured data connectors in `connectors/`, including SEC, news, and social sources; connector settings live under `ingest/config/`.
-- Financial ingestion and monitoring scripts in `scripts/`, including SEC filings, insider activity, company news, financial calendars, and QR reports/watchers.
+- Financial ingestion and monitoring scripts in `scripts/`, including SEC filings, insider activity, company news, financial calendars, and QR reports/watchers. SEC filings optionally record single-host invocation metadata when `PRAESAGUS_RUN_STATUS_DIR` points to an operator-provisioned private directory; `/api/v1/financial/freshness` reads it without provisioning or writes. Other three financial scripts remain uninstrumented and source coverage is unknown. The 48-hour invocation-age / 2-hour abandonment policy is local metadata policy, not a provider SLA or scheduler/deployment proof. Generic platform/pipeline config is not execution evidence.
 - Local development with Docker Compose, LocalStack bootstrap, and Terraform scaffolding under `infra/`.
 - Research instructions under `skills/`. Skills guide analysis; they are not, by themselves, executable agents or a production answer harness.
 - Offline forecast review in `harness/forecast_review.py`: deterministic CSV validation and outcome scoring at an explicit review timestamp. This does not generate answers or implement the proposed research harness.

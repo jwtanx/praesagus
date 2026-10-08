@@ -150,3 +150,17 @@ export function fetchFinancialCatalysts(ticker = '', eventType = '', offset = 0,
   if (eventType) params.set('event_type', eventType);
   return fetchJson<CatalystResponse>(`/api/v1/financial/catalysts?${params}`, { signal });
 }
+
+export type FreshnessDataset = {
+  dataset: string; instrumented: boolean; ledger: string;
+  invocation_state: string; freshness: string; last_success: string | null;
+  last_attempt: { run_id: string; started_at: string; finished_at: string | null;
+    state: string; yielded: number; stored: number; error_code: string | null } | null;
+  coverage: null; rejected: null; coverage_warning: string;
+  data: { state: string; count: number | null; latest_data_time: string | null;
+    time_precision: string; future_times: number; invalid_times: number };
+};
+export type FreshnessResponse = { read_at: string; datasets: FreshnessDataset[]; scope: string };
+export function fetchFinancialFreshness(signal?: AbortSignal) {
+  return fetchJson<FreshnessResponse>('/api/v1/financial/freshness', { signal });
+}
