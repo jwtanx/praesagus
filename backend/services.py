@@ -210,10 +210,10 @@ def build_platform_statuses() -> List[Dict[str, Any]]:
         {
             "name": platform.get("name", "unknown"),
             "label": platform.get("name", "unknown").replace("_", " ").title(),
-            "status": "Healthy",
+            "status": "Configured",
             "schedule": platform.get("schedule", "unknown"),
             "execution": platform.get("execution", "unknown"),
-            "last_run": datetime.utcnow().isoformat() + "Z",
+            "last_run": None,
             "items_ingested": "n/a",
         }
         for platform in platforms
@@ -225,13 +225,13 @@ def build_pipeline_statuses() -> Dict[str, Any]:
     dags = [
         {
             "dag_id": f"ingest_{name}",
-            "status": "scheduled",
-            "last_run": datetime.utcnow().isoformat() + "Z",
-            "next_run": datetime.utcnow().isoformat() + "Z",
+            "status": "configured",
+            "last_run": None,
+            "next_run": None,
         }
         for name in platforms
     ]
-    return {"dags": dags, "health": "healthy", "updated_at": datetime.utcnow().isoformat() + "Z"}
+    return {"dags": dags, "health": "unknown", "updated_at": datetime.utcnow().isoformat() + "Z", "time_basis": "response inspection time; no run or scheduler evidence"}
 
 
 def build_dashboard_summary(limit: int = 5) -> Dict[str, Any]:

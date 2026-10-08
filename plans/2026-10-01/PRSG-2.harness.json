@@ -3,47 +3,77 @@
   "ticket_key": "PRSG-2",
   "tags": {
     "type": "feature",
-    "modules": ["backend","frontend","connectors","observability"],
+    "modules": [
+      "backend",
+      "frontend",
+      "connectors",
+      "observability"
+    ],
     "owner_role": "Engineer",
     "priority": "P2",
     "effort_size": "M",
-    "effort_person_days": {"low": 3, "high": 5},
+    "effort_person_days": {
+      "low": 3,
+      "high": 5
+    },
     "impact": "high"
   },
   "created_on": "2026-10-01",
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-01/PRSG-2-connector-freshness.md",
   "objective": "Show real financial connector attempts, successes, data freshness and failures.",
-  "status": "planned",
+  "status": "in_progress",
   "owner": "Engineer",
   "reviewer": "Lead",
-  "scope_status": "provisional",
-  "base_sha": null,
+  "scope_status": "accepted",
+  "base_sha": "ec35583d0019e5cc974cb50d95c24d53faf77081",
   "allowed_paths": [
-    "backend/freshness_services.py",
-    "backend/main.py",
     "connectors/financial/run_status.py",
+    "backend/freshness_services.py",
+    "backend/services.py",
+    "backend/main.py",
     "scripts/run_sec_filings.py",
-    "scripts/run_insider_monitor.py",
-    "scripts/run_company_news.py",
-    "scripts/run_financial_calendar.py",
+    "ingest/config/financial_freshness.yaml",
     "frontend/src/services/api.ts",
+    "frontend/src/pages/Financial.tsx",
     "frontend/src/pages/Platforms.tsx",
     "frontend/src/pages/Pipeline.tsx",
-    "frontend/src/pages/Financial.tsx",
     "tests/test_connector_freshness.py",
+    "tests/connector_freshness_checks.cjs",
     "plans/2026-10-01/PRSG-2-connector-freshness.md",
-    "plans/2026-10-01/PRSG-2.harness.json"
+    "plans/2026-10-01/PRSG-2.harness.json",
+    "AGENTS.md"
   ],
   "protected_paths": [
-    "AGENTS.md",
     "README.md",
     "skills/",
     "artifacts/",
     "data/",
     "harness/",
     "infra/",
-    ".github/"
+    ".github/",
+    ".githooks/",
+    "connectors/financial/storage.py",
+    "connectors/financial/schemas.py",
+    "connectors/sec_filings.py",
+    "connectors/sec_form4_insider.py",
+    "connectors/company_news.py",
+    "connectors/financial_calendar.py",
+    "connectors/moomoo_opend.py",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_rest_live.py",
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py",
+    "scripts/run_insider_monitor.py",
+    "scripts/run_company_news.py",
+    "scripts/run_financial_calendar.py",
+    "scripts/run_financial_pipeline.py",
+    "backend/catalyst_services.py",
+    "frontend/src/components/CatalystInbox.tsx",
+    "frontend/src/components/CatalystInbox.css",
+    "tests/test_catalyst_inbox.py",
+    "pyproject.toml",
+    "requirements.txt"
   ],
   "checks": [
     {
@@ -54,11 +84,20 @@
         "-m",
         "pytest",
         "-q",
-        "tests/test_connector_freshness.py"
+        "tests/test_connector_freshness.py",
+        "tests/test_api_integration.py",
+        "tests/test_catalyst_inbox.py",
+        "tests/test_moomoo_api.py"
       ],
       "cwd": ".",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT phase-one partial delivery: opt-in SEC invocation SQLite/flock ledger, bounded1000 terminal rows including last success, read-only freshness API/data classifications, generic configured/unknown/null times and isolated refresh-safe UI. Exact fifteen paths changed; raw storage/providers/Moomoo/catalyst untouched. Original D1-D4 remain pending; other three scripts uninstrumented/coverage unknown. GET does not provision/write/prune; 48h/2h local policy. Initial focused collection failed because existing feedparser dependency absent from persistent test runtime; fixture now imports SEC script with mocked provider module, no package installation or skip. Supported3.11 exact focused four-test command:72 passed,12 dependency warnings in0.79s. Exact Node replay passed; npm run build cwdfrontend passed45modules/394ms. Full suite intentionally pending required integration hook; Lead desktop/mobile HTTP drill/review pending. No live providers/credentials/raw-data operations, commit/push/deployment.",
+        "2026-10-05 MYT Lead independent reader finding corrected within scope: contradictory succeeded/error rows and running/unknown finish/error combinations now fail closed; canonical UUID4, integer nonnegative yielded/stored bounds, terminal time ordering and retention metadata validated. Writer validates existing ledger before provider work; reader query/schema errors sanitized. Thirteen deterministic corrupt-row variants exercise unavailable/unknown/no last-success, no API crash, unchanged metadata bytes and no script work on corrupt ledger. Final exact focused four-test command:85passed12 dependency warnings in0.83s on persistent3.11. No full-suite rerun; existing Node/Vite pass still applies because no later frontend edits.",
+        "2026-10-05 MYT Lead independent checks: focused85passed12warnings0.90s, Nodeexit0, Vite45modules400msexit0. Original manual fixture recipe failed before listening: ModuleNotFoundError uvicorn in persistent3.11 runtime; no browser pass. Allowed test helper corrected to stdlib HTTPServer bound127.0.0.1:8016 with2s connection timeout, bounded4096 path, CORS/preflight, actual get_freshness and synthetic data routes. New local HTTP regression proves success -> failed attempt with retained success ->503 sequence and clean server shutdown. Final exact focused four-test command86passed12warnings1.63s. No install/dependency change or browser success claim; fullsuite/manualLeadreview remain pending.",
+        "2026-10-08 MYT: Configured Python 3.11.17 / pytest 8.4.2: python -m pytest -q tests/test_connector_freshness.py tests/test_api_integration.py tests/test_catalyst_inbox.py tests/test_moomoo_api.py \u2014 86 passed, 12 existing Starlette/httpx deprecation warnings, 1.73s.",
+        "2026-10-09 MYT selective integration at base ec35583d0019e5cc974cb50d95c24d53faf77081: exact focused command passed 115 tests, 42 existing Starlette/httpx deprecation warnings, 1.59s."
+      ]
     },
     {
       "id": "suite",
@@ -70,8 +109,11 @@
         "-q"
       ],
       "cwd": ".",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-08 MYT: Configured Python 3.11.17 / pytest 8.4.2: python -m pytest -q \u2014 1,208 passed, 12 existing Starlette/httpx deprecation warnings, 42.18s.",
+        "2026-10-09 MYT selective integration at base ec35583d0019e5cc974cb50d95c24d53faf77081: python -m pytest -q passed 1,281 tests, 42 existing Starlette/httpx deprecation warnings, 41.59s."
+      ]
     },
     {
       "id": "frontend",
@@ -82,13 +124,17 @@
         "build"
       ],
       "cwd": "frontend",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT npm run build cwdfrontend: Vite5.4.21,45modules,394ms,exit0. Production bundle only, not standalone tsc or UI evidence.",
+        "2026-10-08 MYT: npm run build from frontend \u2014 Vite 5.4.21, 45 modules, exit 0, 481ms.",
+        "2026-10-09 MYT selective integration at base ec35583d0019e5cc974cb50d95c24d53faf77081: npm run build passed with Vite 5.4.21, 46 modules, 402ms. Used a temporary symlink to existing shared node_modules and removed it; no package/dependency changes."
+      ]
     },
     {
       "id": "behavior",
       "kind": "manual",
-      "description": "Review ticket-specific fixture behavior and required failure cases, including desktop/mobile UI where relevant.",
+      "description": "Lead desktop/mobile synthetic failure drill: refresh exposes failed attempt versus retained last success and clears stale UI status; phase one is partial delivery only.",
       "status": "pending",
       "evidence": []
     },
@@ -97,7 +143,24 @@
       "kind": "manual",
       "description": "Lead checks complete ticket diff against base, reviews results and records release/limitations.",
       "status": "pending",
-      "evidence": []
+      "evidence": [
+        "2026-10-08 MYT Lead review: all fifteen supplied changed paths match accepted PRSG-2 scope; fresh focused/full/frontend checks reviewed. Partial SEC-only implementation and known coverage limitations retained. The required desktop/mobile failure drill is pending; no whole-ticket acceptance."
+      ]
+    },
+    {
+      "id": "frontend-replay",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/connector_freshness_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-05 MYT exact node tests/connector_freshness_checks.cjs root exit0: empty/success, failure retains last success, HTTP503 clears previous status only, superseded response/unmount ignored, uninstrumented and generic labels. Uses existing external catalyst renderer dependencies, no installs.",
+        "2026-10-08 MYT: CATALYST_TEST_DEPS=/tmp/praesagus-catalyst-test-deps node tests/connector_freshness_checks.cjs \u2014 passed empty/success, failed attempt with retained success, error clears stale status, stale response/unmount and generic/uninstrumented labels. Temporary renderer dependency was installed from local npm cache outside the repository; project dependencies unchanged.",
+        "2026-10-09 MYT selective integration: CATALYST_TEST_DEPS=/tmp/praesagus-catalyst-test-deps node tests/connector_freshness_checks.cjs passed. Used a temporary symlink to existing shared frontend node_modules and removed it; no dependency installation or project dependency change."
+      ]
     }
   ],
   "acceptance": [
@@ -149,8 +212,50 @@
     "evidence": []
   },
   "dependencies": [
-    "Review provisional scope and current implementation before starting"
+    "Lead explicit code authorization after this scope-only readback",
+    "Opt-in metadata root must be provisioned privately by operator; no Compose provisioning in this scope",
+    "Original four-script completion needs subsequent approved rollout; hidden connector outcomes remain unknown"
   ],
   "diff_scope": "Complete ticket-owned tracked/untracked/deleted paths plus both rename endpoints; preserve unrelated pre-existing changes.",
-  "scope_control": "Lead reviews changes to write scope, checks, base and acceptance definitions; agents may record progress/evidence."
+  "scope_control": "Exact fifteen accepted phase-one allowed_paths only; every other repository path protected. Scope freeze does not authorize code implementation; Lead must explicitly authorize implementation next. Original D1-D4 remain pending until full ticket evidence/review.",
+  "phase_one": {
+    "accepted_on": "2026-10-05",
+    "delivery": "partial",
+    "implementation_authorized": true,
+    "script": "scripts/run_sec_filings.py",
+    "runtime": "Persistent supported Python 3.11 environment; exact python3 argv resolved by PATH",
+    "decisions": [
+      "Opt-in PRAESAGUS_RUN_STATUS_DIR; no default/public root or Compose provisioning. Canonical absolute owned private0700 root outside Git. Unset preserves SEC ingestion and fixed unconfigured warning; API unknown/unconfigured, no invented ledger evidence.",
+      "Configured invalid root/ledger or start metadata failure fails sanitized/nonzero before provider work; terminal metadata failure preserves raw writes and returns fixed nonzero with unknown evidence. Opt-in availability tradeoff accepted.",
+      "GET never creates DB/schema/folders, prunes or marks state. Stdlib SQLite parameterized short transactions, bounded5s busy timeout, nonblocking per-dataset flock covering instrumented writers only.",
+      "At most1000 terminal rows/dataset including pinned last success; at most one actual active writer. Retention floor/pruned counts exposed, no raw pruning. Interrupted rows read as unknown/abandoned after explicit policy without invented finish/success.",
+      "Invocation-only yielded/stored counts; rejected/coverage unknown/null where unobservable. Swallowed connector internals remain unknown, not provider health. Missing/invalid policy unknown.",
+      "Dataset absent/empty/unreadable separate. Only aware valid source timestamps or explicit date precision, future flags; no mtime/ingest/readtime freshness. Calendar future event not source publication.",
+      "Moomoo on-demand; generic edgar not financial SEC mapping. Generic fake health/run/next fields become configured/unknown/null independently of instrumented SEC. UI refresh failures clear old status.",
+      "AGENTS.md narrow factual capability/runtime opt-in update only for SEC invocation ledger/read-only freshness API, other three untracked and unknown coverage/no deployment. No role/policy/skill/safeguard changes.",
+      "Operator provisions an existing owned/private0700 root outside Git; backend and SEC script share this root on the same host via explicit environment. Untracked other three datasets are uninstrumented/unknown, never never-run/healthy inferred from missing ledger."
+    ],
+    "limitations": [
+      "No provider/credential/raw-data/installation/commit/push actions. No auto-dispatch or verification policy edit. Full pytest/hooks and Lead manual desktop/mobile acceptance remain required.",
+      "Original four-script D1-D4 stay pending; later insider/news/calendar rollout requires explicit scope amendment and coverage/count semantics review.",
+      "Persistent focused runtime lacks existing feedparser dependency; SEC script tested with isolated mocked provider import, actual live module startup not established. No installs, provider integration or entitlement claim.",
+      "POSIX flock single-host instrumented writers only; trusted private directory required. External raw writers remain outside protection. Filesystem/SQLite operations can exceed busy-time budgets; no hard end-to-end deadline.",
+      "Terminal metadata failure preserves raw data but may leave yielded/stored counts unknown in surviving start evidence. Latest source time is read from stored public financial records, not an ingestion-completeness claim."
+    ],
+    "progress_id": "PRSG-2-P1",
+    "status": "review",
+    "evidence": [
+      "2026-10-05 MYT Lead explicitly authorized implementation after independent final fifteen-path scope/policy readback. Frozen base retained, original D1-D4 pending; phase-one partial delivery only.",
+      "2026-10-05 MYT phase-one partial delivery: opt-in SEC invocation SQLite/flock ledger, bounded1000 terminal rows including last success, read-only freshness API/data classifications, generic configured/unknown/null times and isolated refresh-safe UI. Exact fifteen paths changed; raw storage/providers/Moomoo/catalyst untouched. Original D1-D4 remain pending; other three scripts uninstrumented/coverage unknown. GET does not provision/write/prune; 48h/2h local policy. Initial focused collection failed because existing feedparser dependency absent from persistent test runtime; fixture now imports SEC script with mocked provider module, no package installation or skip. Supported3.11 exact focused four-test command:72 passed,12 dependency warnings in0.79s. Exact Node replay passed; npm run build cwdfrontend passed45modules/394ms. Full suite intentionally pending required integration hook; Lead desktop/mobile HTTP drill/review pending. No live providers/credentials/raw-data operations, commit/push/deployment.",
+      "2026-10-05 MYT Lead independent reader finding corrected within scope: contradictory succeeded/error rows and running/unknown finish/error combinations now fail closed; canonical UUID4, integer nonnegative yielded/stored bounds, terminal time ordering and retention metadata validated. Writer validates existing ledger before provider work; reader query/schema errors sanitized. Thirteen deterministic corrupt-row variants exercise unavailable/unknown/no last-success, no API crash, unchanged metadata bytes and no script work on corrupt ledger. Final exact focused four-test command:85passed12 dependency warnings in0.83s on persistent3.11. No full-suite rerun; existing Node/Vite pass still applies because no later frontend edits.",
+      "2026-10-05 MYT Lead independent checks: focused85passed12warnings0.90s, Nodeexit0, Vite45modules400msexit0. Original manual fixture recipe failed before listening: ModuleNotFoundError uvicorn in persistent3.11 runtime; no browser pass. Allowed test helper corrected to stdlib HTTPServer bound127.0.0.1:8016 with2s connection timeout, bounded4096 path, CORS/preflight, actual get_freshness and synthetic data routes. New local HTTP regression proves success -> failed attempt with retained success ->503 sequence and clean server shutdown. Final exact focused four-test command86passed12warnings1.63s. No install/dependency change or browser success claim; fullsuite/manualLeadreview remain pending."
+    ],
+    "policy": {
+      "filings": {
+        "max_success_age_seconds": 172800,
+        "abandoned_after_seconds": 7200
+      },
+      "basis": "Explicit local policy estimates, not provider SLA, scheduler proof or hard network deadlines. Other financial datasets uninstrumented/unknown."
+    }
+  }
 }

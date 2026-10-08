@@ -21,7 +21,7 @@ export default function Platforms() {
     <div className="page-content">
       <div className="page-header">
         <h2>Platform Feeds</h2>
-        <p>Monitor ingestion status and source health across connected platforms.</p>
+        <p>Configured connectors only; execution and source health are unknown.</p>
       </div>
 
       {loading && <p>Loading platform status...</p>}

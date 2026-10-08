@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from connectors.financial.storage import get_data_dir
+from connectors.financial.run_status import invocation, StatusError
 from connectors.sec_filings import SecFilingsConnector
 from connectors.utils import s3_atomic_write
 
@@ -43,6 +44,35 @@ def main() -> int:
     parser.add_argument("--user-agent", default=None, help="SEC User-Agent (required by SEC fair access policy)")
     args = parser.parse_args()
 
+    try:
+        with invocation() as run:
+            if run is None:
+                print("SEC invocation status unconfigured.", file=sys.stderr)
+                return _ingest(args, None)
+            run.phase = 'input-failed'
+            try:
+                result = _ingest(args, run)
+            except (Exception, KeyboardInterrupt):
+                code = 'interrupted' if sys.exc_info()[0] is KeyboardInterrupt else run.phase
+                try:
+                    run.finish('partial' if run.stored else 'failed', code)
+                except StatusError:
+                    print('SEC invocation status unavailable; raw writes preserved.', file=sys.stderr)
+                    return 1
+                print('SEC invocation failed: ' + code, file=sys.stderr)
+                return 1
+            try:
+                run.finish('succeeded' if result == 0 else 'failed', None if result == 0 else 'input-failed')
+            except StatusError:
+                print('SEC invocation status unavailable; raw writes preserved.', file=sys.stderr)
+                return 1
+            return result
+    except StatusError as error:
+        print('SEC invocation status unavailable: ' + error.code, file=sys.stderr)
+        return 1
+
+
+def _ingest(args, run):
     config = load_watchlist(Path(args.watchlist))
     settings = config.get("settings", {})
     tickers = args.tickers or [item["ticker"] for item in config.get("watchlist", [])]
@@ -62,12 +92,21 @@ def main() -> int:
         user_agent=user_agent,
         include_metrics=not args.no_metrics,
     )
+    if run:
+        run.phase = "authenticate-failed"
     connector.authenticate()
     data_dir = get_data_dir()
     count = 0
     print(f"Ingesting SEC filings for {len(tickers)} tickers ({args.forms}), lookback={args.days}d")
+    if run:
+        run.phase = "fetch-failed"
     for raw in connector.fetch(start, end):
+        if run:
+            run.yielded += 1
+            run.phase = "normalize-failed"
         normalized = connector.normalize(raw)
+        if run:
+            run.phase = "store-failed"
         connector.store(
             raw,
             normalized,
@@ -75,6 +114,9 @@ def main() -> int:
             s3_writer=s3_atomic_write if args.s3_bucket else None,
             data_dir=data_dir,
         )
+        if run:
+            run.stored += 1
+            run.phase = "fetch-failed"
         meta = normalized.metadata
         print(
             f"  [{meta.get('form_type')}] {meta.get('ticker')} {meta.get('company_name')} "

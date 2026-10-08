@@ -50,6 +50,7 @@ from connectors.moomoo_opend import (
     configured_connector,
 )
 from backend.catalyst_services import get_catalysts
+from backend.freshness_services import get_freshness
 
 app = FastAPI(title="Praesagus API")
 raw_origins = os.getenv("PRAESAGUS_CORS_ORIGINS", "http://localhost:5173")
@@ -196,6 +197,12 @@ def get_settings(api_key: Optional[str] = Depends(get_api_key)):
 def get_financial_summary(api_key: Optional[str] = Depends(get_api_key)):
     REQUESTS.inc()
     return JSONResponse(content=jsonable_encoder(build_financial_summary()))
+
+
+@app.get("/api/v1/financial/freshness")
+def get_financial_freshness(api_key: Optional[str] = Depends(get_api_key)):
+    REQUESTS.inc()
+    return get_freshness()
 
 
 @app.get("/api/v1/financial/catalysts")

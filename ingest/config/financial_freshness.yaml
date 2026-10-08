@@ -1,0 +1,5 @@
+# Local invocation policy estimates; not provider SLA, scheduler or network timeout.
+filings:
+  max_success_age_seconds: 172800
+  abandoned_after_seconds: 7200
+# Other financial scripts are uninstrumented in PRSG-2 phase one.
