@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-61",
+  "tags": {
+    "type": "skill",
+    "modules": ["skills", "market-research"],
+    "owner_role": "Lead",
+    "priority": "P2",
+    "effort_size": "S",
+    "effort_person_days": {"low": 0.5, "high": 1},
+    "impact": "medium"
+  },
+  "created_on": "2026-10-08",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-08/PRSG-61-public-report-rights-guidance.md",
+  "objective": "Align daily report skill guidance with public Moomoo data rights safeguards while allowing private analysis to continue.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "14407bdb1df85044390083989400d56d51fb4961",
+  "allowed_paths": [
+    "skills/daily-market-brief/SKILL.md",
+    "plans/2026-10-08/PRSG-61-public-report-rights-guidance.md",
+    "plans/2026-10-08/PRSG-61.harness.json"
+  ],
+  "protected_paths": ["artifacts/", "backend/", "connectors/", "frontend/", "ingest/", "scripts/"],
+  "checks": [
+    {
+      "id": "public-report-validation",
+      "kind": "command",
+      "argv": ["python3", "scripts/daily-market-brief/validate_report_json.py", "--date", "2026-10-08", "--public"],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": ["October 8 schema-3 report and report index validated; no public_snapshot fields were present."]
+    },
+    {
+      "id": "viewer-preview",
+      "kind": "manual",
+      "description": "Preview the dated report in the existing colored viewer and confirm the schema-3 report and shared calendar load.",
+      "status": "passed",
+      "evidence": ["Local browser preview rendered October 8 report, section navigation, colored cards and Unrated forecast rows; viewer HTML unchanged."]
+    },
+    {
+      "id": "skill-validation-and-review",
+      "kind": "manual",
+      "description": "Validate skill metadata/references and review public-field wording against AGENTS.md and PRSG-44 safeguards.",
+      "status": "passed",
+      "evidence": ["Bundled skill-creator quick_validate.py reported both skills valid. Lead reviewed the changed guidance: private analysis may continue, public Moomoo fields require explicit current evidence for market, fields, display and redistribution; unconfirmed status is not permission."]
+    }
+  ],
+  "acceptance": [
+    {"id": "PRSG-61-D1", "description": "Private research remains unblocked while public snapshot fields require explicit rights evidence.", "check_ids": ["skill-validation-and-review"], "status": "done", "evidence": ["Updated skill retains private analysis and explicitly omits public snapshot fields without current rights evidence."]},
+    {"id": "PRSG-61-D2", "description": "Current report validates and remains compatible with the colored viewer.", "check_ids": ["public-report-validation", "viewer-preview"], "status": "done", "evidence": ["October 8 report passed --public validation and rendered in the existing schema-3 viewer; no snapshot fields were present."]},
+    {"id": "PRSG-61-D3", "description": "Lead reviews the guidance against repository safeguards.", "check_ids": ["skill-validation-and-review"], "status": "done", "evidence": ["Lead review completed; no claim of licensed redistribution or runtime enforcement was added."]}
+  ],
+  "review": {"status": "accepted", "evidence": ["Lead reviewed the exact three-path change and confirmed no report viewer or artifact data was altered by this ticket."]}
+}
