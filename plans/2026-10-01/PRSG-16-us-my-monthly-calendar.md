@@ -25,3 +25,7 @@ Primary schedules: https://www.bls.gov/schedule/2026/10_sched.htm ; https://www.
 Focused Python: 29 passed. Offline DOM replay passed including US/MY filtering, excluded China/unclassified records, latest versus historical view and future-information rejection. Initial broader run: 196 passed, one new-ticket status typo failed; corrected to the canonical review status and reran. No deployment, commit or push performed. Lead acceptance pending.
 
 Broader rerun: 197 passed, 5 existing Python 3.9 boto3 warnings. Scoped manifest validation and git diff --check passed. Browser visual QA not run; DOM behavior replay passed.
+
+## Calendar maintenance evidence — 2026-10-08 MYT
+
+Appended two source-backed Federal Reserve release entries for the October 8 MYT calendar: September FOMC minutes and the scheduled G.19 consumer-credit release, with distinct publication/retrieval and workflow-recorded times. The G.19 outcome remains explicitly unverified. Fresh configured Python 3.11.17 run of `tests/test_monthly_calendar.py` and `tests/test_daily_report.py`: 64 passed. `node tests/daily_report_viewer_checks.cjs` passed, and the October 8 report passed `validate_report_json.py --public`. Historical ticket completion remains unchanged; this is an append-only calendar maintenance commit.

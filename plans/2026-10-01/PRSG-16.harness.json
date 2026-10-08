@@ -55,8 +55,9 @@
       "cwd": ".",
       "status": "passed",
       "evidence": [
-        "python3 -m pytest -q tests/test_monthly_calendar.py tests/test_daily_report.py: 29 passed. Original 14 committed revisions preserved exactly; 21 US and 26 MY current events span October 1–30, with full October 1–31 grid. BLS, BEA, Federal Reserve official schedules and DOSM arc.csv source evidence; DOSM timezone assumption labelled.",
-        "Broader rerun: python3 -m pytest -q: 197 passed, 5 existing local Python 3.9 boto3 warnings. git diff --check passed. Manifest and all seven ticket-owned paths validated."
+        "python3 -m pytest -q tests/test_monthly_calendar.py tests/test_daily_report.py: 29 passed. Original 14 committed revisions preserved exactly; 21 US and 26 MY current events span October 1\u201330, with full October 1\u201331 grid. BLS, BEA, Federal Reserve official schedules and DOSM arc.csv source evidence; DOSM timezone assumption labelled.",
+        "Broader rerun: python3 -m pytest -q: 197 passed, 5 existing local Python 3.9 boto3 warnings. git diff --check passed. Manifest and all seven ticket-owned paths validated.",
+        "2026-10-08 MYT: configured Python 3.11.17 / pytest 8.4.2, tests/test_monthly_calendar.py and tests/test_daily_report.py: 64 passed. October 8 Federal Reserve minutes and G.19 schedule entries were appended as source-backed revisions; October 8 report/calendar public validation passed."
       ]
     },
     {
@@ -69,7 +70,8 @@
       "cwd": ".",
       "status": "passed",
       "evidence": [
-        "node tests/daily_report_viewer_checks.cjs: passed; country filters, CN/unclassified exclusion, latest versus report-time cutoff, revisions/cancellations, safe sources and request races."
+        "node tests/daily_report_viewer_checks.cjs: passed; country filters, CN/unclassified exclusion, latest versus report-time cutoff, revisions/cancellations, safe sources and request races.",
+        "2026-10-08 MYT: node tests/daily_report_viewer_checks.cjs passed desktop/mobile date navigation, schema2/3, shared calendar availability, source safety, as-of behavior and stale/error handling."
       ]
     },
     {
@@ -92,7 +94,8 @@
       ],
       "status": "done",
       "evidence": [
-        "Focused calendar Python and DOM regressions passed; Lead review remains pending."
+        "Focused calendar Python and DOM regressions passed; Lead review remains pending.",
+        "2026-10-08 MYT: appended two official Federal Reserve release entries; 64 calendar/report tests and public report validation passed. Historical completion status retained."
       ]
     },
     {
