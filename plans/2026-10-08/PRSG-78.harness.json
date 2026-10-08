@@ -3,11 +3,18 @@
   "ticket_key": "PRSG-78",
   "tags": {
     "type": "chore",
-    "modules": ["financial-data", "market-research", "docs"],
+    "modules": [
+      "financial-data",
+      "market-research",
+      "docs"
+    ],
     "owner_role": "Trader",
     "priority": "P1",
     "effort_size": "XS",
-    "effort_person_days": {"low": 0.3, "high": 0.8},
+    "effort_person_days": {
+      "low": 0.3,
+      "high": 0.8
+    },
     "impact": "medium"
   },
   "created_on": "2026-10-08",
@@ -46,25 +53,44 @@
     {
       "id": "report-validation",
       "kind": "command",
-      "argv": ["python3", "scripts/daily-market-brief/validate_report_json.py", "--date", "2026-10-08", "--public"],
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py",
+        "--date",
+        "2026-10-08",
+        "--public"
+      ],
       "cwd": ".",
       "status": "passed",
-      "evidence": ["Validated on the clean origin/main worktree after the report cutoff was frozen: 50 forecast rows, all ten five-name groups, 65 calendar revisions, report index dates consistent."]
+      "evidence": [
+        "Revalidated on the clean origin/main worktree after browser review: 50 forecast rows, all ten five-name groups, seven required sections, 65 calendar records. All current-price fields are null where provider source time and known-at time are unverified; historical range anchors are dated and labeled."
+      ]
     },
     {
       "id": "calendar-append",
       "kind": "manual",
       "description": "Append FOMC minutes and G.19 events with stable IDs, source timestamps and actual discovery time.",
       "status": "passed",
-      "evidence": ["monthly_calendar.py appended two source-backed events to the existing October ledger; prior 63 entries were retained. Report validation checked the full 65-entry ledger."]
+      "evidence": [
+        "monthly_calendar.py appended two source-backed events to the existing October ledger; prior 63 entries were retained. Report validation checked the full 65-entry ledger."
+      ]
     },
     {
       "id": "ledger-review",
       "kind": "command",
-      "argv": ["python3", "harness/forecast_review.py", "--ledger", "harness/engineering/price-prediction/forecast-ledger.csv", "--as-of", "2026-10-08T00:09:38Z"],
+      "argv": [
+        "python3",
+        "harness/forecast_review.py",
+        "--ledger",
+        "harness/engineering/price-prediction/forecast-ledger.csv",
+        "--as-of",
+        "2026-10-08T00:09:38Z"
+      ],
       "cwd": ".",
       "status": "passed",
-      "evidence": ["Valid review: 70 issuances, 67 unique instrument-target pairs, 0 scored, 70 pending, 0 eligible matured targets; no ledger edits."]
+      "evidence": [
+        "Valid review: 70 issuances, 67 unique instrument-target pairs, 0 scored, 70 pending, 0 eligible matured targets; no ledger edits."
+      ]
     },
     {
       "id": "lead-review",
@@ -74,10 +100,51 @@
     }
   ],
   "acceptance": [
-    {"id": "PRSG-78-D1", "description": "The schema-3 report contains the required 50 rows and passes public validation.", "check_ids": ["report-validation"], "status": "done", "evidence": ["Daily market brief validator passed on the clean origin/main worktree."]},
-    {"id": "PRSG-78-D2", "description": "Verified event records append to the shared calendar without altering prior entries.", "check_ids": ["calendar-append", "report-validation"], "status": "done", "evidence": ["Two additions retained all 63 prior records; full calendar schema passed report validation."]},
-    {"id": "PRSG-78-D3", "description": "The ledger is reviewed at report cutoff without changing unexpired forecasts.", "check_ids": ["ledger-review"], "status": "done", "evidence": ["All 70 rows remained pending; no matured eligible target or actual was available."]},
-    {"id": "PRSG-78-D4", "description": "Lead reviews scope, forecast presentation and calendar provenance.", "check_ids": ["lead-review"], "status": "pending"}
+    {
+      "id": "PRSG-78-D1",
+      "description": "The schema-3 report contains the required 50 rows and passes public validation.",
+      "check_ids": [
+        "report-validation"
+      ],
+      "status": "done",
+      "evidence": [
+        "Daily market brief validator passed on the clean origin/main worktree."
+      ]
+    },
+    {
+      "id": "PRSG-78-D2",
+      "description": "Verified event records append to the shared calendar without altering prior entries.",
+      "check_ids": [
+        "calendar-append",
+        "report-validation"
+      ],
+      "status": "done",
+      "evidence": [
+        "Two additions retained all 63 prior records; full calendar schema passed report validation."
+      ]
+    },
+    {
+      "id": "PRSG-78-D3",
+      "description": "The ledger is reviewed at report cutoff without changing unexpired forecasts.",
+      "check_ids": [
+        "ledger-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "All 70 rows remained pending; no matured eligible target or actual was available."
+      ]
+    },
+    {
+      "id": "PRSG-78-D4",
+      "description": "Lead reviews scope, forecast presentation and calendar provenance.",
+      "check_ids": [
+        "lead-review"
+      ],
+      "status": "pending"
+    }
   ],
-  "review": {"status": "pending", "evidence": []}
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
 }

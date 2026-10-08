@@ -11,7 +11,8 @@ Publish the October 8, 2026 schema-3 report with 50 instruments, concise summary
 - Report cutoff: 2026-10-08 08:09:38 MYT.
 - Sources: Federal Reserve FOMC minutes and G.19 schedule, NY Fed survey index, BNM reserves, DOSM release schedule, issuer material and an NYSE intraday desk note.
 - Ad hoc Yahoo Finance daily bars supplied 21 completed daily closes for all 50 instruments; provider currency matched listing currency. The baseline uses 20 adjusted log returns, a drift estimate and Gaussian volatility range. It is low-confidence, uncalibrated, not out-of-sample validated and not an execution signal.
-- Moomoo point observations were excluded from public output. Final US index close/breadth and Malaysian session close were not independently verified.
+- The last available US reference bar is dated October 6, one completed session behind the report cutoff; current-price fields remain null without a validated quote timestamp and known-at time. Historical closes remain explicit forecast anchors, with horizons counted from each bar date through the October 9 target.
+- Moomoo point observations were excluded from public output. Final US index close/breadth and Malaysian official session close were not independently verified.
 - Forecast ledger review at the report cutoff found 70 pending issuances, no matured targets and no eligible actuals; no ledger rows were added.
 
 ## Frozen scope

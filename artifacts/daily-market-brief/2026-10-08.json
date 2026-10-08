@@ -2,17 +2,20 @@
   "calendar_ref": "../financial-calendar/2026-10.json",
   "collection": {
     "cutoff": "2026-10-08T08:09:38+08:00",
-    "quote_provider": "Yahoo Finance historical daily bars (ad hoc vendor input; no configured quote provider)",
-    "quote_connector": "Ad hoc daily-bar history with exchange timezone/currency validation; separate captured Moomoo point snapshot excluded from public output.",
-    "observed_us": 30,
-    "missing_us": 0,
-    "missing_my": 0,
+    "quote_provider": "No configured current quote provider; Yahoo Finance daily bars are ad hoc model inputs",
+    "quote_connector": "Historical adjusted daily bars are used only as dated forecast references; no current-price quote is mapped. Moomoo point observations are excluded.",
+    "observed_us": 0,
+    "missing_us": 30,
+    "missing_my": 20,
     "supplemental_quote_count": 0,
     "forecast_status": "low_confidence_statistical_baseline",
     "current_run_status": "ad_hoc_historical_baseline",
-    "source_timing_limit": "Historical bars were retrieved before the report cutoff and filtered to completed sessions in each exchange timezone. Moomoo point observations were excluded. Yahoo history is an ad hoc vendor source, not a configured provider; no calibrated performance is claimed."
+    "source_timing_limit": "Current-price fields are missing because a provider source timestamp and known-at time were not validated. Forecasts use explicit historical close dates; 20-session returns and low-confidence ranges are uncalibrated.",
+    "observed_my": 0,
+    "stale_reference_us": 30,
+    "stale_reference_my": 2
   },
-  "footer": "As of 2026-10-08T08:09:38+08:00 (Asia/Kuala_Lumpur). The report retains 50 curated listings (30 US, 20 MY) and the shared October financial calendar. 50 low-confidence statistical baseline ranges use 20 completed adjusted returns; 0 rows remain Unrated where inputs failed. No out-of-sample skill or calibrated probability is claimed. Ledger review found no matured target; prior forecasts remain pending. Research only; no personalized allocations or order instructions.",
+  "footer": "As of 2026-10-08T08:09:38+08:00 (Asia/Kuala_Lumpur). The report retains 50 curated listings (30 US, 20 MY) and the shared October financial calendar. All 50 rows have low-confidence statistical ranges from 20 completed adjusted returns; these are not calibrated or out-of-sample validated. Current-price fields remain missing without verified source timing. Ledger review found no matured target; prior forecasts remain pending. Research only; no personalized allocations or order instructions.",
   "forecasts": [
     {
       "market": "US",
@@ -24,25 +27,25 @@
       "sector_category": "benchmarks",
       "sector_emoji": "📊",
       "currency": "USD",
-      "current_price": "US$779.09",
-      "current_price_value": 779.09,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
-      "direction": "flat",
-      "direction_label": "Sideways",
-      "estimated_mid_case": "US$780.61",
-      "estimated_mid_case_value": 780.61,
-      "estimated_range": "US$766.56–794.91",
-      "range_low_value": 766.56,
-      "range_high_value": 794.91,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
+      "direction": "up",
+      "direction_label": "Bullish",
+      "estimated_mid_case": "US$781.37",
+      "estimated_mid_case_value": 781.37,
+      "estimated_range": "US$764.19–US$798.94",
+      "range_low_value": 764.19,
+      "range_high_value": 798.94,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -53,22 +56,26 @@
           "retrieved_at": "2026-10-08T00:09:32.461103+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.461103+00:00",
+          "known_at": "2026-10-08T00:09:32.461103+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Market benchmarks; not a sector",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 779.09,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$794.91.",
-        "bear_case": "If recent drift reverses, lower model band is US$766.56.",
-        "invalidation": "Target close outside US$766.56–US$794.91 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$798.94.",
+        "bear_case": "If recent drift reverses, lower model band is US$764.19.",
+        "invalidation": "Target close outside US$764.19–US$798.94 invalidates this statistical range."
       }
     },
     {
@@ -81,25 +88,25 @@
       "sector_category": "benchmarks",
       "sector_emoji": "📊",
       "currency": "USD",
-      "current_price": "US$759.66",
-      "current_price_value": 759.66,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "up",
       "direction_label": "Bullish",
-      "estimated_mid_case": "US$764.00",
-      "estimated_mid_case_value": 764.0,
-      "estimated_range": "US$743.79–784.75",
-      "range_low_value": 743.79,
-      "range_high_value": 784.75,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$766.18",
+      "estimated_mid_case_value": 766.18,
+      "estimated_range": "US$741.44–US$791.74",
+      "range_low_value": 741.44,
+      "range_high_value": 791.74,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -110,22 +117,26 @@
           "retrieved_at": "2026-10-08T00:09:32.449510+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.449510+00:00",
+          "known_at": "2026-10-08T00:09:32.449510+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Market benchmarks; not a sector",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 759.66,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/QQQ?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$784.75.",
-        "bear_case": "If recent drift reverses, lower model band is US$743.79.",
-        "invalidation": "Target close outside US$743.79–US$784.75 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$791.74.",
+        "bear_case": "If recent drift reverses, lower model band is US$741.44.",
+        "invalidation": "Target close outside US$741.44–US$791.74 invalidates this statistical range."
       }
     },
     {
@@ -138,25 +149,25 @@
       "sector_category": "benchmarks",
       "sector_emoji": "📊",
       "currency": "USD",
-      "current_price": "US$281.34",
-      "current_price_value": 281.34,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$280.11",
-      "estimated_mid_case_value": 280.11,
-      "estimated_range": "US$274.48–285.86",
-      "range_low_value": 274.48,
-      "range_high_value": 285.86,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$279.50",
+      "estimated_mid_case_value": 279.5,
+      "estimated_range": "US$272.63–US$286.54",
+      "range_low_value": 272.63,
+      "range_high_value": 286.54,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -167,22 +178,26 @@
           "retrieved_at": "2026-10-08T00:09:32.456365+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.456365+00:00",
+          "known_at": "2026-10-08T00:09:32.456365+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Market benchmarks; not a sector",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 281.34,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/IWM?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$285.86.",
-        "bear_case": "If recent drift reverses, lower model band is US$274.48.",
-        "invalidation": "Target close outside US$274.48–US$285.86 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$286.54.",
+        "bear_case": "If recent drift reverses, lower model band is US$272.63.",
+        "invalidation": "Target close outside US$272.63–US$286.54 invalidates this statistical range."
       }
     },
     {
@@ -195,25 +210,25 @@
       "sector_category": "benchmarks",
       "sector_emoji": "📊",
       "currency": "MYR",
-      "current_price": "MYR 1.83",
-      "current_price_value": 1.83,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 1.83",
       "estimated_mid_case_value": 1.83,
-      "estimated_range": "MYR 1.80–1.86",
-      "range_low_value": 1.8,
-      "range_high_value": 1.86,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_range": "MYR 1.79–MYR 1.87",
+      "range_low_value": 1.79,
+      "range_high_value": 1.87,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -224,22 +239,26 @@
           "retrieved_at": "2026-10-08T00:09:32.448846+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.448846+00:00",
+          "known_at": "2026-10-08T00:09:32.448846+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Market benchmarks; not a sector",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 1.83,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/0820EA.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is MYR 1.86.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 1.80.",
-        "invalidation": "Target close outside MYR 1.80–MYR 1.86 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is MYR 1.87.",
+        "bear_case": "If recent drift reverses, lower model band is MYR 1.79.",
+        "invalidation": "Target close outside MYR 1.79–MYR 1.87 invalidates this statistical range."
       }
     },
     {
@@ -252,25 +271,25 @@
       "sector_category": "benchmarks",
       "sector_emoji": "📊",
       "currency": "MYR",
-      "current_price": "MYR 1.17",
-      "current_price_value": 1.17,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
       "estimated_mid_case": "MYR 1.16",
       "estimated_mid_case_value": 1.16,
-      "estimated_range": "MYR 1.14–1.19",
-      "range_low_value": 1.14,
+      "estimated_range": "MYR 1.12–MYR 1.19",
+      "range_low_value": 1.12,
       "range_high_value": 1.19,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -281,22 +300,26 @@
           "retrieved_at": "2026-10-08T00:09:32.578237+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.578237+00:00",
+          "known_at": "2026-10-08T00:09:32.578237+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Market benchmarks; not a sector",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 1.17,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/0800EA.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
         "bull_case": "If recent drift persists, upper model band is MYR 1.19.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 1.14.",
-        "invalidation": "Target close outside MYR 1.14–MYR 1.19 invalidates this statistical range."
+        "bear_case": "If recent drift reverses, lower model band is MYR 1.12.",
+        "invalidation": "Target close outside MYR 1.12–MYR 1.19 invalidates this statistical range."
       }
     },
     {
@@ -309,25 +332,25 @@
       "sector_category": "financials",
       "sector_emoji": "🏦",
       "currency": "USD",
-      "current_price": "US$331.28",
-      "current_price_value": 331.28,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$329.30",
-      "estimated_mid_case_value": 329.3,
-      "estimated_range": "US$319.11–339.81",
-      "range_low_value": 319.11,
-      "range_high_value": 339.81,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$328.31",
+      "estimated_mid_case_value": 328.31,
+      "estimated_range": "US$315.92–US$341.19",
+      "range_low_value": 315.92,
+      "range_high_value": 341.19,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -338,22 +361,26 @@
           "retrieved_at": "2026-10-08T00:09:32.564130+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.564130+00:00",
+          "known_at": "2026-10-08T00:09:32.564130+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Financials",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 331.28,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/JPM?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$339.81.",
-        "bear_case": "If recent drift reverses, lower model band is US$319.11.",
-        "invalidation": "Target close outside US$319.11–US$339.81 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$341.19.",
+        "bear_case": "If recent drift reverses, lower model band is US$315.92.",
+        "invalidation": "Target close outside US$315.92–US$341.19 invalidates this statistical range."
       }
     },
     {
@@ -366,25 +393,25 @@
       "sector_category": "financials",
       "sector_emoji": "🏦",
       "currency": "USD",
-      "current_price": "US$897.18",
-      "current_price_value": 897.18,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$884.32",
-      "estimated_mid_case_value": 884.32,
-      "estimated_range": "US$846.18–924.18",
-      "range_low_value": 846.18,
-      "range_high_value": 924.18,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$877.96",
+      "estimated_mid_case_value": 877.96,
+      "estimated_range": "US$831.81–US$926.67",
+      "range_low_value": 831.81,
+      "range_high_value": 926.67,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -395,22 +422,26 @@
           "retrieved_at": "2026-10-08T00:09:32.589033+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.589033+00:00",
+          "known_at": "2026-10-08T00:09:32.589033+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Financials",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 897.18,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/GS?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$924.18.",
-        "bear_case": "If recent drift reverses, lower model band is US$846.18.",
-        "invalidation": "Target close outside US$846.18–US$924.18 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$926.67.",
+        "bear_case": "If recent drift reverses, lower model band is US$831.81.",
+        "invalidation": "Target close outside US$831.81–US$926.67 invalidates this statistical range."
       }
     },
     {
@@ -423,25 +454,25 @@
       "sector_category": "financials",
       "sector_emoji": "🏦",
       "currency": "USD",
-      "current_price": "US$370.64",
-      "current_price_value": 370.64,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$370.84",
-      "estimated_mid_case_value": 370.84,
-      "estimated_range": "US$359.88–382.14",
-      "range_low_value": 359.88,
-      "range_high_value": 382.14,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$370.94",
+      "estimated_mid_case_value": 370.94,
+      "estimated_range": "US$357.55–US$384.83",
+      "range_low_value": 357.55,
+      "range_high_value": 384.83,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -452,22 +483,26 @@
           "retrieved_at": "2026-10-08T00:09:32.565517+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.565517+00:00",
+          "known_at": "2026-10-08T00:09:32.565517+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Financials",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 370.64,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/V?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$382.14.",
-        "bear_case": "If recent drift reverses, lower model band is US$359.88.",
-        "invalidation": "Target close outside US$359.88–US$382.14 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$384.83.",
+        "bear_case": "If recent drift reverses, lower model band is US$357.55.",
+        "invalidation": "Target close outside US$357.55–US$384.83 invalidates this statistical range."
       }
     },
     {
@@ -480,25 +515,25 @@
       "sector_category": "financials",
       "sector_emoji": "🏦",
       "currency": "MYR",
-      "current_price": "MYR 9.87",
-      "current_price_value": 9.87,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
       "estimated_mid_case": "MYR 9.83",
       "estimated_mid_case_value": 9.83,
-      "estimated_range": "MYR 9.66–10.02",
-      "range_low_value": 9.66,
+      "estimated_range": "MYR 9.64–MYR 10.02",
+      "range_low_value": 9.64,
       "range_high_value": 10.02,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -509,7 +544,11 @@
           "retrieved_at": "2026-10-08T00:09:32.678285+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:32.678285+00:00",
+          "known_at": "2026-10-08T00:09:32.678285+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Financials",
@@ -523,8 +562,8 @@
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/1155.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
         "bull_case": "If recent drift persists, upper model band is MYR 10.02.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 9.66.",
-        "invalidation": "Target close outside MYR 9.66–MYR 10.02 invalidates this statistical range."
+        "bear_case": "If recent drift reverses, lower model band is MYR 9.64.",
+        "invalidation": "Target close outside MYR 9.64–MYR 10.02 invalidates this statistical range."
       }
     },
     {
@@ -537,25 +576,25 @@
       "sector_category": "financials",
       "sector_emoji": "🏦",
       "currency": "MYR",
-      "current_price": "MYR 7.33",
-      "current_price_value": 7.33,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 7.29",
       "estimated_mid_case_value": 7.29,
-      "estimated_range": "MYR 6.95–7.64",
-      "range_low_value": 6.95,
+      "estimated_range": "MYR 6.96–MYR 7.64",
+      "range_low_value": 6.96,
       "range_high_value": 7.64,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -566,7 +605,11 @@
           "retrieved_at": "2026-10-08T00:09:32.772016+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:32.772016+00:00",
+          "known_at": "2026-10-08T00:09:32.772016+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Financials",
@@ -580,8 +623,8 @@
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/1023.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
         "bull_case": "If recent drift persists, upper model band is MYR 7.64.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 6.95.",
-        "invalidation": "Target close outside MYR 6.95–MYR 7.64 invalidates this statistical range."
+        "bear_case": "If recent drift reverses, lower model band is MYR 6.96.",
+        "invalidation": "Target close outside MYR 6.96–MYR 7.64 invalidates this statistical range."
       }
     },
     {
@@ -594,25 +637,25 @@
       "sector_category": "technology",
       "sector_emoji": "💻",
       "currency": "USD",
-      "current_price": "US$333.63",
-      "current_price_value": 333.63,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "up",
       "direction_label": "Bullish",
-      "estimated_mid_case": "US$335.42",
-      "estimated_mid_case_value": 335.42,
-      "estimated_range": "US$323.76–347.51",
-      "range_low_value": 323.76,
-      "range_high_value": 347.51,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$336.32",
+      "estimated_mid_case_value": 336.32,
+      "estimated_range": "US$322.04–US$351.23",
+      "range_low_value": 322.04,
+      "range_high_value": 351.23,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -623,22 +666,26 @@
           "retrieved_at": "2026-10-08T00:09:32.692794+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.692794+00:00",
+          "known_at": "2026-10-08T00:09:32.692794+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Information Technology (excluding semiconductor overlay names)",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 333.63,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$347.51.",
-        "bear_case": "If recent drift reverses, lower model band is US$323.76.",
-        "invalidation": "Target close outside US$323.76–US$347.51 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$351.23.",
+        "bear_case": "If recent drift reverses, lower model band is US$322.04.",
+        "invalidation": "Target close outside US$322.04–US$351.23 invalidates this statistical range."
       }
     },
     {
@@ -651,25 +698,25 @@
       "sector_category": "technology",
       "sector_emoji": "💻",
       "currency": "USD",
-      "current_price": "US$529.30",
-      "current_price_value": 529.3,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "up",
       "direction_label": "Bullish",
-      "estimated_mid_case": "US$532.97",
-      "estimated_mid_case_value": 532.97,
-      "estimated_range": "US$514.09–552.55",
-      "range_low_value": 514.09,
-      "range_high_value": 552.55,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$534.81",
+      "estimated_mid_case_value": 534.81,
+      "estimated_range": "US$511.70–US$558.98",
+      "range_low_value": 511.7,
+      "range_high_value": 558.98,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -680,22 +727,26 @@
           "retrieved_at": "2026-10-08T00:09:32.739122+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.739122+00:00",
+          "known_at": "2026-10-08T00:09:32.739122+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Information Technology (excluding semiconductor overlay names)",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 529.3,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/MSFT?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$552.55.",
-        "bear_case": "If recent drift reverses, lower model band is US$514.09.",
-        "invalidation": "Target close outside US$514.09–US$552.55 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$558.98.",
+        "bear_case": "If recent drift reverses, lower model band is US$511.70.",
+        "invalidation": "Target close outside US$511.70–US$558.98 invalidates this statistical range."
       }
     },
     {
@@ -708,25 +759,25 @@
       "sector_category": "technology",
       "sector_emoji": "💻",
       "currency": "USD",
-      "current_price": "US$347.68",
-      "current_price_value": 347.68,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$348.63",
-      "estimated_mid_case_value": 348.63,
-      "estimated_range": "US$333.24–364.72",
-      "range_low_value": 333.24,
-      "range_high_value": 364.72,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$349.11",
+      "estimated_mid_case_value": 349.11,
+      "estimated_range": "US$330.34–US$368.94",
+      "range_low_value": 330.34,
+      "range_high_value": 368.94,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -737,22 +788,26 @@
           "retrieved_at": "2026-10-08T00:09:32.763006+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.763006+00:00",
+          "known_at": "2026-10-08T00:09:32.763006+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Information Technology (excluding semiconductor overlay names)",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 347.68,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/GOOGL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$364.72.",
-        "bear_case": "If recent drift reverses, lower model band is US$333.24.",
-        "invalidation": "Target close outside US$333.24–US$364.72 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$368.94.",
+        "bear_case": "If recent drift reverses, lower model band is US$330.34.",
+        "invalidation": "Target close outside US$330.34–US$368.94 invalidates this statistical range."
       }
     },
     {
@@ -765,25 +820,25 @@
       "sector_category": "technology",
       "sector_emoji": "💻",
       "currency": "MYR",
-      "current_price": "MYR 0.50",
-      "current_price_value": 0.5,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
-      "direction": "flat",
-      "direction_label": "Sideways",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
+      "direction": "up",
+      "direction_label": "Bullish",
       "estimated_mid_case": "MYR 0.51",
       "estimated_mid_case_value": 0.51,
-      "estimated_range": "MYR 0.47–0.54",
-      "range_low_value": 0.47,
+      "estimated_range": "MYR 0.48–MYR 0.54",
+      "range_low_value": 0.48,
       "range_high_value": 0.54,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -794,7 +849,11 @@
           "retrieved_at": "2026-10-08T00:09:32.802031+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:32.802031+00:00",
+          "known_at": "2026-10-08T00:09:32.802031+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Information Technology (excluding semiconductor overlay names)",
@@ -808,8 +867,8 @@
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/0277.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
         "bull_case": "If recent drift persists, upper model band is MYR 0.54.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 0.47.",
-        "invalidation": "Target close outside MYR 0.47–MYR 0.54 invalidates this statistical range."
+        "bear_case": "If recent drift reverses, lower model band is MYR 0.48.",
+        "invalidation": "Target close outside MYR 0.48–MYR 0.54 invalidates this statistical range."
       }
     },
     {
@@ -822,25 +881,25 @@
       "sector_category": "technology",
       "sector_emoji": "💻",
       "currency": "MYR",
-      "current_price": "MYR 0.52",
-      "current_price_value": 0.52,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
-      "direction": "flat",
-      "direction_label": "Sideways",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
+      "direction": "up",
+      "direction_label": "Bullish",
       "estimated_mid_case": "MYR 0.53",
       "estimated_mid_case_value": 0.53,
-      "estimated_range": "MYR 0.49–0.57",
+      "estimated_range": "MYR 0.49–MYR 0.57",
       "range_low_value": 0.49,
       "range_high_value": 0.57,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -851,7 +910,11 @@
           "retrieved_at": "2026-10-08T00:09:34.891157+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:34.891157+00:00",
+          "known_at": "2026-10-08T00:09:34.891157+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Information Technology (excluding semiconductor overlay names)",
@@ -879,25 +942,25 @@
       "sector_category": "semiconductors",
       "sector_emoji": "🔬",
       "currency": "USD",
-      "current_price": "US$239.24",
-      "current_price_value": 239.24,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "up",
       "direction_label": "Bullish",
-      "estimated_mid_case": "US$240.66",
-      "estimated_mid_case_value": 240.66,
-      "estimated_range": "US$230.72–251.03",
-      "range_low_value": 230.72,
-      "range_high_value": 251.03,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$241.37",
+      "estimated_mid_case_value": 241.37,
+      "estimated_range": "US$229.22–US$254.17",
+      "range_low_value": 229.22,
+      "range_high_value": 254.17,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -908,22 +971,26 @@
           "retrieved_at": "2026-10-08T00:09:32.877865+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:32.877865+00:00",
+          "known_at": "2026-10-08T00:09:32.877865+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 239.24,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/NVDA?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$251.03.",
-        "bear_case": "If recent drift reverses, lower model band is US$230.72.",
-        "invalidation": "Target close outside US$230.72–US$251.03 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$254.17.",
+        "bear_case": "If recent drift reverses, lower model band is US$229.22.",
+        "invalidation": "Target close outside US$229.22–US$254.17 invalidates this statistical range."
       }
     },
     {
@@ -936,25 +1003,25 @@
       "sector_category": "semiconductors",
       "sector_emoji": "🔬",
       "currency": "USD",
-      "current_price": "US$482.30",
-      "current_price_value": 482.3,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "up",
       "direction_label": "Bullish",
-      "estimated_mid_case": "US$486.99",
-      "estimated_mid_case_value": 486.99,
-      "estimated_range": "US$464.77–510.27",
-      "range_low_value": 464.77,
-      "range_high_value": 510.27,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$489.35",
+      "estimated_mid_case_value": 489.35,
+      "estimated_range": "US$462.15–US$518.15",
+      "range_low_value": 462.15,
+      "range_high_value": 518.15,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -965,22 +1032,26 @@
           "retrieved_at": "2026-10-08T00:09:33.882082+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:33.882082+00:00",
+          "known_at": "2026-10-08T00:09:33.882082+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 482.3,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/TSM?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$510.27.",
-        "bear_case": "If recent drift reverses, lower model band is US$464.77.",
-        "invalidation": "Target close outside US$464.77–US$510.27 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$518.15.",
+        "bear_case": "If recent drift reverses, lower model band is US$462.15.",
+        "invalidation": "Target close outside US$462.15–US$518.15 invalidates this statistical range."
       }
     },
     {
@@ -993,25 +1064,25 @@
       "sector_category": "semiconductors",
       "sector_emoji": "🔬",
       "currency": "USD",
-      "current_price": "US$375.81",
-      "current_price_value": 375.81,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$376.61",
-      "estimated_mid_case_value": 376.61,
-      "estimated_range": "US$354.37–400.25",
-      "range_low_value": 354.37,
-      "range_high_value": 400.25,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$377.01",
+      "estimated_mid_case_value": 377.01,
+      "estimated_range": "US$349.92–US$406.20",
+      "range_low_value": 349.92,
+      "range_high_value": 406.2,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1022,22 +1093,26 @@
           "retrieved_at": "2026-10-08T00:09:33.909364+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:33.909364+00:00",
+          "known_at": "2026-10-08T00:09:33.909364+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 375.81,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/AVGO?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$400.25.",
-        "bear_case": "If recent drift reverses, lower model band is US$354.37.",
-        "invalidation": "Target close outside US$354.37–US$400.25 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$406.20.",
+        "bear_case": "If recent drift reverses, lower model band is US$349.92.",
+        "invalidation": "Target close outside US$349.92–US$406.20 invalidates this statistical range."
       }
     },
     {
@@ -1050,25 +1125,25 @@
       "sector_category": "semiconductors",
       "sector_emoji": "🔬",
       "currency": "MYR",
-      "current_price": "MYR 2.78",
-      "current_price_value": 2.78,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 2.79",
       "estimated_mid_case_value": 2.79,
-      "estimated_range": "MYR 2.61–2.98",
+      "estimated_range": "MYR 2.61–MYR 2.98",
       "range_low_value": 2.61,
       "range_high_value": 2.98,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -1079,7 +1154,11 @@
           "retrieved_at": "2026-10-08T00:09:32.980121+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:32.980121+00:00",
+          "known_at": "2026-10-08T00:09:32.980121+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
@@ -1107,25 +1186,25 @@
       "sector_category": "semiconductors",
       "sector_emoji": "🔬",
       "currency": "MYR",
-      "current_price": "MYR 11.22",
-      "current_price_value": 11.22,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "up",
       "direction_label": "Bullish",
       "estimated_mid_case": "MYR 11.44",
       "estimated_mid_case_value": 11.44,
-      "estimated_range": "MYR 10.81–12.09",
-      "range_low_value": 10.81,
+      "estimated_range": "MYR 10.82–MYR 12.09",
+      "range_low_value": 10.82,
       "range_high_value": 12.09,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -1136,7 +1215,11 @@
           "retrieved_at": "2026-10-08T00:09:33.104171+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:33.104171+00:00",
+          "known_at": "2026-10-08T00:09:33.104171+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Semiconductor industry watchlist; Information Technology exposure, tracked separately to avoid hiding its supply-chain cycle",
@@ -1150,8 +1233,8 @@
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/0097.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
         "bull_case": "If recent drift persists, upper model band is MYR 12.09.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 10.81.",
-        "invalidation": "Target close outside MYR 10.81–MYR 12.09 invalidates this statistical range."
+        "bear_case": "If recent drift reverses, lower model band is MYR 10.82.",
+        "invalidation": "Target close outside MYR 10.82–MYR 12.09 invalidates this statistical range."
       }
     },
     {
@@ -1164,25 +1247,25 @@
       "sector_category": "healthcare",
       "sector_emoji": "🩺",
       "currency": "USD",
-      "current_price": "US$1157.49",
-      "current_price_value": 1157.49,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$1160.90",
-      "estimated_mid_case_value": 1160.9,
-      "estimated_range": "US$1124.85–1198.11",
-      "range_low_value": 1124.85,
-      "range_high_value": 1198.11,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$1162.61",
+      "estimated_mid_case_value": 1162.61,
+      "estimated_range": "US$1118.54–US$1208.41",
+      "range_low_value": 1118.54,
+      "range_high_value": 1208.41,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1193,22 +1276,26 @@
           "retrieved_at": "2026-10-08T00:09:35.299979+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.299979+00:00",
+          "known_at": "2026-10-08T00:09:35.299979+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 1157.49,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/LLY?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$1198.11.",
-        "bear_case": "If recent drift reverses, lower model band is US$1124.85.",
-        "invalidation": "Target close outside US$1124.85–US$1198.11 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$1208.41.",
+        "bear_case": "If recent drift reverses, lower model band is US$1118.54.",
+        "invalidation": "Target close outside US$1118.54–US$1208.41 invalidates this statistical range."
       }
     },
     {
@@ -1221,25 +1308,25 @@
       "sector_category": "healthcare",
       "sector_emoji": "🩺",
       "currency": "USD",
-      "current_price": "US$254.78",
-      "current_price_value": 254.78,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$253.39",
-      "estimated_mid_case_value": 253.39,
-      "estimated_range": "US$247.57–259.34",
-      "range_low_value": 247.57,
-      "range_high_value": 259.34,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$252.70",
+      "estimated_mid_case_value": 252.7,
+      "estimated_range": "US$245.62–US$259.98",
+      "range_low_value": 245.62,
+      "range_high_value": 259.98,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1250,22 +1337,26 @@
           "retrieved_at": "2026-10-08T00:09:34.056494+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:34.056494+00:00",
+          "known_at": "2026-10-08T00:09:34.056494+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 254.78,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/JNJ?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$259.34.",
-        "bear_case": "If recent drift reverses, lower model band is US$247.57.",
-        "invalidation": "Target close outside US$247.57–US$259.34 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$259.98.",
+        "bear_case": "If recent drift reverses, lower model band is US$245.62.",
+        "invalidation": "Target close outside US$245.62–US$259.98 invalidates this statistical range."
       }
     },
     {
@@ -1278,25 +1369,25 @@
       "sector_category": "healthcare",
       "sector_emoji": "🩺",
       "currency": "USD",
-      "current_price": "US$98.16",
-      "current_price_value": 98.16,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$97.45",
-      "estimated_mid_case_value": 97.45,
-      "estimated_range": "US$94.00–101.04",
-      "range_low_value": 94.0,
-      "range_high_value": 101.04,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$97.10",
+      "estimated_mid_case_value": 97.1,
+      "estimated_range": "US$92.89–US$101.50",
+      "range_low_value": 92.89,
+      "range_high_value": 101.5,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1307,22 +1398,26 @@
           "retrieved_at": "2026-10-08T00:09:35.049210+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.049210+00:00",
+          "known_at": "2026-10-08T00:09:35.049210+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 98.16,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/ABT?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$101.04.",
-        "bear_case": "If recent drift reverses, lower model band is US$94.00.",
-        "invalidation": "Target close outside US$94.00–US$101.04 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$101.50.",
+        "bear_case": "If recent drift reverses, lower model band is US$92.89.",
+        "invalidation": "Target close outside US$92.89–US$101.50 invalidates this statistical range."
       }
     },
     {
@@ -1335,25 +1430,25 @@
       "sector_category": "healthcare",
       "sector_emoji": "🩺",
       "currency": "MYR",
-      "current_price": "MYR 7.90",
-      "current_price_value": 7.9,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 7.91",
       "estimated_mid_case_value": 7.91,
-      "estimated_range": "MYR 7.57–8.27",
+      "estimated_range": "MYR 7.57–MYR 8.27",
       "range_low_value": 7.57,
       "range_high_value": 8.27,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -1364,7 +1459,11 @@
           "retrieved_at": "2026-10-08T00:09:34.168810+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:34.168810+00:00",
+          "known_at": "2026-10-08T00:09:34.168810+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
@@ -1392,25 +1491,25 @@
       "sector_category": "healthcare",
       "sector_emoji": "🩺",
       "currency": "MYR",
-      "current_price": "MYR 2.50",
-      "current_price_value": 2.5,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 2.49",
       "estimated_mid_case_value": 2.49,
-      "estimated_range": "MYR 2.34–2.65",
+      "estimated_range": "MYR 2.34–MYR 2.65",
       "range_low_value": 2.34,
       "range_high_value": 2.65,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -1421,7 +1520,11 @@
           "retrieved_at": "2026-10-08T00:09:34.299935+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:34.299935+00:00",
+          "known_at": "2026-10-08T00:09:34.299935+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Healthcare (including pharmaceuticals, providers, devices and services)",
@@ -1449,25 +1552,25 @@
       "sector_category": "consumer-staples",
       "sector_emoji": "🛒",
       "currency": "USD",
-      "current_price": "US$107.20",
-      "current_price_value": 107.2,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$107.32",
-      "estimated_mid_case_value": 107.32,
-      "estimated_range": "US$103.27–111.52",
-      "range_low_value": 103.27,
-      "range_high_value": 111.52,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$107.38",
+      "estimated_mid_case_value": 107.38,
+      "estimated_range": "US$102.45–US$112.55",
+      "range_low_value": 102.45,
+      "range_high_value": 112.55,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1478,22 +1581,26 @@
           "retrieved_at": "2026-10-08T00:09:34.454781+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:34.454781+00:00",
+          "known_at": "2026-10-08T00:09:34.454781+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 107.2,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/WMT?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$111.52.",
-        "bear_case": "If recent drift reverses, lower model band is US$103.27.",
-        "invalidation": "Target close outside US$103.27–US$111.52 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$112.55.",
+        "bear_case": "If recent drift reverses, lower model band is US$102.45.",
+        "invalidation": "Target close outside US$102.45–US$112.55 invalidates this statistical range."
       }
     },
     {
@@ -1506,25 +1613,25 @@
       "sector_category": "consumer-staples",
       "sector_emoji": "🛒",
       "currency": "USD",
-      "current_price": "US$148.41",
-      "current_price_value": 148.41,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$148.70",
-      "estimated_mid_case_value": 148.7,
-      "estimated_range": "US$144.08–153.46",
-      "range_low_value": 144.08,
-      "range_high_value": 153.46,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$148.85",
+      "estimated_mid_case_value": 148.85,
+      "estimated_range": "US$143.21–US$154.70",
+      "range_low_value": 143.21,
+      "range_high_value": 154.7,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1535,22 +1642,26 @@
           "retrieved_at": "2026-10-08T00:09:35.599541+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.599541+00:00",
+          "known_at": "2026-10-08T00:09:35.599541+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 148.41,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/PG?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$153.46.",
-        "bear_case": "If recent drift reverses, lower model band is US$144.08.",
-        "invalidation": "Target close outside US$144.08–US$153.46 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$154.70.",
+        "bear_case": "If recent drift reverses, lower model band is US$143.21.",
+        "invalidation": "Target close outside US$143.21–US$154.70 invalidates this statistical range."
       }
     },
     {
@@ -1563,25 +1674,25 @@
       "sector_category": "consumer-staples",
       "sector_emoji": "🛒",
       "currency": "USD",
-      "current_price": "US$86.17",
-      "current_price_value": 86.17,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$86.01",
-      "estimated_mid_case_value": 86.01,
-      "estimated_range": "US$84.18–87.87",
-      "range_low_value": 84.18,
-      "range_high_value": 87.87,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$85.93",
+      "estimated_mid_case_value": 85.93,
+      "estimated_range": "US$83.71–US$88.21",
+      "range_low_value": 83.71,
+      "range_high_value": 88.21,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1592,22 +1703,26 @@
           "retrieved_at": "2026-10-08T00:09:35.039516+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.039516+00:00",
+          "known_at": "2026-10-08T00:09:35.039516+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 86.17,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/KO?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$87.87.",
-        "bear_case": "If recent drift reverses, lower model band is US$84.18.",
-        "invalidation": "Target close outside US$84.18–US$87.87 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$88.21.",
+        "bear_case": "If recent drift reverses, lower model band is US$83.71.",
+        "invalidation": "Target close outside US$83.71–US$88.21 invalidates this statistical range."
       }
     },
     {
@@ -1620,25 +1735,25 @@
       "sector_category": "consumer-staples",
       "sector_emoji": "🛒",
       "currency": "MYR",
-      "current_price": "MYR 89.02",
-      "current_price_value": 89.02,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
       "estimated_mid_case": "MYR 88.52",
       "estimated_mid_case_value": 88.52,
-      "estimated_range": "MYR 85.87–91.26",
-      "range_low_value": 85.87,
+      "estimated_range": "MYR 85.86–MYR 91.26",
+      "range_low_value": 85.86,
       "range_high_value": 91.26,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -1649,7 +1764,11 @@
           "retrieved_at": "2026-10-08T00:09:35.167485+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:35.167485+00:00",
+          "known_at": "2026-10-08T00:09:35.167485+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
@@ -1663,8 +1782,8 @@
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/4707.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
         "bull_case": "If recent drift persists, upper model band is MYR 91.26.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 85.87.",
-        "invalidation": "Target close outside MYR 85.87–MYR 91.26 invalidates this statistical range."
+        "bear_case": "If recent drift reverses, lower model band is MYR 85.86.",
+        "invalidation": "Target close outside MYR 85.86–MYR 91.26 invalidates this statistical range."
       }
     },
     {
@@ -1677,25 +1796,25 @@
       "sector_category": "consumer-staples",
       "sector_emoji": "🛒",
       "currency": "MYR",
-      "current_price": "MYR 20.78",
-      "current_price_value": 20.78,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
       "estimated_mid_case": "MYR 20.44",
       "estimated_mid_case_value": 20.44,
-      "estimated_range": "MYR 19.66–21.25",
+      "estimated_range": "MYR 19.66–MYR 21.25",
       "range_low_value": 19.66,
       "range_high_value": 21.25,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -1706,7 +1825,11 @@
           "retrieved_at": "2026-10-08T00:09:35.176893+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:35.176893+00:00",
+          "known_at": "2026-10-08T00:09:35.176893+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Staples; Malaysian names use Bursa Consumer Products & Services classification where relevant",
@@ -1734,25 +1857,25 @@
       "sector_category": "consumer-discretionary",
       "sector_emoji": "🛍️",
       "currency": "USD",
-      "current_price": "US$380.68",
-      "current_price_value": 380.68,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$381.96",
-      "estimated_mid_case_value": 381.96,
-      "estimated_range": "US$362.62–402.32",
-      "range_low_value": 362.62,
-      "range_high_value": 402.32,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$382.60",
+      "estimated_mid_case_value": 382.6,
+      "estimated_range": "US$359.02–US$407.73",
+      "range_low_value": 359.02,
+      "range_high_value": 407.73,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1763,22 +1886,26 @@
           "retrieved_at": "2026-10-08T00:09:35.273824+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.273824+00:00",
+          "known_at": "2026-10-08T00:09:35.273824+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 380.68,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/TSLA?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$402.32.",
-        "bear_case": "If recent drift reverses, lower model band is US$362.62.",
-        "invalidation": "Target close outside US$362.62–US$402.32 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$407.73.",
+        "bear_case": "If recent drift reverses, lower model band is US$359.02.",
+        "invalidation": "Target close outside US$359.02–US$407.73 invalidates this statistical range."
       }
     },
     {
@@ -1791,25 +1918,25 @@
       "sector_category": "consumer-discretionary",
       "sector_emoji": "🛍️",
       "currency": "USD",
-      "current_price": "US$286.69",
-      "current_price_value": 286.69,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$284.12",
-      "estimated_mid_case_value": 284.12,
-      "estimated_range": "US$274.01–294.60",
-      "range_low_value": 274.01,
-      "range_high_value": 294.6,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$282.84",
+      "estimated_mid_case_value": 282.84,
+      "estimated_range": "US$270.57–US$295.67",
+      "range_low_value": 270.57,
+      "range_high_value": 295.67,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1820,22 +1947,26 @@
           "retrieved_at": "2026-10-08T00:09:36.301698+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:36.301698+00:00",
+          "known_at": "2026-10-08T00:09:36.301698+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 286.69,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/HD?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$294.60.",
-        "bear_case": "If recent drift reverses, lower model band is US$274.01.",
-        "invalidation": "Target close outside US$274.01–US$294.60 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$295.67.",
+        "bear_case": "If recent drift reverses, lower model band is US$270.57.",
+        "invalidation": "Target close outside US$270.57–US$295.67 invalidates this statistical range."
       }
     },
     {
@@ -1848,25 +1979,25 @@
       "sector_category": "consumer-discretionary",
       "sector_emoji": "🛍️",
       "currency": "USD",
-      "current_price": "US$232.45",
-      "current_price_value": 232.45,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$230.23",
-      "estimated_mid_case_value": 230.23,
-      "estimated_range": "US$221.65–239.15",
-      "range_low_value": 221.65,
-      "range_high_value": 239.15,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$229.13",
+      "estimated_mid_case_value": 229.13,
+      "estimated_range": "US$218.71–US$240.05",
+      "range_low_value": 218.71,
+      "range_high_value": 240.05,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -1877,22 +2008,26 @@
           "retrieved_at": "2026-10-08T00:09:35.406281+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.406281+00:00",
+          "known_at": "2026-10-08T00:09:35.406281+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 232.45,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/MCD?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$239.15.",
-        "bear_case": "If recent drift reverses, lower model band is US$221.65.",
-        "invalidation": "Target close outside US$221.65–US$239.15 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$240.05.",
+        "bear_case": "If recent drift reverses, lower model band is US$218.71.",
+        "invalidation": "Target close outside US$218.71–US$240.05 invalidates this statistical range."
       }
     },
     {
@@ -1905,25 +2040,25 @@
       "sector_category": "consumer-discretionary",
       "sector_emoji": "🛍️",
       "currency": "MYR",
-      "current_price": "MYR 1.23",
-      "current_price_value": 1.23,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
       "estimated_mid_case": "MYR 1.22",
       "estimated_mid_case_value": 1.22,
-      "estimated_range": "MYR 1.16–1.28",
+      "estimated_range": "MYR 1.16–MYR 1.28",
       "range_low_value": 1.16,
       "range_high_value": 1.28,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -1934,7 +2069,11 @@
           "retrieved_at": "2026-10-08T00:09:35.421417+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:35.421417+00:00",
+          "known_at": "2026-10-08T00:09:35.421417+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
@@ -1962,25 +2101,25 @@
       "sector_category": "consumer-discretionary",
       "sector_emoji": "🛍️",
       "currency": "MYR",
-      "current_price": "MYR 1.45",
-      "current_price_value": 1.45,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
       "estimated_mid_case": "MYR 1.44",
       "estimated_mid_case_value": 1.44,
-      "estimated_range": "MYR 1.38–1.50",
+      "estimated_range": "MYR 1.38–MYR 1.50",
       "range_low_value": 1.38,
       "range_high_value": 1.5,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -1991,7 +2130,11 @@
           "retrieved_at": "2026-10-08T00:09:35.523916+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:35.523916+00:00",
+          "known_at": "2026-10-08T00:09:35.523916+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Consumer Discretionary; Malaysian names use Bursa Consumer Products & Services classification where relevant",
@@ -2019,25 +2162,25 @@
       "sector_category": "energy",
       "sector_emoji": "⚡",
       "currency": "USD",
-      "current_price": "US$164.48",
-      "current_price_value": 164.48,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$164.87",
-      "estimated_mid_case_value": 164.87,
-      "estimated_range": "US$158.17–171.85",
-      "range_low_value": 158.17,
-      "range_high_value": 171.85,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$165.07",
+      "estimated_mid_case_value": 165.07,
+      "estimated_range": "US$156.89–US$173.66",
+      "range_low_value": 156.89,
+      "range_high_value": 173.66,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -2048,22 +2191,26 @@
           "retrieved_at": "2026-10-08T00:09:35.583900+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.583900+00:00",
+          "known_at": "2026-10-08T00:09:35.583900+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Energy",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 164.48,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/XOM?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$171.85.",
-        "bear_case": "If recent drift reverses, lower model band is US$158.17.",
-        "invalidation": "Target close outside US$158.17–US$171.85 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$173.66.",
+        "bear_case": "If recent drift reverses, lower model band is US$156.89.",
+        "invalidation": "Target close outside US$156.89–US$173.66 invalidates this statistical range."
       }
     },
     {
@@ -2076,25 +2223,25 @@
       "sector_category": "energy",
       "sector_emoji": "⚡",
       "currency": "USD",
-      "current_price": "US$129.35",
-      "current_price_value": 129.35,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$128.79",
-      "estimated_mid_case_value": 128.79,
-      "estimated_range": "US$121.61–136.40",
-      "range_low_value": 121.61,
-      "range_high_value": 136.4,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$128.51",
+      "estimated_mid_case_value": 128.51,
+      "estimated_range": "US$119.79–US$137.87",
+      "range_low_value": 119.79,
+      "range_high_value": 137.87,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -2105,22 +2252,26 @@
           "retrieved_at": "2026-10-08T00:09:35.671161+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.671161+00:00",
+          "known_at": "2026-10-08T00:09:35.671161+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Energy",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 129.35,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/COP?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$136.40.",
-        "bear_case": "If recent drift reverses, lower model band is US$121.61.",
-        "invalidation": "Target close outside US$121.61–US$136.40 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$137.87.",
+        "bear_case": "If recent drift reverses, lower model band is US$119.79.",
+        "invalidation": "Target close outside US$119.79–US$137.87 invalidates this statistical range."
       }
     },
     {
@@ -2133,25 +2284,25 @@
       "sector_category": "energy",
       "sector_emoji": "⚡",
       "currency": "USD",
-      "current_price": "US$50.00",
-      "current_price_value": 50.0,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$49.34",
-      "estimated_mid_case_value": 49.34,
-      "estimated_range": "US$46.83–51.99",
-      "range_low_value": 46.83,
-      "range_high_value": 51.99,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$49.01",
+      "estimated_mid_case_value": 49.01,
+      "estimated_range": "US$45.97–US$52.26",
+      "range_low_value": 45.97,
+      "range_high_value": 52.26,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -2162,22 +2313,26 @@
           "retrieved_at": "2026-10-08T00:09:35.740072+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.740072+00:00",
+          "known_at": "2026-10-08T00:09:35.740072+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Energy",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 50.0,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/SLB?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$51.99.",
-        "bear_case": "If recent drift reverses, lower model band is US$46.83.",
-        "invalidation": "Target close outside US$46.83–US$51.99 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$52.26.",
+        "bear_case": "If recent drift reverses, lower model band is US$45.97.",
+        "invalidation": "Target close outside US$45.97–US$52.26 invalidates this statistical range."
       }
     },
     {
@@ -2190,25 +2345,25 @@
       "sector_category": "energy",
       "sector_emoji": "⚡",
       "currency": "MYR",
-      "current_price": "MYR 17.26",
-      "current_price_value": 17.26,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 17.26",
       "estimated_mid_case_value": 17.26,
-      "estimated_range": "MYR 16.85–17.68",
+      "estimated_range": "MYR 16.85–MYR 17.68",
       "range_low_value": 16.85,
       "range_high_value": 17.68,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -2219,7 +2374,11 @@
           "retrieved_at": "2026-10-08T00:09:35.730702+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:35.730702+00:00",
+          "known_at": "2026-10-08T00:09:35.730702+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Energy",
@@ -2247,25 +2406,25 @@
       "sector_category": "energy",
       "sector_emoji": "⚡",
       "currency": "MYR",
-      "current_price": "MYR 19.32",
-      "current_price_value": 19.32,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 19.26",
       "estimated_mid_case_value": 19.26,
-      "estimated_range": "MYR 18.46–20.09",
+      "estimated_range": "MYR 18.46–MYR 20.09",
       "range_low_value": 18.46,
       "range_high_value": 20.09,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -2276,7 +2435,11 @@
           "retrieved_at": "2026-10-08T00:09:35.805588+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:35.805588+00:00",
+          "known_at": "2026-10-08T00:09:35.805588+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Energy",
@@ -2304,25 +2467,25 @@
       "sector_category": "industrials-transport-logistics",
       "sector_emoji": "🚚",
       "currency": "USD",
-      "current_price": "US$863.44",
-      "current_price_value": 863.44,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
-      "direction": "flat",
-      "direction_label": "Sideways",
-      "estimated_mid_case": "US$867.65",
-      "estimated_mid_case_value": 867.65,
-      "estimated_range": "US$828.81–908.30",
-      "range_low_value": 828.81,
-      "range_high_value": 908.3,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
+      "direction": "up",
+      "direction_label": "Bullish",
+      "estimated_mid_case": "US$869.76",
+      "estimated_mid_case_value": 869.76,
+      "estimated_range": "US$822.33–US$919.93",
+      "range_low_value": 822.33,
+      "range_high_value": 919.93,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -2333,22 +2496,26 @@
           "retrieved_at": "2026-10-08T00:09:37.932144+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:37.932144+00:00",
+          "known_at": "2026-10-08T00:09:37.932144+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 863.44,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/CAT?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$908.30.",
-        "bear_case": "If recent drift reverses, lower model band is US$828.81.",
-        "invalidation": "Target close outside US$828.81–US$908.30 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$919.93.",
+        "bear_case": "If recent drift reverses, lower model band is US$822.33.",
+        "invalidation": "Target close outside US$822.33–US$919.93 invalidates this statistical range."
       }
     },
     {
@@ -2361,25 +2528,25 @@
       "sector_category": "industrials-transport-logistics",
       "sector_emoji": "🚚",
       "currency": "USD",
-      "current_price": "US$309.39",
-      "current_price_value": 309.39,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$306.99",
-      "estimated_mid_case_value": 306.99,
-      "estimated_range": "US$294.21–320.33",
-      "range_low_value": 294.21,
-      "range_high_value": 320.33,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$305.80",
+      "estimated_mid_case_value": 305.8,
+      "estimated_range": "US$290.27–US$322.15",
+      "range_low_value": 290.27,
+      "range_high_value": 322.15,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -2390,22 +2557,26 @@
           "retrieved_at": "2026-10-08T00:09:35.881950+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.881950+00:00",
+          "known_at": "2026-10-08T00:09:35.881950+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 309.39,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/GE?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$320.33.",
-        "bear_case": "If recent drift reverses, lower model band is US$294.21.",
-        "invalidation": "Target close outside US$294.21–US$320.33 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$322.15.",
+        "bear_case": "If recent drift reverses, lower model band is US$290.27.",
+        "invalidation": "Target close outside US$290.27–US$322.15 invalidates this statistical range."
       }
     },
     {
@@ -2418,25 +2589,25 @@
       "sector_category": "industrials-transport-logistics",
       "sector_emoji": "🚚",
       "currency": "USD",
-      "current_price": "US$93.11",
-      "current_price_value": 93.11,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$92.40",
-      "estimated_mid_case_value": 92.4,
-      "estimated_range": "US$87.86–97.19",
-      "range_low_value": 87.86,
-      "range_high_value": 97.19,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$92.05",
+      "estimated_mid_case_value": 92.05,
+      "estimated_range": "US$86.52–US$97.92",
+      "range_low_value": 86.52,
+      "range_high_value": 97.92,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -2447,22 +2618,26 @@
           "retrieved_at": "2026-10-08T00:09:35.934211+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:35.934211+00:00",
+          "known_at": "2026-10-08T00:09:35.934211+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 93.11,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/UPS?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$97.19.",
-        "bear_case": "If recent drift reverses, lower model band is US$87.86.",
-        "invalidation": "Target close outside US$87.86–US$97.19 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$97.92.",
+        "bear_case": "If recent drift reverses, lower model band is US$86.52.",
+        "invalidation": "Target close outside US$86.52–US$97.92 invalidates this statistical range."
       }
     },
     {
@@ -2475,25 +2650,25 @@
       "sector_category": "industrials-transport-logistics",
       "sector_emoji": "🚚",
       "currency": "MYR",
-      "current_price": "MYR 6.86",
-      "current_price_value": 6.86,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 6.86",
       "estimated_mid_case_value": 6.86,
-      "estimated_range": "MYR 6.67–7.05",
-      "range_low_value": 6.67,
+      "estimated_range": "MYR 6.68–MYR 7.05",
+      "range_low_value": 6.68,
       "range_high_value": 7.05,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -2504,7 +2679,11 @@
           "retrieved_at": "2026-10-08T00:09:38.040577+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:38.040577+00:00",
+          "known_at": "2026-10-08T00:09:38.040577+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
@@ -2518,8 +2697,8 @@
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/5246.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
         "bull_case": "If recent drift persists, upper model band is MYR 7.05.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 6.67.",
-        "invalidation": "Target close outside MYR 6.67–MYR 7.05 invalidates this statistical range."
+        "bear_case": "If recent drift reverses, lower model band is MYR 6.68.",
+        "invalidation": "Target close outside MYR 6.68–MYR 7.05 invalidates this statistical range."
       }
     },
     {
@@ -2532,25 +2711,25 @@
       "sector_category": "industrials-transport-logistics",
       "sector_emoji": "🚚",
       "currency": "MYR",
-      "current_price": "MYR 7.70",
-      "current_price_value": 7.7,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 7.71",
       "estimated_mid_case_value": 7.71,
-      "estimated_range": "MYR 7.41–8.02",
+      "estimated_range": "MYR 7.41–MYR 8.02",
       "range_low_value": 7.41,
       "range_high_value": 8.02,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -2561,7 +2740,11 @@
           "retrieved_at": "2026-10-08T00:09:36.104730+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:36.104730+00:00",
+          "known_at": "2026-10-08T00:09:36.104730+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Industrials and Bursa Malaysia Transport & Logistics / Industrial Products & Services exposure",
@@ -2589,25 +2772,25 @@
       "sector_category": "materials-plantation",
       "sector_emoji": "🌱",
       "currency": "USD",
-      "current_price": "US$489.95",
-      "current_price_value": 489.95,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "up",
       "direction_label": "Bullish",
-      "estimated_mid_case": "US$492.16",
-      "estimated_mid_case_value": 492.16,
-      "estimated_range": "US$480.00–504.63",
-      "range_low_value": 480.0,
-      "range_high_value": 504.63,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$493.27",
+      "estimated_mid_case_value": 493.27,
+      "estimated_range": "US$478.38–US$508.62",
+      "range_low_value": 478.38,
+      "range_high_value": 508.62,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -2618,22 +2801,26 @@
           "retrieved_at": "2026-10-08T00:09:36.238275+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:36.238275+00:00",
+          "known_at": "2026-10-08T00:09:36.238275+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 489.95,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/LIN?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$504.63.",
-        "bear_case": "If recent drift reverses, lower model band is US$480.00.",
-        "invalidation": "Target close outside US$480.00–US$504.63 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$508.62.",
+        "bear_case": "If recent drift reverses, lower model band is US$478.38.",
+        "invalidation": "Target close outside US$478.38–US$508.62 invalidates this statistical range."
       }
     },
     {
@@ -2646,25 +2833,25 @@
       "sector_category": "materials-plantation",
       "sector_emoji": "🌱",
       "currency": "USD",
-      "current_price": "US$72.56",
-      "current_price_value": 72.56,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
-      "estimated_mid_case": "US$72.17",
-      "estimated_mid_case_value": 72.17,
-      "estimated_range": "US$67.83–76.77",
-      "range_low_value": 67.83,
-      "range_high_value": 76.77,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$71.98",
+      "estimated_mid_case_value": 71.98,
+      "estimated_range": "US$66.73–US$77.63",
+      "range_low_value": 66.73,
+      "range_high_value": 77.63,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -2675,22 +2862,26 @@
           "retrieved_at": "2026-10-08T00:09:36.358241+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:36.358241+00:00",
+          "known_at": "2026-10-08T00:09:36.358241+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 72.56,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/FCX?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$76.77.",
-        "bear_case": "If recent drift reverses, lower model band is US$67.83.",
-        "invalidation": "Target close outside US$67.83–US$76.77 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$77.63.",
+        "bear_case": "If recent drift reverses, lower model band is US$66.73.",
+        "invalidation": "Target close outside US$66.73–US$77.63 invalidates this statistical range."
       }
     },
     {
@@ -2703,25 +2894,25 @@
       "sector_category": "materials-plantation",
       "sector_emoji": "🌱",
       "currency": "USD",
-      "current_price": "US$116.39",
-      "current_price_value": 116.39,
-      "price_as_of": "2026-10-06 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-06 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "down",
       "direction_label": "Bearish",
-      "estimated_mid_case": "US$115.37",
-      "estimated_mid_case_value": 115.37,
-      "estimated_range": "US$109.42–121.64",
-      "range_low_value": 109.42,
-      "range_high_value": 121.64,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "estimated_mid_case": "US$114.86",
+      "estimated_mid_case_value": 114.86,
+      "estimated_range": "US$107.65–US$122.55",
+      "range_low_value": 107.65,
+      "range_high_value": 122.55,
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
-      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
+      "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment. The latest available reference bar is one completed session behind the report cutoff.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-06 close."
       ],
       "sources": [
         {
@@ -2732,22 +2923,26 @@
           "retrieved_at": "2026-10-08T00:09:36.446685+00:00",
           "timezone": "America/New_York",
           "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-06",
+          "observed_at": "2026-10-08T00:09:36.446685+00:00",
+          "known_at": "2026-10-08T00:09:36.446685+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
       "classification_action": "watchlist",
       "forecast_model": "20-session log-return drift with a 95% Gaussian volatility band",
       "forecast_observations": 20,
-      "forecast_horizon_sessions": 2,
+      "forecast_horizon_sessions": 3,
       "forecast_basis": {
         "reference_close_date": "2026-10-06",
         "reference_close": 116.39,
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/NEM?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
-        "bull_case": "If recent drift persists, upper model band is US$121.64.",
-        "bear_case": "If recent drift reverses, lower model band is US$109.42.",
-        "invalidation": "Target close outside US$109.42–US$121.64 invalidates this statistical range."
+        "bull_case": "If recent drift persists, upper model band is US$122.55.",
+        "bear_case": "If recent drift reverses, lower model band is US$107.65.",
+        "invalidation": "Target close outside US$107.65–US$122.55 invalidates this statistical range."
       }
     },
     {
@@ -2760,25 +2955,25 @@
       "sector_category": "materials-plantation",
       "sector_emoji": "🌱",
       "currency": "MYR",
-      "current_price": "MYR 4.62",
-      "current_price_value": 4.62,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 4.61",
       "estimated_mid_case_value": 4.61,
-      "estimated_range": "MYR 4.45–4.77",
-      "range_low_value": 4.45,
+      "estimated_range": "MYR 4.46–MYR 4.77",
+      "range_low_value": 4.46,
       "range_high_value": 4.77,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -2789,7 +2984,11 @@
           "retrieved_at": "2026-10-08T00:09:36.486039+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:36.486039+00:00",
+          "known_at": "2026-10-08T00:09:36.486039+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
@@ -2803,8 +3002,8 @@
         "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/1961.KL?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
         "horizon_type": "week_end",
         "bull_case": "If recent drift persists, upper model band is MYR 4.77.",
-        "bear_case": "If recent drift reverses, lower model band is MYR 4.45.",
-        "invalidation": "Target close outside MYR 4.45–MYR 4.77 invalidates this statistical range."
+        "bear_case": "If recent drift reverses, lower model band is MYR 4.46.",
+        "invalidation": "Target close outside MYR 4.46–MYR 4.77 invalidates this statistical range."
       }
     },
     {
@@ -2817,25 +3016,25 @@
       "sector_category": "materials-plantation",
       "sector_emoji": "🌱",
       "currency": "MYR",
-      "current_price": "MYR 6.03",
-      "current_price_value": 6.03,
-      "price_as_of": "2026-10-07 completed close",
-      "quote_status": "observed",
+      "current_price": "Unavailable",
+      "current_price_value": null,
+      "price_as_of": "No eligible current quote at report cutoff; historical reference close 2026-10-07 is used only as the forecast anchor.",
+      "quote_status": "missing",
       "direction": "flat",
       "direction_label": "Sideways",
       "estimated_mid_case": "MYR 6.01",
       "estimated_mid_case_value": 6.01,
-      "estimated_range": "MYR 5.83–6.20",
+      "estimated_range": "MYR 5.83–MYR 6.20",
       "range_low_value": 5.83,
       "range_high_value": 6.2,
-      "scenario": "Low-confidence statistical scenario from recent adjusted returns; not an investment recommendation.",
+      "scenario": "Low-confidence statistical scenario from recent adjusted returns; historical reference date is shown in the forecast basis.",
       "confidence": "low",
       "confidence_reason": "Low-confidence statistical baseline from 20 completed daily adjusted-close returns; Gaussian range assumption, no out-of-sample calibration or event adjustment.",
       "forecast_status": "rated",
       "forecast_as_of": "2026-10-08T08:09:38+08:00",
       "target_date": "2026-10-09",
       "data_gaps": [
-        "Ad hoc Yahoo Finance history; provider and listing currency matched, but no chronological out-of-sample validation or event adjustment."
+        "No current quote with a validated provider source timestamp and known-at time; current price is null. Forecast anchor is the historical 2026-10-07 close."
       ],
       "sources": [
         {
@@ -2846,7 +3045,11 @@
           "retrieved_at": "2026-10-08T00:09:36.551835+00:00",
           "timezone": "Asia/Kuala_Lumpur",
           "data_period": "20 completed adjusted daily returns through 2026-10-07",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed."
+          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
+          "provider_session_date": "2026-10-07",
+          "observed_at": "2026-10-08T00:09:36.551835+00:00",
+          "known_at": "2026-10-08T00:09:36.551835+00:00",
+          "report_cutoff": "2026-10-08T08:09:38+08:00"
         }
       ],
       "classification": "Materials and Bursa Malaysia Plantation; sub-industry tags are retained to avoid treating unlike businesses as one industry",
@@ -2881,17 +3084,17 @@
       "kicker": "ETFS",
       "description": [
         {
-          "text": "SPY, QQQ and IWM have no verified session-matched reference closes or adjusted history in this report. No index return, breadth, relative strength or target is calculated. Bull and bear hypotheses remain conditional on verified closes, breadth and rates.",
+          "text": "SPY, QQQ and IWM have low-confidence statistical baseline ranges based on 20 completed adjusted daily returns. The latest US reference bars available to this source are dated October 6; an October 7 closing price and final breadth were not verified.",
           "sources": []
         }
       ],
       "items": [
         {
           "title": "SPY / QQQ / IWM",
-          "badge": "UNRATED",
+          "badge": "LOW CONFIDENCE",
           "paragraphs": [
             {
-              "text": "Direction unknown; targets null. Reassess when comparable, timestamped price history and a stated method are available.",
+              "text": "Reference date, target, modeled range and invalidation are shown with each forecast. Recent drift and volatility are not a validated directional edge; no official close or market breadth is asserted.",
               "sources": []
             }
           ]
@@ -3268,7 +3471,7 @@
           ]
         },
         {
-          "text": "No official final US close, index breadth or Malaysian price series was verified. No per-symbol trend or price forecast is inferred from a point capture.",
+          "text": "No Moomoo point observation is used as a trend or forecast. Statistical ranges are separate model outputs from dated historical bars. Current-price fields remain missing where source timestamp and known-at time could not be verified.",
           "sources": []
         }
       ],
@@ -3295,8 +3498,8 @@
     },
     {
       "label": "Forecast coverage",
-      "title": "All 50 watchlist rows are Unrated",
-      "summary": "The 30 US and 20 MY listings remain in the shared universe. No validated reference price and method support a directional price target at this cutoff."
+      "title": "All 50 rows carry a low-confidence range",
+      "summary": "Each range is a statistical baseline from recent adjusted returns. These are uncalibrated scenarios, not probabilities or trading signals."
     }
   ],
   "watchlist_config": {
