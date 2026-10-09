@@ -105,6 +105,36 @@ Trader's independent read-only review supports separate 2- and 3-session cohorts
 
 **Recommendation:** keep both methods research-only. Do not wire Chronos-2 into the public daily report or use it to alter forecast confidence. Next, collect point-in-time forecasts and matching actual closes by venue and explicit 2-/3-session horizon; then rerun Chronos-2 and simple baselines on multiple US tickers, with Bursa evaluated separately. Add costs only if a separate strategy-utility experiment is proposed. The dated target cohort still needs its actual-close data recorded after each venue close; this report does not wait for or invent those outcomes.
 
+## Follow-up experiment B — 30-name U.S. cohort (2026-10-09, 21:54 MYT)
+
+This research-only replay extends the single-SPY comparison above to every U.S. ticker in the 2026-10-08 report, with the universe fixed before scoring. It does not use Moomoo indicators, change the forecast process, or establish that any result is available for Malaysian listings.
+
+### Frozen protocol and data
+
+- Universe: `AAPL, ABT, AVGO, CAT, COP, FCX, GE, GOOGL, GS, HD, IWM, JNJ, JPM, KO, LIN, LLY, MCD, MSFT, NEM, NVDA, PG, QQQ, SLB, SPY, TSLA, TSM, UPS, V, WMT, XOM` (30 symbols, exactly those in the cited report).
+- Data: Yahoo Finance chart endpoint adjusted closes, daily interval, requested from 2018-01-01 through 2026-10-08 inclusive; 2,204 bars returned for each ticker and no fetch failures. Endpoint pattern: `https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?period1=1514764800&period2=1791504000&interval=1d&events=div%2Csplits`. Retrieved 2026-10-09 21:52 MYT. Raw provider responses were not committed; historical provider revisions remain possible.
+- Model: `amazon/chronos-2`, `chronos-forecasting 2.3.2`, pinned revision `95a9710e2596287d08352589f42634fa5abdf0a7`; weight SHA-256 `ddcda3c7508bf2528087723e98a20707cc04b7f370ae275a9fd88078ddba4f42`. CPU inference on the local Apple Silicon laptop, no covariates, `cross_learning=False`; median is the point forecast and native q10/q90 are an 80% interval.
+- At each origin, Chronos receives the latest 20 adjusted closes. Two- and three-session target windows do not overlap within a ticker; origins advance by the horizon. The target cohort is after the pinned model revision's public release date, but the model training cutoff is unverified, so this is not asserted to be an unseen-data holdout.
+- Baselines: (1) zero-return point forecast at the latest close; (2) trailing 20-close-to-close log-return mean, scaled by horizon for the drift point forecast. The zero-drift 80% Gaussian range uses the prior 20 returns' sample standard deviation (`ddof=1`) and `sqrt(h)` scaling. Scores are cumulative log-return percentage points; interval score uses alpha 0.20. No trading costs apply to these forecast-error metrics.
+- Uncertainty: percentile moving-block bootstrap over common target dates, five target dates per block, all ticker rows for each sampled date kept together, 3,000 resamples, seed 1742. This accounts for common date shocks better than treating ticker rows as independent; it does not remove model/universe-selection bias. No longer-block sensitivity or two-way ticker/date resampling was run, and five-date blocks may not capture longer regime dependence.
+
+### Results
+
+| Horizon | Forecast rows | Target dates | Chronos median MAE | Zero-return MAE | 20-return drift MAE | Chronos minus zero MAE; date-block 95% CI | Chronos direction hit | Prior-day sign hit | Drift direction hit | Chronos q10–q90 coverage | Zero-vol coverage | Chronos / zero-vol interval score |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 2 sessions | 3,510 | 117 | 2.185 | 2.023 | 2.123 | +0.163; [+0.127, +0.199] | 50.4% | 50.5% | 49.0% | 78.5% | 80.1% | 10.636 / 9.592 |
+| 3 sessions | 2,340 | 78 | 2.651 | 2.398 | 2.583 | +0.253; [+0.191, +0.320] | 50.2% | 50.1% | 50.2% | 76.8% | 81.1% | 12.668 / 11.353 |
+
+Chronos q10–q90 mean widths were 7.232 and 8.527 log-return percentage points at two and three sessions, versus 6.686 and 8.184 for the zero-drift range. Interval score is `ISα = (U−L) + (2/α)(L−y)` when `y < L`, `ISα = (U−L) + (2/α)(y−U)` when `y > U`, and `ISα = U−L` otherwise, with `α=0.20`; all terms are cumulative log-return percentage points. Direction hit rates exclude zero realized returns and exclude flat forecasts from each denominator; the zero-return point baseline is therefore scored only by point error and interval metrics, never as a directional call. Previous-day-sign denominators were 3,497 and 2,337; Chronos denominators were 3,503 and 2,338. The drift denominators were 3,502 and 2,337.
+
+### Interpretation and limits
+
+On this fixed, report-selected U.S. cohort, Chronos median forecasts had higher MAE than the zero-return baseline at both horizons, with the five-date block-bootstrap intervals for the difference above zero. Its direction hit rates were around 50% and close to the prior-day-sign and drift baselines. Its nominal 80% ranges under-covered at both horizons and had worse interval scores than the narrower zero-drift ranges. These results do not support integrating Chronos as a price predictor or using it to raise forecast confidence.
+
+This remains a one-year, report-selected survivor cohort, not a random universe or a verified model-unseen test set. The 3,510/2,340 rows are ticker-origin observations, not independent trials; the effective temporal information is much closer to 117/78 dates, with additional cross-ticker dependence. Trader review cautions that five-date bootstrap blocks may not cover longer serial/regime dependence; the positive intervals are conditional on this exploratory resampling design, not a clean independent-sample significance claim. No longer-block sensitivity or two-way date/ticker bootstrap was run. Yahoo adjusted closes were retrieved retrospectively, not from point-in-time vintages; corporate-action adjustments may revise historical levels and the information available at old origins. No Malaysian names were evaluated. Do not describe the result as market-wide precision, calibrated probability, proof of no possible edge, or validated out-of-sample performance. Continue research only if future evaluation uses a frozen point-in-time data snapshot, a verified model training cutoff or a clear limitation statement, separate US/MY cohorts, and additional distinct target dates. Actual-close ledger entries remain a separate blocked maintenance step; this backtest does not fill or score the 120 ledger rows.
+
+No production code, report artifacts, forecasts, ledger rows, private store, or model settings were changed. The analysis script and aggregate JSON remain in the task's temporary experiment directory; only this documented result is retained in the repository.
+
 ## Ownership and protected work
 
 Lead owns the decision brief and final recommendation. Trader has a read-only review assignment. The registered Engineer is not assigned implementation until Lead accepts a separate concrete implementation scope. Protect all existing working-tree changes, especially `AGENTS.md`, `agent-operations/schedules/trader-daily-report.md`, `artifacts/daily-market-brief/reports.json`, `docs/PRIVATE_REPORT_PROJECTION.md`, `ingest/daily_report_projection.py` and `skills/daily-market-brief/SKILL.md`.
