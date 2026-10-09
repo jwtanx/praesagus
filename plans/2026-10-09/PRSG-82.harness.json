@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-82",
+  "tags": {
+    "type": "feature",
+    "modules": ["financial-data", "market-research", "frontend"],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "M",
+    "effort_person_days": {"low": 3, "high": 5},
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-09",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-09/PRSG-82-per-ticker-moomoo-ta-counts.md",
+  "objective": "Propose a separate, provenance-backed per-ticker display of discrete Moomoo KDJ, MACD and Bollinger bullish/bearish observations, without changing forecast direction or price targets.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "provisional",
+  "base_sha": null,
+  "allowed_paths": [
+    "plans/2026-10-09/PRSG-82-per-ticker-moomoo-ta-counts.md",
+    "plans/2026-10-09/PRSG-82.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "agent-operations/schedules/",
+    "artifacts/daily-market-brief/2026-10-07.json",
+    "artifacts/daily-market-brief/2026-10-08.json",
+    "artifacts/daily-market-brief/2026-10-09.json",
+    "harness/engineering/price-prediction/forecast-ledger.csv",
+    "skills/daily-market-brief/SKILL.md",
+    "docs/PRIVATE_REPORT_PROJECTION.md",
+    "connectors/moomoo_rest_live.py",
+    "ingest/private_market_store.py"
+  ],
+  "checks": [
+    {"id": "schema-and-provenance", "kind": "manual", "description": "Lead accepts one versioned indicator-event/count shape and eligibility rules before implementation scope is frozen.", "status": "pending", "evidence": []},
+    {"id": "data-coverage", "kind": "manual", "description": "Verify current local data/history coverage for intended market, completed bars, parameters and timestamps; no credential or provider work without a separately accepted task.", "status": "pending", "evidence": []},
+    {"id": "indicator-replay", "kind": "manual", "description": "A deterministic local fixture set demonstrates each discrete KDJ, MACD and Bollinger rule plus missing/stale/conflicting cases.", "status": "pending", "evidence": []},
+    {"id": "viewer-and-validation", "kind": "manual", "description": "A rendered viewer check confirms accessible per-ticker counts and details, with counts separate from forecast outputs and invalid data rejected.", "status": "pending", "evidence": []},
+    {"id": "lead-review", "kind": "manual", "description": "Lead reviews implementation diff and all listed checks before acceptance.", "status": "pending", "evidence": []}
+  ],
+  "acceptance": [
+    {"id": "PRSG-82-D1", "description": "Accept a provenance-backed schema and exact, versioned rules for at most one current directional event per indicator, ticker and timeframe.", "check_ids": ["schema-and-provenance", "data-coverage"], "status": "pending", "evidence": []},
+    {"id": "PRSG-82-D2", "description": "Demonstrate deterministic bullish/bearish and rejection/missing cases for all three indicators using frozen local bars.", "check_ids": ["indicator-replay"], "status": "pending", "evidence": []},
+    {"id": "PRSG-82-D3", "description": "Display per-ticker per-indicator counts with accessible details and explicit coverage, independently from forecast direction/targets/confidence.", "check_ids": ["viewer-and-validation"], "status": "pending", "evidence": []},
+    {"id": "PRSG-82-D4", "description": "Record coverage and usability evidence; keep any predictive use out of scope until separately evaluated.", "check_ids": ["data-coverage", "viewer-and-validation"], "status": "pending", "evidence": []},
+    {"id": "PRSG-82-D5", "description": "Lead independently reviews complete scoped diff and test evidence.", "check_ids": ["lead-review"], "status": "pending", "evidence": []}
+  ],
+  "review": {"status": "pending", "evidence": []}
+}
