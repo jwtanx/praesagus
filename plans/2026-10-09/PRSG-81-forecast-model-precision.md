@@ -146,6 +146,12 @@ This remains a one-year, report-selected survivor cohort, not a random universe 
 
 No production code, report artifacts, forecasts, ledger rows, private store, or model settings were changed. The analysis script and aggregate JSON remain in the task's temporary experiment directory; only this documented result is retained in the repository.
 
+### Ledger maturity checkpoint (2026-10-09 22:15 MYT)
+
+A fresh read-only cross-tab of the frozen ledger still finds 120 rows targeting 2026-10-09: 95 US (94 `week_end`, one `next_session`) and 25 MY (`week_end`). The separate report-date cohorts are 70 issuances from Sep 30, 49 from Oct 8, and one from Oct 9; these are not market counts. The 25 MY rows record a 17:00 MYT target close, which had elapsed at this checkpoint, subject to exchange-calendar and security-session confirmation. The 95 US rows record a 16:00 EDT target close; this checkpoint was 10:15 EDT, during the NYSE core session, so those targets had not matured. NYSE's documented core session is 09:30–16:00 ET ([NYSE trading hours](https://www.nyse.com/trade/trading-information)); Bursa's current trading manual lists sessions through 17:00 MYT ([Bursa Malaysia trading manual](https://www.bursamalaysia.com/sites/5d809dcf39fba22790cad230/assets/5fcdabe439fba27a9596b8f6/POs_Trading_Manual_v27_Final_highlighted.pdf)).
+
+All 120 rows remain pending, with `actual_close_date`, `actual_close`, `actual_source`, and `actual_available_at` blank. No outcomes were fetched or written, and no score or model comparison was updated. Recheck the US close after 16:00 EDT (04:00 MYT on Oct 10; the 04:15 MYT coordination tick is after the scheduled close) before classifying target maturity. Maturity alone does not make a row scoreable: reference-price/cutoff comparability, exact horizon sessions, source/adjustment provenance and outcome availability still require a separately frozen collection scope.
+
 ## Ownership and protected work
 
 Lead owns the decision brief and final recommendation. Trader has a read-only review assignment. The registered Engineer is not assigned implementation until Lead accepts a separate concrete implementation scope. Protect all existing working-tree changes, especially `AGENTS.md`, `agent-operations/schedules/trader-daily-report.md`, `artifacts/daily-market-brief/reports.json`, `docs/PRIVATE_REPORT_PROJECTION.md`, `ingest/daily_report_projection.py` and `skills/daily-market-brief/SKILL.md`.
