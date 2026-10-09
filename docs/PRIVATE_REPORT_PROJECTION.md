@@ -1,5 +1,7 @@
 # Private observed-quote report draft (PRSG-39)
 
+> Scope: this document describes the optional private-draft projection CLI only. It is not the normal dated report/dashboard workflow. Do not apply its `--public-output` procedure or restrictions to reports generated through `skills/daily-market-brief/SKILL.md` and the shared dated viewer.
+
 This manual workflow overlays selected private snapshot observations onto an
 explicitly accepted schema3 report template. It does not collect data, schedule a
 run, publish a report, update Pages/index files, or generate forecasts.
