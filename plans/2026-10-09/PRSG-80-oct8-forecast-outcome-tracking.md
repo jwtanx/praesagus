@@ -32,14 +32,14 @@ The October 8 report, all other reports, viewer, monthly calendar, projection co
 - [x] PRSG-80-D2: October 9 report and report index identify the October 8 Bullish/Bearish/Sideways counts and report both cohorts pending because target closes are not verified.
 - [x] PRSG-80-D3: Daily report skill requires freezing rated forecasts at publication and scores Bullish/Bearish direction and inclusive ranges only after a comparable target close and its availability time are verified.
 - [x] PRSG-80-D4: The deterministic evaluator supports explicit same-day venue-close timestamps, rejects forecast/actual availability leakage and retains future-target behavior.
-- [ ] PRSG-80-D5: Lead reviews complete scope, exact evidence, report publication and deployment status.
+- [x] PRSG-80-D5: Lead reviewed scope/evidence; commit e550b32 is pushed, Pages run 37886457572 succeeded, and the live report/index show the update.
 
 ## Validation record
 
 - Forecast review at `2026-10-09T12:55:04+08:00`: valid, 120 issuances, 100 instrument-target pairs, 0 scored, 120 pending, 18 correlated-vintage warnings. The 49 Oct 8 rows and Oct 9 SPY row remain pending until their venue closes.
-- `python3 -m pytest tests/test_forecast_review.py -q`: 16 passed.
+- `python3 -m pytest tests/test_forecast_review.py -q`: 16 passed. Full repository suite from both commit and push hooks: 1,239 passed, 41 warnings.
 - `python3 scripts/daily-market-brief/validate_report_json.py --date 2026-10-09 --public`: passed; 50 forecasts, 65 calendar events, 10 report dates.
 - Skill Creator `quick_validate.py skills/daily-market-brief`: passed; version 1.8 metadata and frontmatter are valid.
 - `python3 scripts/planning/validate_ticket.py plans/2026-10-09/PRSG-80.harness.json` with all nine changed paths: pending final checklist synchronization/review.
 - Field comparison confirms the 70 original issuance/outcome values are unchanged; scheduled close timestamps were added for target-date rows, 49 Oct 8 rated forecasts were added, and one Oct 9 SPY row was added with a venue-local NYSE Arca close time. Actual values remain blank.
-- Trader's read-only outcome review confirms the Oct 8 counts and no close actuals available at 12:48 MYT. Lead diff/scope review is complete. Commit/push and Pages verification remain pending.
+- Trader's read-only outcome review confirms the Oct 8 counts and no close actuals available at 12:48 MYT. Lead diff/scope review is complete. Commit e550b32 is pushed and verified at origin/main; GitHub Pages run 37886457572 succeeded. The deployed report page and index were checked live; the selected date is Oct 9 and the scorecard shows the new pending cohort. The Oct 8 forecasts remain unevaluated until final closes and verified availability arrive.
