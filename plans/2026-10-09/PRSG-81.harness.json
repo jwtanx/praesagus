@@ -14,11 +14,11 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-09/PRSG-81-forecast-model-precision.md",
   "objective": "Establish a leakage-safe, evidence-backed method to assess and improve the daily report's forecast precision without claiming predictive edge prematurely.",
-  "status": "planned",
+  "status": "complete",
   "owner": "Lead",
   "reviewer": "Lead",
-  "scope_status": "provisional",
-  "base_sha": null,
+  "scope_status": "accepted",
+  "base_sha": "ffd5cf6dde896712369db24dcfbd34738f602a7c",
   "allowed_paths": [
     "plans/2026-10-09/PRSG-81-forecast-model-precision.md",
     "plans/2026-10-09/PRSG-81.harness.json"
@@ -36,16 +36,16 @@
     "connectors/"
   ],
   "checks": [
-    {"id": "cohort-audit", "kind": "manual", "description": "Audit frozen source reports and ledger rows for mature outcomes, horizons, source comparability, missingness and leakage constraints.", "status": "pending", "evidence": []},
-    {"id": "baseline-design", "kind": "manual", "description": "Predefine leakage-safe metrics, at least two simple baselines, and a minimum evidence threshold or explain why no comparison is yet defensible.", "status": "pending", "evidence": []},
-    {"id": "trader-review", "kind": "manual", "description": "Registered Trader reviews interpretability and limitations of Moomoo directional inputs for the proposed forecast comparison.", "status": "pending", "evidence": []},
-    {"id": "lead-decision", "kind": "manual", "description": "Lead records model-change, evidence-accumulation or abstention recommendation and exact next scope.", "status": "pending", "evidence": []}
+    {"id": "cohort-audit", "kind": "manual", "description": "Audit frozen source reports and ledger rows for mature outcomes, horizons, source comparability, missingness and leakage constraints.", "status": "passed", "evidence": ["PRSG-81 experiment report: evaluator at 2026-10-09T18:34:00+08:00; 120 total, 0 scored, 95 pending and 25 mature but unscored; actual-close and availability fields are blank."]},
+    {"id": "baseline-design", "kind": "manual", "description": "Predefine leakage-safe metrics, at least two simple baselines, and a minimum evidence threshold or explain why no comparison is yet defensible.", "status": "passed", "evidence": ["PRSG-81 experiment report: fixed 20-session inputs, 2/3-session non-overlapping chronological origins, zero-return, drift and prior-sign baselines, point MAE/RMSE, direction, coverage, interval score and block-bootstrap uncertainty; no market-wide threshold is defensible from one SPY series."]},
+    {"id": "trader-review", "kind": "manual", "description": "Registered Trader reviews interpretability and limitations of Moomoo directional inputs for the proposed forecast comparison.", "status": "passed", "evidence": ["Registered Trader read-only review: preserve separate 2/3-session cohorts, point-in-time close/adjustment provenance, matched rows, zero-return/prior-sign baselines, separate direction/interval metrics and time-clustered uncertainty; current ledger cannot score the Oct 9 target cohort."]},
+    {"id": "lead-decision", "kind": "manual", "description": "Lead records model-change, evidence-accumulation or abstention recommendation and exact next scope.", "status": "passed", "evidence": ["Lead decision in PRSG-81 experiment report: keep both methods research-only; collect verified outcomes and compare across US tickers and Bursa separately; no production integration."]}
   ],
   "acceptance": [
-    {"id": "PRSG-81-D1", "description": "Establish available forecast/outcome cohort counts, target horizons, missingness and comparability limits.", "check_ids": ["cohort-audit"], "status": "pending", "evidence": []},
-    {"id": "PRSG-81-D2", "description": "Define leakage-safe metrics, at least two simple baselines, and an evidence/sample threshold or evidence-based reason to defer comparison.", "check_ids": ["baseline-design"], "status": "pending", "evidence": []},
-    {"id": "PRSG-81-D3", "description": "Record Trader's review of Moomoo signal interpretability and data limitations.", "check_ids": ["trader-review"], "status": "pending", "evidence": []},
-    {"id": "PRSG-81-D4", "description": "Record Lead's recommendation and next exact implementation scope without implying production changes.", "check_ids": ["lead-decision"], "status": "pending", "evidence": []}
+    {"id": "PRSG-81-D1", "description": "Establish available forecast/outcome cohort counts, target horizons, missingness and comparability limits.", "check_ids": ["cohort-audit"], "status": "done", "evidence": ["See experiment report for exact evaluator command, cutoff and counts."]},
+    {"id": "PRSG-81-D2", "description": "Define leakage-safe metrics, at least two simple baselines, and an evidence/sample threshold or evidence-based reason to defer comparison.", "check_ids": ["baseline-design"], "status": "done", "evidence": ["See experiment report for frozen chronological protocol, baselines, metrics and limits."]},
+    {"id": "PRSG-81-D3", "description": "Record Trader's review of Moomoo signal interpretability and data limitations.", "check_ids": ["trader-review"], "status": "done", "evidence": ["See experiment report and registered Trader's read-only method review."]},
+    {"id": "PRSG-81-D4", "description": "Record Lead's recommendation and next exact implementation scope without implying production changes.", "check_ids": ["lead-decision"], "status": "done", "evidence": ["See experiment report: research-only recommendation and next evidence-collection scope; no production change."]}
   ],
-  "review": {"status": "pending", "evidence": []}
+  "review": {"status": "accepted", "evidence": ["Lead reviewed the experiment report against all four checklist items. No production files, report outputs, ledger rows or unrelated working-tree edits were changed."]}
 }
