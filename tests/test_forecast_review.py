@@ -79,6 +79,67 @@ class ForecastReviewTests(unittest.TestCase):
         self.assertEqual(result['summary']['direction']['denominator'], 0)
         self.assertEqual(result['summary']['coverage']['fraction'], 0)
 
+    def test_same_day_target_stays_pending_until_target_close(self):
+        row = forecast(report_date='2026-10-10', as_of='2026-10-10T15:00:00+08:00',
+                       forecast_target_date='2026-10-10',
+                       forecast_target_close_at='2026-10-10T16:00:00+08:00',
+                       actual_close_date='', actual_close='', actual_source='', actual_available_at='')
+        before_close = self.review([row], '2026-10-10T15:59:59+08:00')
+        self.assertTrue(before_close['valid'])
+        self.assertEqual(before_close['rows'][0]['status'], 'pending')
+        at_close = self.review([row], '2026-10-10T16:00:00+08:00')
+        self.assertTrue(at_close['valid'])
+        self.assertEqual(at_close['rows'][0]['status'], 'not_scored')
+        self.assertIn('no actual data', at_close['rows'][0]['reason'])
+
+    def test_same_day_target_requires_close_and_preclose_forecast(self):
+        base = dict(report_date='2026-10-10', forecast_target_date='2026-10-10',
+                    actual_close_date='', actual_close='', actual_source='', actual_available_at='')
+        no_close = self.review([forecast(**base)], '2026-10-10T15:59:00+08:00')
+        self.assertFalse(no_close['valid'])
+        self.assertIn('requires forecast_target_close_at', no_close['errors'][0]['error'])
+
+        close = '2026-10-10T16:00:00+08:00'
+        for issued_at in ('2026-10-10T16:00:00+08:00', '2026-10-10T16:00:01+08:00'):
+            with self.subTest(issued_at=issued_at):
+                result = self.review([forecast(**base, as_of=issued_at,
+                                               forecast_target_close_at=close)],
+                                     '2026-10-10T16:01:00+08:00')
+                self.assertFalse(result['valid'])
+                self.assertIn('must be before forecast_target_close_at', result['errors'][0]['error'])
+
+    def test_target_close_uses_its_own_local_date_and_requires_timezone(self):
+        base = dict(report_date='2026-10-10', as_of='2026-10-10T15:00:00+08:00',
+                    forecast_target_date='2026-10-10', actual_close_date='', actual_close='',
+                    actual_source='', actual_available_at='')
+        for close in ('2026-10-09T23:59:00-04:00', '2026-10-10T16:00:00'):
+            with self.subTest(close=close):
+                result = self.review([forecast(**base, forecast_target_close_at=close)],
+                                     '2026-10-10T15:30:00+08:00')
+                self.assertFalse(result['valid'])
+
+    def test_actual_availability_cannot_precede_target_close(self):
+        row = forecast(report_date='2026-10-10', as_of='2026-10-10T15:00:00+08:00',
+                       forecast_target_date='2026-10-10',
+                       forecast_target_close_at='2026-10-10T16:00:00+08:00',
+                       actual_close_date='2026-10-10', actual_close='110', actual_source='fixture:actual',
+                       actual_available_at='2026-10-10T15:59:00+08:00')
+        result = self.review([row], '2026-10-10T16:01:00+08:00')
+        self.assertFalse(result['valid'])
+        self.assertIn('actual_available_at is before forecast_target_close_at', result['errors'][0]['error'])
+
+        row['actual_available_at'] = '2026-10-10T16:00:00+08:00'
+        result = self.review([row], '2026-10-10T16:01:00+08:00')
+        self.assertTrue(result['valid'])
+        self.assertEqual(result['rows'][0]['status'], 'scored')
+
+    def test_future_target_without_close_timestamp_remains_pending(self):
+        result = self.review([forecast(forecast_target_date='2026-10-20',
+                                       actual_close_date='', actual_close='', actual_source='',
+                                       actual_available_at='')], '2026-10-10T12:00:00Z')
+        self.assertTrue(result['valid'])
+        self.assertEqual(result['rows'][0]['status'], 'pending')
+
     def test_close_availability_and_ambiguous_basis(self):
         result = self.review([forecast(actual_available_at=''),
                               forecast(forecast_id='my', scoring_notes='US intraday snapshot; MY close')])

@@ -22,13 +22,13 @@ Exit code 0 means supplied rows passed validation; it does not mean outcomes are
 
 ## Input and scoring rules
 
-Use the ledger header as the forecast schema. Preserve original forecasts and evidence snapshots; write corrections as documented new vintages. Numeric prices and complete range pairs must be finite and positive. Probabilities, when supplied, must be between 0 and 1. Forecast timestamps include a timezone and cannot follow the review timestamp; target dates must follow the forecast date.
+Use the ledger header as the forecast schema. Preserve original forecasts and evidence snapshots; write corrections as documented new vintages. Numeric prices and complete range pairs must be finite and positive. Probabilities, when supplied, must be between 0 and 1. Forecast timestamps include a timezone and cannot follow the review timestamp. Normally the target date must follow both the report date and the forecast's local date. For a same-calendar-day target, include the optional `forecast_target_close_at` CSV field: it must be a timezone-aware ISO datetime whose own local date equals `forecast_target_date`, and the frozen `as_of` must be strictly before that close. When supplied, the close timestamp must also be later than the forecast issuance time.
 
-To score an outcome, provide `actual_close_date`, `actual_close`, and `actual_source` together. Add an `actual_available_at` CSV column with the timezone-aware timestamp when that close became available. Its absence leaves a complete outcome unscored because availability cannot be verified. A future outcome or mismatched target date fails validation. Supplied timestamps are validated, but their underlying source truth still requires review.
+To score an outcome, provide `actual_close_date`, `actual_close`, and `actual_source` together. Keep `actual_close_date` equal to `forecast_target_date`. Add an `actual_available_at` CSV column with the timezone-aware timestamp when that close became available. Its absence leaves a complete outcome unscored because availability cannot be verified. When `forecast_target_close_at` is present, `actual_available_at` must be at or after that close. A future outcome or mismatched target date fails validation. Supplied timestamps are validated, but their underlying source truth still requires review.
 
 | Result | Meaning |
 |---|---|
-| `pending` | Target date has not matured and no outcome is supplied. |
+| `pending` | Target has not matured and no outcome is supplied. With `forecast_target_close_at`, it remains pending until the review timestamp reaches that venue-local close; without it, the existing review-calendar-date rule applies. |
 | `not_scored` | Outcome is missing, availability is unverified, or baseline comparability is ambiguous. |
 | `abstain` / `data_unavailable` | No eligible forecast; excluded from scoring. |
 | `scored` | Comparable outcome inputs pass the evaluator's checks. |

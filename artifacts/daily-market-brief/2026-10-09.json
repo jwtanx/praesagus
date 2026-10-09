@@ -2911,14 +2911,23 @@
       "kicker": "SCORE",
       "description": [
         {
-          "text": "Explicit ledger review at 2026-10-08T00:09:38+00:00 was valid: 70 issuances, 67 unique instrument-target pairs, 0 scored, 70 pending, and 0 eligible matured targets. The October 9 week-end cohort remains pending; no actuals were appended.",
-          "sources": []
+          "text": "The October 8 forecast cohort has 49 rated signals: 11 Bullish, 17 Bearish and 21 Sideways; one of its 50 names is Unrated. All 49 target October 9. This report also contains one October 9 SPY Sideways forecast for the NYSE Arca close. At the 2026-10-09T12:55:04+08:00 review, the ledger contained 120 issuances across 100 instrument-target pairs: 0 scored and 120 pending. No verified target-close actuals were available, so none of these ratings can yet be called a hit or miss.",
+          "sources": [
+            {
+              "label": "NYSE official core trading hours (Eastern Time)",
+              "url": "https://www.nyse.com/trade/hours-calendars"
+            },
+            {
+              "label": "Bursa Malaysia securities trading sessions",
+              "url": "https://www.bursamalaysia.com/sites/5d809dcf39fba22790cad230/assets/5fcdabe439fba27a9596b8f6/POs_Trading_Manual_v27_Final_highlighted.pdf"
+            }
+          ]
         }
       ],
       "items": [],
       "notes": [
         {
-          "text": "No target matured and no verified actual is missing for an eligible matured cohort. Next-session and week-end vintages remain separate; hit rate and Brier score are unavailable.",
+          "text": "Wait for each target venue close and a comparable, source-backed final close with its availability timestamp. Bullish is a directional hit only above the frozen reference; Bearish only below it; Sideways is excluded from directional hit/miss counts. Ranges are scored inclusively. Pending forecasts are neither hits nor misses; no hit rate or Brier score is available yet.",
           "sources": []
         }
       ],

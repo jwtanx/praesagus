@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-80",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "harness",
+      "skills",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.3,
+      "high": 0.5
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-09",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-09/PRSG-80-oct8-forecast-outcome-tracking.md",
+  "objective": "Preserve the Oct 8 forecast cohort before target outcomes, support valid same-day forecasts in deterministic review, and report Bullish/Bearish outcome status without hindsight.",
+  "status": "review",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "007fba1a2a8abe474972bd58505c87c95c22f5cf",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/2026-10-09.json",
+    "artifacts/daily-market-brief/reports.json",
+    "harness/engineering/price-prediction/forecast-ledger.csv",
+    "skills/daily-market-brief/SKILL.md",
+    "plans/2026-10-09/PRSG-80-oct8-forecast-outcome-tracking.md",
+    "plans/2026-10-09/PRSG-80.harness.json",
+    "harness/forecast_review.py",
+    "harness/FORECAST_REVIEW.md",
+    "tests/test_forecast_review.py"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "artifacts/daily-market-brief/2026-10-08.json",
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/watchlist-universe-five.json",
+    "artifacts/financial-calendar/",
+    "ingest/",
+    "scripts/",
+    "backend/",
+    "frontend/",
+    "connectors/",
+    ".github/"
+  ],
+  "checks": [
+    {
+      "id": "ledger-freeze",
+      "kind": "manual",
+      "description": "Confirm 49 rated forecasts from the Oct 8 report are copied once, without changing original fields or adding actuals.",
+      "status": "passed",
+      "evidence": [
+        "The ledger contains 49 Oct 8 report forecasts (11 up, 17 down, 21 flat) and the Oct 9 same-day SPY forecast. All 120 issuance rows are pending with blank actual close/date/source/availability; the 70 original rows retain their pre-existing forecast and outcome fields, with scheduled target-close metadata added for Oct 9.",
+        "Trader independently verified the Oct 8 cohort counts and that no Oct 9 final closes were available at 12:48 MYT."
+      ]
+    },
+    {
+      "id": "forecast-review-tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "tests/test_forecast_review.py",
+        "-q"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "python3 -m pytest tests/test_forecast_review.py -q: 16 passed in 0.24s (Lead replay after Engineer implementation)."
+      ]
+    },
+    {
+      "id": "review-replay",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "harness/forecast_review.py",
+        "--ledger",
+        "harness/engineering/price-prediction/forecast-ledger.csv",
+        "--as-of",
+        "2026-10-09T12:48:50+08:00"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "harness.forecast_review.review_ledger at 2026-10-09T12:55:04+08:00 returned valid=true, 120 issuances, 100 unique instrument-target pairs, 0 scored, 120 pending, 0 not_scored, 0 invalid, 18 correlated-vintage warnings. All 49 Oct 8 forecasts and the current Oct 9 SPY forecast remain pending until their explicit target-close timestamps."
+      ]
+    },
+    {
+      "id": "report-validation",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py",
+        "--date",
+        "2026-10-09",
+        "--public"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "python3 scripts/daily-market-brief/validate_report_json.py --date 2026-10-09 --public passed after final report and reports.json index update: 50 forecasts, 65 calendar events, 10 report dates indexed."
+      ]
+    },
+    {
+      "id": "skill-validation",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "/Users/jwtan/.codex/skills/.system/skill-creator/scripts/quick_validate.py",
+        "skills/daily-market-brief"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Skill Creator quick_validate.py skills/daily-market-brief passed; SKILL.md YAML/frontmatter valid, metadata version 1.8."
+      ]
+    },
+    {
+      "id": "frozen-behavior-case",
+      "kind": "manual",
+      "description": "Replay the frozen Oct 8 cohort at a review cutoff before its Oct 9 target date; verify 49 rated signals remain pending, no actual is created, and no hit rate is emitted.",
+      "status": "passed",
+      "evidence": [
+        "The frozen Oct 8 cohort and Oct 9 same-day SPY row were reviewed before their scheduled venue closes. Evaluator retained 120 pending, created no actuals, and emitted no hit rate; same-day target did not count as a loss."
+      ]
+    },
+    {
+      "id": "scope-review",
+      "kind": "manual",
+      "description": "Review ticket-owned diffs and preserve pre-existing Trader edits; distinguish pushed from deployed.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed all eight ticket paths. The Oct 8 source report is byte-for-byte unchanged; Oct 9 forecast rows and all non-score sections are unchanged; prior ledger rows retain all original forecast/outcome fields, with only target-close timestamps added for Oct 9 maturity handling.",
+        "No projection implementation was included. Pre-existing Trader projection and Moomoo skill edits were saved separately and remain excluded; they will be restored after this delivery commit."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-80-D1",
+      "description": "Preserve all 49 rated Oct 8 forecasts and the Oct 9 same-day SPY forecast with correct target-close metadata; no actuals are invented.",
+      "check_ids": [
+        "ledger-freeze",
+        "review-replay"
+      ],
+      "status": "done",
+      "evidence": [
+        "All 49 Oct 8 rated signals and the Oct 9 SPY same-day forecast are frozen as pending; actual fields remain empty."
+      ]
+    },
+    {
+      "id": "PRSG-80-D2",
+      "description": "Show Oct 8 Bullish/Bearish/Sideways counts and honestly pending outcome status in the Oct 9 report.",
+      "check_ids": [
+        "report-validation"
+      ],
+      "status": "done",
+      "evidence": [
+        "The Oct 9 report identifies Oct 8 Bullish/Bearish/Sideways counts and a 120-row pending scorecard; report validator passes."
+      ]
+    },
+    {
+      "id": "PRSG-80-D3",
+      "description": "Daily report skill requires issuance-time ledger capture and post-close comparable actual/availability evidence.",
+      "check_ids": [
+        "skill-validation",
+        "frozen-behavior-case"
+      ],
+      "status": "done",
+      "evidence": [
+        "Daily report skill v1.8 requires issuance-time forecast capture and post-close evidence; quick validation and frozen behavior replay pass."
+      ]
+    },
+    {
+      "id": "PRSG-80-D4",
+      "description": "Forecast evaluator supports a forecast whose target venue close is later on the same calendar date, and rejects close-time leakage.",
+      "check_ids": [
+        "forecast-review-tests",
+        "review-replay"
+      ],
+      "status": "done",
+      "evidence": [
+        "Evaluator validates explicit venue-local target-close time, preserves pending status until close, and rejects leakage; focused 16-case suite passes."
+      ]
+    },
+    {
+      "id": "PRSG-80-D5",
+      "description": "Lead reviews full scope, exact evidence, report publication and deployment status.",
+      "check_ids": [
+        "scope-review",
+        "ledger-freeze",
+        "forecast-review-tests",
+        "review-replay",
+        "report-validation",
+        "skill-validation",
+        "frozen-behavior-case"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "D1\u2013D4 and scope evidence are verified. Final commit, push readback and Pages workflow status remain pending."
+    ]
+  }
+}

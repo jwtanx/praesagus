@@ -19,10 +19,15 @@ STATUSES = {'pending', 'scored', 'not_scored', 'abstain', 'data_unavailable'}
 DIRECTIONS = {'up', 'down', 'flat', 'sideways', 'abstain', 'data_unavailable'}
 
 
-def aware_timestamp(value):
-    parsed = datetime.fromisoformat(value.replace('Z', '+00:00'))
+def aware_timestamp(value, field='as_of'):
+    if not isinstance(value, str):
+        raise ValueError(field + ' must include a timezone offset')
+    try:
+        parsed = datetime.fromisoformat(value.replace('Z', '+00:00'))
+    except ValueError:
+        raise ValueError(field + ' must be a valid ISO datetime') from None
     if parsed.tzinfo is None or parsed.utcoffset() is None:
-        raise ValueError('as_of must include a timezone offset')
+        raise ValueError(field + ' must include a timezone offset')
     return parsed
 
 
@@ -49,8 +54,18 @@ def evaluate_row(row, review_at):
     target = iso_date(row['forecast_target_date'])
     if forecast_at > review_at:
         raise ValueError('forecast as_of is after review as_of')
-    if target <= max(report_date, forecast_at.date()):
+    target_close_value = row.get('forecast_target_close_at', '')
+    target_close_at = (aware_timestamp(target_close_value, 'forecast_target_close_at')
+                       if target_close_value else None)
+    if target_close_at and target_close_at.date() != target:
+        raise ValueError('forecast_target_close_at local date must match forecast_target_date')
+    latest_forecast_day = max(report_date, forecast_at.date())
+    if target < latest_forecast_day:
         raise ValueError('target must be later than forecast date')
+    if target == latest_forecast_day and not target_close_at:
+        raise ValueError('same-day target requires forecast_target_close_at')
+    if target_close_at and forecast_at >= target_close_at:
+        raise ValueError('forecast as_of must be before forecast_target_close_at')
     if row['horizon_type'] not in {'next_session', 'week_end'}:
         raise ValueError('unsupported horizon_type')
     if row['status'] not in STATUSES or row['forecast_direction'] not in DIRECTIONS:
@@ -84,17 +99,24 @@ def evaluate_row(row, review_at):
         if actual_date != target or actual_date > review_at.date():
             raise ValueError('actual date must match target and not be after review as_of')
         if available_at:
-            available = aware_timestamp(available_at)
+            available = aware_timestamp(available_at, 'actual_available_at')
             if available > review_at or available.date() < actual_date:
                 raise ValueError('actual_available_at is future or earlier than actual close date')
+            if target_close_at and available < target_close_at:
+                raise ValueError('actual_available_at is before forecast_target_close_at')
         else:
             unavailable_reason = 'actual availability timestamp missing; close availability is unverified'
         if re.search(r'\b(intraday|snapshot)\b', row['scoring_notes'], re.IGNORECASE):
             unavailable_reason = 'reference close basis is incomparable or ambiguous: intraday/snapshot notes'
+    if actual is not None:
+        status = 'not_scored' if unavailable_reason else 'scored'
+    elif target_close_at:
+        status = 'pending' if review_at < target_close_at else 'not_scored'
+    else:
+        status = 'pending' if target > review_at.date() else 'not_scored'
     result = dict(forecast_id=row['forecast_id'], horizon_type=row['horizon_type'],
                   market=row['market'], venue=row['venue'], ticker=row['ticker'],
-                  forecast_target_date=target.isoformat(), status=abstention or ('not_scored' if unavailable_reason else 'scored' if actual is not None else
-                                       'pending' if target > review_at.date() else 'not_scored'))
+                  forecast_target_date=target.isoformat(), status=abstention or status)
     if result['status'] != 'scored':
         result['reason'] = abstention or unavailable_reason or ('target has not matured' if result['status'] == 'pending' else 'mature target has no actual data')
         return result
@@ -175,7 +197,7 @@ def review_ledger(ledger, as_of):
         'rows': results,
         'assumptions': [
             'Offline review uses supplied source references; it does not verify or fetch prices.',
-            'Target maturity without actual data uses the review timezone calendar date. Scoring requires a supplied aware actual_available_at no later than review as_of.',
+            'Target maturity without actual data uses a supplied forecast_target_close_at when present; otherwise it uses the review timezone calendar date. Scoring requires a supplied aware actual_available_at no later than review as_of and, when target close is supplied, not before that close.',
             'Corporate-action adjustment, currency, venue and session consistency require human/provider validation; no exchange calendar engine is used.',
             'Ranges and forecasts are assumed frozen before outcomes; CSV history is not independently verified.',
             'Direction scoring covers up/down only; zero return misses. Range bounds are inclusive.',

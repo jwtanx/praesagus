@@ -7,7 +7,7 @@ description: >-
 license: MIT
 metadata:
   author: praesagus
-  version: "1.7"
+  version: "1.8"
   category: market-research
   tags: [daily-brief, catalysts, news, provenance, market-research]
 ---
@@ -76,7 +76,9 @@ Use one configured quote provider per market and retain its raw response, timest
 
 Each prediction must have `confidence` (`low`, `medium`, `high`, `unavailable`) and nonblank `confidence_reason`, visible in the viewer. These are qualitative evidence judgments, not calibrated probabilities or quote-quality scores. Do not upgrade confidence simply to fill the table: explain method support, contradictory evidence and missing inputs. Missing price means quote_status missing, price null and data_gaps. Without a defensible target, forecast_status unavailable, direction unknown, confidence unavailable and all target/range numeric fields null; display Unrated rather than sideways or an invented percentage. Preserve confidence filters/sorting. Price sorting uses nominal listing currency: select a market before comparing USD/MYR; missing values sort last.
 
-At each new report, check the prior report for forecasts whose target date has matured. Append actuals and scoring fields to `harness/engineering/price-prediction/forecast-ledger.csv`; never rewrite the original forecast or score an unexpired horizon. If there is no eligible forecast or actual data is missing, state that and do not invent a success rate. `harness/forecast_review.py` implements offline deterministic ledger validation/outcome scoring at an explicit review time. Evidence collection and forecast judgment remain manual; no scheduler or answer-quality runtime is implied. Preserve report snapshots/source provenance so scoring uses only forecast-time information.
+At publication, immediately freeze every rated report prediction in `harness/engineering/price-prediction/forecast-ledger.csv`, before its target outcome is observable. Copy the original report date and forecast timestamp, market/venue/ticker, horizon, reference close date/value/source, target date, direction, range, confidence and thesis/confirmation/invalidation exactly; assign a unique `forecast_id`, leave actual fields blank and set status to pending. Keep an `actual_available_at` column for the timezone-aware time the close became available to this workflow. Do not revise a frozen signal or reconstruct its values from later data. At each later report, reconcile the previous report's rated rows against the ledger and restore any missing issuance from the preserved report snapshot without treating it as a new forecast.
+
+Score a forecast only after its target venue session has closed and a comparable final close is available. Append the target-date close, source and URL, currency/adjustment basis, and timezone-aware `actual_available_at`, then run `harness/forecast_review.py` at an explicit review timestamp. A target date arriving on the calendar does not prove that the venue has closed; if the close is still in the future or unavailable, leave the outcome pending and say why. For direction scoring, Bullish/`up` is a hit only when actual close exceeds the reference close; Bearish/`down` is a hit only when it is lower. Sideways/`flat` is excluded from directional hit/miss counts. Score a range hit only when the close is inside the frozen inclusive bounds. Report the scored denominator, pending/unavailable rows and range coverage separately; do not claim accuracy from unscored, correlated or small cohorts. `harness/forecast_review.py` implements offline deterministic ledger validation/outcome scoring at an explicit review time. Evidence collection and forecast judgment remain manual; no scheduler or answer-quality runtime is implied. Preserve report snapshots/source provenance so scoring uses only forecast-time information.
 
 ### GitHub Pages publishing
 
