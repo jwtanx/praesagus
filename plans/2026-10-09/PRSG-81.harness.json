@@ -27,7 +27,7 @@
   "owner": "Lead",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "adbd0ec7aca29d61c1c194a1f7b9d9f0b97f070a",
+  "base_sha": "b87dc472cedf27d66e598e062f49089a70261e97",
   "allowed_paths": [
     "plans/2026-10-09/PRSG-81-forecast-model-precision.md",
     "plans/2026-10-09/PRSG-81.harness.json"
@@ -135,7 +135,8 @@
     "evidence": [
       "Lead reviewed the experiment report against all four checklist items. No production files, report outputs, ledger rows or unrelated working-tree edits were changed.",
       "Lead independently reviewed the 30-name experiment protocol, matched horizon metrics, per-date clustered bootstrap, directional denominators, model cutoff caveat, and report-selected universe limitations. Only the ticket report and manifest changed; pre-existing ingest/daily_report_projection.py edit was preserved.",
-      "Trader reviewed the multi-ticker findings: ticker-date rows are dependent, five-date blocks may miss longer serial/regime dependence, q10-q90 coverage alone does not establish calibration, and retrospective adjusted-close/model-training-cutoff uncertainty prevents a clean out-of-sample or significance claim."
+      "Trader reviewed the multi-ticker findings: ticker-date rows are dependent, five-date blocks may miss longer serial/regime dependence, q10-q90 coverage alone does not establish calibration, and retrospective adjusted-close/model-training-cutoff uncertainty prevents a clean out-of-sample or significance claim.",
+      "Follow-up dependence sensitivity: five-, ten-, and twenty-target-date blocks plus crossed ticker-by-ten-date-block bootstrap (10,000 resamples); all Chronos-minus-zero MAE intervals remained positive. Trader cautions remain recorded; interpretation is conditional on sample/design."
     ]
   }
 }
