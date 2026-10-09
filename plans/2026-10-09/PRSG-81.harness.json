@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-81",
+  "tags": {
+    "type": "spike",
+    "modules": ["harness", "financial-data", "market-research", "skills", "docs"],
+    "owner_role": "Lead",
+    "priority": "P2",
+    "effort_size": "S",
+    "effort_person_days": {"low": 0.5, "high": 2},
+    "impact": "high"
+  },
+  "created_on": "2026-10-09",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-09/PRSG-81-forecast-model-precision.md",
+  "objective": "Establish a leakage-safe, evidence-backed method to assess and improve the daily report's forecast precision without claiming predictive edge prematurely.",
+  "status": "planned",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "provisional",
+  "base_sha": null,
+  "allowed_paths": [
+    "plans/2026-10-09/PRSG-81-forecast-model-precision.md",
+    "plans/2026-10-09/PRSG-81.harness.json"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "agent-operations/schedules/",
+    "artifacts/daily-market-brief/",
+    "harness/engineering/price-prediction/forecast-ledger.csv",
+    "ingest/",
+    "skills/daily-market-brief/SKILL.md",
+    "scripts/",
+    "backend/",
+    "frontend/",
+    "connectors/"
+  ],
+  "checks": [
+    {"id": "cohort-audit", "kind": "manual", "description": "Audit frozen source reports and ledger rows for mature outcomes, horizons, source comparability, missingness and leakage constraints.", "status": "pending", "evidence": []},
+    {"id": "baseline-design", "kind": "manual", "description": "Predefine leakage-safe metrics, at least two simple baselines, and a minimum evidence threshold or explain why no comparison is yet defensible.", "status": "pending", "evidence": []},
+    {"id": "trader-review", "kind": "manual", "description": "Registered Trader reviews interpretability and limitations of Moomoo directional inputs for the proposed forecast comparison.", "status": "pending", "evidence": []},
+    {"id": "lead-decision", "kind": "manual", "description": "Lead records model-change, evidence-accumulation or abstention recommendation and exact next scope.", "status": "pending", "evidence": []}
+  ],
+  "acceptance": [
+    {"id": "PRSG-81-D1", "description": "Establish available forecast/outcome cohort counts, target horizons, missingness and comparability limits.", "check_ids": ["cohort-audit"], "status": "pending", "evidence": []},
+    {"id": "PRSG-81-D2", "description": "Define leakage-safe metrics, at least two simple baselines, and an evidence/sample threshold or evidence-based reason to defer comparison.", "check_ids": ["baseline-design"], "status": "pending", "evidence": []},
+    {"id": "PRSG-81-D3", "description": "Record Trader's review of Moomoo signal interpretability and data limitations.", "check_ids": ["trader-review"], "status": "pending", "evidence": []},
+    {"id": "PRSG-81-D4", "description": "Record Lead's recommendation and next exact implementation scope without implying production changes.", "check_ids": ["lead-decision"], "status": "pending", "evidence": []}
+  ],
+  "review": {"status": "pending", "evidence": []}
+}
