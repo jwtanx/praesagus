@@ -1,21 +1,21 @@
 {
   "calendar_ref": "../financial-calendar/2026-10.json",
   "collection": {
-    "cutoff": "2026-10-09T08:02:57+08:00",
+    "cutoff": "2026-10-09T12:43:52+08:00",
     "quote_provider": "No configured quote provider for public report fields.",
     "quote_connector": "Public current prices are unavailable because provider, field-level eligibility and source-time/currency compatibility have not been established for this report.",
     "observed_us": 0,
     "missing_us": 30,
     "missing_my": 20,
     "supplemental_quote_count": 0,
-    "forecast_status": "unrated_all",
+    "forecast_status": "one_rated_49_unavailable",
     "current_run_status": "public_quote_fields_unavailable",
-    "source_timing_limit": "Current prices are null because no eligible public quote with verified units, listing currency, provider source_at, observed_at, known_at and report cutoff is available. Unsupported forecasts remain Unrated.",
+    "source_timing_limit": "No current-session public quotes. One low-confidence SPY forecast uses 20 completed historical returns through October 8; other forecasts remain Unrated without sufficient supported reference series and methods.",
     "observed_my": 0,
     "stale_reference_us": 0,
     "stale_reference_my": 0
   },
-  "footer": "As of 2026-10-09T08:02:57+08:00 (Asia/Kuala_Lumpur). 50 curated listings (30 US, 20 MY), shared October calendar. Public current prices are unavailable because quote eligibility, units and source timing are unverified. All forecasts are Unrated for lack of validated reference prices and calibrated methods. Latest US session: mixed close with technology weakness. Forecast ledger review found 70 matured rows without actual close data; no scoring or performance claim. Research only; no personalized allocations or order instructions.",
+  "footer": "As of 2026-10-09T12:43:52+08:00 (Asia/Kuala_Lumpur), refreshed from the earlier 08:02 MYT snapshot preserved in Git history. One low-confidence SPY next-session forecast is rated Sideways at US$773.93, with a descriptive one-standard-deviation range of US$768.91–US$778.95; it uses a 20-session zero-return baseline and is not a calibrated prediction or trading signal. The other 49 forecasts remain Unrated, and current-session public quotes are missing. Research only; no personalized allocations or order instructions.",
   "forecasts": [
     {
       "market": "US",
@@ -29,47 +29,54 @@
       "currency": "USD",
       "current_price": "Unavailable",
       "current_price_value": null,
-      "price_as_of": "No eligible public quote at report cutoff; provider permission and/or source-time compatibility not established.",
+      "price_as_of": "Historical SPY close on 2026-10-08 (USD); current-session quote unavailable at report cutoff.",
       "quote_status": "missing",
-      "direction": "unknown",
-      "direction_label": "Unrated",
-      "estimated_mid_case": "Unavailable",
-      "estimated_mid_case_value": null,
-      "estimated_range": "Unavailable",
-      "range_low_value": null,
-      "range_high_value": null,
-      "scenario": "Forecast withheld: no eligible public reference price or calibrated directional method.",
-      "confidence": "unavailable",
-      "confidence_reason": "Unrated: no validated decision-time price/reference series or calibrated out-of-sample directional edge is established.",
-      "forecast_status": "unavailable",
-      "forecast_as_of": "2026-10-09T08:02:57+08:00",
-      "target_date": null,
+      "direction": "flat",
+      "direction_label": "Sideways",
+      "estimated_mid_case": "US$773.93",
+      "estimated_mid_case_value": 773.93,
+      "estimated_range": "US$768.91–US$778.95",
+      "range_low_value": 768.91,
+      "range_high_value": 778.95,
+      "scenario": "Low-confidence one-session zero-return baseline: the small positive 20-session mean is not treated as a directional edge. Research only; not a trading signal.",
+      "confidence": "low",
+      "confidence_reason": "Low: the 20-session mean return is +0.11%, small relative to 0.65% sample daily volatility; only 9 of 20 returns were positive. No chronological out-of-sample edge or calibrated probabilities are established.",
+      "forecast_status": "rated",
+      "forecast_as_of": "2026-10-09T12:43:52+08:00",
+      "target_date": "2026-10-09",
       "data_gaps": [
-        "No eligible public current quote with verified units, listing-currency compatibility, provider source_at, observed_at, known_at and cutoff.",
-        "No defensible target forecast: validated reference price and calibrated method unavailable."
+        "No current-session quote at the report cutoff.",
+        "Only 20 historical returns support this simple baseline; out-of-sample performance and calibration are unverified."
       ],
       "sources": [
         {
-          "label": "Historical daily prices · reference close and baseline inputs",
-          "provider": "Yahoo Finance (ad hoc vendor data)",
-          "url": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1787097600&period2=1791590400&interval=1d&events=div%2Csplits",
-          "provider_symbol": "SPY",
-          "retrieved_at": "2026-10-08T00:09:32.461103+00:00",
+          "label": "SPY adjusted daily close history through 2026-10-08",
+          "provider": "Yahoo Finance chart endpoint (ad hoc vendor data)",
+          "url": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1788220800&period2=1791590400&interval=1d&events=div%2Csplits",
+          "published_at": "2026-10-08T20:00:00Z",
+          "retrieved_at": "2026-10-09T04:43:52+00:00",
+          "observed_at": "2026-10-08T20:00:00Z",
+          "known_at": "2026-10-09T04:43:52+00:00",
           "timezone": "America/New_York",
-          "data_period": "20 completed adjusted daily returns through 2026-10-06",
-          "limitation": "Uncalibrated statistical baseline; vendor history may be revised, and no redistribution rights or predictive performance are claimed.",
-          "provider_session_date": "2026-10-06",
-          "observed_at": "2026-10-08T00:09:32.461103+00:00",
-          "known_at": "2026-10-08T00:09:32.461103+00:00",
-          "report_cutoff": "2026-10-08T08:09:38+08:00"
+          "data_period": "20 completed close-to-close log returns, latest close 2026-10-08",
+          "adjustment_basis": "Yahoo Finance adjclose series; adjusted close equals close for the latest observation.",
+          "limitation": "Vendor history may be revised. Only a 20-observation descriptive baseline; no out-of-sample performance, calibration, or redistribution-rights claim."
         }
       ],
       "classification": "Market benchmarks; not a sector",
       "classification_action": "watchlist",
-      "forecast_model": "No supported predictive model",
-      "forecast_observations": 0,
-      "forecast_horizon_sessions": null,
-      "forecast_basis": null
+      "forecast_model": "20-session zero-return random-walk baseline",
+      "forecast_observations": 20,
+      "forecast_horizon_sessions": 1,
+      "forecast_basis": {
+        "reference_close_date": "2026-10-08",
+        "reference_close": 773.93,
+        "reference_source": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1788220800&period2=1791590400&interval=1d&events=div%2Csplits",
+        "horizon_type": "next_session",
+        "bull_case": "The 20-session mean return is slightly positive (+0.11%), but too small relative to daily volatility to justify a directional rating.",
+        "bear_case": "Eleven of the 20 returns were negative, the latest session declined, and technology weakness with market volatility could continue.",
+        "invalidation": "A 2026-10-09 close outside US$768.91–US$778.95 invalidates this descriptive one-standard-deviation range only; it is not a stop-loss or trading rule."
+      }
     },
     {
       "market": "US",
@@ -2722,10 +2729,13 @@
     "date": "2026-10-09",
     "title": "Daily Market Brief",
     "subtitle": "Macro catalysts, issuer context and watchlist review",
-    "as_of": "2026-10-09T08:02:57+08:00",
+    "as_of": "2026-10-09T12:43:52+08:00",
     "timezone": "Asia/Kuala_Lumpur",
     "session": "Latest completed US regular session: October 8. Major indexes closed mixed, with technology stocks weaker. Bursa Malaysia had not opened at cutoff.",
-    "input_window": "October 8 US regular session through report cutoff on October 9 MYT; official schedule sources and timestamped secondary market-close reporting."
+    "input_window": "October 8 US regular-session close through report cutoff on October 9 MYT; 20 completed adjusted daily SPY observations plus official schedule sources and timestamped secondary market-close reporting.",
+    "revision": 2,
+    "supersedes_as_of": "2026-10-09T08:02:57+08:00",
+    "revision_note": "Refreshed at 12:43 MYT. Adds one low-confidence SPY one-session baseline forecast; prior Oct 9 snapshot is preserved in Git history."
   },
   "schema_version": 3,
   "sections": {
@@ -3033,8 +3043,8 @@
     },
     {
       "label": "Forecast coverage",
-      "title": "50 rows Unrated",
-      "summary": "All forecasts remain Unrated because no validated public reference price and calibrated directional method are available. Current price fields are missing."
+      "title": "One rated SPY baseline; 49 Unrated",
+      "summary": "SPY has a low-confidence Sideways one-session baseline at US$773.93, with a descriptive US$768.91–US$778.95 range. The 20-session sample shows no demonstrated out-of-sample edge; the other 49 rows remain Unrated."
     }
   ],
   "watchlist_config": {
