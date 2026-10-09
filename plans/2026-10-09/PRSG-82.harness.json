@@ -46,10 +46,10 @@
     {
       "id": "schema-and-provenance",
       "kind": "manual",
-      "description": "Lead accepts one versioned indicator-event/count shape and eligibility rules before implementation scope is frozen.",
+      "description": "Lead accepts one versioned data contract that clearly separates provider-calculated values plus local event rules from native Moomoo pattern matches before implementation scope is frozen.",
       "status": "pending",
       "evidence": [
-        "Trader proposed exact local-event semantics and state transitions. Lead has recorded them as candidates; D1 remains pending final schema/scope acceptance."
+        "Trader recommends distinct labels and counts for native pattern matches versus locally detected events derived from provider-calculated indicator series. Stock Screening V2 returns matching stock pages, not proven per-ticker non-match coverage. D1 remains pending final schema/scope acceptance."
       ]
     },
     {
@@ -58,7 +58,7 @@
       "description": "Verify current local data/history coverage for intended market, completed bars, parameters and timestamps; no credential or provider work without a separately accepted task.",
       "status": "pending",
       "evidence": [
-        "Engineer confirmed current normalized history exposes close but not OHLC; existing records show failed history attempts and rights/authenticity are unconfirmed. No private data/provider calls were made."
+        "Engineer confirmed current normalized history exposes close but not OHLC; existing records show failed history attempts and rights/authenticity are unconfirmed. Official OpenD docs describe async indicator values keyed by calc_id with bar timestamps, but the repo connector does not use them, the SDK is unpinned, and local methods/access/entitlements remain unverified. Stock Screening V2 membership does not establish complete per-ticker no-match coverage. No private data/provider calls were made."
       ]
     },
     {
@@ -88,7 +88,7 @@
   "acceptance": [
     {
       "id": "PRSG-82-D1",
-      "description": "Accept a provenance-backed schema and exact, versioned rules for at most one current directional event per indicator, ticker and timeframe.",
+      "description": "Accept one provenance-backed source contract and exact, versioned rules for at most one current directional event per indicator, ticker and timeframe; never mix native patterns with local events.",
       "check_ids": [
         "schema-and-provenance",
         "data-coverage"
