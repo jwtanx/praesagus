@@ -374,3 +374,62 @@ def test_keychain_login_path_ignores_home_environment(monkeypatch):
     assert live.keychain_passphrase(runner=run)==PASSWORD
     assert calls[0][-1]==str(Path(pwd.getpwuid(os.getuid()).pw_dir)/'Library/Keychains/login.keychain-db')
     assert '/synthetic/attacker-home' not in calls[0][-1]
+
+
+@pytest.mark.parametrize('start,num,autype,code', [
+    (None, 1, 0, 'US.AAPL'), ('2026-10-01', 370, 2, 'US.BRK.B'),
+    ('2026-10-02', 10, 1, 'US.BRK-B')])
+def test_history_core_to_live_preserves_signed_query_and_rows(start, num, autype, code):
+    body = b'{"ret_code":0,"ret_msg":"ok","data":{"kline_list":[{"time_key":1790899200000,"date":20261002,"time_zone":-240,"close":100.0}]}}'
+    transport, c, factories = harness(FakeResponse(body=body))
+    signed = []
+    def sign(value):
+        signed.append(value);return b's' * 64
+    core = MoomooRESTConnector(api_key='synthetic-key', signer=sign, transport=transport,
+        clock_ms=lambda:1790899200000, nonce_factory=lambda:'n')
+    result = core.history_kline(code, '2026-10-02', start=start, num=num, autype=autype)
+    query = (f'start={start}&' if start else '') + f'end=2026-10-02&ktype=2&autype={autype}&num={num}'
+    path = f'/api/v1.0/quote/{code}/history-kline'
+    assert signed == [f'1790899200000\nGET\n{path}\n{query}\n'.encode()]
+    assert c.calls[1][0] == ('GET', path + '?' + query)
+    assert c.calls[1][1]['body'] is None
+    assert c.calls[1][1]['headers']['Authorization'] == 'c3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzcw=='
+    assert result.data[0]['close'] == 100.0 and len(result.data) == 1
+    assert len(factories) == 1 and c.closed
+
+
+HISTORY_QUERY = 'end=2026-10-02&ktype=2&autype=0&num=10'
+
+
+@pytest.mark.parametrize('changes', [
+    {'method':'POST'}, {'method':'DELETE'}, {'body':b'x'},
+    *({'path':path} for path in [
+        '/api/v1.0/quote/HK.00700/history-kline',
+        '/api/v1.0/quote/US.aapl/history-kline',
+        '/api/v1.0/quote/US.AAPL/../accounts/history-kline',
+        '/api/v1.0/quote/US.AAPL%2F..%2Faccounts/history-kline',
+        '/api/v1.0/quote/US.AAPL/history-kline/extra',
+        '/api/v1.0/quote/US.AAPL/history-kline?x=1',
+        '/api/v1.0/quote/US.' + 'A'*65 + '/history-kline',
+        '/api/v1.0/accounts/1/history-kline']),
+    *({'query':query} for query in [
+        '', HISTORY_QUERY+'&num=10', HISTORY_QUERY+'&account_id=1',
+        HISTORY_QUERY+'&start=2026-10-03', HISTORY_QUERY+'&start=2026-02-30',
+        HISTORY_QUERY.replace('2026-10-02','2026-02-30'),
+        HISTORY_QUERY.replace('end=', '%65nd='),
+        HISTORY_QUERY.replace('2026-10-02','2026%2D10%2D02'),
+        HISTORY_QUERY.replace('ktype=2','ktype=1'), HISTORY_QUERY.replace('ktype=2','ktype=02'),
+        HISTORY_QUERY.replace('autype=0','autype=3'), HISTORY_QUERY.replace('autype=0','autype=-1'),
+        HISTORY_QUERY.replace('num=10','num=0'), HISTORY_QUERY.replace('num=10','num=371'),
+        HISTORY_QUERY.replace('num=10','num=010'), HISTORY_QUERY.replace('num=10','num=1.0'),
+        HISTORY_QUERY.replace('num=10','num=+10'), HISTORY_QUERY.replace('num=10','num=1%30'),
+        HISTORY_QUERY.replace('&num=10',''), HISTORY_QUERY+'&',
+        HISTORY_QUERY+'\r\nHost:evil.invalid'])])
+def test_history_invalid_route_query_rejected_before_connection(changes):
+    transport, c, factories = harness()
+    values = {'path':'/api/v1.0/quote/US.AAPL/history-kline', 'query':HISTORY_QUERY}
+    values.update(changes)
+    with pytest.raises(live.LiveReadError, match='invalid-request') as caught:
+        transport(request(**values))
+    assert factories == [] and c.calls == []
+    assert_private(caught.value)

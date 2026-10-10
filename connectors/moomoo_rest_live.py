@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import http.client
+from datetime import date
 import math
 import os
 from pathlib import Path
@@ -181,11 +182,32 @@ class SecureReadTransport:
         _need(isinstance(request, ReadRequest), "invalid-request")
         _need(type(request.timeout) in (int, float) and math.isfinite(request.timeout)
               and 0 < request.timeout <= 30, "invalid-request")
-        _need((request.method, request.path) in (
+        history = (request.method == "GET" and isinstance(request.path, str)
+                   and re.fullmatch(r"/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,63}/history-kline",
+                                    request.path) is not None)
+        _need(history or (request.method, request.path) in (
             ("GET", "/api/v1.0/quote/find-news"), ("POST", "/api/v1.0/quote/snapshot")), "invalid-request")
         _need(isinstance(request.query, str) and len(request.query) <= 8192
               and re.fullmatch(r"[A-Za-z0-9%_.~+&=*-]*", request.query) is not None,
               "invalid-request")
+        if history:
+            # Validate raw canonical fields without decoding/re-encoding signed bytes.
+            fields = request.query.split("&")
+            _need(all(re.fullmatch(r"(?:start|end)=[0-9]{4}-[0-9]{2}-[0-9]{2}|(?:ktype|autype|num)=[0-9]{1,3}",
+                                  field) for field in fields), "invalid-request")
+            pairs = [field.split("=", 1) for field in fields]
+            query = dict(pairs)
+            _need(len(query) == len(pairs) and set(query) in (
+                {"end", "ktype", "autype", "num"}, {"start", "end", "ktype", "autype", "num"}),
+                "invalid-request")
+            for key in ("start", "end"):
+                if key in query:
+                    try: date.fromisoformat(query[key])
+                    except ValueError: raise LiveReadError("invalid-request") from None
+            _need(query.get("start", query["end"]) <= query["end"]
+                  and query["ktype"] == "2" and query["autype"] in {"0", "1", "2"}
+                  and 1 <= int(query["num"]) <= 370 and str(int(query["num"])) == query["num"],
+                  "invalid-request")
         _need(isinstance(request.body, bytes) and len(request.body) <= 32768
               and (not request.body if request.method == "GET" else bool(request.body) and not request.query),
               "invalid-request")

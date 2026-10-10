@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-84",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "connectors",
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-11/PRSG-84-rest-history-transport-route.md",
+  "objective": "Repair local transport rejection of the existing bounded US daily REST history route without broadening other capabilities.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "f5f2f614b9e664d3ed2d9d71c05d5be0826882f1",
+  "allowed_paths": [
+    "plans/2026-10-11/PRSG-84-rest-history-transport-route.md",
+    "plans/2026-10-11/PRSG-84.harness.json",
+    "connectors/moomoo_rest_live.py",
+    "tests/test_moomoo_rest_live.py"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "artifacts/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    "agent-operations/",
+    "connectors/moomoo_rest.py"
+  ],
+  "checks": [
+    {
+      "id": "route-contract",
+      "kind": "manual",
+      "description": "Core history request forwarded unchanged; malformed/unknown/account routes rejected before network.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed strict history route/query diff, exact request preservation and pre-network rejection tests. One bounded US.AAPL history smoke reached provider HTTP200 after repair; before repair rejected locally."
+      ]
+    },
+    {
+      "id": "focused-tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_moomoo_rest_live.py",
+        "tests/test_moomoo_rest.py",
+        "tests/test_market_collector.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently ran manifest focused suite with Python3.11:336 passed in2.01s; Engineer336 passed.35 new integration/security cases."
+      ]
+    },
+    {
+      "id": "live-smoke-review",
+      "kind": "manual",
+      "description": "Lead reviews full diff and sanitized bounded history smoke outcome without claiming provider success before evidence.",
+      "status": "passed",
+      "evidence": [
+        "Engineer ran one max10 AAPL dailyhistory request, receivedHTTP200 at2026-10-11T07:16:32.956753+08:00, core returned controlled malformed-response, cleanup succeeded. No rawdata retained/output and no validated rowcoverage. Lead reviews local transport fix only; separate response-contract diagnosis needed. No direction2 or indicator eligibility claim."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-84-D1",
+      "description": "Valid core daily history accepted; malformed/unauthorized requests rejected before network.",
+      "check_ids": [
+        "route-contract"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed strict history route/query diff, exact request preservation and pre-network rejection tests. One bounded US.AAPL history smoke reached provider HTTP200 after repair; before repair rejected locally."
+      ]
+    },
+    {
+      "id": "PRSG-84-D2",
+      "description": "Focused security/compatibility regressions pass.",
+      "check_ids": [
+        "focused-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently ran manifest focused suite with Python3.11:336 passed in2.01s; Engineer336 passed.35 new integration/security cases."
+      ]
+    },
+    {
+      "id": "PRSG-84-D3",
+      "description": "Lead reviews full owned diff and live smoke outcome/limitations.",
+      "check_ids": [
+        "live-smoke-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Engineer ran one max10 AAPL dailyhistory request, receivedHTTP200 at2026-10-11T07:16:32.956753+08:00, core returned controlled malformed-response, cleanup succeeded. No rawdata retained/output and no validated rowcoverage. Lead reviews local transport fix only; separate response-contract diagnosis needed. No direction2 or indicator eligibility claim."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed four owned paths and336 focused regressions. Local allowlist defect fixed; providerHTTP200 proves route/auth connectivity only. Malformed response remains a separate core/schema limitation, not concealed or scored. Protected preexisting projection unchanged."
+    ]
+  }
+}
