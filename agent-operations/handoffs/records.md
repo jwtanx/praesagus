@@ -4,11 +4,11 @@ Read when populating registry or receipt templates. These are contracts for agen
 
 ## Registry roles entry
 
-Key is Lead, Trader or Engineer. Fields: `thread_id`, `host_id`, `project_id`, `state`, `model`, `reasoning_effort`, `settings_verified`, `context_path`, `transaction_id`, `schedule_ids`, `pause_reasons`, `verified_at`, `verification_evidence`. For existing-chat adoption preserve verified settings; any separately authorized creation omits unknown overrides; never claim requested settings were runtime-verified. IDs and timestamps must come from actual tool results and current time.
+Key is Lead, Trader or Engineer. Fields: `thread_id`, `host_id`, `project_id`, `state`, `model`, `reasoning_effort`, `settings_verified`, `context_path`, `transaction_id`, `schedule_ids`, `pause_reasons`, `verified_at`, `verification_evidence`. For existing-chat adoption preserve verified settings; creation authorized by all omits unknown overrides; never claim requested settings were runtime-verified. IDs and timestamps must come from actual tool results and current time.
 
 ## Receipt roles entry
 
-Key is the requested role. Fields: `destination_mode` (current-chat or existing-chat), `source_thread_id`, `source_host_id`, `source_title`, `successor_thread_id`, `successor_host_id`, `client_thread_id`, `context_path`, `checkpoint_verified`, `source_idle_verified`, `bootstrap_ack`, `release_ack`, `state`, `rename_result`, `archive_result`, `schedule_transfers`. For no predecessor, source fields are null. Legacy Consultant/Researcher responsibilities have separate entries under `legacy_dependencies`, including continuing owner and retirement blockers.
+Key is the requested role. Fields: `destination_mode` (current-chat, existing-chat or new-chat), `source_thread_id`, `source_host_id`, `source_title`, `successor_thread_id`, `successor_host_id`, `client_thread_id`, `context_path`, `checkpoint_verified`, `source_idle_verified`, `bootstrap_ack`, `release_ack`, `state`, `rename_result`, `archive_result`, `schedule_transfers`. For no predecessor, source fields are null. Legacy Consultant/Researcher responsibilities have separate entries under `legacy_dependencies`, including continuing owner and retirement blockers.
 
 ## Schedule transfer entry
 

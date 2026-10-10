@@ -1,6 +1,6 @@
 # Agent operations
 
-The permanent team is Lead, Trader and Engineer. Adopt the current human-started chat as a replacement with `$spawn lead`, `$spawn trader`, `$spawn engineer` or `$spawn all`; `/spawn ROLE` is the equivalent natural-language request, not a registered slash command. Single-role invocation reuses this calling chat; it never opens an extra chat. For all, supply existing destination chats for each role; missing/ambiguous destinations require clarification, not automatic creation. Read [the migration skill](../skills/spawn/SKILL.md). This folder contains instructions, not a running agent service.
+The permanent team is Lead, Trader and Engineer. Adopt the current human-started chat as a replacement with `$spawn lead`, `$spawn trader`, `$spawn engineer` or `$spawn all`; `/spawn ROLE` is the equivalent natural-language request, not a registered slash command. Single-role invocation reuses this calling chat; it never opens an extra chat. For all, the invocation authorizes fresh local Lead, Trader and Engineer chats named by role; the calling chat coordinates. Explicitly supplied existing destinations override this default. A request to omit predecessor context uses startup prompts, the human checkpoint and canonical evidence while retaining operational cutover checks. Read [the migration skill](../skills/spawn/SKILL.md). This folder contains instructions, not a running agent service.
 
 | Role | Startup prompt | Model |
 |---|---|---|
