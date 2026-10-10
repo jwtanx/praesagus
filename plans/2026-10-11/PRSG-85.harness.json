@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-85",
+  "tags": {
+    "type": "docs",
+    "modules": [
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.05,
+      "high": 0.1
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-11/PRSG-85-safe-moomoo-agent-access-readme.md",
+  "objective": "Document configured REST AppKey and Keychain access safely for agents and public readers.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "b68be1fd34ef01e07df641e63455b5ad11edbc49",
+  "allowed_paths": [
+    "README.md",
+    "plans/2026-10-11/PRSG-85-safe-moomoo-agent-access-readme.md",
+    "plans/2026-10-11/PRSG-85.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "tests/",
+    "artifacts/",
+    "skills/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "docs-reference-review",
+      "kind": "manual",
+      "description": "README connection/loader boundaries match implementation and linked documentation exists.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed complete README/spec/manifest diff against existing load_credentials/keychain_passphrase code and prior sanitized live evidence; linked credential/collector/REST docs exist. No secret retrieval performed for documentation. Added text contains no actual keys/passphrases/private locations/usernames/account IDs/provider payloads."
+      ]
+    },
+    {
+      "id": "public-safe-diff-review",
+      "kind": "manual",
+      "description": "Full three-path diff excludes secrets/private paths/identifiers and preserves unrelated edits.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed complete README/spec/manifest diff against existing load_credentials/keychain_passphrase code and prior sanitized live evidence; linked credential/collector/REST docs exist. No secret retrieval performed for documentation. Added text contains no actual keys/passphrases/private locations/usernames/account IDs/provider payloads."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-85-D1",
+      "description": "Accurate access methods/loader reuse and valid references.",
+      "check_ids": [
+        "docs-reference-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed complete README/spec/manifest diff against existing load_credentials/keychain_passphrase code and prior sanitized live evidence; linked credential/collector/REST docs exist. No secret retrieval performed for documentation. Added text contains no actual keys/passphrases/private locations/usernames/account IDs/provider payloads."
+      ]
+    },
+    {
+      "id": "PRSG-85-D2",
+      "description": "Lead full owned diff public-safety review.",
+      "check_ids": [
+        "public-safe-diff-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed complete README/spec/manifest diff against existing load_credentials/keychain_passphrase code and prior sanitized live evidence; linked credential/collector/REST docs exist. No secret retrieval performed for documentation. Added text contains no actual keys/passphrases/private locations/usernames/account IDs/provider payloads."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewed complete README/spec/manifest diff against existing load_credentials/keychain_passphrase code and prior sanitized live evidence; linked credential/collector/REST docs exist. No secret retrieval performed for documentation. Added text contains no actual keys/passphrases/private locations/usernames/account IDs/provider payloads."
+    ]
+  }
+}

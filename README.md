@@ -76,6 +76,41 @@ Both responses include `retrieved_at`. News search is not a continuous push feed
 
 For the separate private REST AppKey workflow, follow [secure macOS credential onboarding](docs/MOOMOO_CREDENTIAL_SETUP.md) and the [manual private collector](docs/PRIVATE_MARKET_COLLECTOR.md). This uses encrypted Ed25519 credentials and exact login Keychain lookup; OpenD login does not configure it. Live collection requires an explicit manual invocation and private storage.
 
+#### Moomoo REST access for agents
+
+The maintained local setup has an AppKey credential provisioned outside this
+repository. REST requests go directly to Moomoo over HTTPS and do not require
+OpenD or the OpenD Python SDK. The SDK path is separate: it connects to OpenD,
+which must be running and logged in.
+
+The existing REST loader uses three protected components:
+
+- **AppKeyID:** read from an explicitly configured, privately owned file outside Git.
+- **Encrypted Ed25519 private key:** kept outside Git and used to sign requests.
+- **Private-key passphrase:** retrieved from the configured macOS login Keychain item. The Keychain does not store AppKeyID in this implementation.
+
+Reuse `ingest.market_collector.load_credentials` and the existing bounded
+collector workflow. Obtain the credential-directory locator and AppKey filename
+from authorized private operational context; they are intentionally absent from
+this public README. Do not dump credential files or Keychain output, place
+secrets in arguments/environment/logs, or regenerate/rotate provisioned keys to
+troubleshoot access. If a credential lookup needs human approval, report the
+controlled failure and wait for the operator.
+
+On **2026-10-11 MYT**, authorized read-only checks successfully loaded this setup,
+authenticated a quote request, and validated ten daily history rows in a bounded
+request. The quote check did not retain row-level coverage evidence. This is a
+dated access check, not a guarantee of current availability, all-market coverage
+or data-use permissions. OpenD login and live KDJ/MACD/Bollinger output mapping
+remain separate prerequisites. Report only sanitized status, failure categories
+and coverage counts; keep prices, full provider responses, credentials and private
+identifiers out of public diagnostics.
+
+For new operator onboarding use [credential setup](docs/MOOMOO_CREDENTIAL_SETUP.md);
+for existing access use the [private collector contract](docs/PRIVATE_MARKET_COLLECTOR.md)
+and [REST contract](docs/MOOMOO_REST.md). Reading this README does not retrieve
+credentials or make a provider request.
+
 ### 5. Run SEC filing analysis or live QR monitoring
 
 Run a one-time report with local summarization (no SerpApi key required):
