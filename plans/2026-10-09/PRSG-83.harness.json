@@ -20,7 +20,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-09/PRSG-83-forward-outcome-eligibility-harness.md",
   "objective": "Prevent incomparable or insufficiently sourced future forecast outcomes from entering precision metrics through deterministic offline eligibility checks.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -64,22 +64,29 @@
         "tests/test_outcome_v2.py"
       ],
       "cwd": ".",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-10 MYT: manifest argv python3 -m pytest -q tests/test_outcome_v2.py with praesagus-tests-311 on PATH: 94 passed. Combined v2/legacy regression command: 110 passed. All data authored inline and synthetic only.",
+        "Lead review found deep JSON RecursionError; repaired decoder and outer malformed-comparison handling. Matching-digest deep JSON and recursive frozen-metadata regressions return deterministic blocked results. Final runs: 94 v2 and 110 combined cases passed."
+      ]
     },
     {
       "id": "legacy-preservation",
       "kind": "manual",
       "description": "Verify v1 ledger bytes and legacy evaluator behavior are unchanged.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-10 MYT: evaluator SHA256 7d4958ecd6387a9d59c8e52bf359ee352d45c59530bbfe4b705444e6d0402e4d and ledger SHA256 c35e410fdcc7839544c92f9466e3d7fd3aa606bc3108a8042076a357561e64ad unchanged; exact review_ledger output at 2026-10-10T23:00:00+08:00 matches pre-change baseline; 16 legacy regressions passed within combined 110-case run."
+      ]
     },
     {
       "id": "ticket-review",
       "kind": "manual",
       "description": "Validate manifest and exact changed paths, then independently review diff and evidence.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-10 fresh Lead independently reviewed all five owned paths including new module/tests against frozen scope, reran final combined v2/legacy suite: 110 passed in 0.21s. Legacy evaluator/ledger byte-match bfbb76c baseline. Trader read-only financial review found no blocking contract issue; source/calendar/listing declarations and hashes are synthetic consistency only, never authenticity, rights or scoring approval. Lead reproduced deep-JSON exception, reviewed bounded-error repair and new regressions; no persistence/provider/real data/score/dispatch/dependency change. Protected pre-existing projection edit excluded."
+      ]
     }
   ],
   "acceptance": [
@@ -100,8 +107,10 @@
       "check_ids": [
         "synthetic-cases"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-10 MYT: manifest argv python3 -m pytest -q tests/test_outcome_v2.py with praesagus-tests-311 on PATH: 94 passed. Combined v2/legacy regression command: 110 passed. All data authored inline and synthetic only."
+      ]
     },
     {
       "id": "PRSG-83-D3",
@@ -109,8 +118,10 @@
       "check_ids": [
         "synthetic-cases"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-10 MYT: manifest argv python3 -m pytest -q tests/test_outcome_v2.py with praesagus-tests-311 on PATH: 94 passed. Combined v2/legacy regression command: 110 passed. All data authored inline and synthetic only."
+      ]
     },
     {
       "id": "PRSG-83-D4",
@@ -118,8 +129,10 @@
       "check_ids": [
         "legacy-preservation"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-10 MYT: evaluator SHA256 7d4958ecd6387a9d59c8e52bf359ee352d45c59530bbfe4b705444e6d0402e4d and ledger SHA256 c35e410fdcc7839544c92f9466e3d7fd3aa606bc3108a8042076a357561e64ad unchanged; exact review_ledger output at 2026-10-10T23:00:00+08:00 matches pre-change baseline; 16 legacy regressions passed within combined 110-case run."
+      ]
     },
     {
       "id": "PRSG-83-D5",
@@ -127,12 +140,16 @@
       "check_ids": [
         "ticket-review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-10 fresh Lead independently reviewed all five owned paths including new module/tests against frozen scope, reran final combined v2/legacy suite: 110 passed in 0.21s. Legacy evaluator/ledger byte-match bfbb76c baseline. Trader read-only financial review found no blocking contract issue; source/calendar/listing declarations and hashes are synthetic consistency only, never authenticity, rights or scoring approval. Lead reproduced deep-JSON exception, reviewed bounded-error repair and new regressions; no persistence/provider/real data/score/dispatch/dependency change. Protected pre-existing projection edit excluded."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "2026-10-10 fresh Lead independently reviewed all five owned paths including new module/tests against frozen scope, reran final combined v2/legacy suite: 110 passed in 0.21s. Legacy evaluator/ledger byte-match bfbb76c baseline. Trader read-only financial review found no blocking contract issue; source/calendar/listing declarations and hashes are synthetic consistency only, never authenticity, rights or scoring approval. Lead reproduced deep-JSON exception, reviewed bounded-error repair and new regressions; no persistence/provider/real data/score/dispatch/dependency change. Protected pre-existing projection edit excluded."
+    ]
   }
 }
