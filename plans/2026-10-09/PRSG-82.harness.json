@@ -9,7 +9,7 @@
       "frontend"
     ],
     "owner_role": "Engineer",
-    "priority": "P2",
+    "priority": "P1",
     "effort_size": "M",
     "effort_person_days": {
       "low": 3,
@@ -21,14 +21,18 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-09/PRSG-82-per-ticker-moomoo-ta-counts.md",
   "objective": "Propose a separate, provenance-backed per-ticker display of discrete Moomoo KDJ, MACD and Bollinger bullish/bearish observations, without changing forecast direction or price targets.",
-  "status": "planned",
+  "status": "in_progress",
   "owner": "Engineer",
   "reviewer": "Lead",
-  "scope_status": "provisional",
-  "base_sha": null,
+  "scope_status": "accepted",
+  "base_sha": "1514b0cf62ebc3ab9dfde5751668a70840c45096",
   "allowed_paths": [
     "plans/2026-10-09/PRSG-82-per-ticker-moomoo-ta-counts.md",
-    "plans/2026-10-09/PRSG-82.harness.json"
+    "plans/2026-10-09/PRSG-82.harness.json",
+    "ingest/ta_signal_assessment.py",
+    "tests/test_ta_signal_assessment.py",
+    "scripts/daily-market-brief/preview_ta_signals.py",
+    "tests/test_ta_signal_preview.py"
   ],
   "protected_paths": [
     "AGENTS.md",
@@ -40,7 +44,12 @@
     "skills/daily-market-brief/SKILL.md",
     "docs/PRIVATE_REPORT_PROJECTION.md",
     "connectors/moomoo_rest_live.py",
-    "ingest/private_market_store.py"
+    "ingest/private_market_store.py",
+    "ingest/daily_report_projection.py",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "artifacts/"
   ],
   "checks": [
     {
@@ -49,7 +58,8 @@
       "description": "Lead accepts one versioned data contract that clearly separates provider-calculated values plus local event rules from native Moomoo pattern matches before implementation scope is frozen.",
       "status": "pending",
       "evidence": [
-        "Trader recommends distinct labels and counts for native pattern matches versus locally detected events derived from provider-calculated indicator series. Stock Screening V2 returns matching stock pages, not proven per-ticker non-match coverage. D1 remains pending final schema/scope acceptance."
+        "Trader recommends distinct labels and counts for native pattern matches versus locally detected events derived from provider-calculated indicator series. Stock Screening V2 returns matching stock pages, not proven per-ticker non-match coverage. D1 remains pending final schema/scope acceptance.",
+        "2026-10-10 human requested PRSG-82. Lead accepts only synthetic-only source_class=provider_calculated_values, event_author=Praesagus schema/rule simulation slice; no real provider mapping or field equivalence claimed. Live source contract remains pending."
       ]
     },
     {
@@ -58,15 +68,18 @@
       "description": "Verify current local data/history coverage for intended market, completed bars, parameters and timestamps; no credential or provider work without a separately accepted task.",
       "status": "pending",
       "evidence": [
-        "Engineer confirmed current normalized history exposes close but not OHLC; existing records show failed history attempts and rights/authenticity are unconfirmed. Official OpenD docs describe async indicator values keyed by calc_id with bar timestamps, but the repo connector does not use them; the current Python environment has no importable moomoo module or installed moomoo-api distribution, and a local TCP check found no listener on the default OpenD port 127.0.0.1:11111. Moomoo changelog first lists chart-indicator support in OpenD 10.8.6808; API docs do not state a separate minimum SDK version, so matching SDK version is a cautious recommendation. Stock Screening V2 membership does not establish complete per-ticker no-match coverage. Engineer identified a separate private artifact boundary that can reuse write_private_draft without changing the normal runner, public validator/viewer, report skill or dirty projection. No authentication or market-data request was made."
+        "Engineer confirmed current normalized history exposes close but not OHLC; existing records show failed history attempts and rights/authenticity are unconfirmed. Official OpenD docs describe async indicator values keyed by calc_id with bar timestamps, but the repo connector does not use them; the current Python environment has no importable moomoo module or installed moomoo-api distribution, and a local TCP check found no listener on the default OpenD port 127.0.0.1:11111. Moomoo changelog first lists chart-indicator support in OpenD 10.8.6808; API docs do not state a separate minimum SDK version, so matching SDK version is a cautious recommendation. Stock Screening V2 membership does not establish complete per-ticker no-match coverage. Engineer identified a separate private artifact boundary that can reuse write_private_draft without changing the normal runner, public validator/viewer, report skill or dirty projection. No authentication or market-data request was made.",
+        "2026-10-10 Engineer recheck: system/test Python have no moomoo/futu module or distributions; local OpenD default TCP listener refused. No provider/auth/private-store access. First synthetic slice cannot establish live coverage."
       ]
     },
     {
       "id": "indicator-replay",
       "kind": "manual",
       "description": "A deterministic local fixture set demonstrates each discrete KDJ, MACD and Bollinger rule plus missing/stale/conflicting cases.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "2026-10-10 Lead independently ran focused assessment/preview checks:181 passed. Trader reviewed event/time/count semantics; no blocking synthetic-stage finding. Actual SDK/provider equivalence, live coverage and rights remain unverified."
+      ]
     },
     {
       "id": "viewer-and-validation",
@@ -83,6 +96,23 @@
       "description": "Lead reviews implementation diff and all listed checks before acceptance.",
       "status": "pending",
       "evidence": []
+    },
+    {
+      "id": "synthetic-assessment-tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_ta_signal_assessment.py",
+        "tests/test_ta_signal_preview.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-10-10 Lead independently ran focused assessment/preview checks:181 passed. Trader reviewed event/time/count semantics; no blocking synthetic-stage finding. Actual SDK/provider equivalence, live coverage and rights remain unverified."
+      ]
     }
   ],
   "acceptance": [
@@ -98,12 +128,14 @@
     },
     {
       "id": "PRSG-82-D2",
-      "description": "Demonstrate deterministic bullish/bearish and rejection/missing cases for all three indicators using frozen local bars.",
+      "description": "Demonstrate deterministic bullish/bearish and rejection/missing cases for all three indicators using frozen simulated normalized indicator values.",
       "check_ids": [
         "indicator-replay"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "2026-10-10 Lead independently ran focused assessment/preview checks:181 passed. Trader reviewed event/time/count semantics; no blocking synthetic-stage finding. Actual SDK/provider equivalence, live coverage and rights remain unverified."
+      ]
     },
     {
       "id": "PRSG-82-D3",
@@ -136,6 +168,9 @@
   ],
   "review": {
     "status": "pending",
-    "evidence": []
+    "evidence": [
+      "2026-10-10 Lead independently ran focused assessment/preview checks:181 passed. Trader reviewed event/time/count semantics; no blocking synthetic-stage finding. Actual SDK/provider equivalence, live coverage and rights remain unverified.",
+      "Synthetic stage reviewed only; overall ticket acceptance pending live contract/coverage and operational display."
+    ]
   }
 }

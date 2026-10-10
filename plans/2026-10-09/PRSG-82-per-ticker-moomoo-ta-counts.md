@@ -1,6 +1,6 @@
 # PRSG-82 — Show per-ticker Moomoo TA signal counts
 
-Type: feature · Modules: financial-data, market-research, frontend · Owner: Engineer · Priority: P2 · Effort: M (3–5 person-days, estimate) · Impact: medium-high — lets report readers inspect the balance of rule-triggered technical indicator observations per ticker; adoption and usefulness are not yet measured.
+Type: feature · Modules: financial-data, market-research, frontend · Owner: Engineer · Priority: P1 · Effort: M (3–5 person-days, estimate) · Impact: medium-high — lets report readers inspect the balance of rule-triggered technical indicator observations per ticker; adoption and usefulness are not yet measured.
 
 Created 2026-10-09 MYT. Frozen planning base: `ba7c01480616ab0f4bca576c1be97d5a4961c9e9`.
 
@@ -57,7 +57,7 @@ Planning only; no implementation is authorized by this ticket yet. A first, priv
 ## When it's considered done
 
 - [ ] PRSG-82-D1: Accept a provenance-backed schema and exact, versioned rules for at most one current directional event per indicator, ticker and timeframe.
-- [ ] PRSG-82-D2: Demonstrate deterministic bullish/bearish and rejection/missing cases for all three indicators using frozen local bars.
+- [x] PRSG-82-D2: Demonstrate deterministic bullish/bearish and rejection/missing cases for all three indicators using frozen simulated normalized indicator values.
 - [ ] PRSG-82-D3: Display per-ticker per-indicator counts with accessible details and explicit coverage, independently from forecast direction/targets/confidence.
 - [ ] PRSG-82-D4: Record coverage and usability evidence; keep any predictive use out of scope until separately evaluated.
 - [ ] PRSG-82-D5: Lead independently reviews complete scoped diff and test evidence.
@@ -71,3 +71,27 @@ Trader's review notes that Moomoo's official [screener documentation](https://ww
 ## Measurement
 
 At first manual preview, record the share of report tickers with all three eligible signals and whether a reader can identify the rule and timestamp for a displayed count within one interaction. No existing analytics baseline is available. Continue only if coverage is sufficient for the intended market and a user review confirms the details help interpretation.
+
+## Accepted first slice — 2026-10-10 MYT
+
+Human requested PRSG-82. Lead freezes base `1514b0cf62ebc3ab9dfde5751668a70840c45096` for a synthetic-only in-memory event/count prototype plus a local synthetic preview. Earlier planning-only statements describe the prior checkpoint. This slice accepts no provider mode, SDK integration, actual source equivalence, private-store reads, report changes or public publication. Entire ticket remains incomplete until live contract/coverage and final user-facing acceptance are evidenced.
+
+Engineer owns `ingest/ta_signal_assessment.py` and `tests/test_ta_signal_assessment.py`; Lead owns the two planning files, `scripts/daily-market-brief/preview_ta_signals.py` and `tests/test_ta_signal_preview.py`. Protect all connectors, report artifacts, backend/frontend, private stores, report skills/schedules and existing dirty projection. No dependency changes.
+
+Pure API `assess_ticker(record, *, calendar, cutoff)` accepts schema-versioned synthetic normalized indicator values only. Source class is `provider_calculated_values`, event author `Praesagus`, and all records/calendar fixtures explicitly synthetic; output is a simulation, never a live Moomoo signal. No local indicator formulas or native screener events. Use explicit simulated output-role/parameter bindings, not inferred vendor column names. KDJ cross K/D (9,3,3); MACD cross DIF/DEA (12,26,9); BOLL(20,2) chosen band re-entry convention with supplied closes/bands. Current equality is neutral for K/D and DIF/DEA crosses. A BOLL touch without strictly outside prior close is neutral; current re-entry onto the inclusive band boundary after strictly outside prior close qualifies as an event. Emit one current-session pulse per indicator. Missing/invalid inputs are unavailable with reasons.
+
+Freeze US daily final regular-session synthetic calendar with timezone-aware exact close instants, declared complete coverage/version, listing/MIC/currency/adjustment/vintage and expected latest completed session at cutoff. Maximum stale completed sessions is zero; prior/current outputs must align with consecutive expected sessions. No carry-forward after the next session closes. All source availability/retrieval/known timestamps must be explicit, consistently ordered and no later than cutoff; no inference from retrieval. Require versioned explicitly sufficient artificial fixture warmup metadata; no vendor minimum is asserted. Reject duplicate/conflicting sessions, gaps, unsupported basis/parameters/output roles, nonfinite values, partial coverage and malformed records. MACD values may be signed; J is descriptive and need not lie in 0–100; BOLL lower<=middle<=upper may have zero width, with finite positive closes. Fixture declarations are consistency controls, not authentication.
+
+Aggregate exactly three expected indicators: bullish+bearish+neutral+unavailable=3, evaluated=3-unavailable. Partial/all-unavailable coverage remains visible; no weights/probabilities or forecast/target/confidence field changes. Local preview uses synthetic examples only, displays a prominent simulation label and per-ticker counts, neutral/unavailable coverage and accessible expandable details with exact rule, parameters, timestamp and reason. Do not embed raw provider data or executable unescaped input.
+
+Focused command: `python3 -m pytest -q tests/test_ta_signal_assessment.py tests/test_ta_signal_preview.py`. Cases cover both directional events/equality, BOLL touches/continued outside, expiry/weekend/holiday/early close, missing/nonfinite/unknown availability/warmup, stale/gap/duplicate/future/cutoff/basis/parameter mismatch and aggregate invariants. Lead independently reviews the complete changed path set and preview. D1 live mapping, D3 operational display, D4 live coverage and overall completion cannot be inferred from this synthetic slice.
+
+Prerequisite recheck: Engineer found no moomoo/futu SDK in system Python 3.9.6 or test Python 3.11.17, and no local OpenD listener. Existing connector tests passed 21 cases. Official async request signature is documented, but actual installed SDK symbols, callback payload and indicator metadata are unverified. User setup clarification remains pending; no live provider calls are authorized by this slice.
+
+## Synthetic-stage review — 2026-10-10 MYT
+
+Lead independently ran the focused command: **181 passed** (174 assessment, 7 preview). Trader reviewed current cross/re-entry, timeline and count semantics without a blocking synthetic-stage finding. Warmup11/35/21 from the historical local-formula proposal was removed from this stage: artificial required/available counts are versioned fixture declarations, never vendor minima. Ingestion is explicit and separate from retrieval/known-at. Output retains validated synthetic calendar/basis/vintage and per-indicator warmup/role metadata.
+
+Rendered complete preview showed bullish2/bearish1/evaluated3of3; one click exposes exact rule/parameters/session/source times/values. All-unavailable preview showed unavailable3/evaluated0of3. Partial fixtures preserve missing coverage. HTML is escaped, standalone and synthetic-labeled, with no forecast fields. D2 wording now reflects simulated indicator inputs rather than local indicator formulas; historical formula proposals remain for context only.
+
+Only this synthetic stage is reviewed. D1/D3/D4/D5 and whole-ticket completion remain pending actual SDK/callback/output mapping, operator access/rights, live timestamped coverage and separately accepted operational display. No live provider request, predictive performance or public data rights is claimed. Unrelated dirty projection remains protected.
