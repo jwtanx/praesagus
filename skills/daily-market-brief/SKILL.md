@@ -7,7 +7,7 @@ description: >-
 license: MIT
 metadata:
   author: praesagus
-  version: "2.0"
+  version: "2.1"
   category: market-research
   tags: [daily-brief, catalysts, news, provenance, market-research]
 ---
@@ -66,13 +66,74 @@ New schema-3 reports collect from `artifacts/daily-market-brief/watchlist-univer
 
 After the final write for every generated or edited report, run the committed local validator `python3 scripts/daily-market-brief/validate_report_json.py --date YYYY-MM-DD`; add `--public` for a report intended for the public Pages viewer. It validates both legacy/new contracts, sources, unique universe membership, five-name schema-3 coverage, confidence/reasons, shared calendar and report index. Treat validator failure as a stop condition: fix errors and rerun before delivery, commit or publication. The committed validator is the local report-component check; Pages CI also runs it before deployment. Treat direction as conditional research, not a promise or instruction. Include timestamped reference close, target date/horizon, linked bull/bear evidence and invalidation for a defensible prediction. Distinguish next-session from week-end scoring.
 
+### Reuse the committed REST collector at each report run
+
+Use `scripts/market_collect.py` for provider intake. Do not generate a new fetch,
+signing, Keychain or transport script on each 08:00 run. Reuse the provisioned
+AppKey file, encrypted private key and configured Keychain passphrase through
+the existing loader; see [safe access guidance](../../README.md#moomoo-rest-access-for-agents)
+and [collector contract](../../docs/PRIVATE_MARKET_COLLECTOR.md). Read private
+operational locator metadata only from the authorized role context, never copy
+actual paths/identifiers or credential values into public reports.
+
+1. Verify the approved Python >=3.11 collector environment (including cryptography),
+   existing owned private store and approved nonsecret plan before collection.
+   The system `python3` may be older; use the privately verified interpreter.
+   A missing store, locator, runtime or plan is a concrete setup blocker, not
+   permission to create new credentials, initialize a store or improvise a client.
+2. Derive the plan from the existing five-name universe: the 30 supported US codes,
+   approved history entries `{code,end}` and bounded news queries when needed.
+   The committed plan validator controls supported fields and job limits. History
+   jobs use daily `ktype=2`, unadjusted `autype=0`, `num=100` and omit start; use
+   the intended completed-session end, not an inferred final close. MY remains
+   explicitly unsupported by this collector. Reuse the plan structure; only
+   authorized universe/date/query inputs and the unique run ID change.
+3. Invoke the existing CLI from the repository root using private operational
+   locators. The example below contains placeholders, not credential values:
+
+   ```sh
+   /absolute/path/to/approved/python scripts/market_collect.py \
+     --root /absolute/private/store \
+     --plan /absolute/private/nonsecret-plan.json \
+     --credential-directory /absolute/private/credentials \
+     --app-key-name configured-appkey-filename \
+     --run-id unique-approved-report-run
+   ```
+
+   Jobs are serial, with a 20-second worker deadline and a 300-second admission
+   budget; a full snapshot/history/news plan is not guaranteed to finish in that
+   budget. Keep CLI summaries (which include private run/attempt IDs) in private
+   operational evidence; public diagnostics contain only controlled status and
+   coverage counts. Record exit/status/failure, including partial, empty and
+   missing results. Do not retry indefinitely or dump worker credentials,
+   private IDs, provider bodies or prices into diagnostics.
+4. Freeze the report cutoff honestly. Intake received/ingested after it is
+   unavailable for that cutoff; never backdate collection to 08:00. If this
+   08:00 invocation is the first intake, use its actual later as-of time and state
+   the delay. Only use prior captures when their recorded times, freshness and
+   source contract actually qualify. An already elapsed pre-cutoff window is not
+   satisfied by starting the collector late.
+5. Reuse `PrivateMarketStore` and
+   `ingest.daily_report_projection.project_public_market_snapshot` in memory to
+   select same-run eligible points for the existing universe. Copy only each
+   matching row's allowlisted `public_snapshot` into the normal dated report; the
+   projector already uses `map_public_snapshot`. Preserve null prices and explicit
+   gaps for unavailable rows. Do not publish the whole private store/projection
+   object, and do not route normal report generation through
+   `run_private_quote_report.py` or `project_private_quotes.py`. No committed CLI
+   currently authors the full normal narrative report automatically; authoring
+   that report remains Trader's task, not a reason to rewrite provider intake.
+6. Continue the existing narrative/calendar/forecast workflow and, after the final
+   dated report/index write, run the committed public report validator. Collection
+   success alone establishes neither financial eligibility nor publication rights.
+
 ### Shared monthly financial calendar
 
 Initialize `artifacts/financial-calendar/YYYY-MM.json` once for each month; do not ingest a duplicate calendar into each daily report. At each report run, recheck relevant primary schedules and cancellation/rescheduling notices. If nothing changed, reuse the existing month unchanged. Append new events or complete revisions using `scripts/daily-market-brief/monthly_calendar.py --month YYYY-MM --input INPUT.json --recorded-at ISO_TIMESTAMP`; INPUT has events (stable event_id and full source-backed fields) and optional initial notes. Use actual availability time, never backdate a newly discovered correction to justify a prior forecast.
 
 Ledger entries retain event_id, increasing revision, recorded_at with timezone, date/date_end, kind, title, time, summary/details, sources, status scheduled/cancelled and change_reason. recorded_at is when evidence became available in this workflow (normally discovery/retrieval); preserve the notice's published_at and retrieved_at separately in sources. Do not substitute earlier publication for later workflow discovery. Legacy imports may preserve demonstrable earlier report availability with inherited_from and an explicit limitation, not claim new verification. Corrections/cancellations require a specific justification and official notice where available; disappearance from a feed is not evidence of cancellation. Never remove or rewrite earlier entries. A monthly repeat with identical full events is a no-op. The viewer preserves as-of availability, shows cancelled/superseded records struck through with a reason alongside, and makes missing month data visible. Superseded reasons come from the eligible replacement revision, never a later-than-cutoff correction. Distinguish exchange closures from public holidays; convert source-session dates into MYT carefully. This utility is not an unattended scheduler; monthly initialization/daily rechecks occur in the authorized report workflow.
 
-Use one configured quote provider per market and retain its response, timestamp, currency, adjustment basis, retrieval time, and status. Do not silently switch providers or infer that a quote-reference website supplied a vendor snapshot. A trend marker is a time-sensitive observation, not a durable recommendation. Use available Moomoo snapshot data in the normal dated dashboard report and label source, timestamps, coverage and limitations. Proceed through report validation and export with available allowlisted snapshots. Moomoo REST (https://open.moomoo.com/api/overview/getting-started) is a candidate for scheduled collection but is not implemented here. Until a provider is configured, label ad hoc web quotes as vendor data and identify coverage gaps. Official exchanges/regulators/issuer releases remain the source for calendars, filings and catalysts; forecasts are separate research output.
+Use one configured quote provider per market and retain its response, timestamp, currency, adjustment basis, retrieval time, and status. Do not silently switch providers or infer that a quote-reference website supplied a vendor snapshot. A trend marker is a time-sensitive observation, not a durable recommendation. Use available Moomoo snapshot data in the normal dated dashboard report and label source, timestamps, coverage and limitations. Proceed through report validation and export with available allowlisted snapshots. The direct Moomoo REST adapter and manual collector are implemented; reuse the committed collector described above for scheduled intake. Bounded authenticated REST history was verified on 2026-10-11 MYT, which does not guarantee future coverage, entitlements or complete report-universe intake. The collector does not schedule itself. If configured intake is unavailable, keep the provider failure and coverage gaps visible; do not silently substitute ad hoc web quotes. Official exchanges/regulators/issuer releases remain the source for calendars, filings and catalysts; forecasts are separate research output.
 
 For price direction, use the existing quote-derived `moomoo_session_direction` and `moomoo_trend` fields when present and eligible at the report cutoff. `moomoo_session_direction` compares the latest quote with the provider's previous close; `moomoo_trend` compares SMA-5 with SMA-20 over 20 completed Moomoo daily bars. These are calculated trend indicators from Moomoo data, not a native Moomoo recommendation. When both available signals agree bullish or bearish, use that as the forecast's directional input and state the signal/method and timestamps in the forecast rationale. When they conflict, report the disagreement and do not force a directional call from the Moomoo inputs alone. Neutral or unavailable signals provide no directional confirmation. The signals set direction only: derive numeric target/range from the report's existing supported target method, with its own horizon, reference price, confidence and invalidation. Do not invent signals for unsupported markets; the current projection supports these Moomoo trend inputs for US only.
 

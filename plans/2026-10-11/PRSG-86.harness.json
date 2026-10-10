@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-86",
+  "tags": {
+    "type": "skill",
+    "modules": [
+      "skills",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.3
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-11/PRSG-86-trader-reusable-rest-collection-workflow.md",
+  "objective": "Require the registered Trader to reuse the committed REST collector for scheduled reports instead of generating provider fetch scripts.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "680f09ca4d5cd98451cd36cd820008f3128ec814",
+  "allowed_paths": [
+    "skills/daily-market-brief/SKILL.md",
+    "agent-operations/schedules/trader-daily-report.md",
+    "plans/2026-10-11/PRSG-86-trader-reusable-rest-collection-workflow.md",
+    "plans/2026-10-11/PRSG-86.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "tests/",
+    "artifacts/",
+    "README.md"
+  ],
+  "checks": [
+    {
+      "id": "workflow-review",
+      "kind": "manual",
+      "description": "Skill and schedule script step match collector/projection implementation.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed collector CLI/optional 30 history jobs, Python3.11 runtime requirement, same-run price-only projection, actual cutoff and protected financial/report policies; skill2.1 corrects stale REST statement and requires script reuse."
+      ]
+    },
+    {
+      "id": "skill-replay",
+      "kind": "manual",
+      "description": "Metadata/references valid; Traderfrozenmissing/failedintake and reportvalidationreplay.",
+      "status": "passed",
+      "evidence": [
+        "Skill quick_validate passed. Trader replayed seven existing test nodes:18 passed; frozen Oct10 public validator exit0 with50 missing quotes/null prices and0 rated forecasts. Lead inspected exact argv/logs and preservation evidence; synthetic fixtures/no provider calls."
+      ]
+    },
+    {
+      "id": "trader-schedule-review",
+      "kind": "manual",
+      "description": "Traderacknowledgement/privatepreflight and08:00unchangedtiming/status/target readback.",
+      "status": "passed",
+      "evidence": [
+        "Trader acknowledged exact committed CLI reuse; Engineer privately shared verified runtime/store/credential locator metadata. Actual08:00 automation ACTIVE same registered target/timing; original prompt prefix unchanged plus collector instruction. Current input plan may be derived from existing approved universe, with truthful session/cutoff and visible setup gaps."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-86-D1",
+      "description": "Explicit accurate reusable collectorworkflow.",
+      "check_ids": [
+        "workflow-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed collector CLI/optional 30 history jobs, Python3.11 runtime requirement, same-run price-only projection, actual cutoff and protected financial/report policies; skill2.1 corrects stale REST statement and requires script reuse."
+      ]
+    },
+    {
+      "id": "PRSG-86-D2",
+      "description": "Skillmetadata/reference validation plus frozen failure replay.",
+      "check_ids": [
+        "skill-replay"
+      ],
+      "status": "done",
+      "evidence": [
+        "Skill quick_validate passed. Trader replayed seven existing test nodes:18 passed; frozen Oct10 public validator exit0 with50 missing quotes/null prices and0 rated forecasts. Lead inspected exact argv/logs and preservation evidence; synthetic fixtures/no provider calls."
+      ]
+    },
+    {
+      "id": "PRSG-86-D3",
+      "description": "Traderacknowledgement andLead fullscope/schedule readback.",
+      "check_ids": [
+        "trader-schedule-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Trader acknowledged exact committed CLI reuse; Engineer privately shared verified runtime/store/credential locator metadata. Actual08:00 automation ACTIVE same registered target/timing; original prompt prefix unchanged plus collector instruction. Current input plan may be derived from existing approved universe, with truthful session/cutoff and visible setup gaps."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead full four-path review and private schedule backup/readback accepted; exact existing script/skill workflow and failure replay demonstrated. Financial policy/model/risk/publication authority unchanged. No live report or provider reliability claim."
+    ]
+  }
+}
