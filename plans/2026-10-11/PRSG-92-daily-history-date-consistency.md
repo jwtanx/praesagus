@@ -2,7 +2,7 @@
 
 Type: bug · Modules: connectors, financial-data · Owner: Engineer · Priority: P1 · Effort: XS (0.1–0.4 person-day, estimate) · Impact: medium-high — prevents contradictory temporal input from being accepted; no prediction or live-coverage gain is established.
 
-Created 2026-10-11 MYT. Status: in progress, Lead accepted. Frozen base: `6ad50954ab9a8d8c0d98b34f90d0a08738dff512`. This is the narrowly scoped guard correction identified by the accepted PRSG-91 review, within the selected forecast-input readiness direction.
+Created 2026-10-11 MYT. Status: complete, independently accepted by Lead. Frozen base: `6ad50954ab9a8d8c0d98b34f90d0a08738dff512`. This is the narrowly scoped guard correction identified by the accepted PRSG-91 review, within the selected forecast-input readiness direction.
 
 ## Reproduction and expected behavior
 
@@ -20,7 +20,7 @@ No credential/Keychain/private-store/provider access, live sample, new client/sc
 
 - [x] PRSG-92-D1: Both core and store enforce supplied timestamp/offset/date agreement with controlled mismatch/overflow rejection.
 - [x] PRSG-92-D2: Focused positive, mismatch, rollover, overflow and collector failure regressions pass; existing safety controls remain covered.
-- [ ] PRSG-92-D3: Lead independently reviews all owned paths and preservation, validates ticket evidence and verifies authorized commit/push delivery.
+- [x] PRSG-92-D3: Lead independently reviews all owned paths and preservation, validates ticket evidence and verifies authorized commit/push delivery.
 
 ## Validation and ownership
 
@@ -39,3 +39,7 @@ Exact focused check: `PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovi
 ## Independent Lead review
 
 Lead inspected all eight owned paths and independently ran the exact focused test set: 491 passed in2.98s. Integer arithmetic preserves explicit-offset millisecond boundaries and controlled overflow rejection;30newcases retain valid non-midnight rows and test mismatches/rollovers/worker zero-row failures. Full scope and protected-path preservation passed. Implementation accepted; commit/push delivery remains pending. No live request or new target.
+
+## Verified delivery
+
+Lead independently accepted all8paths/491focusedtests2.98s and protected preservation. Implementation0a3901ffe684f09581079c69d3402dd6590c4e6d committed/pushedmain/shared; remote exactSHAverified. Mandatorycommit1637passed41warnings33.06s, push1637passed41warnings32.30s. No backend runtime deployment claimed; no live/secretaccess/forecast change. Precise90livecause remainsunknown.
