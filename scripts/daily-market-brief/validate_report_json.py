@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from ingest.daily_report_projection import (validate_observed_quote, validate_public_snapshot,
     validate_public_report_boundary, validate_market_snapshot, forecast_basis_error,
     validate_moomoo_trend, validate_moomoo_session_direction)
+from ingest.private_market_store import parse_aware
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
@@ -95,7 +96,96 @@ def validate_universe(path: Path, d):
     if set(keys)!=expected: fail(path,f'groups must cover exactly {sorted(expected)}')
     return keys,universe
 
-def validate_report(path: Path, d, universe_data=None, *, public=False):
+def compact_reference(basis, cutoff):
+    """Validate declared frozen reference evidence, not source authenticity."""
+    if not isinstance(basis, dict): return False
+    try:
+        value=basis['reference_close']
+        reference=basis['reference_close_date']
+        if not isinstance(reference,str) or not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',reference):return False
+        source=basis['reference_source']
+        if not isinstance(source,str) or re.search(r'[\s\\]',source):return False
+        url=urlparse(source)
+        return (type(value) in (int,float) and math.isfinite(value) and value>0
+                and date.fromisoformat(reference)<=cutoff.date()
+                and url.scheme=='https' and bool(url.netloc) and not url.username and not url.password)
+    except (ValueError,TypeError,KeyError,OverflowError):return False
+
+def validate_compact(path, d, cutoff):
+    def words(value):return len(value.split())
+    if not 1<=len(d['summary'])<=4:fail(path,'compact summary requires 1–4 items')
+    if any(words(item['summary'])>50 for item in d['summary']):fail(path,'compact summary body exceeds 50 words')
+    prose=0
+    for name,section in d['sections'].items():
+        paragraphs=section.get('description',[])+section.get('notes',[])
+        paragraphs+= [p for item in section.get('items',[]) for p in item.get('paragraphs',[])]
+        prose+=sum(words(p['text']) for p in paragraphs)
+        for table in section.get('tables',[]):
+            if len(table['rows'])>8 and (table.get('collapsed') is not True
+                    or not isinstance(table.get('details_label'),str)
+                    or not 1<=words(table['details_label'])<=12):
+                fail(path,f'compact sections.{name} large table requires collapsed:true and a 1–12 word details_label')
+    if prose>1000:fail(path,'compact main section prose exceeds 1000 words')
+    rows=d['forecasts']
+    observed={'us':0,'my':0};missing={'us':0,'my':0}
+    signals=dict.fromkeys(('bullish','bearish','neutral','unavailable'),0)
+    trends=references=0
+    for i,row in enumerate(rows):
+        loc=f'compact forecasts[{i}]'
+        if words(row['confidence_reason'])>40:fail(path,f'{loc} confidence_reason exceeds 40 words')
+        if words(row['scenario'])>55:fail(path,f'{loc} scenario exceeds 55 words')
+        has_quote=bool(row.get('public_snapshot') or row.get('observed_quote')) or (
+            row.get('quote_status')=='observed' and row.get('current_price_value') is not None)
+        (observed if has_quote else missing)[row['country']]+=1
+        s=row.get('moomoo_session_direction',{})
+        if s.get('market_date') and date.fromisoformat(s['market_date'])>cutoff.date():
+            fail(path,f'{loc} session direction has a future market date')
+        signals[s['signal'] if s.get('status')=='available' else 'unavailable']+=1
+        trend=row.get('moomoo_trend',{})
+        if trend.get('last_bar_date') and date.fromisoformat(trend['last_bar_date'])>cutoff.date():
+            fail(path,f'{loc} SMA has a future bar date')
+        trends+=trend.get('status')=='available'
+        basis=row.get('forecast_basis')
+        references+=compact_reference(basis,cutoff)
+        rated=row['direction']!='unknown' or row.get('forecast_status')!='unavailable'
+        if not rated:continue
+        required={'reference_close_date','reference_close','reference_source','horizon_type','bull_case','bear_case','invalidation'}
+        if not compact_reference(basis,cutoff) or set(basis)!=required:
+            fail(path,f'{loc} rated forecast requires complete frozen forecast_basis')
+        if basis['horizon_type'] not in {'next_session','week_end'} or any(
+                not isinstance(basis[k],str) or not basis[k].strip() for k in ('bull_case','bear_case','invalidation')):
+            fail(path,f'{loc} requires horizon, bull/bear evidence and invalidation')
+        if (not isinstance(row.get('forecast_model'),str) or not row['forecast_model'].strip()
+                or row['forecast_model'].strip().lower() in {'unavailable','unknown','no supported predictive model'}
+                or row['confidence']=='unavailable'):
+            fail(path,f'{loc} requires named forecast_model and rated confidence')
+        for key in ('forecast_observations','forecast_horizon_sessions'):
+            if type(row.get(key)) is not int or row[key]<=0:fail(path,f'{loc}.{key} requires positive integer')
+        try:
+            as_of=parse_aware(row['forecast_as_of'])
+            target=row['target_date']
+            if not isinstance(target,str) or not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',target):raise ValueError()
+            target=date.fromisoformat(target)
+            if (as_of.tzinfo is None or as_of.utcoffset() is None or as_of>cutoff
+                    or date.fromisoformat(basis['reference_close_date'])>as_of.date()
+                    or target<=as_of.date()):raise ValueError()
+        except (ValueError,TypeError,KeyError,OverflowError):fail(path,f'{loc} invalid forecast time/reference/target date')
+        low,mid,high=(row.get(k) for k in ('range_low_value','estimated_mid_case_value','range_high_value'))
+        if any(type(v) not in (int,float) or not math.isfinite(v) or v<=0 for v in (low,mid,high)) or not low<=mid<=high:
+            fail(path,f'{loc} requires finite ordered target/range')
+    collection=d.get('collection')
+    if not isinstance(collection,dict):fail(path,'compact collection coverage required')
+    expected={**{f'observed_{k}':v for k,v in observed.items()},**{f'missing_{k}':v for k,v in missing.items()},
+              'trend_available_count':trends,'verified_forecast_reference_count':references}
+    for key,value in expected.items():
+        if type(collection.get(key)) is not int or collection[key]!=value:
+            fail(path,f'compact collection.{key} must match actual rows ({value})')
+    declared=collection.get('session_direction_counts')
+    if not isinstance(declared,dict) or set(declared)!=set(signals) or any(
+            type(declared[k]) is not int or declared[k]!=v for k,v in signals.items()):
+        fail(path,'compact collection.session_direction_counts must match actual rows')
+
+def validate_report(path: Path, d, universe_data=None, *, public=False, compact=False):
     if public:
         try:validate_public_report_boundary(d)
         except (ValueError, TypeError, KeyError, OverflowError):fail(path,"public report contains private or invalid structures")
@@ -111,6 +201,11 @@ def validate_report(path: Path, d, universe_data=None, *, public=False):
     if has_html_key(d): fail(path,'report JSON must contain structured data, not HTML fragments')
     meta=d.get('metadata')
     if not isinstance(meta,dict): fail(path,'metadata must be object')
+    profile=meta.get('presentation_profile')
+    if profile not in (None,'','compact-v1'):fail(path,'unsupported presentation_profile')
+    if compact and profile!='compact-v1':fail(path,'--compact requires compact-v1 presentation_profile')
+    compact=profile=='compact-v1'
+    if compact and not modern:fail(path,'compact-v1 requires schema3')
     valid_date(meta.get('date'),path,'metadata.date')
     if path.stem!=meta['date']:fail(path,'filename must match metadata.date')
     for key in ('title','subtitle'):
@@ -217,6 +312,7 @@ def validate_report(path: Path, d, universe_data=None, *, public=False):
         symbols.add(f['ticker']);validate_sources(f.get('sources',[]),path,f'forecasts[{i}]')
     for key,count in sector_counts.items():
         if count!=(5 if modern else 10):fail(path,f'watchlist group {key} has {count} tickers; expected {5 if modern else 10}')
+    if compact:validate_compact(path,d,as_of)
     if modern:
         if 'calendar' in d:fail(path,'schema3 calendar must be shared, not inline')
         ref=d.get('calendar_ref')
@@ -266,6 +362,7 @@ def main():
     ap.add_argument('--universe',type=Path,default=Path('artifacts/daily-market-brief/watchlist-universe.json'))
     ap.add_argument('--date',help='validate one YYYY-MM-DD report')
     ap.add_argument('--public',action='store_true',help='reject private structures before publication')
+    ap.add_argument('--compact',action='store_true',help='require and validate the compact-v1 presentation profile')
     a=ap.parse_args();root=a.reports_dir
     universe_json=read_json(a.universe)
     universe_keys,universe_map=validate_universe(a.universe,universe_json)
@@ -285,7 +382,9 @@ def main():
         report=read_json(p)
         taxonomy=report.get('watchlist_config',{}).get('taxonomy_id')
         if report.get('schema_version')==3 and taxonomy not in universes:fail(p,'unknown schema3 taxonomy')
-        n,events,counts=validate_report(p,report,universes.get(taxonomy,universe_data),public=a.public);total+=1
+        options={'public':a.public}
+        if a.compact:options['compact']=True
+        n,events,counts=validate_report(p,report,universes.get(taxonomy,universe_data),**options);total+=1
         breakdown=', '.join(f'{key}={count}' for key,count in counts.items())
         print(f'OK {p}: {n} forecasts ({breakdown}), {events} calendar events')
         snapshot_path=root/'market-snapshots'/f'{report["metadata"]["date"]}.json'

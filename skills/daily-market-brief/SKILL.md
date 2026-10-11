@@ -7,7 +7,7 @@ description: >-
 license: MIT
 metadata:
   author: praesagus
-  version: "2.1"
+  version: "2.2"
   category: market-research
   tags: [daily-brief, catalysts, news, provenance, market-research]
 ---
@@ -60,11 +60,15 @@ Use a concise brief with:
 
 For new daily/week-ahead briefs, author `artifacts/daily-market-brief/YYYY-MM-DD.json` using shared `index.html`, schema version 3 and structured data only (no HTML). Required sections are `outlook`, `top10`, `swing`, `etfs`, `news`, `trends`, `score`; `top10` is a legacy identifier, not a requirement to publish ten stocks. Include timezone-aware metadata/as_of, summary, watchlist_config, forecasts and footer. Calendar content belongs only in the shared monthly ledger; daily JSON has `calendar_ref: ../financial-calendar/YYYY-MM.json`, not inline events or sections.calendar. Update reports.json with the new date/label/latest. Preserve earlier schema-2 snapshots and their original universe; the viewer supports them without rewriting historical forecasts. Keep markup, filters, navigation and mobile behavior in the shared HTML.
 
-Use the dated report artifact as the normal analysis and dashboard-export flow. Do not route ordinary dashboard generation through the separate private-draft workflow. For each available snapshot, place only the allowlisted price-only point in that report row's `public_snapshot` using `ingest.daily_report_projection.map_public_snapshot`; preserve source, observation, ingestion, known and cutoff times plus explicit unknown-reference fields. Include available schema-compatible snapshot data in the public dated JSON. Keep raw captures, private IDs, account details, credentials and full provider responses out of public output. Validate with `python3 scripts/daily-market-brief/validate_report_json.py --date YYYY-MM-DD --public` before publication.
+Use the October 8 report's concise reading format for new reports: set `metadata.presentation_profile` to `compact-v1` and read [the compact report contract](references/compact-report.md) before authoring or revising one. Keep prices and separate Quote, SMA and Forecast colored chips visible; retain detailed provenance and the complete forecast audit behind closed expandable controls. Keep missing coverage and a short forecast blocker visible. Presentation must not turn an observed signal into a rated forecast. Historical reports without this profile retain their original presentation.
+
+Use the dated report artifact as the normal analysis and dashboard-export flow. Do not route ordinary dashboard generation through the separate private-draft workflow. For each available snapshot, place only the allowlisted price-only point in that report row's `public_snapshot` using `ingest.daily_report_projection.map_public_snapshot`; preserve source, observation, ingestion, known and cutoff times plus explicit unknown-reference fields. Include available schema-compatible snapshot data in the public dated JSON. Keep raw captures, private IDs, account details, credentials and full provider responses out of public output. Validate new compact reports with `python3 scripts/daily-market-brief/validate_report_json.py --date YYYY-MM-DD --public --compact` before publication.
 
 New schema-3 reports collect from `artifacts/daily-market-brief/watchlist-universe-five.json`: exactly five names in each of ten display groups (50 total), with three US/two MY names per group. Selection is a stable cross-market monitoring shortlist, not a validated performance/return ranking. Retain selection rationale and do not churn constituents based on hindsight. Groups: benchmarks/ETFs, Financials, Technology, Semiconductors, Healthcare, Staples, Discretionary, Energy, Industrials/Transport/Logistics, Materials/Plantation. ETFs are not a sector; semiconductors are an industry overlay with distinct constituents. Preserve listing market/currency and classification caveats (curated thematic grouping is not canonical GICS). Record provider/quote timestamp for every observed price, mark missing/stale inputs and their consequences; never infer freshness or fabricate prices. Keep the legacy `watchlist-universe.json` for existing schema-2 reports and audit snapshots.
 
 After the final write for every generated or edited report, run the committed local validator `python3 scripts/daily-market-brief/validate_report_json.py --date YYYY-MM-DD`; add `--public` for a report intended for the public Pages viewer. It validates both legacy/new contracts, sources, unique universe membership, five-name schema-3 coverage, confidence/reasons, shared calendar and report index. Treat validator failure as a stop condition: fix errors and rerun before delivery, commit or publication. The committed validator is the local report-component check; Pages CI also runs it before deployment. Treat direction as conditional research, not a promise or instruction. Include timestamped reference close, target date/horizon, linked bull/bear evidence and invalidation for a defensible prediction. Distinguish next-session from week-end scoring.
+
+For new reports and compact presentation revisions, also pass `--compact` in that same final command. It checks the visible text budgets, collapsed long tables, declared price/signal/reference coverage and support for every rated row. Run it after the last write, including a repair; a prior pass is insufficient. Do not create a second validator or a replacement provider script. Passing these checks establishes declared consistency, not source authenticity or predictive performance. Preserve historical reports without the compact profile when checking the archive.
 
 ### Reuse the committed REST collector at each report run
 
@@ -124,7 +128,8 @@ actual paths/identifiers or credential values into public reports.
    currently authors the full normal narrative report automatically; authoring
    that report remains Trader's task, not a reason to rewrite provider intake.
 6. Continue the existing narrative/calendar/forecast workflow and, after the final
-   dated report/index write, run the committed public report validator. Collection
+   dated report/index write, run the committed public report validator with
+   `--compact` for the new compact report. Collection
    success alone establishes neither financial eligibility nor publication rights.
 
 ### Shared monthly financial calendar

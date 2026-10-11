@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-87",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend",
+      "harness",
+      "skills",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-11/PRSG-87-compact-daily-report-validation.md",
+  "objective": "Restore compact October8-style daily report presentation with accessible full evidence and a meaningful final validation gate.",
+  "status": "review",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "232748e2939c519421c88164e4ab9bb04a85e1cf",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "tests/test_daily_report.py",
+    "tests/compact_report_viewer_checks.cjs",
+    "skills/daily-market-brief/SKILL.md",
+    "skills/daily-market-brief/references/compact-report.md",
+    "artifacts/daily-market-brief/2026-10-11.json",
+    "plans/2026-10-11/PRSG-87-compact-daily-report-validation.md",
+    "plans/2026-10-11/PRSG-87.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "harness/engineering/price-prediction/",
+    "artifacts/financial-calendar/",
+    "artifacts/daily-market-brief/reports.json",
+    "scripts/market_collect.py",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_daily_report.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently ran exact argv in clean checkout:102 passed."
+      ]
+    },
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/compact_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently ran exact Node DOM replay:passed; real390x844 native Enter/tap and full120 rows verified."
+      ]
+    },
+    {
+      "id": "report",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py",
+        "--date",
+        "2026-10-11",
+        "--public",
+        "--compact"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead final public compact CLI:50rows/65events/12indexdates passed; normal archive12 reports passed."
+      ]
+    },
+    {
+      "id": "skill-replay",
+      "kind": "manual",
+      "description": "Skill metadata/references valid; replay verbose rejection, compact missing-history acceptance and unsupported/future rated-row rejection.",
+      "status": "passed",
+      "evidence": [
+        "Skill metadata/references passed; Trader reported11 final-validator workflow replays; Lead independently verified frozen payload and focused missing/future/unsupported regressions."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Complete nine-path scope review, immutable payload/history hashes, clean-checkout mandatory hooks, desktop/mobile detail/chip verification and deployed final report.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-87-D1",
+      "description": "Opt-in compact viewer with collapsed provenance/audit and independently labeled accessible colored chips.",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent implementation review and linked passing checks; no predictive performance or live provider equivalence claimed."
+      ]
+    },
+    {
+      "id": "PRSG-87-D2",
+      "description": "Single final validator enforces compact limits, coverage consistency, timestamps and rated-row support; legacy reports unchanged.",
+      "check_ids": [
+        "focused",
+        "report"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent implementation review and linked passing checks; no predictive performance or live provider equivalence claimed."
+      ]
+    },
+    {
+      "id": "PRSG-87-D3",
+      "description": "Trader skill reuses collector and final gate; today's presentation revision preserves financial evidence and frozen forecasts.",
+      "check_ids": [
+        "skill-replay",
+        "report"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent implementation review and linked passing checks; no predictive performance or live provider equivalence claimed."
+      ]
+    },
+    {
+      "id": "PRSG-87-D4",
+      "description": "Lead independently accepts full scope and verifies delivered compact/mobile report.",
+      "check_ids": [
+        "lead-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "Nine-path implementation reviewed; clean mandatory hooks and live delivery pending."
+    ]
+  }
+}
