@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-90",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-11/PRSG-90-forecast-history-readiness.md",
+  "objective": "Assess one bounded SPY history capture and input comparability for a future research forecast; no targets or model promotion.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c9271ea5b2566bde205170ef4bacc3f2c37b665a",
+  "allowed_paths": [
+    "plans/2026-10-11/PRSG-90-forecast-history-readiness.md",
+    "plans/2026-10-11/PRSG-90.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "scripts/",
+    "harness/",
+    "artifacts/",
+    "skills/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "plan",
+      "kind": "manual",
+      "description": "Lead independently reviews validate_plan output for the exact single US.SPY history job without credential/network/store I/O.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently dry-reviewed exact existing validate_plan/job_request: one US.SPY GET history job, end2026-10-09,ktype2/autype0/num100, codes/news empty; no credential/network/store I/O. Accepted frozen collector base c9271ea5b2566bde205170ef4bacc3f2c37b665a. Venue/calendar and financial two-verdict scope reviewed; single probe authorized after PRSG-89 UI deployment38134781736 success."
+      ]
+    },
+    {
+      "id": "intake",
+      "kind": "manual",
+      "description": "Trader reports bounded private collector result; Lead inspects sanitized status/timestamp/coverage evidence and secret-access disclosure.",
+      "status": "passed",
+      "evidence": [
+        "Trader executed exactly one frozen history job, no retry, exit1; persisted invalid-response failure, zero accepted rows. Receipt2026-10-11T11:26:00.659232Z, ingestion11:26:00.689817Z, known-at11:26:00.690Z. Lead independently inspected sanitized attempt/completion/zero-row evidence and loader/signer branches: credential and Keychain loader accessed, no values exposed; HTTP200 inferred, exact rejection cause unknown because screened body discarded."
+      ]
+    },
+    {
+      "id": "financial",
+      "kind": "manual",
+      "description": "Trader verifies21expected closes11Sep\u20139Oct with explicit9OctArca/core-session anchor,18Sep ex-dividend and basis/currency/source/finality/rights gaps; two separate ready/blocked verdicts.",
+      "status": "passed",
+      "evidence": [
+        "Trader reviewed and Lead accepted separate blocked verdicts: zero of21expected sessions/no9October anchor; target readiness blocked by absent closes/reference plus unresolved adjusted/unadjusted comparability, ex-dividend session, units/finality/availability/rights. Actual provider row count unknown. Option3 remainUnrated; neither adjusted nor unadjusted method promoted."
+      ]
+    },
+    {
+      "id": "preservation",
+      "kind": "manual",
+      "description": "Lead verifies report/history/ledger/calendar and protected code byte-identical.",
+      "status": "passed",
+      "evidence": [
+        "Trader frozen-checkout and independent Lead shared-checkout comparisons checked all231protected tracked paths; zero mismatches. Shared projection compared against pre-existing preserved SHA256b9f307894a6038e350037adf21261919a961d61d5deed976a2ff3f042d37f89f. Reports/history/ledger/calendar/financialvalues unchanged."
+      ]
+    },
+    {
+      "id": "decision",
+      "kind": "manual",
+      "description": "Lead independently accepts three-option findings and freezes next contract or abstention; no production forecast promotion.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently accepted completed failed-probe assessment and option3 abstention. Next dependency is separately accepted bounded contract diagnosis; no retry/newrequest/productiontarget/methodpromotion/score/performanceclaim authorized here."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-90-D1",
+      "description": "Freeze and dry-review the exact bounded plan before access.",
+      "check_ids": [
+        "plan"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead froze accepted single-job/21expected-session scope and private evidence handling; linked offline plan check passed."
+      ]
+    },
+    {
+      "id": "PRSG-90-D2",
+      "description": "Record actual intake/failure/times/coverage and secret-access status.",
+      "check_ids": [
+        "intake"
+      ],
+      "status": "done",
+      "evidence": [
+        "Trader executed exactly one frozen history job, no retry, exit1; persisted invalid-response failure, zero accepted rows. Receipt2026-10-11T11:26:00.659232Z, ingestion11:26:00.689817Z, known-at11:26:00.690Z. Lead independently inspected sanitized attempt/completion/zero-row evidence and loader/signer branches: credential and Keychain loader accessed, no values exposed; HTTP200 inferred, exact rejection cause unknown because screened body discarded."
+      ]
+    },
+    {
+      "id": "PRSG-90-D3",
+      "description": "Financially review21expected-session coverage separately from research-target readiness; explicit Arca/core-session reference and corporate-action/basis/rights gaps against three options.",
+      "check_ids": [
+        "financial"
+      ],
+      "status": "done",
+      "evidence": [
+        "Trader reviewed and Lead accepted separate blocked verdicts: zero of21expected sessions/no9October anchor; target readiness blocked by absent closes/reference plus unresolved adjusted/unadjusted comparability, ex-dividend session, units/finality/availability/rights. Actual provider row count unknown. Option3 remainUnrated; neither adjusted nor unadjusted method promoted."
+      ]
+    },
+    {
+      "id": "PRSG-90-D4",
+      "description": "Lead records independently reviewed decision and immutable existing artifacts.",
+      "check_ids": [
+        "decision",
+        "preservation"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently accepted completed failed-probe assessment and option3 abstention. Next dependency is separately accepted bounded contract diagnosis; no retry/newrequest/productiontarget/methodpromotion/score/performanceclaim authorized here.",
+        "Trader frozen-checkout and independent Lead shared-checkout comparisons checked all231protected tracked paths; zero mismatches. Shared projection compared against pre-existing preserved SHA256b9f307894a6038e350037adf21261919a961d61d5deed976a2ff3f042d37f89f. Reports/history/ledger/calendar/financialvalues unchanged."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed exact job, actual failed intake/timestamps/loader access, financial abstention and231path preservation. All4criteria met for the bounded spike; forecast-input readiness remains blocked."
+    ]
+  }
+}
