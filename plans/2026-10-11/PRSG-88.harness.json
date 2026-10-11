@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend",
+      "harness",
+      "skills",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "harness/engineering/price-prediction/",
+    "artifacts/financial-calendar/",
+    "artifacts/daily-market-brief/reports.json",
+    "scripts/market_collect.py",
+    "agent-operations/"
+  ],
+  "ticket_key": "PRSG-88",
+  "spec_path": "plans/2026-10-11/PRSG-88-native-signal-display-correction.md",
+  "objective": "Correct rejected quote/SMA proxy display and workflow to request actual native Moomoo signals; never fabricate native coverage.",
+  "status": "review",
+  "scope_status": "accepted",
+  "base_sha": "622ba71251fcc95ee0355542c56f861b6e11c48b",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "tests/compact_report_viewer_checks.cjs",
+    "skills/daily-market-brief/SKILL.md",
+    "skills/daily-market-brief/references/compact-report.md",
+    "artifacts/daily-market-brief/2026-10-11.json",
+    "plans/2026-10-11/PRSG-88-native-signal-display-correction.md",
+    "plans/2026-10-11/PRSG-88.harness.json"
+  ],
+  "checks": [
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/compact_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently ran compact+legacy Node DOM checks; real1280desktop nativeEnter and390x844mobile tap:coverage expands, no pageoverflow, all120audit closed, no proxy chips."
+      ]
+    },
+    {
+      "id": "report",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py",
+        "--date",
+        "2026-10-11",
+        "--public",
+        "--compact"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently ran publiccompact report50rows/65events/12indexdates and102focused tests; preservationcompare allfinancial/inputrows/collection/cutoff/fullscorecard exact except50allowed reasonwording changes."
+      ]
+    },
+    {
+      "id": "skill-replay",
+      "kind": "manual",
+      "description": "Metadata/reference validation and financial replay: price/SMA substitutes rejected; no native coverage is unavailable, never zero or a forced forecast.",
+      "status": "passed",
+      "evidence": [
+        "Skill2.3 metadata/references valid; Trader reported missingnative/emptyunsupported/agreeingproxies/independentforecast cases. Lead reviewed wording and DOMsupportedforecast fixture. Saved Trader prompt aligned/readbackexact at08:00ACTIVE with unchangedtarget/rules; Leadquarterhourpaused."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Seven-path scope; frozen inputs, forecasts, cutoff, ledger/calendar/history; desktop/mobile expansion and deployed bytes.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-88-D1",
+      "description": "Compact signal column removes Quote/SMA directional chips; clearly labels native bullish/bearish counts unavailable with expandable KDJ/MACD/Bollinger missing coverage; independent forecast retained.",
+      "check_ids": [
+        "viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently ran compact+legacy Node DOM checks; real1280desktop nativeEnter and390x844mobile tap:coverage expands, no pageoverflow, all120audit closed, no proxy chips."
+      ]
+    },
+    {
+      "id": "PRSG-88-D2",
+      "description": "Trader skill/report narrative remove price comparison as native substitute or forced direction; no forecast/financial/input changes.",
+      "check_ids": [
+        "report",
+        "skill-replay"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently ran publiccompact report50rows/65events/12indexdates and102focused tests; preservationcompare allfinancial/inputrows/collection/cutoff/fullscorecard exact except50allowed reasonwording changes. Skill2.3 metadata/references valid; Trader reported missingnative/emptyunsupported/agreeingproxies/independentforecast cases. Lead reviewed wording and DOMsupportedforecast fixture. Saved Trader prompt aligned/readbackexact at08:00ACTIVE with unchangedtarget/rules; Leadquarterhourpaused."
+      ]
+    },
+    {
+      "id": "PRSG-88-D3",
+      "description": "Lead reviews exact scope and delivers tested correction; PRSG-82 native intake remains explicitly blocked.",
+      "check_ids": [
+        "lead-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "Lead accepted local seven-path correction after independent review; delivery remains pending. No native events/coverage claimed."
+    ]
+  }
+}

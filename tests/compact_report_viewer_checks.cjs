@@ -66,7 +66,7 @@ function compactFixture(){
 }
 async function compactRendering(width){
   const data=compactFixture();const t=mount({width,routes:{'./2026-10-01.json':data}});await settle();
-  assert.match(t.$('#top10').textContent,/US 1 observed \/ 3 missing.*MY 0 observed \/ 0 missing.*SMA available: 1.*Forecasts: 1 rated \/ 3 Unrated/s);
+  assert.match(t.$('#top10').textContent,/US 1 observed \/ 3 missing.*MY 0 observed \/ 0 missing.*Native Moomoo bullish\/bearish coverage: Not collected.*Forecasts: 1 rated \/ 3 Unrated/s);
   assert.match(t.$('#top10').textContent,/Preserved shortlist evidence note/);
   assert.equal(t.$('#market-snapshot-panel').closest('details').open,false);
   const audit=t.$('#score details.compact-table');assert.ok(audit);assert.equal(audit.open,false);assert.equal(audit.querySelectorAll('tbody tr').length,120);
@@ -82,15 +82,30 @@ async function compactRendering(width){
   assert.equal(row.querySelector('.compact-forecast-reason').closest('details'),null);
   assert.match(row.querySelector('.compact-forecast-reason').textContent,/Reason 0/);
   const chips=row.querySelectorAll('.compact-chips > details > summary > .signal');
-  assert.deepEqual([...chips].map(x=>x.textContent),['Quote: Bearish','SMA: Bullish','Forecast: Unrated']);
-  assert.match(chips[0].className,/bearish/);assert.match(chips[1].className,/bullish/);assert.match(chips[2].className,/unknown/);
-  for(const chip of chips){const details=chip.closest('details');assert.equal(details.open,false);assert.ok(chip.getAttribute('aria-label').includes(chip.textContent));details.querySelector('summary').focus();assert.equal(t.w.document.activeElement,details.querySelector('summary'));details.querySelector('summary').click();assert.equal(details.open,true);}
-  assert.match(row.querySelector('.compact-chips .quote-evidence').textContent,/last_price-vs-prev_close_price.*source_at.*retrieved_at.*cutoff/s);
-  assert.match(row.querySelector('.sma-evidence').textContent,/SMA-5-vs-SMA-20.*bar_count: 20.*sma5: 12.5.*sma20: 11.5.*known_at/s);
-  assert.match(row.querySelector('.sma-evidence').textContent,/source_url: https:\/\/open\.moomoo\.com\/api\/quote\/basic-data\/history-kline/);
+  assert.deepEqual([...chips].map(x=>x.textContent),['Moomoo bullish: Unavailable','Moomoo bearish: Unavailable','Forecast: Unrated']);
+  assert.match(chips[0].className,/unavailable/);assert.match(chips[1].className,/unavailable/);assert.match(chips[2].className,/unknown/);
+  assert.equal(row.querySelector('.sma-evidence'),null);
+  assert.equal(row.querySelector('.compact-chips .quote-evidence'),null);
+  assert.doesNotMatch(row.querySelector('.compact-chips').textContent,/Quote:|SMA:|last_price-vs-prev_close_price|SMA-5-vs-SMA-20/);
+  assert.match(t.$('.forecast-table th:nth-child(5)').textContent,/Moomoo native signals/);
+  const native=row.querySelector('.native-evidence');assert.equal(native.open,false);
+  assert.match(native.textContent,/not been collected.*Counts describe observations, not probabilities/s);
+  assert.deepEqual([...native.querySelectorAll('.native-indicator-coverage b')].map(x=>x.textContent),['KDJ','MACD','Bollinger']);
+  for(const indicator of native.querySelectorAll('.native-indicator-coverage')){
+    assert.match(indicator.textContent,/Not collected.*bullish count: Unavailable.*bearish count: Unavailable.*Rule: Unknown.*parameters: Unknown.*timeframe: Unknown.*Source observation time: Unknown.*lookback window: Unknown/s);
+    assert.doesNotMatch(indicator.textContent,/\b0\b|Neutral/);
+  }
+  for(const details of row.querySelectorAll('.compact-chips > details')){
+    assert.equal(details.open,false);const summary=details.querySelector('summary');summary.focus();assert.equal(t.w.document.activeElement,summary);summary.click();assert.equal(details.open,true);summary.click();assert.equal(details.open,false);
+  }
+  for(const chip of chips)assert.equal(chip.getAttribute('aria-label'),chip.textContent);
+  assert.equal(t.w.getComputedStyle(chips[0].querySelector('.native-bullish-label')).textDecoration,'underline');
+  assert.equal(t.w.getComputedStyle(chips[1].querySelector('.native-bearish-label')).textDecoration,'underline');
   const rows=t.w.document.querySelectorAll('#forecast-rows tr');
-  assert.match(rows[1].querySelector('.sma-evidence').textContent,/Unavailable.*history-unavailable/s);
-  assert.match(rows[2].querySelector('.compact-chips').textContent,/Quote: Neutral/);
+  for(const r of rows){
+    assert.match(r.querySelector('.native-evidence').textContent,/Moomoo bullish: Unavailable.*Moomoo bearish: Unavailable/s);
+    assert.equal(r.querySelector('.native-evidence .signal.bullish,.native-evidence .signal.bearish,.native-evidence .signal.neutral'),null);
+  }
   assert.match(rows[3].querySelector('.forecast-evidence').textContent,/Forecast: Up.*low evidence confidence.*Synthetic drift v1.*forecast_observations: 20.*reference_close.*bull_case.*bear_case.*invalidation/s);
   t.$('#forecast-sort').value='price-desc';t.$('#forecast-sort').dispatchEvent(new t.w.Event('change'));assert.equal(t.$('#forecast-rows tr').dataset.universeOrder,'0','unverified units remain excluded from numeric sort');
   assert.equal(t.errors.length,0);t.dom.window.close();
@@ -111,4 +126,4 @@ async function safetyAndLegacy(){
   assert.equal(legacy.$('#forecast-rows .compact-chips'),null);assert.ok(legacy.$('#forecast-rows .forecast-trend'));
   assert.equal(legacy.errors.length,0);legacy.dom.window.close();
 }
-(async()=>{await compactRendering(1280);await compactRendering(390);await safetyAndLegacy();console.log('Compact DOM checks passed: native closed audit/provenance/signal details, independent Quote/SMA/Forecast states and conflicts, focus/tap expansion, complete evidence, partial coverage, unsortable provider units, escaping, legacy display at desktop/mobile viewport widths.');})().catch(e=>{console.error(e);process.exitCode=1});
+(async()=>{await compactRendering(1280);await compactRendering(390);await safetyAndLegacy();console.log('Compact DOM checks passed: native closed audit/provenance/signal details, native bullish/bearish unavailability despite available/conflicting proxies, KDJ/MACD/Bollinger missing coverage and independent forecasts, focus/tap expansion, complete evidence, partial coverage, unsortable provider units, escaping, legacy display at desktop/mobile viewport widths.');})().catch(e=>{console.error(e);process.exitCode=1});
