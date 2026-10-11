@@ -30,7 +30,7 @@ Exact focused check (cwd repository): PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS="
 
 - [x] PRSG-94-D1: Trusted fixed diagnostics preserve failure/privacy/acceptance boundaries and strict legacy/v2 compatibility.
 - [x] PRSG-94-D2: Meaningful deterministic privacy, framing, propagation and CLI regressions pass; docs accurately describe ephemeral limits.
-- [ ] PRSG-94-D3: Lead independently reviews all owned paths, preservation, test evidence and authorized commit/push delivery.
+- [x] PRSG-94-D3: Lead independently reviews all owned paths, preservation, test evidence and authorized commit/push delivery.
 
 ## Next gate
 
@@ -80,3 +80,7 @@ These requirements now map to executed checks (test function names are in the tw
 Extra bounded-body and legacy-injected checks cover bytes/empty/oversize responses and null-stage legacy collection. Invented canaries are asserted absent from rejected IPC, repr and CLI stdout/stderr. Rejected attempts have zero history rows, null raw_hash and no archive. Secret and malformed decode errors share a stage.
 
 Complete diff contains only the six accepted implementation/docs/test files and two PRSG-94 evidence files, including Lead's prior scope commit. Protected primary projection SHA256 remains b9f307894a6038e350037adf21261919a961d61d5deed976a2ff3f042d37f89f. Hooks remain configured as .githooks and praesagus.testPython uses the approved venv. Engineer has not committed or pushed. Lead independent review/delivery PRSG-94-D3 remains pending; no live request authorized.
+
+## Lead independent acceptance
+
+Lead independently inspected all eight owned paths and replayed focused checks:675passed4.30s. Full commit hook1785passed41warnings38.43s. Implementation ce204b6ebb0b989228f38498c71a304f049d57ac independently accepted; no live request/secret access/backend runtime deployment. Primary projection preserved. Push delivery verified before completion commit. No current report/forecast figures changed; future live probe still requires a frozen plan.

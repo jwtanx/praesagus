@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-12/PRSG-94-safe-history-diagnostic-stages.md",
   "objective": "Add bounded privacy-safe diagnostic stages without weakening validation or changing reports.",
-  "status": "review",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -56,7 +56,8 @@
       "description": "Trusted stages, exact frame versions and unchanged CLI default/privacy semantics.",
       "status": "passed",
       "evidence": [
-        "Fixed trusted stage/strict v1-v2/injected-reply and default-opt-in CLI behavior reviewed; detailed matrix/evidence in dated spec."
+        "Fixed trusted stage/strict v1-v2/injected-reply and default-opt-in CLI behavior reviewed; detailed matrix/evidence in dated spec.",
+        "Lead independently inspected all eight owned paths and replayed focused checks:675passed4.30s. Full commit hook1785passed41warnings38.43s. Implementation ce204b6ebb0b989228f38498c71a304f049d57ac independently accepted; no live request/secret access/backend runtime deployment. Primary projection preserved."
       ]
     },
     {
@@ -65,7 +66,8 @@
       "description": "Exact five-file focused pytest in spec; all 27 matrix requirements, deterministic canaries.",
       "status": "passed",
       "evidence": [
-        "Exact accepted five-file offline pytest: 675 passed in 4.27s, exit 0; 148 new parameter-expanded checks; PRSG-93 matrix mapping in dated spec."
+        "Exact accepted five-file offline pytest: 675 passed in 4.27s, exit 0; 148 new parameter-expanded checks; PRSG-93 matrix mapping in dated spec.",
+        "Lead independently inspected all eight owned paths and replayed focused checks:675passed4.30s. Full commit hook1785passed41warnings38.43s. Implementation ce204b6ebb0b989228f38498c71a304f049d57ac independently accepted; no live request/secret access/backend runtime deployment. Primary projection preserved."
       ]
     },
     {
@@ -74,15 +76,18 @@
       "description": "Full diff within allowlist; all other paths unchanged, primary projection preserved.",
       "status": "passed",
       "evidence": [
-        "Complete frozen-base diff has only eight allowed paths; protected core/live/report tests unchanged; primary projection SHA256 b9f307894a6038e350037adf21261919a961d61d5deed976a2ff3f042d37f89f retained. Lead independent review pending."
+        "Complete frozen-base diff has only eight allowed paths; protected core/live/report tests unchanged; primary projection SHA256 b9f307894a6038e350037adf21261919a961d61d5deed976a2ff3f042d37f89f retained. Lead independent review pending.",
+        "Lead independently inspected all eight owned paths and replayed focused checks:675passed4.30s. Full commit hook1785passed41warnings38.43s. Implementation ce204b6ebb0b989228f38498c71a304f049d57ac independently accepted; no live request/secret access/backend runtime deployment. Primary projection preserved."
       ]
     },
     {
       "id": "delivery",
       "kind": "manual",
       "description": "Lead independent review, scope validation and authorized commit/push checks.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently inspected all eight owned paths and replayed focused checks:675passed4.30s. Full commit hook1785passed41warnings38.43s. Implementation ce204b6ebb0b989228f38498c71a304f049d57ac independently accepted; no live request/secret access/backend runtime deployment. Primary projection preserved."
+      ]
     }
   ],
   "acceptance": [
@@ -94,7 +99,8 @@
       ],
       "status": "done",
       "evidence": [
-        "Engineer implementation and executed offline evidence in dated spec; Lead acceptance remains pending."
+        "Engineer implementation and executed offline evidence in dated spec; Lead acceptance remains pending.",
+        "Lead independently inspected all eight owned paths and replayed focused checks:675passed4.30s. Full commit hook1785passed41warnings38.43s. Implementation ce204b6ebb0b989228f38498c71a304f049d57ac independently accepted; no live request/secret access/backend runtime deployment. Primary projection preserved."
       ]
     },
     {
@@ -105,7 +111,8 @@
       ],
       "status": "done",
       "evidence": [
-        "Engineer implementation and executed offline evidence in dated spec; Lead acceptance remains pending."
+        "Engineer implementation and executed offline evidence in dated spec; Lead acceptance remains pending.",
+        "Lead independently inspected all eight owned paths and replayed focused checks:675passed4.30s. Full commit hook1785passed41warnings38.43s. Implementation ce204b6ebb0b989228f38498c71a304f049d57ac independently accepted; no live request/secret access/backend runtime deployment. Primary projection preserved."
       ]
     },
     {
@@ -115,12 +122,16 @@
         "preservation",
         "delivery"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independently inspected all eight owned paths and replayed focused checks:675passed4.30s. Full commit hook1785passed41warnings38.43s. Implementation ce204b6ebb0b989228f38498c71a304f049d57ac independently accepted; no live request/secret access/backend runtime deployment. Primary projection preserved."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "Lead independently inspected all eight owned paths and replayed focused checks:675passed4.30s. Full commit hook1785passed41warnings38.43s. Implementation ce204b6ebb0b989228f38498c71a304f049d57ac independently accepted; no live request/secret access/backend runtime deployment. Primary projection preserved."
+    ]
   }
 }
