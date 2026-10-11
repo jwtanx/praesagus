@@ -16,9 +16,13 @@ Sources: [REST stock-screen](https://open.moomoo.com/zh-cn/api/quote/screening/s
 ## When it's considered done
 - [x] PRSG-88-D1: Compact signal column removes Quote/SMA directional chips; clearly labels native bullish/bearish counts unavailable with expandable KDJ/MACD/Bollinger missing coverage; independent forecast retained.
 - [x] PRSG-88-D2: Trader skill/report narrative remove price comparison as native substitute or forced direction; no forecast/financial/input changes.
-- [ ] PRSG-88-D3: Lead reviews exact scope and delivers tested correction; PRSG-82 native intake remains explicitly blocked.
+- [x] PRSG-88-D3: Lead reviews exact scope and delivers tested correction; PRSG-82 native intake remains explicitly blocked.
 
 ## Progress
 Lead froze scope before implementation. Native coverage remains pending under PRSG-82; this ticket corrects the misleading substitute, not data connectivity.
 
 Lead independently verified compact+legacy DOM,102reporttests,publiccompact50rows/65events/12dates,skillmetadata,and preservation of frozenfinancial/inputrows,collection,cutoff,all120audit. Real1280desktop Enter/390x844mobiletap details passed; no pageoverflow. No native data/signing/Keychain calls. Saved Trader08:00prompt aligned with human correction, exactrule/ACTIVE/target readback preserved; quarterhourLeadpaused. Delivery pending.
+
+## Lead acceptance and delivery
+Lead reviewed all7owned paths; independentfocused102,compact+legacyNode,skillmetadata/preservation/1280Enter/390mobiletap passed. Implementation9324263 pushed+remote/shared verified; mandatorycommit1607passed41warnings31.93s andpush1607passed41warnings31.19s. Pages38113745141 success exacthead; liveHTML/JSON bytes exact (43f15221848e80388af4332d974705b5800e7336c9481719f9626052f06ee0f3 / 519a274e1fc2a523bcb8930b679522cef22d934283c0dcf38fe12d22c40b9ccf). Live50rows show nativeunavailable/noProxychips. Protectedprojection hash preserved. PRSG-82 remains blocked; no actualnativeevent coverage claimed.
+[Successful implementation deployment](https://github.com/jwtanx/praesagus/actions/runs/38113745141). Native intake still pending, so requested live native counts are not yet available.
