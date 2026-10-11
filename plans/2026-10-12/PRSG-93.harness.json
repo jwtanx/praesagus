@@ -87,7 +87,7 @@
       "check_ids": [
         "contract"
       ],
-      "status": "passed",
+      "status": "done",
       "evidence": [
         "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
       ]
@@ -98,7 +98,7 @@
       "check_ids": [
         "matrix"
       ],
-      "status": "passed",
+      "status": "done",
       "evidence": [
         "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
       ]
@@ -110,7 +110,7 @@
         "preservation",
         "decision"
       ],
-      "status": "passed",
+      "status": "done",
       "evidence": [
         "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
       ]
