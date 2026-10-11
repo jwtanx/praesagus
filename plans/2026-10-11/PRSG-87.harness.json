@@ -22,7 +22,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-11/PRSG-87-compact-daily-report-validation.md",
   "objective": "Restore compact October8-style daily report presentation with accessible full evidence and a meaningful final validation gate.",
-  "status": "review",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -109,8 +109,10 @@
       "id": "lead-review",
       "kind": "manual",
       "description": "Complete nine-path scope review, immutable payload/history hashes, clean-checkout mandatory hooks, desktop/mobile detail/chip verification and deployed final report.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed all nine paths/protected hashes; clean pre-commit and pre-push each1607passed41deprecationwarnings; implementation941721c pushed/remoteverified, Pages38107983502 success; liveHTML/JSON bytes exact and native1280desktop/390x844 mobile chips/details/full120audit verified."
+      ]
     }
   ],
   "acceptance": [
@@ -155,14 +157,17 @@
       "check_ids": [
         "lead-review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed all nine paths/protected hashes; clean pre-commit and pre-push each1607passed41deprecationwarnings; implementation941721c pushed/remoteverified, Pages38107983502 success; liveHTML/JSON bytes exact and native1280desktop/390x844 mobile chips/details/full120audit verified."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
+    "status": "accepted",
     "evidence": [
-      "Nine-path implementation reviewed; clean mandatory hooks and live delivery pending."
+      "Lead independently reviewed all nine paths/protected hashes; clean pre-commit and pre-push each1607passed41deprecationwarnings; implementation941721c pushed/remoteverified, Pages38107983502 success; liveHTML/JSON bytes exact and native1280desktop/390x844 mobile chips/details/full120audit verified.",
+      "Financial/input values,originalcutoff,allhistory,ledger/calendar/index preserved. No providerauth/calibration/performance or PRSG-82liveequivalence claim."
     ]
   }
 }
