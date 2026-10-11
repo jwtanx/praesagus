@@ -579,3 +579,107 @@ def test_history_store_rejects_local_date_mismatch_and_overflow(store,stamp,zone
     assert attempt.status=='failed' and attempt.raw_hash is None
     assert store.query('history',ING)==[] and list(store.raw_dir.iterdir())==[]
     assert store.attempts(ING)[0]['record_count']==0
+
+
+# PRSG-94 authored synthetic stage matrix; no provider captures.
+def diagnostic_history_body(row=None, **outer):
+    row = {'time_key': STAMP, 'date': 20261001, 'time_zone': -240, 'close': 10} if row is None else row
+    return json.dumps({'ret_code': 0, 'ret_msg': 'SYNTHETIC-BODY-CANARY',
+                       'data': {'kline_list': [row]}, **outer}).encode()
+
+
+def diagnostic_history_request():
+    return ReadRequest('GET', '/api/v1.0/quote/US.SYN/history-kline',
+                       'end=2026-10-02&ktype=2&autype=0&num=100', b'', {}, 1)
+
+
+def diagnostic_cases():
+    row = {'time_key': STAMP, 'date': 20261001, 'time_zone': -240, 'close': 10}
+    cases = [(b'\xff', 'decode-screen'), (b'{', 'decode-screen'),
+             (b'{"x":1,"x":2}', 'decode-screen'), (b'{"x":NaN}', 'decode-screen'),
+             (b'{"x":Infinity}', 'decode-screen')]
+    for extra in ({'token': 'SYNTHETIC-CREDENTIAL-CANARY'},
+                  {'x': {'account_id': 'SYNTHETIC-CREDENTIAL-CANARY'}},
+                  {'x': 'https://user:password@example.invalid/'},
+                  {'x': 'https://example.invalid/?token=canary'},
+                  {'x': '-----BEGIN SYNTHETIC'}, {'x': 'SYNTHETIC-CREDENTIAL-CANARY'}):
+        cases.append((diagnostic_history_body(**extra), 'decode-screen'))
+    for outer in ({'ret_code': True}, {'ret_msg': 3}, {'pagination': {}}, {'data': []},
+                  {'data': {'kline_list': [], 'extra': 1}},
+                  {'data': {'kline_list': [], 'next_time': True}},
+                  {'data': {'kline_list': [], 'volume_precision': 19}}):
+        cases.append((diagnostic_history_body(**outer), 'envelope'))
+    cases += [(b'[]', 'envelope'), (b'{"ret_code":0}', 'envelope'),
+              (diagnostic_history_body(ret_code=1234567, data=None), 'provider-rejection'),
+              (diagnostic_history_body(ret_code=1234567, ret_msg=False), 'envelope')]
+    for missing in ({'date'}, {'time_key'}, {'time_zone'}, {'date', 'time_key', 'time_zone'}):
+        cases.append((diagnostic_history_body({k:v for k,v in row.items() if k not in missing}), 'metadata-missing'))
+    for change in ({'date': None}, {'date': True}, {'date': '20261001'}, {'date': 20260230},
+                   {'time_key': -1}, {'time_key': True}, {'time_key': 2**63-1},
+                   {'time_zone': None}, {'time_zone': 'UTC'}, {'time_zone': -721}, {'time_zone': 841}):
+        cases.append((diagnostic_history_body({**row, **change}), 'metadata-invalid'))
+    cases.append((diagnostic_history_body({**row, 'date': 20261002}), 'date-relation'))
+    for data in ({'kline_list': None}, {'kline_list': [0]}, {'kline_list': [row]*101},
+                 {'kline_list': [row, row]}, {'kline_list': [{**row, 'close': None}]},
+                 {'kline_list': [{**row, 'close': 0}]}, {'kline_list': [{**row, 'close': -1}]},
+                 {'kline_list': [{k:v for k,v in row.items() if k!='close'}]},
+                 {'kline_list': [{**row, 'date': 20261003, 'time_key': STAMP+2*86400000}]}):
+        cases.append((diagnostic_history_body(data=data), 'history-rows'))
+    return cases
+
+
+@pytest.mark.parametrize('raw,stage', diagnostic_cases())
+def test_history_trusted_stages_generic_errors_and_store_disposal(raw, stage, store):
+    from ingest.private_market_store import normalized, request_meta
+    req = diagnostic_history_request();kind, query, _ = request_meta(req)
+    with pytest.raises(MarketStoreError) as caught:
+        normalized(raw, kind, query, ('SYNTHETIC-CREDENTIAL-CANARY',), version=3)
+    assert str(caught.value) == 'invalid-response' and caught.value.diagnostic_stage == stage
+    assert 'CANARY' not in str(caught.value) and 'CANARY' not in repr(caught.value)
+    # Direct store ingestion also rejects all non-known-secret failures without archiving.
+    if b'SYNTHETIC-CREDENTIAL-CANARY' in raw and b'"x": "SYNTHETIC-CREDENTIAL-CANARY"' in raw:
+        req = ReadRequest(req.method, req.path, req.query, req.body,
+                          {'X-API-Key': 'SYNTHETIC-CREDENTIAL-CANARY'}, req.timeout)
+    attempt = store.ingest(req, ReadResponse(200, raw), run_id='synthetic-stage',
+                           observed_at=OBS, ingested_at=ING, origin='synthetic')
+    assert attempt.status == 'failed' and attempt.raw_hash is None
+    assert not list(store.raw_dir.iterdir()) and store.query('history', ING) == []
+    meta = store.attempts(ING)[0]
+    assert meta['reason']=='invalid-response' and meta['normalization_version']==3
+    assert 'diagnostic_stage' not in meta
+
+
+@pytest.mark.parametrize('zone', [-720, 0, 840])
+@pytest.mark.parametrize('delta', [-1, 0, 1, 123456])
+def test_history_diagnostic_local_boundaries_remain_accepted(zone, delta):
+    from datetime import date, timedelta
+    from ingest.private_market_store import normalized, request_meta
+    stamp = STAMP-zone*60000+delta
+    local = date(1970,1,1)+timedelta(days=(stamp+zone*60000)//86400000)
+    row = {'time_key':stamp,'date':int(local.strftime('%Y%m%d')),'time_zone':zone,'close':10}
+    kind, query, _ = request_meta(diagnostic_history_request())
+    assert len(normalized(diagnostic_history_body(row), kind, query, version=3))==1
+
+
+def test_nonhistory_generic_error_and_controlled_annotation_allowlist():
+    from ingest.private_market_store import normalized, request_meta
+    kind, query, _ = request_meta(request())
+    with pytest.raises(MarketStoreError) as caught:normalized(b'{', kind, query)
+    assert str(caught.value)=='invalid-response' and caught.value.diagnostic_stage is None
+    for stage in ([], {}, 'SYNTHETIC-PRIVATE-PATH', 'x'*5000):
+        assert MarketStoreError('invalid-response', diagnostic_stage=stage).diagnostic_stage is None
+
+
+@pytest.mark.parametrize('row,stage', [
+    ({'date':False,'close':0}, 'metadata-missing'),
+    ({'time_key':STAMP,'date':20261002,'time_zone':-240,'close':0}, 'date-relation'),
+    ({'time_key':STAMP,'date':20260230,'time_zone':-240,'close':0}, 'metadata-invalid')])
+def test_history_stage_first_guard_and_single_decode(row,stage,monkeypatch):
+    from ingest import private_market_store as module
+    calls=[];original=module.decode
+    def counted(*a,**k):calls.append(1);return original(*a,**k)
+    monkeypatch.setattr(module,'decode',counted)
+    kind, query, _ = module.request_meta(diagnostic_history_request())
+    with pytest.raises(MarketStoreError) as caught:
+        module.normalized(diagnostic_history_body(row),kind,query,version=3)
+    assert caught.value.diagnostic_stage==stage and len(calls)==1

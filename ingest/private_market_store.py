@@ -47,8 +47,16 @@ for _table in list(DDL):
         DDL[_name] = f"CREATE TRIGGER {_name} BEFORE {_action} ON {_table} BEGIN SELECT RAISE(ABORT,'immutable'); END"
 
 
+HISTORY_STAGES = frozenset({'decode-screen', 'envelope', 'provider-rejection', 'history-rows',
+    'metadata-missing', 'metadata-invalid', 'date-relation', 'core-validation', 'unknown'})
+
+
 class MarketStoreError(ValueError):
     """Controlled categories; no path/provider/credential exception data."""
+    def __init__(self, category, *, diagnostic_stage=None):
+        self.diagnostic_stage = (diagnostic_stage if type(diagnostic_stage) is str
+                                 and diagnostic_stage in HISTORY_STAGES else None)
+        super().__init__(category)
 
 
 def need(condition, category='invalid-input'):
@@ -208,27 +216,36 @@ def request_meta(request):
 
 def normalized(raw, kind, request, secrets=(), *, version=2):
     need(type(version) is int and version in (1,2,3), 'invalid-response')
-    value = decode(raw, secrets)
-    need(isinstance(value, dict) and set(value) == {'ret_code', 'ret_msg', 'data'}
-         and type(value['ret_code']) is int and value['ret_code'] == 0
-         and isinstance(value['ret_msg'], str), 'invalid-response')
+    def guard(condition, stage):
+        if not condition:
+            raise MarketStoreError('invalid-response', diagnostic_stage=stage if kind=='history' else None)
+    if kind == 'history':
+        guard(isinstance(raw, bytes) and 0 < len(raw) <= MAX_RAW, 'decode-screen')
+        rejected = False
+        try:value = decode(raw, secrets)
+        except Exception:rejected = True
+        if rejected:guard(False, 'decode-screen')
+    else:value = decode(raw, secrets)
+    guard(isinstance(value, dict) and set(value) == {'ret_code', 'ret_msg', 'data'}
+          and type(value['ret_code']) is int and isinstance(value['ret_msg'], str), 'envelope')
+    guard(value['ret_code'] == 0, 'provider-rejection')
     rows = value['data']
     if kind == 'snapshot':
         need(isinstance(rows, dict) and set(rows) == {'snapshot_list'}, 'invalid-response')
         rows = rows['snapshot_list']
     elif kind == 'history':
-        need(isinstance(rows, dict) and 'kline_list' in rows
-             and set(rows) <= {'kline_list','next_time','volume_precision'}, 'invalid-response')
-        need('next_time' not in rows or type(rows['next_time']) is int and 0<=rows['next_time']<=2**63-1,
-             'invalid-response')
-        need('volume_precision' not in rows or type(rows['volume_precision']) is int
-             and 0<=rows['volume_precision']<=18,'invalid-response')
+        guard(isinstance(rows, dict) and 'kline_list' in rows
+              and set(rows) <= {'kline_list','next_time','volume_precision'}, 'envelope')
+        guard('next_time' not in rows or type(rows['next_time']) is int and 0<=rows['next_time']<=2**63-1,
+              'envelope')
+        guard('volume_precision' not in rows or type(rows['volume_precision']) is int
+              and 0<=rows['volume_precision']<=18, 'envelope')
         rows = rows['kline_list']
-    need(isinstance(rows, list) and len(rows) <= (len(request['codes']) if kind == 'snapshot'
-         else int(request['num']) if kind == 'history' else int(request['size'])), 'invalid-response')
+    guard(isinstance(rows, list) and len(rows) <= (len(request['codes']) if kind == 'snapshot'
+          else int(request['num']) if kind == 'history' else int(request['size'])), 'history-rows')
     result, seen, seen_dates = [], set(), set()
     for row in rows:
-        need(isinstance(row, dict), 'invalid-response')
+        guard(isinstance(row, dict), 'history-rows')
         if kind == 'snapshot':
             code = row.get('code')
             need(code in request['codes'] and code not in seen, 'invalid-response');seen.add(code)
@@ -254,24 +271,25 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
                 payload.update(normalization_version=2,provider_prev_close=row.get('prev_close_price'))
             identity = ['moomoo-rest', code, stamp]
         elif kind == 'history':
+            guard({'date','time_key','time_zone'} <= set(row), 'metadata-missing')
             code=request['code'];stamp=row.get('time_key');market_date=row.get('date');zone=row.get('time_zone')
-            need(code.startswith('US.') and type(stamp) is int and 0<=stamp<=2**63-1
+            guard(code.startswith('US.') and type(stamp) is int and 0<=stamp<=2**63-1
                  and type(market_date) is int and 19000101<=market_date<=21001231
-                 and type(zone) is int and -720<=zone<=840, 'invalid-response')
+                  and type(zone) is int and -720<=zone<=840, 'metadata-invalid')
             try:
                 parsed=date.fromisoformat(f'{market_date//10000:04d}-{market_date//100%100:02d}-{market_date%100:02d}')
                 # Use explicit offset and integer milliseconds, never inferred timezone.
                 local_date=date(1970,1,1)+timedelta(days=(stamp+zone*60000)//86400000)
             except (ValueError,OverflowError):
-                raise MarketStoreError('invalid-response') from None
-            need(parsed==local_date,'invalid-response')
-            need(parsed.strftime('%Y%m%d')==f'{market_date:08d}'
+                raise MarketStoreError('invalid-response', diagnostic_stage='metadata-invalid') from None
+            guard(parsed==local_date, 'date-relation')
+            guard(parsed.strftime('%Y%m%d')==f'{market_date:08d}'
                  and parsed.isoformat()<=request['end']
                  and ('start' not in request or parsed.isoformat()>=request['start'])
-                 and stamp not in seen and parsed not in seen_dates, 'invalid-response')
+                  and stamp not in seen and parsed not in seen_dates, 'history-rows')
             seen.add(stamp);seen_dates.add(parsed)
             close=row.get('close')
-            need(type(close) in (int,float) and math.isfinite(close) and close>0, 'invalid-response')
+            guard(type(close) in (int,float) and math.isfinite(close) and close>0, 'history-rows')
             payload={'provider':'moomoo-rest','code':code,'date':parsed.isoformat(),
                      'time_key':stamp,'time_zone':zone,'close':close,
                      'endpoint':'history-kline','adjustment':int(request['autype'])}

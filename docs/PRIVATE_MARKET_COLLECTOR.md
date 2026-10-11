@@ -83,8 +83,15 @@ An overrun is visible as `run-budget`, stops subsequent jobs and does not forcib
 kill the SQLite writer. An already persisted attempt remains persisted.
 
 One length-prefixed reply contains a bounded JSON header and exact body bytes.
-Job digest, status, timestamp precision, body size and allowlisted failures are
-validated. Truncation, extra data, wrong digest or malformed content fail closed.
+New workers emit version 2 with exactly `version`, `job_digest`, `status`,
+`observed_at`, `failure`, `body_size`, `retry_after`, and `diagnostic_stage`.
+The parent also accepts exact version-1 seven-key legacy headers, with a null
+stage. Deploy worker and parent together: older parents reject version 2.
+Unknown versions, extra/missing keys, duplicate keys, wrong digest, malformed
+stage combinations, truncation, excessive sizes and extra body bytes fail closed
+as `bad-frame`, with no retained stage. Failure bodies must be empty; successful
+bodies undergo independent parent normalization. Injected supervisor replies
+are also checked for bounded failure values, response types and stage consistency.
 Receipt and ingestion times are actual aware UTC observations, never backdated;
 unsupported fractional precision and wall-clock rollback/order failures are
 rejected. Timestamp rejection leaves the job visibly not persisted.
@@ -92,7 +99,8 @@ rejected. Timestamp rejection leaves the job visibly not persisted.
 ## Results and failure evidence
 
 The CLI prints only the run identifier and per-job digest, status, attempt identifier
-and allowlisted failure category. It returns nonzero for a failed, unattempted,
+and allowlisted failure category. Default output keys and exit semantics remain
+unchanged. It returns nonzero for a failed, unattempted,
 not-persisted or over-budget outcome. Partial snapshots, all-missing snapshots and
 successful empty news responses are coverage states, not promises of completeness.
 
@@ -108,6 +116,52 @@ live batch failure. The existing
 store schema collapses failure reasons; the CLI outcome preserves bounded category
 detail. Storage failures stop collection and cannot be reported as persisted
 attempts. Caller-declared `trusted-capture` remains unauthenticated provenance.
+
+### Optional private diagnostics (PRSG-94)
+
+Add `--diagnostics` to the manual invocation to include `schema_version: 2` in the
+private CLI summary and a nullable `diagnostic_stage` on each outcome. Without
+that flag, neither field is present. This output mode does not authorize a
+provider request and does not change exit codes, report behavior or store format.
+
+A nonnull stage applies only to a history job with HTTP 200, `invalid-response`
+and an empty discarded body. Version-2 frames require an allowlisted stage for
+that combination; legacy version-1 replies can have a null stage. All other
+results have a null stage. The fixed stages describe trusted validation
+boundaries, without provider messages/codes, input keys/values, row indices,
+identifiers, paths, credential values or exception text:
+
+| Stage | Boundary |
+|---|---|
+| `decode-screen` | Bounded bytes/UTF-8/JSON, duplicate/nonfinite or secret screening |
+| `envelope` | Current exact envelope types, history container or pagination scalar guards |
+| `provider-rejection` | Typed exact envelope with a nonzero integer return code; its value is withheld |
+| `history-rows` | List/count/row shape, close, request-date range or duplicates |
+| `metadata-missing` | At least one required history metadata key is absent |
+| `metadata-invalid` | Metadata scalar, calendar date or representable local-day arithmetic fails |
+| `date-relation` | Declared date disagrees with timestamp and explicit minute offset |
+| `core-validation` | Screening passed, then a known core validation rejection occurred |
+| `unknown` | History screening rejection without a recognized controlled annotation |
+
+Syntax and secret rejection share `decode-screen`; no secret-specific diagnostic
+is exposed. Guards retain their acceptance policy and order: decode/screen,
+exact envelope types, provider rejection, history container/scalars/list/row
+shape, metadata presence, metadata validity, date relationship, range/duplicates,
+then close. The first rejected guard supplies the stage. No metadata is inferred,
+pagination whitelist expanded, row salvaged or rejected body decoded again for
+diagnostics. Arbitrary exception attributes cannot supply stages.
+
+Clock/storage/cleanup replacements clear an earlier stage. An already rejected
+job retains its own `invalid-response` stage if the run budget expires afterward;
+later unattempted jobs receive no stage. Malformed injected replies become
+`bad-frame`; cleanup failure retains its stop behavior.
+
+Diagnostics are ephemeral CLI evidence. The immutable store retains its existing
+generic failure reason, normalization version and null raw hash; it does not
+persist the stage or rejected body. There is no automatic summary file. A
+separately authorized workflow may retain the sanitized private summary outside
+Git. Stages cannot recover the PRSG-90 rejection's cause or establish authentication,
+entitlements, data rights, completed-price availability or forecast eligibility.
 
 This collector does not deliver an 08:00 brief. Later report projection must check
 cutoff availability, temporal eligibility, completeness, conflicts, currency,

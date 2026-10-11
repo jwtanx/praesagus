@@ -17,6 +17,7 @@ def main(argv=None):
     p.add_argument('--root', required=True);p.add_argument('--plan', required=True)
     p.add_argument('--credential-directory', required=True);p.add_argument('--app-key-name', required=True)
     p.add_argument('--run-id', required=True)
+    p.add_argument('--diagnostics', action='store_true')
     a = p.parse_args(args_in)
     failed = False
     try:
@@ -28,7 +29,13 @@ def main(argv=None):
     except Exception:failed = True
     if failed:
         print('Private collector failed; no provider or private-path details emitted.', file=sys.stderr);return 1
-    print(json.dumps({'run_id':a.run_id,'outcomes':[{'job_id':o.job_id,'status':o.status,'attempt_id':o.attempt_id,'failure':o.failure} for o in outcomes]}))
+    summary = {'run_id':a.run_id,'outcomes':[{'job_id':o.job_id,'status':o.status,
+                'attempt_id':o.attempt_id,'failure':o.failure} for o in outcomes]}
+    if a.diagnostics:
+        summary['schema_version'] = 2
+        for value, outcome in zip(summary['outcomes'], outcomes):
+            value['diagnostic_stage'] = outcome.diagnostic_stage
+    print(json.dumps(summary))
     return 0 if outcomes and all(o.failure is None and o.status in ('success','partial','successful-empty','all-missing') for o in outcomes) else 1
 
 

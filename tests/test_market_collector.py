@@ -194,7 +194,7 @@ def test_frame_fail_closed():
         with pytest.raises(ValueError):c.parse_reply(struct.pack('!I',len(raw_header))+raw_header+body,JOB)
     for raw in (b'',good[:-1],good+b'x',struct.pack('!I',c.MAX_HEADER+1),b'x'*(c.MAX_OUTPUT+1)):
         with pytest.raises(ValueError):c.parse_reply(raw,JOB)
-    duplicate = json.dumps(header).replace('"version": 1','"version": 1, "version": 1').encode()
+    duplicate = json.dumps(header).replace('"version": 2','"version": 2, "version": 2').encode()
     with pytest.raises(ValueError):c.parse_reply(struct.pack('!I',len(duplicate))+duplicate+body,JOB)
 
 
@@ -386,15 +386,20 @@ def test_clock_rollback_during_worker_rejected(store):
     assert outcomes[0].failure=='clock-order' and store.attempts(ING)==[]
 
 
-def test_cli_existing_store_missing_synthetic_credentials(store,tmp_path):
+@pytest.mark.parametrize('diagnostics', [False,True])
+def test_cli_existing_store_missing_synthetic_credentials(store,tmp_path,diagnostics):
     plan=tmp_path/'plan.json';plan.write_text(json.dumps(PLAN))
     missing=(tmp_path/'missing-credentials').resolve()
     result=subprocess.run([sys.executable,c.ENTRY,'--root',str(store.root),'--plan',str(plan),
-        '--credential-directory',str(missing),'--app-key-name','app-key-id','--run-id','synthetic'],capture_output=True,timeout=4)
+        '--credential-directory',str(missing),'--app-key-name','app-key-id','--run-id','synthetic']
+        +(['--diagnostics'] if diagnostics else []),capture_output=True,timeout=4)
     assert result.returncode==1 and result.stderr==b''
     summary=json.loads(result.stdout);outcome=summary['outcomes'][0]
     assert outcome['status']=='failed' and outcome['failure']=='credentials' and outcome['attempt_id']
     assert str(missing).encode() not in result.stdout
+    assert set(summary)==({'run_id','outcomes','schema_version'} if diagnostics else {'run_id','outcomes'})
+    if diagnostics:assert summary['schema_version']==2 and outcome['diagnostic_stage'] is None
+    else:assert set(outcome)=={'job_id','status','attempt_id','failure'}
     attempt=store.attempts('2027-01-01T00:00:00Z')[0]
     assert attempt['raw_hash'] is None and not missing.exists()
 
@@ -472,3 +477,243 @@ def test_unvalidated_response_status_not_preserved(invalid_status):
                       transport_factory=lambda:lambda _:ReadResponse(invalid_status,b'private-provider-error'),clock=lambda:OBS)
     result=c.parse_reply(raw,JOB)
     assert result.failure=='transport' and result.response.status==0 and result.response.body==b''
+
+
+# PRSG-94 authored deterministic fixtures, never real provider responses.
+def stage_history_response(row=None, **outer):
+    row = {'time_key':1790899200000,'date':20261001,'time_zone':-240,'close':10} if row is None else row
+    return ReadResponse(200,json.dumps({'ret_code':0,'ret_msg':'SYNTHETIC-BODY-CANARY',
+        'data':{'kline_list':[row]}, **outer}).encode())
+
+
+def stage_worker(resp, job=HISTORY):
+    return c.execute_job(job, LOCATOR, credentials=lambda _:('synthetic-api-key',lambda _:b'synthetic-signature'),
+        transport_factory=lambda:lambda _:resp, clock=lambda:OBS)
+
+
+def unpack_stage_frame(raw):
+    size=struct.unpack('!I',raw[:4])[0]
+    return json.loads(raw[4:4+size]),raw[4+size:]
+
+
+def pack_stage_frame(header,body=b''):
+    raw=json.dumps(header).encode()
+    return struct.pack('!I',len(raw))+raw+body
+
+
+@pytest.mark.parametrize('resp,stage', [
+    (ReadResponse(200,b'\xff{SYNTHETIC-BODY-CANARY'), 'decode-screen'),
+    (stage_history_response(token='synthetic-api-key'), 'decode-screen'),
+    (stage_history_response(x=LOCATOR['directory']), 'decode-screen'),
+    (stage_history_response(pagination={'private':'SYNTHETIC-BODY-CANARY'}), 'envelope'),
+    (stage_history_response(ret_code=1234567,data=None), 'provider-rejection'),
+    (stage_history_response(data={'kline_list':[False]}), 'history-rows'),
+    (stage_history_response({'time_key':1790899200000,'time_zone':-240,'close':10}), 'metadata-missing'),
+    (stage_history_response({'time_key':2**63-1,'date':20261001,'time_zone':-240,'close':10}), 'metadata-invalid'),
+    (stage_history_response({'time_key':1790899200000,'date':20261002,'time_zone':-240,'close':10}), 'date-relation'),
+    (stage_history_response({'time_key':1790899200000,'date':20261001,'time_zone':-240,'close':10,'volume':-1}), 'core-validation'),
+    (stage_history_response({'time_key':1790899200000,'date':20261001,'time_zone':-240,'close':10,'open':'Infinity'}), 'core-validation'),
+])
+def test_stage_worker_discards_body_and_propagates_private_outcome(resp,stage,store,capsys):
+    raw=stage_worker(resp);header,body=unpack_stage_frame(raw)
+    assert header['version']==2 and header['diagnostic_stage']==stage and body==b''
+    parsed=c.parse_reply(raw,HISTORY)
+    assert parsed.failure=='invalid-response' and parsed.diagnostic_stage==stage
+    outcomes=c.collect(store,{'schema_version':1,'codes':[],'news':[],'history':[{'code':'US.SYN','end':'2026-10-02'}]},
+        LOCATOR,run_id='synthetic-stage',supervisor=lambda *a,**k:parsed,wall=wall_clock())
+    assert outcomes[0].failure=='invalid-response' and outcomes[0].diagnostic_stage==stage
+    assert outcomes[0].status=='failed' and outcomes[0].attempt_id
+    assert store.attempts(ING)[0]['raw_hash'] is None and store.query('history',ING)==[]
+    assert not list(store.raw_dir.iterdir())
+    for canary in (b'SYNTHETIC-BODY-CANARY',b'synthetic-api-key',b'synthetic-signature',
+                   LOCATOR['directory'].encode(),b'1234567'):
+        assert canary not in raw and canary.decode() not in repr(parsed)+repr(outcomes)
+    captured=capsys.readouterr();assert captured.out==captured.err==''
+
+
+@pytest.mark.parametrize('error_kind', ['forged', 'controlled-unknown', 'subclass'])
+def test_stage_unknown_exception_never_trusts_arbitrary_attributes(error_kind,monkeypatch):
+    class ForgedError(RuntimeError):diagnostic_stage='metadata-missing'
+    class Subclass(c.MarketStoreError):pass
+    error = (ForgedError('SYNTHETIC-EXCEPTION-CANARY') if error_kind=='forged'
+             else Subclass('SYNTHETIC-EXCEPTION-CANARY',diagnostic_stage='date-relation') if error_kind=='subclass'
+             else c.MarketStoreError('invalid-response',diagnostic_stage='unrecognized'))
+    calls=[]
+    def fail(*a,**k):calls.append(1);raise error
+    monkeypatch.setattr(c,'normalized',fail)
+    raw=stage_worker(stage_history_response())
+    header,body=unpack_stage_frame(raw)
+    assert len(calls)==1 and body==b'' and header['failure']=='invalid-response'
+    assert header['diagnostic_stage']=='unknown' and b'CANARY' not in raw
+
+
+@pytest.mark.parametrize('job,resp', [(HISTORY,stage_history_response()),
+    (HISTORY,stage_history_response(data={'kline_list':[]})),(JOB,response()),
+    (NEWS,response(kind='news')),(HISTORY,ReadResponse(403,b'SYNTHETIC-BODY-CANARY'))])
+def test_stage_success_empty_nonhistory_and_http_null(job,resp):
+    parsed=c.parse_reply(stage_worker(resp,job),job)
+    assert parsed.diagnostic_stage is None
+    if resp.status==200:assert parsed.failure is None and parsed.response.body==resp.body
+    else:assert parsed.failure=='http-failed' and parsed.response.body==b''
+
+
+@pytest.mark.parametrize('stage', sorted(c.HISTORY_STAGES))
+def test_stage_frame_all_fixed_values_and_v1_legacy(stage):
+    raw=c.encode_reply(HISTORY,ReadResponse(200,b''),OBS,'invalid-response',diagnostic_stage=stage)
+    header,body=unpack_stage_frame(raw)
+    assert set(header)=={'version','job_digest','status','observed_at','failure','body_size','retry_after','diagnostic_stage'}
+    assert c.parse_reply(raw,HISTORY).diagnostic_stage==stage
+    header['version']=1;header.pop('diagnostic_stage')
+    parsed=c.parse_reply(pack_stage_frame(header,body),HISTORY)
+    assert parsed.failure=='invalid-response' and parsed.diagnostic_stage is None
+
+
+def test_stage_legacy_success_frame_and_positional_dataclasses():
+    header,body=unpack_stage_frame(c.encode_reply(JOB,response(),OBS))
+    header['version']=1;header.pop('diagnostic_stage')
+    assert c.parse_reply(pack_stage_frame(header,body),JOB).response.body==body
+    assert c.WorkerReply(None,None,'deadline',False).cleanup_ok is False
+    assert c.WorkerReply(None,None,'deadline',False).diagnostic_stage is None
+    assert c.JobOutcome('synthetic','failed',None,'deadline').diagnostic_stage is None
+
+
+@pytest.mark.parametrize('change', [{'diagnostic_stage':'forged'}, {'diagnostic_stage':[]},
+    {'diagnostic_stage':{}}, {'diagnostic_stage':True}, {'diagnostic_stage':'x'*5000},
+    {'diagnostic_stage':None}, {'version':3}, {'version':True}, {'version':1},
+    {'status':403}, {'failure':'timeout'}, {'failure':None}, {'failure':[]},
+    {'extra':'SYNTHETIC-CANARY'}, {'job_digest':'0'*64}, {'body_size':1},
+    {'observed_at':'2026-10-02T00:00:00.1234567Z'}, {'retry_after':True}])
+def test_stage_frame_mutations_fail_closed_and_supervisor_clears(change):
+    header,_=unpack_stage_frame(c.encode_reply(HISTORY,ReadResponse(200,b''),OBS,'invalid-response',
+                                              diagnostic_stage='envelope'))
+    raw=pack_stage_frame({**header,**change})
+    with pytest.raises(ValueError):c.parse_reply(raw,HISTORY)
+    result=c.supervise(HISTORY,LOCATOR,popen=synthetic_popen(
+        f'import sys;sys.stdin.buffer.read();sys.stdout.buffer.write({raw!r})'))
+    assert result.failure=='bad-frame' and result.diagnostic_stage is None and result.response is None
+
+
+def test_stage_missing_key_duplicate_header_body_and_parent_screening():
+    header,_=unpack_stage_frame(c.encode_reply(HISTORY,ReadResponse(200,b''),OBS,'invalid-response',
+                                              diagnostic_stage='envelope'))
+    missing=dict(header);missing.pop('diagnostic_stage')
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(missing),HISTORY)
+    duplicate=json.dumps(header).replace('"version": 2','"version": 2, "version": 2').encode()
+    with pytest.raises(ValueError):c.parse_reply(struct.pack('!I',len(duplicate))+duplicate,HISTORY)
+    header['body_size']=1
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header,b'x'),HISTORY)
+    good_header,_=unpack_stage_frame(c.encode_reply(HISTORY,stage_history_response(),OBS))
+    unsafe=stage_history_response(token='SYNTHETIC-CANARY').body
+    good_header['body_size']=len(unsafe)
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(good_header,unsafe),HISTORY)
+    # Nonhistory cannot carry a stage even when other fields describe a rejection.
+    header.update(job_digest=c.job_digest(JOB),body_size=0)
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header),JOB)
+
+
+@pytest.mark.parametrize('stage', ['forged', [], {}, 'x'*5000])
+def test_stage_injected_supervisor_unknown_stage_becomes_bad_frame(stage,store):
+    injected=c.WorkerReply(ReadResponse(200,b''),OBS,'invalid-response',diagnostic_stage=stage)
+    outcomes=c.collect(store,{'schema_version':1,'codes':[],'news':[],'history':[{'code':'US.SYN','end':'2026-10-02'}]},
+        LOCATOR,run_id='synthetic',supervisor=lambda *a,**k:injected,wall=wall_clock())
+    assert outcomes[0].failure=='bad-frame' and outcomes[0].diagnostic_stage is None
+    assert store.attempts(ING)[0]['raw_hash'] is None
+
+
+@pytest.mark.parametrize('case', ['success','nonhistory','body','non200','otherfailure'])
+def test_stage_injected_supervisor_contradictions(case,store):
+    job=JOB if case=='nonhistory' else HISTORY
+    status=403 if case=='non200' else 200
+    failure=None if case=='success' else 'timeout' if case=='otherfailure' else 'invalid-response'
+    injected=c.WorkerReply(ReadResponse(status,b'x' if case=='body' else b''),OBS,failure,diagnostic_stage='envelope')
+    plan=PLAN if job==JOB else {'schema_version':1,'codes':[],'news':[],'history':[{'code':'US.SYN','end':'2026-10-02'}]}
+    outcome=c.collect(store,plan,LOCATOR,run_id='synthetic',supervisor=lambda *a,**k:injected,wall=wall_clock())[0]
+    assert outcome.failure=='bad-frame' and outcome.diagnostic_stage is None
+
+
+@pytest.mark.parametrize('replacement', ['storage','clock','cleanup','budget'])
+def test_stage_replacement_precedence_and_no_leak_to_later_jobs(replacement,store):
+    plan={'schema_version':1,'codes':[],'news':[{'keyword':'synthetic','size':1,'lang':'en'}],
+          'history':[{'code':'US.SYN','end':'2026-10-02'}]}
+    now=[0.];calls=[]
+    class Wrapped:
+        def ingest(self,*a,**k):
+            if replacement=='storage':raise OSError('SYNTHETIC-PRIVATE-PATH-CANARY')
+            result=store.ingest(*a,**k)
+            if replacement=='budget':now[0]=301.
+            return result
+    def run(*a,**k):
+        calls.append(1)
+        return c.WorkerReply(ReadResponse(200,b''),OBS,'invalid-response',replacement!='cleanup','envelope')
+    outcome=c.collect(Wrapped(),plan,LOCATOR,run_id='synthetic',supervisor=run,
+        wall=(lambda:OBS.replace('2026','2025')) if replacement=='clock' else wall_clock(),clock=lambda:now[0])
+    if replacement=='clock':
+        assert outcome[0].failure=='clock-order' and outcome[0].diagnostic_stage is None
+    elif replacement=='storage':
+        assert outcome[0].failure=='storage-failed' and outcome[0].diagnostic_stage is None
+    elif replacement=='cleanup':
+        assert outcome[0].failure=='cleanup-failed' and outcome[0].diagnostic_stage is None
+        assert outcome[1].status=='unattempted' and outcome[1].diagnostic_stage is None
+    else:
+        assert outcome[0].failure=='invalid-response' and outcome[0].diagnostic_stage=='envelope'
+        assert outcome[1].failure=='run-budget' and outcome[1].diagnostic_stage is None
+    assert len(calls)==1 and 'CANARY' not in repr(outcome)
+
+
+@pytest.mark.parametrize('diagnostics', [False,True])
+@pytest.mark.parametrize('failure', [None,'invalid-response','credentials'])
+def test_stage_cli_opt_in_shapes_exit_codes_and_privacy(diagnostics,failure,store,tmp_path,monkeypatch,capsys):
+    from scripts import market_collect as cli
+    plan=tmp_path/'plan.json';plan.write_text(json.dumps(PLAN))
+    stage='metadata-missing' if failure=='invalid-response' else None
+    outcome=c.JobOutcome('synthetic-job','failed' if failure else 'success','synthetic-attempt',failure,stage)
+    monkeypatch.setattr(cli,'collect',lambda *a,**k:[outcome])
+    args=['--root',str(store.root),'--plan',str(plan),'--credential-directory',LOCATOR['directory'],
+          '--app-key-name','synthetic-app-key-id','--run-id','synthetic-run']
+    if diagnostics:args.append('--diagnostics')
+    assert cli.main(args)==(1 if failure else 0)
+    captured=capsys.readouterr();summary=json.loads(captured.out)
+    assert captured.err=='' and LOCATOR['directory'] not in captured.out and str(store.root) not in captured.out
+    assert set(summary)==({'run_id','outcomes','schema_version'} if diagnostics else {'run_id','outcomes'})
+    value=summary['outcomes'][0]
+    assert set(value)==({'job_id','status','attempt_id','failure','diagnostic_stage'} if diagnostics
+                       else {'job_id','status','attempt_id','failure'})
+    if diagnostics:assert summary['schema_version']==2 and value['diagnostic_stage']==stage
+
+
+@pytest.mark.parametrize('change', [
+    {'failure':[]}, {'failure':'SYNTHETIC-EXCEPTION-CANARY'},
+    {'response':ReadResponse(True,b'')}, {'response':ReadResponse(600,b'')},
+    {'response':ReadResponse(200,'SYNTHETIC-BODY-CANARY')}, {'cleanup_ok':'SYNTHETIC-CANARY'}])
+def test_stage_injected_reply_bounded_types(change,store):
+    fields=dict(response=ReadResponse(200,b''),observed_at=OBS,failure='invalid-response',
+                diagnostic_stage='envelope')
+    injected=c.WorkerReply(**{**fields,**change})
+    outcome=c.collect(store,{'schema_version':1,'codes':[],'news':[],'history':[{'code':'US.SYN','end':'2026-10-02'}]},
+        LOCATOR,run_id='synthetic',supervisor=lambda *a,**k:injected,wall=wall_clock())[0]
+    assert outcome.failure=='bad-frame' and outcome.diagnostic_stage is None and 'CANARY' not in repr(outcome)
+
+
+@pytest.mark.parametrize('job,status,failure,stage', [
+    (HISTORY,200,'invalid-response',None), (HISTORY,200,'invalid-response',[]),
+    (HISTORY,200,'invalid-response','forged'), (JOB,200,'invalid-response','envelope'),
+    (HISTORY,403,'invalid-response','envelope'), (HISTORY,200,None,'envelope'),
+    (HISTORY,200,'timeout','envelope')])
+def test_stage_encoder_rejects_impossible_contract(job,status,failure,stage):
+    with pytest.raises(ValueError):
+        c.encode_reply(job,ReadResponse(status,b''),OBS,failure,diagnostic_stage=stage)
+
+
+@pytest.mark.parametrize('case', ['bytes','empty','oversized'])
+def test_stage_worker_bounded_body_before_decode(case):
+    raw=stage_worker(ReadResponse(200,'not-bytes' if case=='bytes' else b'' if case=='empty' else b'x'*(c.MAX_RAW+1)))
+    parsed=c.parse_reply(raw,HISTORY)
+    assert parsed.failure=='invalid-response' and parsed.diagnostic_stage=='decode-screen'
+    assert parsed.response.body==b''
+
+
+def test_stage_legacy_injected_history_failure_keeps_null(store):
+    injected=c.WorkerReply(ReadResponse(200,b''),OBS,'invalid-response')
+    outcome=c.collect(store,{'schema_version':1,'codes':[],'news':[],'history':[{'code':'US.SYN','end':'2026-10-02'}]},
+        LOCATOR,run_id='synthetic',supervisor=lambda *a,**k:injected,wall=wall_clock())[0]
+    assert outcome.failure=='invalid-response' and outcome.diagnostic_stage is None

@@ -21,7 +21,7 @@ from connectors.moomoo_rest import MoomooRESTConnector, ReadRequest, ReadRespons
 from connectors.moomoo_rest_live import (EncryptedEd25519Signer, SecureReadTransport,
                                         encrypted_pem, keychain_passphrase)
 from ingest.private_market_store import (MAX_RAW, REPO, PrivateMarketStore, canonical,
-    decode, normalized, parse_aware, private, request_meta, safe)
+    decode, normalized, parse_aware, private, request_meta, safe, MarketStoreError, HISTORY_STAGES)
 
 MAX_INPUT = 65536
 MAX_HEADER = 4096
@@ -131,6 +131,7 @@ class WorkerReply:
     observed_at: str | None
     failure: str | None
     cleanup_ok: bool = True
+    diagnostic_stage: str | None = None
     def __repr__(self):return '<PrivateCollectorReply>'
 
 
@@ -140,14 +141,24 @@ class JobOutcome:
     status: str
     attempt_id: str | None
     failure: str | None
+    diagnostic_stage: str | None = None
     def __repr__(self):return '<PrivateCollectorOutcome>'
 
 
-def encode_reply(job, response, observed_at, failure=None, retry_after=None):
-    require(failure is None or failure in FAILURES)
-    header = {'version': 1, 'job_digest': job_digest(job), 'status': response.status,
+def valid_stage(job, status, failure, stage, *, legacy=False):
+    eligible = job.get('kind') == 'history' and status == 200 and failure == 'invalid-response'
+    if eligible:
+        return (legacy and stage is None) or type(stage) is str and stage in HISTORY_STAGES
+    return stage is None
+
+
+def encode_reply(job, response, observed_at, failure=None, retry_after=None, diagnostic_stage=None):
+    require(failure is None or type(failure) is str and failure in FAILURES)
+    require(valid_stage(job, response.status, failure, diagnostic_stage))
+    require(failure is None or response.body == b'')
+    header = {'version': 2, 'job_digest': job_digest(job), 'status': response.status,
               'observed_at': observed_at, 'failure': failure, 'body_size': len(response.body),
-              'retry_after': retry_after}
+              'retry_after': retry_after, 'diagnostic_stage': diagnostic_stage}
     payload = canonical(header).encode()
     require(len(payload) <= MAX_HEADER and len(response.body) <= MAX_RAW)
     return struct.pack('!I', len(payload)) + payload + response.body
@@ -158,14 +169,18 @@ def parse_reply(raw, job):
     size = struct.unpack('!I', raw[:4])[0]
     require(0 < size <= MAX_HEADER and len(raw) >= 4 + size)
     header = decode(raw[4:4+size])
-    require(isinstance(header, dict) and set(header) == {'version', 'job_digest', 'status', 'observed_at', 'failure', 'body_size', 'retry_after'}
-            and type(header['version']) is int and header['version'] == 1
-            and header['job_digest'] == job_digest(job)
+    keys = {'version', 'job_digest', 'status', 'observed_at', 'failure', 'body_size', 'retry_after'}
+    require(isinstance(header, dict) and type(header.get('version')) is int
+            and header['version'] in (1,2)
+            and set(header) == (keys if header['version']==1 else keys | {'diagnostic_stage'}))
+    stage = header.get('diagnostic_stage')
+    require(header['job_digest'] == job_digest(job)
             and type(header['body_size']) is int and 0 <= header['body_size'] <= MAX_RAW
             and len(raw) == 4 + size + header['body_size']
             and type(header['status']) is int and (header['status'] == 0 or 100 <= header['status'] <= 599)
-            and (header['failure'] is None or header['failure'] in FAILURES)
-            and (header['retry_after'] is None or type(header['retry_after']) is int and 0 <= header['retry_after'] <= 86400))
+            and (header['failure'] is None or type(header['failure']) is str and header['failure'] in FAILURES)
+            and (header['retry_after'] is None or type(header['retry_after']) is int and 0 <= header['retry_after'] <= 86400)
+            and valid_stage(job, header['status'], header['failure'], stage, legacy=header['version']==1))
     require(parse_aware(header['observed_at']).utcoffset().total_seconds() == 0)
     body = raw[4+size:]
     if header['failure'] is None:
@@ -173,7 +188,7 @@ def parse_reply(raw, job):
         kind, query, _ = request_meta(job_request(job))
         normalized(body, kind, query, version=3 if kind=='history' else 2 if kind=='snapshot' else 1)
     else:require(not body)
-    return WorkerReply(ReadResponse(header['status'], body), header['observed_at'], header['failure'])
+    return WorkerReply(ReadResponse(header['status'], body), header['observed_at'], header['failure'], diagnostic_stage=stage)
 
 
 def execute_job(job, locator, *, credentials=load_credentials, transport_factory=SecureReadTransport, clock=utc_now):
@@ -183,12 +198,13 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
     observed = None
     failure = None
     screening_rejected = False
+    diagnostic_stage = None
     try:key, signer = credentials(locator)
     except Exception:failure = 'credentials'
     if failure:
         return encode_reply(job, ReadResponse(0, b''), clock(), failure)
     def capture(request):
-        nonlocal captured, observed, screening_rejected
+        nonlocal captured, observed, screening_rejected, diagnostic_stage
         response = transport(request)
         require(isinstance(response, ReadResponse) and type(response.status) is int
                 and 100 <= response.status <= 599)
@@ -199,8 +215,11 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
             try:
                 normalized(response.body, kind, query, (*secrets, key, locator['directory']),
                            version=3 if kind=='history' else 2 if kind=='snapshot' else 1)
-            except Exception:
+            except Exception as error:
                 screening_rejected = True
+                if kind == 'history':
+                    stage = error.diagnostic_stage if type(error) is MarketStoreError else None
+                    diagnostic_stage = stage if type(stage) is str and stage in HISTORY_STAGES else 'unknown'
                 raise
         captured = response
         return response
@@ -215,12 +234,14 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
         failure = {'timeout':'timeout', 'rate-limited':'rate-limited', 'upstream-failed':'upstream-failed',
                    'http-failed':'http-failed', 'malformed-response':'invalid-response',
                    'provider-failed':'invalid-response'}.get(error.kind, 'transport')
+        if not screening_rejected and job['kind']=='history' and captured is not None and captured.status==200:
+            if error.kind in ('malformed-response','provider-failed'):diagnostic_stage = 'core-validation'
     except Exception:failure = 'worker-failed'
     if screening_rejected:failure = 'invalid-response'
     if captured is None:return encode_reply(job, ReadResponse(0, b''), clock(), failure or 'worker-failed')
     if failure:
         # The exact body is deliberately not emitted when shape/core validation fails.
-        return encode_reply(job, ReadResponse(captured.status, b''), observed, failure)
+        return encode_reply(job, ReadResponse(captured.status, b''), observed, failure, diagnostic_stage=diagnostic_stage)
     return encode_reply(job, ReadResponse(200, captured.body), observed)
 
 
@@ -345,6 +366,22 @@ def collect(store, plan, locator, *, run_id, supervisor=supervise, clock=time.mo
         except Exception:
             outcomes.append(JobOutcome(job_digest(job), 'not-persisted', None, 'clock-order'));break
         reply = supervisor(job, locator, timeout=min(job_seconds, remaining-cleanup_seconds), cleanup=cleanup_seconds)
+        # Injected supervisors obey the same bounded failure/stage contract as IPC.
+        if type(reply) is not WorkerReply or type(reply.cleanup_ok) is not bool:
+            reply = WorkerReply(None, None, 'bad-frame')
+        elif not reply.cleanup_ok:
+            reply = WorkerReply(None, None, 'cleanup-failed', False)
+        else:
+            response_ok = reply.response is None or (
+                isinstance(reply.response, ReadResponse) and type(reply.response.status) is int
+                and (reply.response.status == 0 or 100 <= reply.response.status <= 599)
+                and isinstance(reply.response.body, bytes) and len(reply.response.body) <= MAX_RAW)
+            failure_ok = reply.failure is None or type(reply.failure) is str and reply.failure in FAILURES
+            status = reply.response.status if response_ok and reply.response is not None else 0
+            stage_ok = valid_stage(job, status, reply.failure, reply.diagnostic_stage, legacy=True)
+            if (not response_ok or not failure_ok or not stage_ok
+                    or reply.failure is not None and reply.response is not None and reply.response.body != b''):
+                reply = WorkerReply(None, None, 'bad-frame')
         observed = reply.observed_at if reply.response is not None else wall()
         ingested = wall()
         clock_bad = False
@@ -367,7 +404,8 @@ def collect(store, plan, locator, *, run_id, supervisor=supervise, clock=time.mo
         last_ingested = ingested_time
         over_budget = over_budget or clock() >= end
         outcomes.append(JobOutcome(job_digest(job), stored.status, stored.attempt_id,
-                                   reply.failure or ('run-budget' if over_budget else None)))
+                                   reply.failure or ('run-budget' if over_budget else None),
+                                   reply.diagnostic_stage if reply.failure=='invalid-response' else None))
         if not reply.cleanup_ok or over_budget:
             reason = 'cleanup-failed' if not reply.cleanup_ok else 'run-budget'
             outcomes.extend(JobOutcome(job_digest(j), 'unattempted', None, reason) for j in jobs[index+1:])
