@@ -22,7 +22,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-11/PRSG-89-single-prediction-chip.md",
   "objective": "Display one accessible general prediction chip with recorded direction, target, range and target date, without provider branding or changed forecasts.",
-  "status": "review",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -140,8 +140,10 @@
       "id": "delivery",
       "kind": "manual",
       "description": "Lead reviews full scope, required hooks and exact committed/pushed/deployed revisions; explicitly resumed Lead cadence and other schedules preserved.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently accepted all8paths and final checks. Implementation bb64f0c5496a5ffa5c30ba77267e16aef5557cdd committed/pushedmain/shared; mandatorycommit1607passed41warnings32.32s, push1607passed41warnings31.27s. Pages38134781736 success at exact implementation head. LiveHTML/Oct11JSON byte-exact SHA2567edfdfc5f0aeea8c874817ce8fd6fba52a39dc7acb8452c0176d5ae5307ddf43 / 2dd9f21df648821bb1d2886648dcdd0749abf66141cb003ba14118f5262c5714. Livebrowser50singlechips/nooldcountchips/noproviderbrand;1280Enter/Space and390mobiletap/aria/nooverflow verified. Financial/cutoff/provenance/full120score preserved; no secret/providercalls or performance claim.08prompt aligned sameACTIVE/target/rule,15minuteLead human-resumedACTIVE."
+      ]
     }
   ],
   "acceptance": [
@@ -191,12 +193,16 @@
       "check_ids": [
         "delivery"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independently accepted all8paths and final checks. Implementation bb64f0c5496a5ffa5c30ba77267e16aef5557cdd committed/pushedmain/shared; mandatorycommit1607passed41warnings32.32s, push1607passed41warnings31.27s. Pages38134781736 success at exact implementation head. LiveHTML/Oct11JSON byte-exact SHA2567edfdfc5f0aeea8c874817ce8fd6fba52a39dc7acb8452c0176d5ae5307ddf43 / 2dd9f21df648821bb1d2886648dcdd0749abf66141cb003ba14118f5262c5714. Livebrowser50singlechips/nooldcountchips/noproviderbrand;1280Enter/Space and390mobiletap/aria/nooverflow verified. Financial/cutoff/provenance/full120score preserved; no secret/providercalls or performance claim.08prompt aligned sameACTIVE/target/rule,15minuteLead human-resumedACTIVE."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "Lead independently accepted all8paths and final checks. Implementation bb64f0c5496a5ffa5c30ba77267e16aef5557cdd committed/pushedmain/shared; mandatorycommit1607passed41warnings32.32s, push1607passed41warnings31.27s. Pages38134781736 success at exact implementation head. LiveHTML/Oct11JSON byte-exact SHA2567edfdfc5f0aeea8c874817ce8fd6fba52a39dc7acb8452c0176d5ae5307ddf43 / 2dd9f21df648821bb1d2886648dcdd0749abf66141cb003ba14118f5262c5714. Livebrowser50singlechips/nooldcountchips/noproviderbrand;1280Enter/Space and390mobiletap/aria/nooverflow verified. Financial/cutoff/provenance/full120score preserved; no secret/providercalls or performance claim.08prompt aligned sameACTIVE/target/rule,15minuteLead human-resumedACTIVE."
+    ]
   }
 }

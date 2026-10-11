@@ -2,7 +2,7 @@
 
 Type: feature · Modules: frontend, harness, skills, market-research · Owner: Engineer · Priority: P1 · Effort: S (0.5–1 person-day, estimate) · Impact: medium-high — directly addresses the human's repeated request for a simple direction, target and range display; adoption improvement is unmeasured.
 
-Created 2026-10-11 MYT. Status: in progress; Lead accepted and froze this scope after the human requested continuation. Frozen implementation base: `f791145861698967df31861a326779417a6bb05c`.
+Created 2026-10-11 MYT. Status: complete; Lead accepted the selected display after independent checks and verified delivery. Frozen implementation base: `f791145861698967df31861a326779417a6bb05c`.
 
 ## Human selection and problem
 
@@ -30,7 +30,7 @@ The accepted paths are in the matching manifest. The frozen base is the verified
 - [x] PRSG-89-D1: Exactly one chip per ticker displays recorded direction, target, range and visible target date/horizon across compact and legacy reports; no visible provider branding or substitute signal counts.
 - [x] PRSG-89-D2: Rated, flat, unavailable, malformed and escaped-text fixtures pass; real desktop/mobile and keyboard/tap checks confirm readable, accessible expansion and functioning filters/sort/pagination.
 - [x] PRSG-89-D3: Report workflow and any narrative revision match the selected display; collector reuse, final validation, original financial values, provenance, history and ledger are preserved.
-- [ ] PRSG-89-D4: Lead reviews every owned path, verifies checks and immutable payloads, records commit/push/deployment separately and verifies exact deployed revision before completion.
+- [x] PRSG-89-D4: Lead reviews every owned path, verifies checks and immutable payloads, records commit/push/deployment separately and verifies exact deployed revision before completion.
 
 ## Verification and delivery limits
 
@@ -65,3 +65,7 @@ Lead's real 1280/390 browser, native Enter/Space/tap/overflow checks, Trader wor
 ## Lead independent review checkpoint
 
 2026-10-11T19:11:42.217595+08:00 — reviewed all8owned paths. Final compact/legacy/archive replay, full legacy/technical/calendar/privacy replay,102focused report tests, skill metadata/local references and final publiccompact report gate passed. Real1280Enter/Space and390mobiletap/aria/no-pageoverflow passed on archived and current reports. Final source-title repair retained meaningful headings and exact hrefs; obsolete hardcoded native-status prose removed. Financial payload/collection/originalcutoff/full120scorecard and other11reports/index/calendar/ledger/protected projection bytes preserved. Only60reviewed revision/prose/reason leaves changed in latest report. Saved08prompt now matches selected chip/finalcompact gate with sameACTIVE/target/cadence. D1–D3 accepted; D4/release remains pending mandatoryhooks, commit/push and exact deployed revision verification. No secret/provider access during this ticket.
+
+## Lead acceptance and verified delivery
+
+2026-10-11T19:17:04.213107+08:00 — Lead independently accepted all8paths and final checks. Implementation bb64f0c5496a5ffa5c30ba77267e16aef5557cdd committed/pushedmain/shared; mandatorycommit1607passed41warnings32.32s, push1607passed41warnings31.27s. Pages38134781736 success at exact implementation head. LiveHTML/Oct11JSON byte-exact SHA2567edfdfc5f0aeea8c874817ce8fd6fba52a39dc7acb8452c0176d5ae5307ddf43 / 2dd9f21df648821bb1d2886648dcdd0749abf66141cb003ba14118f5262c5714. Livebrowser50singlechips/nooldcountchips/noproviderbrand;1280Enter/Space and390mobiletap/aria/nooverflow verified. Financial/cutoff/provenance/full120score preserved; no secret/providercalls or performance claim.08prompt aligned sameACTIVE/target/rule,15minuteLead human-resumedACTIVE. Earlier pending checkpoints are preserved as history. All4criteria accepted for the display/workflow scope only. Today remains50Unrated; future supported numeric targets require the separate input-readiness contract.
