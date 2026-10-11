@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-95",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Trader",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.2
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-12",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-12/PRSG-95-single-history-diagnostic-readiness.md",
+  "objective": "One prospective bounded diagnostic history request with separate coverage and target-readiness assessment.",
+  "status": "in_progress",
+  "owner": "Trader",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "b6592257843e35c8017641dfcb5cf4e81d388b1d",
+  "allowed_paths": [
+    "plans/2026-10-12/PRSG-95-single-history-diagnostic-readiness.md",
+    "plans/2026-10-12/PRSG-95.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "scripts/",
+    "harness/",
+    "artifacts/",
+    "skills/",
+    "agent-operations/",
+    "tests/",
+    "docs/"
+  ],
+  "checks": [
+    {
+      "id": "probe",
+      "kind": "manual",
+      "description": "Frozen exact one-job/argv/hash and bounded one-call result/access.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "readiness",
+      "kind": "manual",
+      "description": "Separate diagnostic/coverage/target verdicts and point-in-time limits.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead independent sanitized reconciliation, preservation and delivery.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-95-D1",
+      "description": "One bounded frozen invocation evidence/access.",
+      "check_ids": [
+        "probe"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-95-D2",
+      "description": "Coverage/reference/financial gates.",
+      "check_ids": [
+        "readiness"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-95-D3",
+      "description": "Lead independent review/delivery.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
