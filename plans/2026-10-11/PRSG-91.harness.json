@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-91",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "connectors",
+      "financial-data",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.3
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-11/PRSG-91-history-response-contract-review.md",
+  "objective": "Read-only offline history response contract review following the actual PRSG-90 invalid-response; no fix or new live request.",
+  "status": "in_progress",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "8d10f41ca106ce4b5020fcfdd947811708d6ee25",
+  "allowed_paths": [
+    "plans/2026-10-11/PRSG-91-history-response-contract-review.md",
+    "plans/2026-10-11/PRSG-91.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "scripts/",
+    "harness/",
+    "artifacts/",
+    "skills/",
+    "agent-operations/",
+    "tests/"
+  ],
+  "checks": [
+    {
+      "id": "contract",
+      "kind": "manual",
+      "description": "Engineer documented contract/code comparison; no live-cause inference from discarded body.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "regressions",
+      "kind": "manual",
+      "description": "Existing focused collector/store/REST tests and private authored replay if used; exact argv/results.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "preservation",
+      "kind": "manual",
+      "description": "Lead protected-path comparison against frozen base, preserving unrelated projection baseline.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "decision",
+      "kind": "manual",
+      "description": "Lead independent evidence review and bounded next decision; no automatic fix/live request.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-91-D1",
+      "description": "Review documented contract and existing screening with explicit evidence limits.",
+      "check_ids": [
+        "contract"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-91-D2",
+      "description": "Record focused tests/private deterministic evidence without code or secret/provider access.",
+      "check_ids": [
+        "regressions"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-91-D3",
+      "description": "Lead reviews findings and preservation, then freezes next decision or blocker.",
+      "check_ids": [
+        "preservation",
+        "decision"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
