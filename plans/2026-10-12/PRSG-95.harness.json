@@ -20,7 +20,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-12/PRSG-95-single-history-diagnostic-readiness.md",
   "objective": "One prospective bounded diagnostic history request with separate coverage and target-readiness assessment.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Trader",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -47,22 +47,28 @@
       "id": "probe",
       "kind": "manual",
       "description": "Frozen exact one-job/argv/hash and bounded one-call result/access.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reconciled saved schema2 single failed outcome, completion exit1/onejob/no retries, same-run immutable attempt and empty normalized rows; plan bytehash exact. At2026-10-12 01:44:03\u201301:44:04MYT:invalid-response/envelope,0accepted/0of21sessions/reference absent,raw_hashnull. Provider returned countunknown; HTTP200 only frame/code-path inference. Trader credential and exact login-Keychain loaders used by code-path evidence/no OS audit; Lead no secretaccess. Coverage and targetsblocked; adjustment/currency/finality/availability/rights gaps persist. Protected isolateddiff onlyticketfiles,primaryprojection originalhashpreserved."
+      ]
     },
     {
       "id": "readiness",
       "kind": "manual",
       "description": "Separate diagnostic/coverage/target verdicts and point-in-time limits.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reconciled saved schema2 single failed outcome, completion exit1/onejob/no retries, same-run immutable attempt and empty normalized rows; plan bytehash exact. At2026-10-12 01:44:03\u201301:44:04MYT:invalid-response/envelope,0accepted/0of21sessions/reference absent,raw_hashnull. Provider returned countunknown; HTTP200 only frame/code-path inference. Trader credential and exact login-Keychain loaders used by code-path evidence/no OS audit; Lead no secretaccess. Coverage and targetsblocked; adjustment/currency/finality/availability/rights gaps persist. Protected isolateddiff onlyticketfiles,primaryprojection originalhashpreserved."
+      ]
     },
     {
       "id": "review",
       "kind": "manual",
       "description": "Lead independent sanitized reconciliation, preservation and delivery.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reconciled saved schema2 single failed outcome, completion exit1/onejob/no retries, same-run immutable attempt and empty normalized rows; plan bytehash exact. At2026-10-12 01:44:03\u201301:44:04MYT:invalid-response/envelope,0accepted/0of21sessions/reference absent,raw_hashnull. Provider returned countunknown; HTTP200 only frame/code-path inference. Trader credential and exact login-Keychain loaders used by code-path evidence/no OS audit; Lead no secretaccess. Coverage and targetsblocked; adjustment/currency/finality/availability/rights gaps persist. Protected isolateddiff onlyticketfiles,primaryprojection originalhashpreserved."
+      ]
     }
   ],
   "acceptance": [
@@ -72,8 +78,10 @@
       "check_ids": [
         "probe"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independently reconciled saved schema2 single failed outcome, completion exit1/onejob/no retries, same-run immutable attempt and empty normalized rows; plan bytehash exact. At2026-10-12 01:44:03\u201301:44:04MYT:invalid-response/envelope,0accepted/0of21sessions/reference absent,raw_hashnull. Provider returned countunknown; HTTP200 only frame/code-path inference. Trader credential and exact login-Keychain loaders used by code-path evidence/no OS audit; Lead no secretaccess. Coverage and targetsblocked; adjustment/currency/finality/availability/rights gaps persist. Protected isolateddiff onlyticketfiles,primaryprojection originalhashpreserved."
+      ]
     },
     {
       "id": "PRSG-95-D2",
@@ -81,8 +89,10 @@
       "check_ids": [
         "readiness"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independently reconciled saved schema2 single failed outcome, completion exit1/onejob/no retries, same-run immutable attempt and empty normalized rows; plan bytehash exact. At2026-10-12 01:44:03\u201301:44:04MYT:invalid-response/envelope,0accepted/0of21sessions/reference absent,raw_hashnull. Provider returned countunknown; HTTP200 only frame/code-path inference. Trader credential and exact login-Keychain loaders used by code-path evidence/no OS audit; Lead no secretaccess. Coverage and targetsblocked; adjustment/currency/finality/availability/rights gaps persist. Protected isolateddiff onlyticketfiles,primaryprojection originalhashpreserved."
+      ]
     },
     {
       "id": "PRSG-95-D3",
@@ -90,12 +100,16 @@
       "check_ids": [
         "review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independently reconciled saved schema2 single failed outcome, completion exit1/onejob/no retries, same-run immutable attempt and empty normalized rows; plan bytehash exact. At2026-10-12 01:44:03\u201301:44:04MYT:invalid-response/envelope,0accepted/0of21sessions/reference absent,raw_hashnull. Provider returned countunknown; HTTP200 only frame/code-path inference. Trader credential and exact login-Keychain loaders used by code-path evidence/no OS audit; Lead no secretaccess. Coverage and targetsblocked; adjustment/currency/finality/availability/rights gaps persist. Protected isolateddiff onlyticketfiles,primaryprojection originalhashpreserved."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reconciled saved schema2 single failed outcome, completion exit1/onejob/no retries, same-run immutable attempt and empty normalized rows; plan bytehash exact. At2026-10-12 01:44:03\u201301:44:04MYT:invalid-response/envelope,0accepted/0of21sessions/reference absent,raw_hashnull. Provider returned countunknown; HTTP200 only frame/code-path inference. Trader credential and exact login-Keychain loaders used by code-path evidence/no OS audit; Lead no secretaccess. Coverage and targetsblocked; adjustment/currency/finality/availability/rights gaps persist. Protected isolateddiff onlyticketfiles,primaryprojection originalhashpreserved."
+    ]
   }
 }

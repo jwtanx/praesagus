@@ -2,7 +2,7 @@
 
 Type: spike · Modules: financial-data, market-research · Owner: Trader · Priority: P1 · Effort: XS (0.1–0.2 person-day estimate) · Impact: medium-high — narrows the observed history intake blocker without exposing rejected data or claiming forecast precision.
 
-Created 2026-10-12 MYT. Status: in progress, accepted continuation of the human-selected bounded forecast-input readiness. Frozen base: `b6592257843e35c8017641dfcb5cf4e81d388b1d`. Lead accepts scope and findings; Trader owns financial/access assessment.
+Created 2026-10-12 MYT. Status: complete assessment; readiness blocked, accepted continuation of the human-selected bounded forecast-input readiness. Frozen base: `b6592257843e35c8017641dfcb5cf4e81d388b1d`. Lead accepts scope and findings; Trader owns financial/access assessment.
 
 ## Accepted boundary and timebox
 
@@ -26,10 +26,16 @@ Trader repository write set is empty. Only Lead edits this spec and manifest. Ap
 
 ## When it's considered done
 
-- [ ] PRSG-95-D1: Exact one-job plan/runtime/bounds validated; one invocation result and actual access disclosure retained privately with no retry.
-- [ ] PRSG-95-D2: Separate diagnostic, coverage/reference and target-readiness verdicts with frozen timing/adjustment and explicit unknowns.
-- [ ] PRSG-95-D3: Lead independently reconciles sanitized evidence, preserves protected paths and accepts/delivers findings; no forecast performance claim.
+- [x] PRSG-95-D1: Exact one-job plan/runtime/bounds validated; one invocation result and actual access disclosure retained privately with no retry.
+- [x] PRSG-95-D2: Separate diagnostic, coverage/reference and target-readiness verdicts with frozen timing/adjustment and explicit unknowns.
+- [x] PRSG-95-D3: Lead independently reconciles sanitized evidence, preserves protected paths and accepts/delivers findings; no forecast performance claim.
 
 ## Checks and delivery
 
 Manual frozen-plan validation, one-call evidence, financial gates, preservation and Lead review. No new code tests required. Mandatory ticket validation/commit hooks remain. A failed probe can complete this assessment with blocked readiness; it does not prove integration or forecast success. No further request authorized by completion.
+
+## Lead accepted findings
+
+Lead independently reconciled saved schema2 single failed outcome, completion exit1/onejob/no retries, same-run immutable attempt and empty normalized rows; plan bytehash exact. At2026-10-12 01:44:03–01:44:04MYT:invalid-response/envelope,0accepted/0of21sessions/reference absent,raw_hashnull. Provider returned countunknown; HTTP200 only frame/code-path inference. Trader credential and exact login-Keychain loaders used by code-path evidence/no OS audit; Lead no secretaccess. Coverage and targetsblocked; adjustment/currency/finality/availability/rights gaps persist. Protected isolateddiff onlyticketfiles,primaryprojection originalhashpreserved.
+
+Envelope is the trusted envelope/container/pagination-scalar rejection boundary, not an exact offending field or upstream explanation. Rejected bytes were discarded; no retry or response salvage. This prospective collection is not eligible at the October11 frozen cutoff and does not reconstruct PRSG-90. Reports and forecasts remain unchanged. The assessment is complete despite failed intake; no further request or repair is authorized.
