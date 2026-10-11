@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-89",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend",
+      "harness",
+      "skills",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.0
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-11/PRSG-89-single-prediction-chip.md",
+  "objective": "Display one accessible general prediction chip with recorded direction, target, range and target date, without provider branding or changed forecasts.",
+  "status": "review",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "f791145861698967df31861a326779417a6bb05c",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "tests/compact_report_viewer_checks.cjs",
+    "tests/daily_report_viewer_checks.cjs",
+    "tests/test_daily_report.py",
+    "skills/daily-market-brief/SKILL.md",
+    "skills/daily-market-brief/references/compact-report.md",
+    "artifacts/daily-market-brief/2026-10-11.json",
+    "plans/2026-10-11/PRSG-89-single-prediction-chip.md",
+    "plans/2026-10-11/PRSG-89.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "harness/engineering/price-prediction/",
+    "artifacts/financial-calendar/",
+    "artifacts/daily-market-brief/reports.json",
+    "scripts/market_collect.py",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/compact_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reran final compact+legacy fixture/all12archive checks after final native-text cleanup; passed."
+      ]
+    },
+    {
+      "id": "legacy-viewer",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/daily_report_viewer_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently ran full legacy/technical/calendar/privacy Node replay; passed; obsolete label assertions alone changed."
+      ]
+    },
+    {
+      "id": "report-tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_daily_report.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently ran approvedPython pytest tests/test_daily_report.py:102passed."
+      ]
+    },
+    {
+      "id": "final-report",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py",
+        "--date",
+        "2026-10-11",
+        "--public",
+        "--compact"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently ran final public/compact validator after last report write:50forecasts/65events/12dates, passed."
+      ]
+    },
+    {
+      "id": "browser",
+      "kind": "manual",
+      "description": "Lead verifies 1280 desktop/390 mobile, Enter/Space/tap expansion, filters/sorting and no new overflow.",
+      "status": "passed",
+      "evidence": [
+        "Lead real1280desktop nativeEnter open/aria true andSpace closed/aria false; selected390x844mobile tap open/aria true, bodyWidth390, nooverflow onOct8/Oct11; source titles retained and hrefs unchanged."
+      ]
+    },
+    {
+      "id": "preservation",
+      "kind": "manual",
+      "description": "Compare all financial inputs/targets/confidence/provenance/cutoff/ledger/history/protected paths with frozen baseline; only reviewed narrative changes permitted.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed all8ownedpaths and independently compared all financial rows/collection/cutoff/full120scorecard; exact preserved, only60allowed revision/prose/reason leaves changed. Other11reports/index/calendar/ledger/protected projection hashes unchanged."
+      ]
+    },
+    {
+      "id": "skill-replay",
+      "kind": "manual",
+      "description": "Validate skill metadata/references and replay missing history, agreeing proxy prices and archived rated forecasts without confidence promotion.",
+      "status": "passed",
+      "evidence": [
+        "Lead skillmetadata/localreferences valid;102focused report regressions and final compact/legacy realarchive fixtures passed. Trader reported missinghistory/agreeingproxies/independent rated frozen cases; no method/confidence promotion.08prompt updated/readbackexact sameACTIVE/target/rule, only presentation+finalcompact gate aligned."
+      ]
+    },
+    {
+      "id": "delivery",
+      "kind": "manual",
+      "description": "Lead reviews full scope, required hooks and exact committed/pushed/deployed revisions; explicitly resumed Lead cadence and other schedules preserved.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-89-D1",
+      "description": "One general prediction chip with target/range/date and no visible provider branding across compact and legacy reports.",
+      "check_ids": [
+        "viewer",
+        "browser",
+        "legacy-viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent scope/preservation and linked checks passed; no predictive performance or live input eligibility claimed."
+      ]
+    },
+    {
+      "id": "PRSG-89-D2",
+      "description": "Rated/flat/unavailable/malformed/escaped fixtures and desktop/mobile/keyboard/tap/filter regressions pass.",
+      "check_ids": [
+        "viewer",
+        "report-tests",
+        "browser",
+        "legacy-viewer"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent scope/preservation and linked checks passed; no predictive performance or live input eligibility claimed."
+      ]
+    },
+    {
+      "id": "PRSG-89-D3",
+      "description": "Workflow wording and optional report narrative revision preserve financial evidence and final validation.",
+      "check_ids": [
+        "final-report",
+        "preservation",
+        "skill-replay"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent scope/preservation and linked checks passed; no predictive performance or live input eligibility claimed."
+      ]
+    },
+    {
+      "id": "PRSG-89-D4",
+      "description": "Lead independently reviews and records verified delivery stages.",
+      "check_ids": [
+        "delivery"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

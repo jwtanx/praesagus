@@ -20,14 +20,27 @@ prices and predictions are not reusable current inputs.
   reference fields, rights status and `data_gaps` remain in closed native
   details controls. Missing price coverage remains visible. Provider observations
   are not verified sortable reference closes.
-- Show separate native Moomoo bullish/bearish observation chips and an
-  independent Forecast chip. Current native coverage is unavailable; display
-  `Moomoo bullish: Unavailable` and `Moomoo bearish: Unavailable` with expandable
-  KDJ/MACD/Bollinger coverage details. Quote-versus-previous-close and calculated
-  SMA trends remain raw audit inputs, not native signals or substitute chips.
-  Preserve unknown native rule/parameters/timeframe/source observation time;
-  missing coverage is unavailable, never zero or neutral. Keep forecast labels
-  up/down/flat/Unrated independent. Color does not replace the text label.
+- Show one interactive prediction chip combining recorded direction, target
+  price and range. Map up/down/flat/unknown to Bullish/Bearish/Sideways/Unrated.
+  Keep the recorded target date and horizon visible alongside, with units intact.
+  Archived October 8 SPY example: `↑ Bullish · US$781.37 · US$764.19–798.94`,
+  `Target: 9 Oct 2026 · 3 sessions`. These are historical values, not today's
+  forecast. Do not infer dates, sessions, targets or confidence from prices.
+- An unavailable row reads `Unrated · target unavailable · range unavailable`;
+  show `Target date unavailable` or an unavailable horizon when unrecorded.
+  Malformed/unsupported evidence fails closed with a reason in details, never
+  zero or a made-up target. Price comparisons, calculated SMA trends and native
+  signal counts are not extra prediction chips or forecast substitutes.
+- Click, tap, Enter and Space open/close details with evidence confidence/reason,
+  issuance cutoff, reference date/value/basis, recorded method, horizon/target,
+  bull/bear cases, invalidation, source links and missing/coverage reasons.
+  Color does not replace readable labels or accessible expansion state. The chip
+  wraps at mobile width; confidence/reason remain in details, not extra chips.
+- Use general wording without provider branding in public prose and expanded
+  details, including visible source labels. Preserve raw provider/source fields,
+  method evidence and real source URL destinations. The shared viewer applies
+  this presentation to compact and legacy reports; never rewrite archived JSON
+  or present historical targets as current.
 
 Word limits use whitespace-delimited words. They constrain the main reading
 view, not preservation of detailed evidence. Do not cut provenance or unsupported
@@ -47,10 +60,10 @@ and a bounded probe succeeded, but approved report history jobs and completed
 session/end-date/basis eligibility are unresolved. Installed SDK availability
 does not establish logged-in OpenD connectivity or live indicator mapping.
 PRSG-82 native KDJ, MACD and Bollinger intake remains blocked pending accepted
-scope and verified provider rules, identity, timestamps and coverage. This
-display correction does not add a native-result payload contract. Native
-observations cannot provide numeric targets or automatically change forecast
-direction/confidence.
+scope and verified provider rules, identity, timestamps and coverage. It is
+separate from the selected general prediction chip. This display change adds no
+native-result payload contract or supported forecast method. Native observations
+cannot provide numeric targets or automatically change direction/confidence.
 Recheck the accepted implementation and plan before claiming those gaps resolved.
 
 Snapshot-only intake supplies prices, not native patterns or the October 8
@@ -76,8 +89,8 @@ Sources: [REST screening](https://open.moomoo.com/zh-cn/api/quote/screening/stoc
 
 Reconcile raw collection counts to the actual rows: observed/missing US and MY,
 stored quote-direction counts, available SMA count and verified reference count.
-Retain those raw counts for audit, not native-signal coverage or the compact
-bullish/bearish narrative. Counts are not probabilities or predictive performance.
+Retain those raw counts for audit, not prediction chips or the compact
+direction/target narrative. Counts are not probabilities or predictive performance.
 For every rated row retain its frozen reference close/date/source, horizon,
 bull/bear/invalidation, named method, positive observation/horizon-session counts,
 issuance time, coherent target date and finite ordered target/range. The validator
@@ -106,9 +119,11 @@ or imply the revision was available at its original issuance time.
 
 Replay before accepting a workflow change: verbose/open long audit rejects;
 compact missing-history coverage accepts with Unrated forecasts; future evidence
-and unsupported rated rows reject. Also replay absent native data and successful
-empty unsupported-market results as unavailable (not zero/neutral), agreeing
-price/SMA proxies without forced forecast direction, and an independently
-supported forecast retaining its rating despite missing native observations.
-Verify the visible chips and closed details on keyboard and mobile, then verify
+and unsupported rated rows reject. Also replay missing history and agreeing
+price/SMA proxies without forced forecast direction or confidence promotion;
+an archived rated example keeps its recorded direction, target, range and date,
+with its historical cutoff visible. An independently supported forecast retains
+its rating despite missing native observations. No unavailable field becomes
+zero, a new target or inferred confidence to populate the single chip.
+Verify the one chip and closed details on keyboard and mobile, then verify
 deployment before reporting publication.

@@ -8,6 +8,7 @@ const { JSDOM, VirtualConsole } = require(path.join(process.env.DAILY_REPORT_TES
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'artifacts/daily-market-brief/index.html'), 'utf8');
 const clone = value => JSON.parse(JSON.stringify(value));
+function reportText(w){const body=w.document.body.cloneNode(true);body.querySelectorAll('script,style').forEach(x=>x.remove());return body.textContent;}
 const source = { label: 'Official source', url: 'https://example.org/calendar' };
 const report = (date, version = 3) => {
   const data = { schema_version: version, metadata: { date, as_of: '2026-10-01T08:00:00+08:00', subtitle: `Fixture ${date}` }, summary: [{ label: 'Fixture', title: date, summary: 'Research only' }], footer: `Footer ${date}`, sections: {}, watchlist_config: { groups: [{ key: 'technology', label: 'Technology', emoji: '💻' }] }, forecasts: [] };
@@ -61,13 +62,16 @@ function compactFixture(){
   d.forecasts[2].moomoo_session_direction={status:'available',signal:'neutral',method:'last_price-vs-prev_close_price'};
   d.forecasts[3].direction='up';d.forecasts[3].forecast_status='available';d.forecasts[3].confidence='low';
   d.forecasts[3].confidence_reason='Frozen evidence only';d.forecasts[3].forecast_model='Synthetic drift v1';d.forecasts[3].forecast_observations=20;d.forecasts[3].forecast_horizon_sessions=1;
+  Object.assign(d.forecasts[3],{currency:'USD',estimated_mid_case:'US$102.00',estimated_range:'US$99.00–US$105.00',estimated_mid_case_value:102,range_low_value:99,range_high_value:105});
   d.forecasts[3].forecast_as_of='2026-10-01T07:55:00+08:00';d.forecasts[3].target_date='2026-10-02';d.forecasts[3].forecast_basis={reference_close_date:'2026-09-30',reference_close:100,reference_source:'https://example.org/close',horizon_type:'next_session',bull_case:'Synthetic demand',bear_case:'Synthetic risk',invalidation:'Below reference'};
   return d;
 }
 async function compactRendering(width){
-  const data=compactFixture();const t=mount({width,routes:{'./2026-10-01.json':data}});await settle();
-  assert.match(t.$('#top10').textContent,/US 1 observed \/ 3 missing.*MY 0 observed \/ 0 missing.*Native Moomoo bullish\/bearish coverage: Not collected.*Forecasts: 1 rated \/ 3 Unrated/s);
+  const data=compactFixture();const frozen=JSON.stringify(data);const t=mount({width,routes:{'./2026-10-01.json':data}});await settle();
+  assert.match(t.$('#top10').textContent,/US 1 observed \/ 3 missing.*MY 0 observed \/ 0 missing.*Forecasts: 1 rated \/ 3 Unrated/s);
   assert.match(t.$('#top10').textContent,/Preserved shortlist evidence note/);
+  assert.doesNotMatch(t.$('.compact-coverage').textContent,/Native technical event|Not collected/);
+  for(const details of t.w.document.querySelectorAll('.forecast-evidence'))assert.doesNotMatch(details.textContent,/Native technical event coverage|No dated event counts/);
   assert.equal(t.$('#market-snapshot-panel').closest('details').open,false);
   const audit=t.$('#score details.compact-table');assert.ok(audit);assert.equal(audit.open,false);assert.equal(audit.querySelectorAll('tbody tr').length,120);
   assert.match(audit.querySelector('summary').textContent,/Review all 120/);
@@ -79,51 +83,85 @@ async function compactRendering(width){
   const provenance=row.querySelector('.quote-evidence');assert.equal(provenance.open,false);
   assert.match(provenance.textContent,/Observed:.*Ingested:.*Known:.*Report cutoff:.*currency unverified.*rights unconfirmed/s);
   assert.match(provenance.textContent,/Missing history and target model/);
-  assert.equal(row.querySelector('.compact-forecast-reason').closest('details'),null);
-  assert.match(row.querySelector('.compact-forecast-reason').textContent,/Reason 0/);
-  const chips=row.querySelectorAll('.compact-chips > details > summary > .signal');
-  assert.deepEqual([...chips].map(x=>x.textContent),['Moomoo bullish: Unavailable','Moomoo bearish: Unavailable','Forecast: Unrated']);
-  assert.match(chips[0].className,/unavailable/);assert.match(chips[1].className,/unavailable/);assert.match(chips[2].className,/unknown/);
-  assert.equal(row.querySelector('.sma-evidence'),null);
-  assert.equal(row.querySelector('.compact-chips .quote-evidence'),null);
-  assert.doesNotMatch(row.querySelector('.compact-chips').textContent,/Quote:|SMA:|last_price-vs-prev_close_price|SMA-5-vs-SMA-20/);
-  assert.match(t.$('.forecast-table th:nth-child(5)').textContent,/Moomoo native signals/);
-  const native=row.querySelector('.native-evidence');assert.equal(native.open,false);
-  assert.match(native.textContent,/not been collected.*Counts describe observations, not probabilities/s);
-  assert.deepEqual([...native.querySelectorAll('.native-indicator-coverage b')].map(x=>x.textContent),['KDJ','MACD','Bollinger']);
-  for(const indicator of native.querySelectorAll('.native-indicator-coverage')){
-    assert.match(indicator.textContent,/Not collected.*bullish count: Unavailable.*bearish count: Unavailable.*Rule: Unknown.*parameters: Unknown.*timeframe: Unknown.*Source observation time: Unknown.*lookback window: Unknown/s);
-    assert.doesNotMatch(indicator.textContent,/\b0\b|Neutral/);
-  }
-  for(const details of row.querySelectorAll('.compact-chips > details')){
-    assert.equal(details.open,false);const summary=details.querySelector('summary');summary.focus();assert.equal(t.w.document.activeElement,summary);summary.click();assert.equal(details.open,true);summary.click();assert.equal(details.open,false);
-  }
-  for(const chip of chips)assert.equal(chip.getAttribute('aria-label'),chip.textContent);
-  assert.equal(t.w.getComputedStyle(chips[0].querySelector('.native-bullish-label')).textDecoration,'underline');
-  assert.equal(t.w.getComputedStyle(chips[1].querySelector('.native-bearish-label')).textDecoration,'underline');
+  assert.equal(row.querySelector('.compact-forecast-reason'),null,'confidence reason lives inside details');
+  assert.match(t.$('.forecast-table th:nth-child(5)').textContent,/Prediction · target \/ range/);
   const rows=t.w.document.querySelectorAll('#forecast-rows tr');
   for(const r of rows){
-    assert.match(r.querySelector('.native-evidence').textContent,/Moomoo bullish: Unavailable.*Moomoo bearish: Unavailable/s);
-    assert.equal(r.querySelector('.native-evidence .signal.bullish,.native-evidence .signal.bearish,.native-evidence .signal.neutral'),null);
+    const chips=r.querySelectorAll('td:nth-child(5) .signal');assert.equal(chips.length,1);
+    assert.equal(r.querySelector('.native-evidence,.forecast-trend,.sma-evidence,.compact-chips'),null);
+    const details=r.querySelector('.forecast-evidence'),summary=details.querySelector('summary');
+    assert.equal(details.open,false);assert.equal(summary.getAttribute('aria-expanded'),'false');
+    assert.equal(summary.getAttribute('aria-controls'),details.querySelector('.compact-evidence').id);
+    assert.match(summary.getAttribute('aria-label'),/Target.*Prediction evidence/);
+    assert.equal(t.w.getComputedStyle(chips[0]).whiteSpace,'normal');
+    summary.focus();assert.equal(t.w.document.activeElement,summary);
+    summary.click();await settle();assert.equal(details.open,true);assert.equal(summary.getAttribute('aria-expanded'),'true');
+    summary.click();await settle();assert.equal(details.open,false);assert.equal(summary.getAttribute('aria-expanded'),'false');
+    assert.doesNotMatch(r.querySelector('td:nth-child(5)').textContent,/Quote:|SMA:|last_price-vs-prev_close_price|SMA-5-vs-SMA-20|bullish count|bearish count/);
   }
-  assert.match(rows[3].querySelector('.forecast-evidence').textContent,/Forecast: Up.*low evidence confidence.*Synthetic drift v1.*forecast_observations: 20.*reference_close.*bull_case.*bear_case.*invalidation/s);
+  assert.equal(rows[0].querySelector('.prediction-chip').textContent,'Unrated · target unavailable · range unavailable');
+  assert.equal(rows[0].querySelector('.prediction-target-date').textContent,'Target date unavailable · horizon unavailable');
+  assert.match(rows[0].querySelector('.forecast-evidence').textContent,/Confidence reason: Reason 0.*Original report cutoff: 2026-10-01T08:00:00\+08:00/s);
+  assert.equal(rows[3].querySelector('.prediction-chip').textContent,'↑ Bullish · US$102.00 · US$99.00–US$105.00');
+  assert.equal(rows[3].querySelector('.prediction-target-date').textContent,'Target: 2 Oct 2026 · 1 session');
+  assert.match(rows[3].querySelector('.forecast-evidence').textContent,/Evidence confidence: low.*Frozen evidence only.*Forecast issued at: 2026-10-01T07:55:00\+08:00.*Method: Synthetic drift v1.*Observations: 20.*Reference date: 2026-09-30.*Reference value: 100.*Bull case: Synthetic demand.*Bear case: Synthetic risk.*Invalidation: Below reference/s);
+  assert.equal(rows[3].querySelector('.forecast-evidence a').href,'https://example.org/close');
+  assert.doesNotMatch(reportText(t.w),/\b(?:moomoo|futu|yahoo|stooq)\b/i);
   t.$('#forecast-sort').value='price-desc';t.$('#forecast-sort').dispatchEvent(new t.w.Event('change'));assert.equal(t.$('#forecast-rows tr').dataset.universeOrder,'0','unverified units remain excluded from numeric sort');
+  t.$('#confidence-filter').value='low';t.$('#confidence-filter').dispatchEvent(new t.w.Event('change'));assert.equal([...rows].filter(r=>!r.hidden).length,1);
+  assert.equal(JSON.stringify(data),frozen,'display never mutates financial payload');
   assert.equal(t.errors.length,0);t.dom.window.close();
 }
-async function safetyAndLegacy(){
-  const data=compactFixture();data.forecasts[0].data_gaps.push('<img src=x onerror=alert(1)>');
-  data.forecasts[0].moomoo_session_direction.reason='<svg onload=alert(1)>';
-  data.forecasts[0].moomoo_trend.source_url='<svg onload=alert(1)>';
-  data.sections.score.tables[0].details_label='<img src=x>';
-  data.sections.score.tables[0].rows[0][0].sources=[{label:'<script>unsafe</script>',url:'javascript:alert(1)'}];
-  const t=mount({routes:{'./2026-10-01.json':data}});await settle();
-  assert.equal(t.$('#report').querySelector('img,svg,script'),null);assert.match(t.$('#report').textContent,/<img src=x>/);
+async function predictionCases(width,compact){
+  const data=compactFixture();if(!compact)delete data.metadata.presentation_profile;
+  const rated=clone(data.forecasts[3]);data.forecasts=[];
+  const add=(name,changes)=>data.forecasts.push({...clone(rated),ticker:name,...changes});
+  add('BULL',{});add('BEAR',{direction:'down'});add('FLAT',{direction:'flat'});
+  for(const [name,changes] of [
+    ['PARTIAL',{range_high_value:null}],['STRING',{estimated_mid_case_value:'102'}],['BOOL',{range_low_value:true}],
+    ['ZERO',{range_low_value:0}],['REVERSED',{range_low_value:110}],['OUTSIDE',{estimated_mid_case_value:106}],
+    ['UNIT',{currency:'MYR'}],['MISMATCH',{estimated_mid_case:'US$999'}],['TEXT',{estimated_range:'not a price'}],
+    ['DIRECTION',{direction:'bullish'}],['HELD',{forecast_status:'unavailable'}],['MISSING',{direction:'unknown',confidence:'unavailable'}]
+  ])add(name,changes);
+  add('DATE',{target_date:'2026-02-30',forecast_horizon_sessions:0});
+  data.forecasts[0].confidence_reason='Moomoo REST / Yahoo Finance / Stooq <img src=x onerror=alert(1)>';
+  data.forecasts[0].forecast_basis.bull_case='<svg onload=alert(1)>';
+  data.forecasts[0].sources=[{label:'Moomoo',url:'https://open.moomoo.com/api/quote/basic-data/history-kline'},{label:'Yahoo Finance historical price inputs',url:'https://finance.yahoo.com/quote/SPY/'},{label:'<script>unsafe</script>',url:'javascript:alert(1)'}];
+  data.metadata.subtitle='Moomoo data · Yahoo Finance history';data.footer='Moomoo REST evidence';
+  data.sections.news.notes=[{text:'Moomoo source at https://open.moomoo.com/path?foo=bar',sources:data.forecasts[0].sources}];
+  const frozen=JSON.stringify(data),t=mount({width,routes:{'./2026-10-01.json':data}});await settle();
+  const rows=[...t.w.document.querySelectorAll('#forecast-rows tr')];assert.equal(rows.length,16);
+  assert.deepEqual(rows.slice(0,3).map(r=>r.querySelector('.prediction-chip').textContent),['↑ Bullish · US$102.00 · US$99.00–US$105.00','↓ Bearish · US$102.00 · US$99.00–US$105.00','↔ Sideways · US$102.00 · US$99.00–US$105.00']);
+  for(const row of rows.slice(3,15)){assert.equal(row.querySelector('.prediction-chip').textContent,'Unrated · target unavailable · range unavailable');assert.match(row.className,/unknown/);assert.match(row.querySelector('.forecast-evidence').textContent,/Display coverage:/);}
+  assert.match(rows[3].querySelector('.forecast-evidence').textContent,/incomplete, nonnumeric or unordered/);
+  assert.match(rows[9].querySelector('.forecast-evidence').textContent,/units disagree or are unsupported/);
+  assert.equal(rows[15].querySelector('.prediction-target-date').textContent,'Target date unavailable · horizon unavailable');
+  assert.equal(rows[0].querySelector('.forecast-evidence').open,false);rows[0].querySelector('summary').click();await settle();
+  assert.match(rows[0].textContent,/<img src=x onerror=alert\(1\)>/);assert.match(rows[0].textContent,/<svg onload=alert\(1\)>/);
+  assert.equal(t.$('#report').querySelector('img,script'),null);assert.equal(rows[0].querySelector('svg'),null);
+  assert.doesNotMatch(reportText(t.w),/\b(?:moomoo|futu|yahoo|stooq)\b|https:\/\/open\./i);
+  const hrefs=[...rows[0].querySelectorAll('.forecast-evidence a')].map(a=>a.href);assert.ok(hrefs.includes('https://open.moomoo.com/api/quote/basic-data/history-kline'));assert.ok(hrefs.includes('https://finance.yahoo.com/quote/SPY/'));assert.equal(rows[0].querySelector('a[href="https://open.moomoo.com/api/quote/basic-data/history-kline"]').textContent,'Source');assert.equal(rows[0].querySelector('a[href="https://finance.yahoo.com/quote/SPY/"]').textContent,'historical data historical price inputs');
   assert.equal([...t.w.document.querySelectorAll('#report a')].some(x=>x.protocol==='javascript:'),false);
-  assert.equal(t.errors.length,0);t.dom.window.close();
-  delete data.metadata.presentation_profile;
-  const legacy=mount({routes:{'./2026-10-01.json':data}});await settle();
-  assert.equal(legacy.$('#score .compact-table'),null);assert.equal(legacy.$('#score').querySelectorAll('tbody tr').length,120);
-  assert.equal(legacy.$('#forecast-rows .compact-chips'),null);assert.ok(legacy.$('#forecast-rows .forecast-trend'));
-  assert.equal(legacy.errors.length,0);legacy.dom.window.close();
+  assert.equal(t.$('#filter-count').textContent,'16 tickers · showing 1–10');t.click('#ticker-pagination-top button[data-page="2"]');assert.equal(t.$('#filter-count').textContent,'16 tickers · showing 11–16');
+  assert.equal(rows.filter(r=>!r.hidden).length,6);t.$('#country-filter').value='my';t.$('#country-filter').dispatchEvent(new t.w.Event('change'));assert.equal(t.$('#filter-count').textContent,'No tickers match these filters');
+  assert.equal(JSON.stringify(data),frozen);assert.equal(t.errors.length,0);t.dom.window.close();
 }
-(async()=>{await compactRendering(1280);await compactRendering(390);await safetyAndLegacy();console.log('Compact DOM checks passed: native closed audit/provenance/signal details, native bullish/bearish unavailability despite available/conflicting proxies, KDJ/MACD/Bollinger missing coverage and independent forecasts, focus/tap expansion, complete evidence, partial coverage, unsortable provider units, escaping, legacy display at desktop/mobile viewport widths.');})().catch(e=>{console.error(e);process.exitCode=1});
+async function archivedReports(){
+  for(const name of fs.readdirSync(path.join(root,'artifacts/daily-market-brief')).filter(x=>/^2026-\d\d-\d\d\.json$/.test(x))){
+    const data=JSON.parse(fs.readFileSync(path.join(root,'artifacts/daily-market-brief',name),'utf8')),date=data.metadata.date;
+    const t=mount({search:`?date=${date}`,routes:{'./reports.json':{latest:date,reports:[{date,label:date}]},[`./${name}`]:data}});await settle();
+    const rows=[...t.w.document.querySelectorAll('#forecast-rows tr')];assert.equal(rows.length,data.forecasts.length,name);
+    for(const [i,row] of rows.entries()){
+      assert.equal(row.querySelectorAll('td:nth-child(5) .signal').length,1,name);
+      const x=data.forecasts[i],chip=row.querySelector('.prediction-chip');
+      if(x.direction!=='unknown'&&x.forecast_status!=='unavailable'){assert.notEqual(chip.textContent,'Unrated · target unavailable · range unavailable',`${name} ${x.ticker}: recorded supported prices stay available`);assert.ok(chip.textContent.includes(x.estimated_mid_case));assert.ok(chip.textContent.includes(x.estimated_range));}
+      else assert.equal(chip.textContent,'Unrated · target unavailable · range unavailable');
+    }
+    assert.equal(reportText(t.w).match(/\b(?:moomoo|futu|yahoo|stooq)\b/i),null,`${name}: no branded report wording`);
+    if(date==='2026-10-08'){
+      const row=rows[data.forecasts.findIndex(x=>x.ticker==='SPY')];assert.equal(row.querySelector('.prediction-chip').textContent,'↑ Bullish · US$781.37 · US$764.19–US$798.94');assert.equal(row.querySelector('.prediction-target-date').textContent,'Target: 9 Oct 2026 · 3 sessions');assert.equal(t.w.document.title,'Praesagus Daily Market Brief — 2026-10-08');
+    }
+    assert.equal(t.errors.length,0,name);t.dom.window.close();
+  }
+}
+(async()=>{for(const width of [1280,390]){await compactRendering(width);for(const compact of [true,false])await predictionCases(width,compact);}await archivedReports();console.log('Prediction DOM checks passed: one chip, recorded direction/target/range/date, closed evidence and accessible focus/tap/state, compact/legacy 1280/390 fixtures, malformed numbers/units fail closed, escaped general wording with original source destinations, pagination/filter/sort, all archived forecasts preserved. Real keyboard/layout checks remain with Lead.');})().catch(e=>{console.error(e);process.exitCode=1});
