@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-94",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "docs"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.0
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-12",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-12/PRSG-94-safe-history-diagnostic-stages.md",
+  "objective": "Add bounded privacy-safe diagnostic stages without weakening validation or changing reports.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "0c90de58912f0c45f7742320de67a58183cb5dae",
+  "allowed_paths": [
+    "ingest/private_market_store.py",
+    "ingest/market_collector.py",
+    "scripts/market_collect.py",
+    "docs/PRIVATE_MARKET_COLLECTOR.md",
+    "tests/test_private_market_store.py",
+    "tests/test_market_collector.py",
+    "plans/2026-10-12/PRSG-94-safe-history-diagnostic-stages.md",
+    "plans/2026-10-12/PRSG-94.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/daily_report_projection.py",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "harness/",
+    "artifacts/",
+    "skills/",
+    "agent-operations/",
+    "tests/test_moomoo_rest.py",
+    "tests/test_moomoo_rest_live.py",
+    "tests/test_daily_quote_report.py"
+  ],
+  "checks": [
+    {
+      "id": "behavior",
+      "kind": "manual",
+      "description": "Trusted stages, exact frame versions and unchanged CLI default/privacy semantics.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "regressions",
+      "kind": "manual",
+      "description": "Exact five-file focused pytest in spec; all 27 matrix requirements, deterministic canaries.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "preservation",
+      "kind": "manual",
+      "description": "Full diff within allowlist; all other paths unchanged, primary projection preserved.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "delivery",
+      "kind": "manual",
+      "description": "Lead independent review, scope validation and authorized commit/push checks.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-94-D1",
+      "description": "Trusted diagnostic/privacy/frame behavior.",
+      "check_ids": [
+        "behavior"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-94-D2",
+      "description": "Focused meaningful regressions and accurate docs.",
+      "check_ids": [
+        "regressions"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-94-D3",
+      "description": "Lead scope/preservation/review/delivery.",
+      "check_ids": [
+        "preservation",
+        "delivery"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
