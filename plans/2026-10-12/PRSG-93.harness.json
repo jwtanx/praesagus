@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-12/PRSG-93-safe-history-diagnostic-contract.md",
   "objective": "Define bounded privacy-safe history rejection diagnostics before another live request; no implementation or access.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Lead",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -47,29 +47,37 @@
       "id": "contract",
       "kind": "manual",
       "description": "Read-only code/frame/consumer alternatives and compatibility/privacy review.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
+      ]
     },
     {
       "id": "matrix",
       "kind": "manual",
       "description": "Concrete fixed-category contract and meaningful authored privacy/malformed/history cases; exact proposed paths.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
+      ]
     },
     {
       "id": "preservation",
       "kind": "manual",
       "description": "Lead verifies all protected tracked paths unchanged against frozenbase, preserving unrelatedprimaryprojection.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
+      ]
     },
     {
       "id": "decision",
       "kind": "manual",
       "description": "Lead independently accepts bounded next implementation contract or explicit blocker; no newrequest.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
+      ]
     }
   ],
   "acceptance": [
@@ -79,8 +87,10 @@
       "check_ids": [
         "contract"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
+      ]
     },
     {
       "id": "PRSG-93-D2",
@@ -88,8 +98,10 @@
       "check_ids": [
         "matrix"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
+      ]
     },
     {
       "id": "PRSG-93-D3",
@@ -98,12 +110,16 @@
         "preservation",
         "decision"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed the fixed-stage, v1/v2 framing and opt-in CLI contract; see spec reviewed decision. 27 synthetic cases are authored requirements, not executed tests. Protected tracked paths unchanged in isolated checkout; unrelated primary projection preserved."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "Lead independently accepted the bounded diagnostic contract; implementation requires PRSG-94. No live request or secret access."
+    ]
   }
 }
