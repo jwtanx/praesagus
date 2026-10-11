@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-93",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.2
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-12",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-12/PRSG-93-safe-history-diagnostic-contract.md",
+  "objective": "Define bounded privacy-safe history rejection diagnostics before another live request; no implementation or access.",
+  "status": "in_progress",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "74fc1c36a66c2880a0bc38949b3afe8ebb7cff16",
+  "allowed_paths": [
+    "plans/2026-10-12/PRSG-93-safe-history-diagnostic-contract.md",
+    "plans/2026-10-12/PRSG-93.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "scripts/",
+    "harness/",
+    "artifacts/",
+    "skills/",
+    "agent-operations/",
+    "tests/"
+  ],
+  "checks": [
+    {
+      "id": "contract",
+      "kind": "manual",
+      "description": "Read-only code/frame/consumer alternatives and compatibility/privacy review.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "matrix",
+      "kind": "manual",
+      "description": "Concrete fixed-category contract and meaningful authored privacy/malformed/history cases; exact proposed paths.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "preservation",
+      "kind": "manual",
+      "description": "Lead verifies all protected tracked paths unchanged against frozenbase, preserving unrelatedprimaryprojection.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "decision",
+      "kind": "manual",
+      "description": "Lead independently accepts bounded next implementation contract or explicit blocker; no newrequest.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-93-D1",
+      "description": "Review error/frame/consumers and alternatives with bounded privacy/compatibility.",
+      "check_ids": [
+        "contract"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-93-D2",
+      "description": "Return concrete category contract/failurematrix and minimal proposed paths.",
+      "check_ids": [
+        "matrix"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-93-D3",
+      "description": "Lead reviews concrete next scope/blocker and immutable protected paths.",
+      "check_ids": [
+        "preservation",
+        "decision"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
