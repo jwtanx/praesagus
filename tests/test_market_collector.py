@@ -58,7 +58,7 @@ def test_history_job_is_daily_bounded_and_stored_through_worker():
         'GET','/api/v1.0/quote/US.SYN/history-kline','end=2026-10-02&ktype=2&autype=0&num=100',b'')
     plan={**PLAN,'history':[{'code':'US.SYN','end':'2026-10-02'}]}
     assert c.validate_plan(plan)==[JOB,HISTORY]
-    row={'time_key':1790899200000,'date':20261002,'time_zone':-240,'close':10.5}
+    row={'time_key':1790899200000,'date':20261001,'time_zone':-240,'close':10.5}
     payload={'ret_code':0,'ret_msg':'ok','data':{'kline_list':[row]}}
     resp=ReadResponse(200,json.dumps(payload).encode())
     calls=[]
@@ -67,6 +67,23 @@ def test_history_job_is_daily_bounded_and_stored_through_worker():
     parsed=c.parse_reply(raw,HISTORY)
     assert parsed.failure is None and parsed.response.body==resp.body and len(calls)==1
     assert (calls[0].method,calls[0].path,calls[0].query,calls[0].body)==(request.method,request.path,request.query,request.body)
+
+
+@pytest.mark.parametrize('stamp', [1790899200000, 2**63-1])
+def test_contradictory_or_unrepresentable_history_is_discarded_by_worker(stamp, store):
+    row={'time_key':stamp,'date':20261002,'time_zone':-240,'close':10.5}
+    response=ReadResponse(200,json.dumps({'ret_code':0,'ret_msg':'ok','data':{'kline_list':[row]}}).encode())
+    calls=[]
+    raw=c.execute_job(HISTORY,LOCATOR,credentials=lambda _:('synthetic-api-key',lambda _:b'signature'),
+        transport_factory=lambda:lambda req:(calls.append(req) or response),clock=lambda:OBS)
+    parsed=c.parse_reply(raw,HISTORY)
+    assert len(calls)==1 and parsed.failure=='invalid-response'
+    assert parsed.response.status==200 and parsed.response.body==b''
+    attempt=store.ingest(c.job_request(HISTORY),parsed.response,run_id='synthetic-history',
+                        observed_at=OBS,ingested_at=ING,origin='synthetic')
+    assert attempt.status=='failed' and attempt.raw_hash is None
+    assert store.query('history',ING)==[] and list(store.raw_dir.iterdir())==[]
+    assert store.attempts(ING)[0]['reason']=='invalid-response'
 
 
 @pytest.mark.parametrize('plan', [ {}, {**PLAN, 'extra': 1}, {**PLAN, 'schema_version': True},

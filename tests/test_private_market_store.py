@@ -538,3 +538,44 @@ def test_v2_replay_does_not_backdate_new_known_time(store):
     assert store.query('snapshot',ING)==[]
     assert store.select_snapshots('run1',ING,['US.SYN'])['coverage']['selected']['count']==0
     assert store.query('snapshot',LATER)[0]['record']['provider_prev_close']==9
+
+
+@pytest.mark.parametrize('stamp,zone,market_date', [
+    (1779271199999,840,20260520),(1779271200000,840,20260521),
+    (1779278399999,-720,20260519),(1779278400000,-720,20260520),
+    (1779235199999,0,20260519),(1779235200000,0,20260520),
+    (1779288300123,-240,20260520),(0,-720,19691231),
+])
+def test_history_store_preserves_consistent_millisecond_local_dates(store,stamp,zone,market_date):
+    req=ReadRequest('GET','/api/v1.0/quote/US.SYN/history-kline',
+                    'end=2026-05-23&ktype=2&autype=0&num=100',b'',{},1)
+    row={'time_key':stamp,'date':market_date,'time_zone':zone,'close':12.5}
+    resp=ReadResponse(200,json.dumps({'ret_code':0,'ret_msg':'ok','data':{'kline_list':[row]}}).encode())
+    attempt=ingest(store,req=req,resp=resp)
+    assert attempt.status=='success' and attempt.raw_hash==hashlib.sha256(resp.body).hexdigest()
+    records=store.query('history',ING)
+    assert len(records)==1 and records[0]['source_ms']==stamp
+    assert records[0]['record']['date']==f'{market_date//10000:04d}-{market_date//100%100:02d}-{market_date%100:02d}'
+    assert records[0]['record']['time_zone']==zone and records[0]['record']['close']==12.5
+    assert store.raw(attempt.raw_hash)==resp.body
+
+
+@pytest.mark.parametrize('stamp,zone,market_date', [
+    (1779249600000,-240,20260521),
+    (1779271199999,840,20260521),(1779271200000,840,20260520),
+    (1779278399999,-720,20260520),(1779278400000,-720,20260519),
+    (2**63-1,0,20260520),
+])
+def test_history_store_rejects_local_date_mismatch_and_overflow(store,stamp,zone,market_date):
+    from ingest.private_market_store import normalized,request_meta
+    req=ReadRequest('GET','/api/v1.0/quote/US.SYN/history-kline',
+                    'end=2026-05-23&ktype=2&autype=0&num=100',b'',{},1)
+    row={'time_key':stamp,'date':market_date,'time_zone':zone,'close':12.5}
+    resp=ReadResponse(200,json.dumps({'ret_code':0,'ret_msg':'ok','data':{'kline_list':[row]}}).encode())
+    kind,query,_=request_meta(req)
+    with pytest.raises(MarketStoreError) as error:normalized(resp.body,kind,query,version=3)
+    assert str(error.value)=='invalid-response'
+    attempt=ingest(store,req=req,resp=resp)
+    assert attempt.status=='failed' and attempt.raw_hash is None
+    assert store.query('history',ING)==[] and list(store.raw_dir.iterdir())==[]
+    assert store.attempts(ING)[0]['record_count']==0

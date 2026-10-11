@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-92",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "connectors",
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-11",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-11/PRSG-92-daily-history-date-consistency.md",
+  "objective": "Reject contradictory daily timestamp/explicit-offset/date inputs at core/store boundaries without widening compatibility or making live requests.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6ad50954ab9a8d8c0d98b34f90d0a08738dff512",
+  "allowed_paths": [
+    "connectors/moomoo_rest.py",
+    "ingest/private_market_store.py",
+    "tests/test_market_collector.py",
+    "tests/test_private_market_store.py",
+    "tests/test_moomoo_rest.py",
+    "tests/test_moomoo_rest_live.py",
+    "plans/2026-10-11/PRSG-92-daily-history-date-consistency.md",
+    "plans/2026-10-11/PRSG-92.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/daily_report_projection.py",
+    "artifacts/",
+    "harness/",
+    "backend/",
+    "frontend/",
+    "scripts/",
+    "skills/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "behavior",
+      "kind": "manual",
+      "description": "Core/store daily timestamp-offset-date agreement, controlled mismatch/overflow errors.",
+      "status": "passed",
+      "evidence": [
+        "2026-10-11T19:47:53+08:00: Core history_kline and store normalized(version=3) compare declared date to epoch date plus integer floor((time_key + time_zone*60000)/86400000). Existing controlled malformed-response/invalid-response categories cover mismatch/overflow. No timezone/date inference, midnight requirement, scalar/envelope/quota/signature widening or floating-point timestamp conversion.",
+        "Lead independently inspected all8ownedpaths, integer date arithmetic and30addedcases;491focusedtests passed2.98s. Full changed-path set within frozen scope; protected artifacts/ledger/calendar/code diff empty; unrelated primary projection original hash preserved. No live/credential access or financial change."
+      ]
+    },
+    {
+      "id": "regressions",
+      "kind": "manual",
+      "description": "Exact focused4file pytest and meaningful consistent/mismatch/nonmidnight/rollover/overflow/collector failures.",
+      "status": "passed",
+      "evidence": [
+        "2026-10-11T19:47:53+08:00: PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS=\"-p no:cacheprovider\" /Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python -m pytest -q tests/test_market_collector.py tests/test_private_market_store.py tests/test_moomoo_rest.py tests/test_moomoo_rest_live.py: 491 passed in 2.82s, exit 0. 30 added cases cover explicit-offset +/-720/840 rollovers one millisecond either side, UTC rollover, epoch prior-local-day, nonmidnight, reproduced mismatch, maximum-integer overflow and collector empty-body/zero-row rejection. Only contradictory history fixtures corrected; signing clocks/news/snapshot unchanged.",
+        "Lead independently inspected all8ownedpaths, integer date arithmetic and30addedcases;491focusedtests passed2.98s. Full changed-path set within frozen scope; protected artifacts/ledger/calendar/code diff empty; unrelated primary projection original hash preserved. No live/credential access or financial change."
+      ]
+    },
+    {
+      "id": "preservation",
+      "kind": "manual",
+      "description": "Lead verifies complete changed scope and immutable reports/ledger/calendar/projection.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently inspected all8ownedpaths, integer date arithmetic and30addedcases;491focusedtests passed2.98s. Full changed-path set within frozen scope; protected artifacts/ledger/calendar/code diff empty; unrelated primary projection original hash preserved. No live/credential access or financial change."
+      ]
+    },
+    {
+      "id": "delivery",
+      "kind": "manual",
+      "description": "Lead independently accepts patch and exact commit/push/check evidence.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-92-D1",
+      "description": "Both core/store reject contradictory/unrepresentable daily metadata.",
+      "check_ids": [
+        "behavior"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-11T19:47:53+08:00: Core history_kline and store normalized(version=3) compare declared date to epoch date plus integer floor((time_key + time_zone*60000)/86400000). Existing controlled malformed-response/invalid-response categories cover mismatch/overflow. No timezone/date inference, midnight requirement, scalar/envelope/quota/signature widening or floating-point timestamp conversion."
+      ]
+    },
+    {
+      "id": "PRSG-92-D2",
+      "description": "Meaningful focused regressions preserve safety coverage.",
+      "check_ids": [
+        "regressions"
+      ],
+      "status": "done",
+      "evidence": [
+        "2026-10-11T19:47:53+08:00: PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS=\"-p no:cacheprovider\" /Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python -m pytest -q tests/test_market_collector.py tests/test_private_market_store.py tests/test_moomoo_rest.py tests/test_moomoo_rest_live.py: 491 passed in 2.82s, exit 0. 30 added cases cover explicit-offset +/-720/840 rollovers one millisecond either side, UTC rollover, epoch prior-local-day, nonmidnight, reproduced mismatch, maximum-integer overflow and collector empty-body/zero-row rejection. Only contradictory history fixtures corrected; signing clocks/news/snapshot unchanged."
+      ]
+    },
+    {
+      "id": "PRSG-92-D3",
+      "description": "Lead independently reviews scope/preservation and authorized delivery.",
+      "check_ids": [
+        "preservation",
+        "delivery"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently inspected all8ownedpaths, integer date arithmetic and30addedcases;491focusedtests passed2.98s. Full changed-path set within frozen scope; protected artifacts/ledger/calendar/code diff empty; unrelated primary projection original hash preserved. No live/credential access or financial change.",
+      "Implementation accepted; D3delivery remains pending actual commit/push evidence."
+    ]
+  }
+}

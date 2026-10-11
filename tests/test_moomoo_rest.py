@@ -31,7 +31,7 @@ def snapshot(**changes):
 
 
 def kline(**changes):
-    return dict({"time_key": NOW, "date": 20261002, "time_zone": -240,
+    return dict({"time_key": NOW + 4 * 3600000, "date": 20261002, "time_zone": -240,
                  "open": 12.0, "close": 12.5, "high": 13.0, "low": 11.5,
                  "volume": 100, "turnover": 1250.0, "last_close": 11.75}, **changes)
 
@@ -129,12 +129,45 @@ def test_daily_history_rejects_bad_request_before_io(call):
 @pytest.mark.parametrize("rows", [
     [kline(close=0)], [kline(close=float("nan"))],
     [kline(time_zone=-900)], [kline(date=20260230)],
-    [kline(), kline()], [kline(time_key=NOW+1, date=20261003)],
+    [kline(), kline()], [kline(time_key=NOW+28*3600000, date=20261003)],
 ])
 def test_daily_history_rejects_malformed_or_future_duplicate_bars(rows):
     h = Harness(quote({"kline_list": rows}))
     with pytest.raises(RESTError, match="malformed-response"):
         h.client.history_kline("US.AAPL", "2026-10-02")
+
+
+@pytest.mark.parametrize("stamp,zone,market_date", [
+    (1779271199999, 840, 20260520),  # One ms before local midnight, maximum offset.
+    (1779271200000, 840, 20260521),
+    (1779278399999, -720, 20260519),  # Minimum offset rolls UTC into prior local day.
+    (1779278400000, -720, 20260520),
+    (1779235199999, 0, 20260519),
+    (1779235200000, 0, 20260520),
+    (1779288300123, -240, 20260520),  # A non-midnight bar is valid.
+    (0, -720, 19691231),
+])
+def test_daily_history_accepts_explicit_local_date_boundaries(stamp, zone, market_date):
+    row = kline(time_key=stamp, time_zone=zone, date=market_date)
+    h = Harness(quote({"kline_list": [row]}))
+    result = h.client.history_kline("US.AAPL", "2026-05-23")
+    assert result.data == [row] and result.status == "success"
+
+
+@pytest.mark.parametrize("stamp,zone,market_date", [
+    (1779249600000, -240, 20260521),  # PRSG-91 reproduced contradiction.
+    (1779271199999, 840, 20260521),
+    (1779271200000, 840, 20260520),
+    (1779278399999, -720, 20260520),
+    (1779278400000, -720, 20260519),
+    (2**63-1, 0, 20260520),  # Integer is in transport bounds but date is unrepresentable.
+])
+def test_daily_history_rejects_local_date_mismatch_or_overflow(stamp, zone, market_date):
+    h = Harness(quote({"kline_list": [kline(time_key=stamp, time_zone=zone, date=market_date)]}))
+    with pytest.raises(RESTError) as error:
+        h.client.history_kline("US.AAPL", "2026-05-23")
+    assert error.value.kind == "malformed-response"
+    assert str(error.value) == "Moomoo REST malformed-response"
 
 
 @pytest.mark.parametrize("method,payload,path,query", [

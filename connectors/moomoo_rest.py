@@ -8,7 +8,7 @@ import math
 import re
 from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
-from datetime import date
+from datetime import date, timedelta
 from email.utils import parsedate_to_datetime
 from typing import Any, Callable, Mapping
 from urllib.parse import urlencode
@@ -346,8 +346,11 @@ class MoomooRESTConnector:
                      and type(zone) is int and -720 <= zone <= 840, "malformed-response")
             try:
                 parsed = date.fromisoformat(f"{market_date // 10000:04d}-{market_date // 100 % 100:02d}-{market_date % 100:02d}")
-            except ValueError:
+                # Integer day arithmetic preserves the supplied millisecond boundary.
+                local_date = date(1970, 1, 1) + timedelta(days=(stamp + zone * 60000) // 86400000)
+            except (ValueError, OverflowError):
                 raise RESTError("malformed-response") from None
+            _require(parsed == local_date, "malformed-response")
             _require(parsed.strftime("%Y%m%d") == f"{market_date:08d}"
                      and (start is None or parsed.isoformat() >= start),
                      "malformed-response")

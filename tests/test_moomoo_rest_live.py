@@ -380,7 +380,7 @@ def test_keychain_login_path_ignores_home_environment(monkeypatch):
     (None, 1, 0, 'US.AAPL'), ('2026-10-01', 370, 2, 'US.BRK.B'),
     ('2026-10-02', 10, 1, 'US.BRK-B')])
 def test_history_core_to_live_preserves_signed_query_and_rows(start, num, autype, code):
-    body = b'{"ret_code":0,"ret_msg":"ok","data":{"kline_list":[{"time_key":1790899200000,"date":20261002,"time_zone":-240,"close":100.0}]}}'
+    body = b'{"ret_code":0,"ret_msg":"ok","data":{"kline_list":[{"time_key":1790913600000,"date":20261002,"time_zone":-240,"close":100.0}]}}'
     transport, c, factories = harness(FakeResponse(body=body))
     signed = []
     def sign(value):

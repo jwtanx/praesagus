@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime, date, timezone
+from datetime import datetime, date, timezone, timedelta
 import hashlib
 import json
 import math
@@ -260,8 +260,11 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
                  and type(zone) is int and -720<=zone<=840, 'invalid-response')
             try:
                 parsed=date.fromisoformat(f'{market_date//10000:04d}-{market_date//100%100:02d}-{market_date%100:02d}')
-            except ValueError:
+                # Use explicit offset and integer milliseconds, never inferred timezone.
+                local_date=date(1970,1,1)+timedelta(days=(stamp+zone*60000)//86400000)
+            except (ValueError,OverflowError):
                 raise MarketStoreError('invalid-response') from None
+            need(parsed==local_date,'invalid-response')
             need(parsed.strftime('%Y%m%d')==f'{market_date:08d}'
                  and parsed.isoformat()<=request['end']
                  and ('start' not in request or parsed.isoformat()>=request['start'])
