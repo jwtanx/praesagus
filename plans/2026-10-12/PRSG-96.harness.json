@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-96",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-12",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-12/PRSG-96-responsive-prediction-cards.md",
+  "objective": "Deliver approved responsive cards, single-chip status colors and compact navigation without financial changes.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "32c9ee20678611400b512b36d4a461e035e07390",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/index.html",
+    "tests/compact_report_viewer_checks.cjs",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-12/PRSG-96-responsive-prediction-cards.md",
+    "plans/2026-10-12/PRSG-96.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "scripts/",
+    "harness/",
+    "skills/",
+    "agent-operations/",
+    "artifacts/financial-calendar/",
+    "artifacts/daily-market-brief/forecast-ledger.csv",
+    "artifacts/daily-market-brief/reports.json"
+  ],
+  "checks": [
+    {
+      "id": "behavior",
+      "kind": "manual",
+      "description": "Accepted responsive/color/navigation and full guard/provenance preservation.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "regressions",
+      "kind": "manual",
+      "description": "Exact twoNode/onePython focused checks and browser/accessibility cases in spec.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Designer visual review, Lead independent scope/protected checks and delivery.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-96-D1",
+      "description": "Approved layout/colors/navigation.",
+      "check_ids": [
+        "behavior"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-96-D2",
+      "description": "Meaningful tests/accessibility/viewport regression.",
+      "check_ids": [
+        "regressions"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-96-D3",
+      "description": "Designer/Lead acceptance and delivery.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
