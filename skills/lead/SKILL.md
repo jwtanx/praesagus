@@ -4,7 +4,7 @@ description: Lead-only Praesagus backlog coordination, resource checks, schedule
 license: MIT
 metadata:
   author: praesagus
-  version: "1.6"
+  version: "1.7"
 ---
 
 # Lead control
@@ -25,7 +25,17 @@ Modes: `check`, `start` (requires human schedule approval), `checkpoint`, `resto
 
 Use two complementary heartbeats attached to Lead with the automation tool, not shell cron. Use Asia/Kuala_Lumpur, every 15 minutes from 09:00 through 06:00 the following day inclusive: quarter-hours within 09:00–23:45 and 00:00–05:45, plus one 06:00 check. This is 85 checks per day; 06:15–08:45 is inactive. One quarter-hour rule plus a daily 06:00 companion avoids extra wakes at 06:15/30/45. Confirm returned schedule/timezone; never silently approximate it. Keep both Lead schedule IDs and full current tool-view configuration in private local registry `/Users/jwtan/.codex/lead-state/schedules.md`; do not put prompts/context in public artifacts or Git. This registry is not a scheduler.
 
-On each run: resource checks first; exit quietly if no actionable change. Check collaborator status via one compact wait_threads snapshot, never interrupt busy sessions or reassign an in-flight ticket. Inspect committed specs/manifests and dirty-work ownership; generated audit may lag. Review completed handoffs before marking done. Choose one bounded ready task: Lead/Engineer feasibility with temporary research subagents; Trader market/news interpretation; Engineer accepted implementation; Lead integration/review. Delegate disjoint paths with explicit deliverable/checks and authorized return handoff. Spikes do not become implementation tickets. Respect existing model preferences. If all backlog is genuinely complete, run feature-planner for a small evidence-backed opportunity; no endless ticket generation, purchases, live data, deployment or trades beyond existing authority. Handle blockers explicitly and continue only independent permitted work. Do not optimize activity counts instead of useful completion.
+On each run: resource checks first, then reconcile unfinished authorized work even when nothing changed. Quiet notification policy does not mean stop working. Check collaborator status via one compact wait_threads snapshot, never interrupt busy sessions or reassign an in-flight ticket. Inspect committed specs/manifests and dirty-work ownership; generated audit may lag. Review completed handoffs before marking done. Choose one bounded ready task: Lead/Engineer feasibility with temporary research subagents; Trader market/news interpretation; Engineer accepted implementation; Lead integration/review. Delegate disjoint paths with explicit deliverable/checks and authorized return handoff. Spikes do not become implementation tickets. Respect existing model preferences. If all backlog is genuinely complete, run feature-planner for a small evidence-backed opportunity; no endless ticket generation, purchases, live data, deployment or trades beyond existing authority. Handle blockers explicitly and continue only independent permitted work. Do not optimize activity counts instead of useful completion.
+
+## Continuity record and turn-ending check
+
+Maintain a private execution record under `/Users/jwtan/.codex/lead-state/` containing the current objective, human authorization and its boundary, canonical plan references, owners, actual evidence/state, next concrete action, dependencies and stopping reason. Update it after milestones and before yielding. Resume from this record after checking current human instructions and repository/peer evidence; stale context never overrides a newer instruction or actual completion.
+
+A human question or status request steers the active task. Answer it, then resume useful authorized work in the same turn unless the human pauses, cancels or replaces the objective. Do not finish with an offer to perform an already authorized action. Human absence and a concise answer are not stopping conditions.
+
+Planning-first authority includes resolving review findings and preparing the exact reviewable contract, dated scope and decision packet. Finish those concrete planning outputs before requesting an implementation decision. It does not silently authorize implementation, new provider access, purchases or financial policy changes. A blocked source does not block independent authorized planning or already-authorized synthetic validation; planning alone permits designing validation, not implementing or running a new scorer. Honor the clear part of a human pause immediately; clarify ambiguous scope without continuing paused work.
+
+Before ending a turn, inspect every unfinished assignment: can Lead advance it locally, can a registered idle owner advance its accepted scope, or is a returned result ready for review/integration/delivery? If yes, act now and repeat this check after the next milestone. If no, record the specific blocked dependency or other allowed stopping condition, what was tried, who can unblock it and the next action upon release. Preserve resource/time guards and the two-run idle pause; never create artificial team activity to evade it. Instructions and records support continuity but do not guarantee background execution.
 
 ## Same-run continuation, not one action per tick
 
