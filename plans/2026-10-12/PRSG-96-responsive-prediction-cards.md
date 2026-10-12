@@ -18,7 +18,7 @@ Engineer uses existing isolated managed checkout; edits only manifest allowlist.
 
 - [x] PRSG-96-D1: Responsive cards/table, status palette and navigation implement accepted design with unchanged financial/provenance guards.
 - [x] PRSG-96-D2: Focused regressions and actual390/768/1440px keyboard/pointer/provenance/contrast/reduced-motion/history/error review pass, with documented supplemental reflow/text-enlargement stress. Lead explicitly accepts nativeChrome200% zoom and195px phone equivalence as deferred, unverified delivery limitations.
-- [ ] PRSG-96-D3: Designer visual review and Lead independent full-scope/preservation review, commit/push and Pages/live delivery verified.
+- [x] PRSG-96-D3: Designer visual review and Lead independent full-scope/preservation review, commit/push and Pages/live delivery verified.
 
 ## Checks
 
@@ -69,3 +69,9 @@ Lead explicitly accepted a finite PRSG-96 scope amendment under the human instru
 Designer accepted actual currentOctober12 and historicalOctober8 review at390/768/1440 in /Users/jwtan/Documents/praesagus-design/2026-10-12-mobile-instruments/PRSG-96-DESIGN-REVIEW.md, with no blocking design finding. Lead independently reran both exact Node checks and102Python tests and reviewed the complete scope. Lead's fresh in-app390px review reports document scroll width390px,50chips for50instruments and actual SPY observation disclosure click/collapse, with currentUnrated state, unknowns and provenance preserved. This fresh observation is Lead-reported evidence; Engineer did not repeat browser or permission operations. Prior Designer three-width acceptance and executed regression/reflow evidence remain the basis of the amended D2. Lead is separately performing further fresh768/1440 checks; no new results are claimed here.
 
 D2 is complete under this explicitly accepted amendment. D3 remains pending final integration acceptance, commit/push and Pages/live verification. No commit, publication or native-zoom success is claimed. Preview restoration uses session6266 as described above; no native permission request was repeated.
+
+## Lead delivery acceptance
+
+Lead accepted full five-path implementation; commit22feeab8ee9359ed7e2d7d28994ed7a472d0d28c pushedmain; Pages38255548891success; live viewer byte-identical. Full hooks1785passed41warnings commit35.58s/push33.11s. Fresh IAB390/768/1440 widths had no document overflow, SPY disclosure click/collapse observed. Native200%/195px remain deferred unverified.
+
+No financial report values, forecast logic, source admission or calibration changed. Browser rendering does not certify general accessibility; native zoom limitation remains visible.
