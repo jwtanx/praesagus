@@ -84,7 +84,7 @@ async function navigation(width) {
   assert.equal(t.w.getComputedStyle(t.$('.topbar')).position, 'sticky');
   assert.equal(t.w.getComputedStyle(t.$('.topbar')).top, '0px');
   assert.equal(t.$('#subtitle').textContent, 'Fixture 2026-10-01');
-  assert.equal(t.$('.sections a[href="#top10"]').textContent, 'Sector shortlist');
+  assert.equal(t.$('#report-section option[value="top10"]').textContent, 'Sector shortlist — 2 of 7');
   for (const level of ['low', 'medium', 'high', 'unavailable']) assert.match(t.$('#forecast-rows').textContent, new RegExp(`Evidence confidence: ${level}`));
   assert.match(t.$('#forecast-rows').textContent, /Reason 3/);
   t.click('#date-picker-button'); t.click('#picker-prev');

@@ -19,7 +19,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-12/PRSG-96-responsive-prediction-cards.md",
   "objective": "Deliver approved responsive cards, single-chip status colors and compact navigation without financial changes.",
-  "status": "in_progress",
+  "status": "review",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -49,22 +49,32 @@
       "id": "behavior",
       "kind": "manual",
       "description": "Accepted responsive/color/navigation and full guard/provenance preservation.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Engineer guard/layout/selector/provenance review and palette ratios in dated spec.",
+        "Designer accepted actual current/historical390/768/1440 review with no blocking finding; evidence: /Users/jwtan/Documents/praesagus-design/2026-10-12-mobile-instruments/PRSG-96-DESIGN-REVIEW.md. Lead final integration/delivery remains pending."
+      ]
     },
     {
       "id": "regressions",
       "kind": "manual",
-      "description": "Exact twoNode/onePython focused checks and browser/accessibility cases in spec.",
-      "status": "pending",
-      "evidence": []
+      "description": "Exact focused regressions, actual viewport/interaction/evidence review and supplemental reflow/text stress under explicit Lead amendment; native200%/195px deferred unverified.",
+      "status": "passed",
+      "evidence": [
+        "Both exact Node checks passed; Python tests/test_daily_report.py102passed; Lead independent rerun also passed. Designer actual390/768/1440 current/historical review accepted. Recorded720CSS/double-text and384CSS reflow stress passed; native200% and195px remain unverified.",
+        "Lead explicitly accepted amended D2 on2026-10-12 under human browser-here direction: actual responsive/keyboard/pointer/provenance/contrast/reduced-motion/history/error checks and supplemental reflow/text-enlargement stress retained; nativeChrome200% zoom and195px phone equivalence DEFERRED UNVERIFIED, not a pass or accessibility certification. See dated spec amendment.",
+        "Lead fresh in-app390px review reports scroll width390px,50chips for50instruments and actual SPY disclosure click/collapse, preserving currentUnrated/unknowns/provenance. Further fresh768/1440 checks ongoing; no results claimed. Engineer did not repeat browser/permission operations."
+      ]
     },
     {
       "id": "review",
       "kind": "manual",
       "description": "Designer visual review, Lead independent scope/protected checks and delivery.",
       "status": "pending",
-      "evidence": []
+      "evidence": [
+        "Designer accepted actual current/historical390/768/1440 review with no blocking finding; evidence: /Users/jwtan/Documents/praesagus-design/2026-10-12-mobile-instruments/PRSG-96-DESIGN-REVIEW.md. Lead final integration/delivery remains pending.",
+        "Lead independently reviewed five-path scope and repeated both Node checks plus102Python tests; final commit/push/Pages delivery remains pending."
+      ]
     }
   ],
   "acceptance": [
@@ -74,17 +84,24 @@
       "check_ids": [
         "behavior"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Engineer implementation/guard/provenance/selector evidence in dated spec.",
+        "Designer accepted actual current/historical390/768/1440 review with no blocking finding; evidence: /Users/jwtan/Documents/praesagus-design/2026-10-12-mobile-instruments/PRSG-96-DESIGN-REVIEW.md. Lead final integration/delivery remains pending."
+      ]
     },
     {
       "id": "PRSG-96-D2",
-      "description": "Meaningful tests/accessibility/viewport regression.",
+      "description": "Meaningful regressions and actual browser review with documented stress; native200%/195px deferred unverified under explicit Lead acceptance.",
       "check_ids": [
         "regressions"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Both exact Node checks passed; Python tests/test_daily_report.py102passed; Lead independent rerun also passed. Designer actual390/768/1440 current/historical review accepted. Recorded720CSS/double-text and384CSS reflow stress passed; native200% and195px remain unverified.",
+        "Lead explicitly accepted amended D2 on2026-10-12 under human browser-here direction: actual responsive/keyboard/pointer/provenance/contrast/reduced-motion/history/error checks and supplemental reflow/text-enlargement stress retained; nativeChrome200% zoom and195px phone equivalence DEFERRED UNVERIFIED, not a pass or accessibility certification. See dated spec amendment.",
+        "Lead fresh in-app390px review reports scroll width390px,50chips for50instruments and actual SPY disclosure click/collapse, preserving currentUnrated/unknowns/provenance. Further fresh768/1440 checks ongoing; no results claimed. Engineer did not repeat browser/permission operations."
+      ]
     },
     {
       "id": "PRSG-96-D3",
@@ -93,11 +110,18 @@
         "review"
       ],
       "status": "pending",
-      "evidence": []
+      "evidence": [
+        "Designer accepted actual current/historical390/768/1440 review with no blocking finding; evidence: /Users/jwtan/Documents/praesagus-design/2026-10-12-mobile-instruments/PRSG-96-DESIGN-REVIEW.md. Lead final integration/delivery remains pending.",
+        "Lead independently reviewed five-path scope and repeated both Node checks plus102Python tests; final commit/push/Pages delivery remains pending."
+      ]
     }
   ],
   "review": {
     "status": "pending",
-    "evidence": []
+    "evidence": [
+      "Designer accepted actual current/historical390/768/1440 review with no blocking finding; evidence: /Users/jwtan/Documents/praesagus-design/2026-10-12-mobile-instruments/PRSG-96-DESIGN-REVIEW.md. Lead final integration/delivery remains pending.",
+      "Lead explicitly accepted amended D2 on2026-10-12 under human browser-here direction: actual responsive/keyboard/pointer/provenance/contrast/reduced-motion/history/error checks and supplemental reflow/text-enlargement stress retained; nativeChrome200% zoom and195px phone equivalence DEFERRED UNVERIFIED, not a pass or accessibility certification. See dated spec amendment.",
+      "D3 and final review remain pending actual integration/delivery."
+    ]
   }
 }

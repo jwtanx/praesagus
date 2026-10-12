@@ -29,9 +29,9 @@ function mount({ width = 1280, search = '', routes = {}, latestSchedule = false 
   const dom = new JSDOM(latestSchedule?html:html.replace('<option value="report">As of selected report', '<option value="report" selected>As of selected report'), { url: `http://localhost/daily-market-brief/${search}`, runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc, beforeParse(w) {
     const RealDate=w.Date;
     w.Date=class extends RealDate {constructor(...args){super(...(args.length?args:['2026-10-01T12:00:00Z']))} static now(){return RealDate.parse('2026-10-01T12:00:00Z')}};
-    Object.defineProperty(w, 'innerWidth', { value: width });
+    Object.defineProperty(w, 'innerWidth', { value: width, writable:true });
     w.scrollTo = () => {}; w.HTMLElement.prototype.scrollIntoView = () => {};
-    w.IntersectionObserver = class { observe() {} disconnect() {} };
+    w.sectionCallbacks=[];w.IntersectionObserver = class { constructor(callback){w.sectionCallbacks.push(callback)} observe() {} disconnect() {} };
     w.fetch = (url, options = {}) => new Promise((resolve, reject) => {
       const req = { url, options, resolve: value => resolve({ ok: true, status: 200, json: async () => clone(value) }), fail: (status = 404) => resolve({ ok: false, status }), reject };
       requests.push(req);
@@ -84,10 +84,10 @@ async function compactRendering(width){
   assert.match(provenance.textContent,/Observed:.*Ingested:.*Known:.*Report cutoff:.*currency unverified.*rights unconfirmed/s);
   assert.match(provenance.textContent,/Missing history and target model/);
   assert.equal(row.querySelector('.compact-forecast-reason'),null,'confidence reason lives inside details');
-  assert.match(t.$('.forecast-table th:nth-child(5)').textContent,/Prediction · target \/ range/);
+  assert.match(t.$('.forecast-table th:nth-child(3)').textContent,/Prediction · target \/ range/);
   const rows=t.w.document.querySelectorAll('#forecast-rows tr');
   for(const r of rows){
-    const chips=r.querySelectorAll('td:nth-child(5) .signal');assert.equal(chips.length,1);
+    const chips=r.querySelectorAll('.instrument-prediction .signal');assert.equal(chips.length,1);
     assert.equal(r.querySelector('.native-evidence,.forecast-trend,.sma-evidence,.compact-chips'),null);
     const details=r.querySelector('.forecast-evidence'),summary=details.querySelector('summary');
     assert.equal(details.open,false);assert.equal(summary.getAttribute('aria-expanded'),'false');
@@ -97,7 +97,7 @@ async function compactRendering(width){
     summary.focus();assert.equal(t.w.document.activeElement,summary);
     summary.click();await settle();assert.equal(details.open,true);assert.equal(summary.getAttribute('aria-expanded'),'true');
     summary.click();await settle();assert.equal(details.open,false);assert.equal(summary.getAttribute('aria-expanded'),'false');
-    assert.doesNotMatch(r.querySelector('td:nth-child(5)').textContent,/Quote:|SMA:|last_price-vs-prev_close_price|SMA-5-vs-SMA-20|bullish count|bearish count/);
+    assert.doesNotMatch(r.querySelector('.instrument-prediction').textContent,/Quote:|SMA:|last_price-vs-prev_close_price|SMA-5-vs-SMA-20|bullish count|bearish count/);
   }
   assert.equal(rows[0].querySelector('.prediction-chip').textContent,'Unrated · target unavailable · range unavailable');
   assert.equal(rows[0].querySelector('.prediction-target-date').textContent,'Target date unavailable · horizon unavailable');
@@ -152,7 +152,7 @@ async function archivedReports(){
     const t=mount({search:`?date=${date}`,routes:{'./reports.json':{latest:date,reports:[{date,label:date}]},[`./${name}`]:data}});await settle();
     const rows=[...t.w.document.querySelectorAll('#forecast-rows tr')];assert.equal(rows.length,data.forecasts.length,name);
     for(const [i,row] of rows.entries()){
-      assert.equal(row.querySelectorAll('td:nth-child(5) .signal').length,1,name);
+      assert.equal(row.querySelectorAll('.instrument-prediction .signal').length,1,name);
       const x=data.forecasts[i],chip=row.querySelector('.prediction-chip');
       if(x.direction!=='unknown'&&x.forecast_status!=='unavailable'){assert.notEqual(chip.textContent,'Unrated · target unavailable · range unavailable',`${name} ${x.ticker}: recorded supported prices stay available`);assert.ok(chip.textContent.includes(x.estimated_mid_case));assert.ok(chip.textContent.includes(x.estimated_range));}
       else assert.equal(chip.textContent,'Unrated · target unavailable · range unavailable');
@@ -164,4 +164,30 @@ async function archivedReports(){
     assert.equal(t.errors.length,0,name);t.dom.window.close();
   }
 }
-(async()=>{for(const width of [1280,390]){await compactRendering(width);for(const compact of [true,false])await predictionCases(width,compact);}await archivedReports();console.log('Prediction DOM checks passed: one chip, recorded direction/target/range/date, closed evidence and accessible focus/tap/state, compact/legacy 1280/390 fixtures, malformed numbers/units fail closed, escaped general wording with original source destinations, pagination/filter/sort, all archived forecasts preserved. Real keyboard/layout checks remain with Lead.');})().catch(e=>{console.error(e);process.exitCode=1});
+async function responsiveInstrumentContract(width){
+  const data=compactFixture();data.forecasts[0].name='Complete long company identity — no essential words removed';data.forecasts[0].scenario='Complete stored scenario: '+('Evidence and uncertainty remain available. '.repeat(12));
+  const t=mount({width,search:'?date=2026-10-01#top10',routes:{'./2026-10-01.json':data}});await settle();
+  const row=t.$('.forecast-row'),prediction=row.querySelector('.forecast-evidence'),observation=row.querySelector('.quote-evidence');
+  assert.equal(row.dataset.instrument,data.forecasts[0].market+':'+data.forecasts[0].ticker);
+  assert.equal(row.querySelector('.instrument-name').textContent,data.forecasts[0].name);
+  assert.equal(row.querySelector('.scenario-text').firstChild.textContent,data.forecasts[0].scenario);
+  assert.equal(row.querySelectorAll('.prediction-chip').length,1);assert.equal(row.querySelectorAll('.quote-evidence').length,1);
+  assert.equal(observation.parentElement.className,width>=1024?'instrument-observation':'instrument-scenario');
+  assert.equal(t.w.document.querySelectorAll('.forecast-table th[scope="col"]').length,4);
+  const ids=[...t.w.document.querySelectorAll('[id]')].map(e=>e.id);assert.equal(new Set(ids).size,ids.length);
+  for(const details of [prediction,observation])details.querySelector('summary').click();await settle();
+  assert.equal(prediction.open,true);assert.equal(observation.open,true);
+  const focus=observation.querySelector('summary');focus.focus();
+  for(const next of [390,768,1440,390]){t.w.innerWidth=next;t.w.dispatchEvent(new t.w.Event('resize'));assert.equal(row.querySelector('.quote-evidence'),observation);assert.equal(observation.open,true);assert.equal(prediction.open,true);assert.equal(t.w.document.activeElement,focus);assert.equal(observation.parentElement.className,next>=1024?'instrument-observation':'instrument-scenario');}
+  const selector=t.$('#report-section');assert.equal(selector.value,'top10');assert.equal(selector.disabled,false);
+  assert.deepEqual([...selector.options].map(e=>e.value),['outlook','top10','swing','etfs','news','trends','score']);
+  assert.equal(t.$('#slider,#prev,#next,.sections'),null);
+  const before=t.w.location.href;selector.value='score';selector.dispatchEvent(new t.w.Event('change'));
+  assert.equal(selector.value,'score');assert.equal(t.w.location.href,before,'existing date/hash semantics retained');
+  selector.focus();t.w.sectionCallbacks.at(-1)([{isIntersecting:true,target:t.$('#news')}]);assert.equal(selector.value,'score','scroll observation cannot reset a focused native choice');selector.blur();t.w.sectionCallbacks.at(-1)([{isIntersecting:true,target:t.$('#news')}]);assert.equal(selector.value,'news');
+  assert.equal(row.querySelector('.quote-evidence'),observation);assert.equal(observation.open,true);
+  assert.equal(row.querySelector('.instrument-observation .observation-label').textContent,'Observed last · saved 2026-10-01');
+  assert.match(observation.textContent,/2026-09-30T23:59:00Z.*2026-09-30T23:59:30Z.*2026-09-30T23:59:40Z.*2026-09-30T23:59:50Z.*2026-10-01T08:00:00\+08:00/s);
+  assert.equal(t.errors.length,0);t.dom.window.close();
+}
+(async()=>{for(const width of [1440,768,390]){await responsiveInstrumentContract(width);await compactRendering(width);for(const compact of [true,false])await predictionCases(width,compact);}await archivedReports();console.log('Prediction DOM checks passed: responsive single DOM, 390/768/1440 layouts, independent disclosure state/focus across breakpoints, complete identity/scenario/provenance, section selector/deep links, all prediction guards and archived forecasts retained.');})().catch(e=>{console.error(e);process.exitCode=1});
