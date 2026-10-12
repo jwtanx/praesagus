@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-99",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "harness",
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-12",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-12/PRSG-99-synthetic-precision-scorer.md",
+  "objective": "Score synthetic paired forecast cohorts without real-data or performance certification.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "65ad0363f91cd676481138cb5bebc02cf807221b",
+  "allowed_paths": [
+    "harness/engineering/price-prediction/precision_scoring.py",
+    "tests/test_precision_scoring.py",
+    "harness/engineering/price-prediction/PRECISION_SCORING.md",
+    "plans/2026-10-12/PRSG-99-synthetic-precision-scorer.md",
+    "plans/2026-10-12/PRSG-99.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "harness/forecast_review.py",
+    "harness/engineering/price-prediction/outcome_v2.py"
+  ],
+  "checks": [
+    {
+      "id": "freeze",
+      "kind": "manual",
+      "description": "Exact contract and accepted scope",
+      "status": "passed",
+      "evidence": [
+        "Human selected direction1+2 and resumed schedule13October; Lead froze reviewed exact synthetic contract and corrected directional coverage."
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "manual",
+      "description": "Meaningful synthetic and unchanged legacy regressions",
+      "status": "passed",
+      "evidence": [
+        "Pure synthetic scorer/docs/tests implemented within five allowed paths; exact frozen schema/states/bindings/resource/domain/output and fixed log rule retained. Trader coverage0-versus-null correction implemented.",
+        "Cwd isolated checkout; PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python -m pytest -q tests/test_precision_scoring.py tests/test_forecast_review.py tests/test_outcome_v2.py:263passed in0.42s, exit0. Legacy implementations/tests unchanged; meaningful synthetic cases detailed in dated spec.",
+        "No provider/secret/private-store/dependency/forecast-generation access. No predictive/source/rights certification. Lead independent review/delivery remains pending.",
+        "Complete actual five-path scope, manifest validator, tracked/new-file whitespace and documentation link checks passed. No tracked evaluator/test changes from frozen base; hooks enabled. Lead D3 pending."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Full Lead review and delivery",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed complete five-new-file scope; independent263tests passed0.50s; explicit250000resource amendment accepted for1000-row capacity; no source or performance certification."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-99-D1",
+      "description": "Exact contract and accepted scope",
+      "check_ids": [
+        "freeze"
+      ],
+      "status": "done",
+      "evidence": [
+        "Human selected direction1+2 and resumed schedule13October; Lead froze reviewed exact synthetic contract and corrected directional coverage."
+      ]
+    },
+    {
+      "id": "PRSG-99-D2",
+      "description": "Meaningful synthetic and unchanged legacy regressions",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Pure synthetic scorer/docs/tests implemented within five allowed paths; exact frozen schema/states/bindings/resource/domain/output and fixed log rule retained. Trader coverage0-versus-null correction implemented.",
+        "Cwd isolated checkout; PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' /Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python -m pytest -q tests/test_precision_scoring.py tests/test_forecast_review.py tests/test_outcome_v2.py:263passed in0.42s, exit0. Legacy implementations/tests unchanged; meaningful synthetic cases detailed in dated spec.",
+        "No provider/secret/private-store/dependency/forecast-generation access. No predictive/source/rights certification. Lead independent review/delivery remains pending.",
+        "Complete actual five-path scope, manifest validator, tracked/new-file whitespace and documentation link checks passed. No tracked evaluator/test changes from frozen base; hooks enabled. Lead D3 pending."
+      ]
+    },
+    {
+      "id": "PRSG-99-D3",
+      "description": "Full Lead review and delivery",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed complete five-new-file scope; independent263tests passed0.50s; explicit250000resource amendment accepted for1000-row capacity; no source or performance certification."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewed complete five-new-file scope; independent263tests passed0.50s; explicit250000resource amendment accepted for1000-row capacity; no source or performance certification."
+    ]
+  }
+}
