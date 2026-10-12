@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-97",
+  "tags": {
+    "type": "docs",
+    "modules": [
+      "harness",
+      "market-research",
+      "financial-data"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-12",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-12/PRSG-97-prospective-precision-protocol.md",
+  "objective": "Freeze source-independent prospective precision research protocol without model promotion.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "e7d276d7971c42c48bd82499f6e8d20e5601122c",
+  "allowed_paths": [
+    "plans/2026-10-12/PRSG-97-prospective-precision-protocol.md",
+    "plans/2026-10-12/PRSG-97.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "artifacts/",
+    "harness/",
+    "skills/",
+    "tests/",
+    "scripts/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "protocol",
+      "kind": "manual",
+      "description": "Review prospective protocol and source/runtime limits.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed full protocol and existing PRSG-81/83 boundaries; no retrospective certification or performance claim."
+      ]
+    },
+    {
+      "id": "trader",
+      "kind": "manual",
+      "description": "Registered Trader financial review.",
+      "status": "passed",
+      "evidence": [
+        "Registered Trader returned conditional planning acceptance; zero-return misses preserved; adjusted-series scale/vintage and source gates recorded."
+      ]
+    },
+    {
+      "id": "delivery",
+      "kind": "manual",
+      "description": "Lead full scope validation and commit.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed protocol and registered Trader corrections; two-file manifest scope validated. Planning-only delivery; source/sample gates remain unresolved and no implementation/access promoted."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-97-D1",
+      "description": "Concrete prospective protocol",
+      "check_ids": [
+        "protocol"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed full protocol and existing PRSG-81/83 boundaries; no retrospective certification or performance claim."
+      ]
+    },
+    {
+      "id": "PRSG-97-D2",
+      "description": "Financial review and limitations",
+      "check_ids": [
+        "trader"
+      ],
+      "status": "done",
+      "evidence": [
+        "Registered Trader returned conditional planning acceptance; zero-return misses preserved; adjusted-series scale/vintage and source gates recorded."
+      ]
+    },
+    {
+      "id": "PRSG-97-D3",
+      "description": "Scope validation and delivery",
+      "check_ids": [
+        "delivery"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed protocol and registered Trader corrections; two-file manifest scope validated. Planning-only delivery; source/sample gates remain unresolved and no implementation/access promoted."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed protocol and registered Trader corrections; two-file manifest scope validated. Planning-only delivery; source/sample gates remain unresolved and no implementation/access promoted."
+    ]
+  }
+}
