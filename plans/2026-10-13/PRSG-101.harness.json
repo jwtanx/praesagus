@@ -114,9 +114,10 @@
     }
   ],
   "review": {
-    "status": "approved",
+    "status": "accepted",
     "evidence": [
-      "Independent five-path review and223focused tests; public fixture refusal, temporal gates, field preservation and actual viewer formatting verified. No source approval/performance promotion."
+      "Independent five-path review and223focused tests; public fixture refusal, temporal gates, field preservation and actual viewer formatting verified. No source approval/performance promotion.",
+      "Implementation701d167 full hook:2003 passed41warnings33.53s. Lead metadata status corrected from unsupported approved to accepted before push."
     ]
   }
 }
