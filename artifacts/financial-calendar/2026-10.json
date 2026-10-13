@@ -1454,6 +1454,62 @@
       "change_reason": "Added from the official Federal Reserve release schedule; result not confirmed.",
       "revision": 1,
       "recorded_at": "2026-10-08T08:07:50+08:00"
+    },
+    {
+      "event_id": "jpm-2026-q3-results-call",
+      "date": "2026-10-13",
+      "title": "JPMorgan Q3 results and earnings call",
+      "kind": "event",
+      "country": "US",
+      "time": "Results approximately19:00 MYT; call20:30 MYT (07:00/08:30 ET)",
+      "summary": "Issuer scheduled release and call; no result known at morning review.",
+      "details": "Review revenue mix, provisions and credit quality. Times converted from issuer ET schedule; result timing is approximate.",
+      "sources": [
+        {
+          "label": "Bank earnings-call notice",
+          "url": "https://jpmorganchaseco.gcs-web.com/news-releases/news-release-details/jpmorganchase-host-third-quarter-2026-earnings-call/",
+          "provider": "JPMorgan Chase",
+          "published_at": null,
+          "publication_date": "2026-09-17",
+          "retrieved_at": "2026-10-13T08:07:29+08:00",
+          "timezone": "Source local date; retrieval Asia/Kuala_Lumpur",
+          "data_period": "Q3 2026",
+          "connector": "primary-web-review",
+          "timing_note": "Exact source publication time unknown; retrieved_at records this morning review completion."
+        }
+      ],
+      "status": "scheduled",
+      "change_reason": "New issuer event added after current calendar completeness review.",
+      "revision": 1,
+      "recorded_at": "2026-10-13T08:07:29+08:00"
+    },
+    {
+      "event_id": "tsmc-2026-q3-conference",
+      "date": "2026-10-15",
+      "title": "TSMC Q3 earnings conference",
+      "kind": "event",
+      "country": "TW",
+      "time": "14:00 MYT / Taiwan time (02:00 ET)",
+      "summary": "Issuer schedules Q3 earnings conference; no result asserted.",
+      "details": "Review margins and forward guidance; Taiwan and Malaysia bothUTC+08:00.",
+      "sources": [
+        {
+          "label": "Chipmaker conference schedule",
+          "url": "https://investor.tsmc.com/english/quarterly-results/2026/q3",
+          "provider": "TSMC",
+          "published_at": null,
+          "publication_date": null,
+          "retrieved_at": "2026-10-13T08:07:29+08:00",
+          "timezone": "Source local date; retrieval Asia/Kuala_Lumpur",
+          "data_period": "Q3 2026",
+          "connector": "primary-web-review",
+          "timing_note": "Exact source publication time unknown; retrieved_at records this morning review completion."
+        }
+      ],
+      "status": "scheduled",
+      "change_reason": "New issuer event added after current calendar completeness review.",
+      "revision": 1,
+      "recorded_at": "2026-10-13T08:07:29+08:00"
     }
   ]
 }

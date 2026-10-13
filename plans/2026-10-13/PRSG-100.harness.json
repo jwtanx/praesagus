@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-100",
+  "tags": {
+    "type": "chore",
+    "modules": [
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.3
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-13",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-13/PRSG-100-report-calendar-delivery.md",
+  "objective": "Deliver scheduled missing-data report and two issuer calendar additions.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "b3259cdeeff0117154d5c169942f5422b065640d",
+  "allowed_paths": [
+    "artifacts/daily-market-brief/2026-10-13.json",
+    "artifacts/daily-market-brief/reports.json",
+    "artifacts/financial-calendar/2026-10.json",
+    "plans/2026-10-13/PRSG-100-report-calendar-delivery.md",
+    "plans/2026-10-13/PRSG-100.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "skills/",
+    "tests/",
+    "harness/",
+    "artifacts/daily-market-brief/forecast-ledger.csv"
+  ],
+  "checks": [
+    {
+      "id": "validation",
+      "kind": "manual",
+      "description": "Source-backed report and calendar validation",
+      "status": "passed",
+      "evidence": [
+        "Lead verified issuer dates/time conversions; calendar utility preserves65-entry prefix and adds2; compact public gate passed with50forecasts/67calendarentries;123calendar/report tests passed0.23s."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-100-D1",
+      "description": "Validated scheduled report and calendar delivery",
+      "check_ids": [
+        "validation"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead verified issuer dates/time conversions; calendar utility preserves65-entry prefix and adds2; compact public gate passed with50forecasts/67calendarentries;123calendar/report tests passed0.23s."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead verified issuer dates/time conversions; calendar utility preserves65-entry prefix and adds2; compact public gate passed with50forecasts/67calendarentries;123calendar/report tests passed0.23s."
+    ]
+  }
+}
