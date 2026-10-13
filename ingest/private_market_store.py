@@ -48,7 +48,9 @@ for _table in list(DDL):
 
 
 HISTORY_STAGES = frozenset({'decode-screen', 'envelope', 'provider-rejection', 'history-rows',
-    'metadata-missing', 'metadata-invalid', 'date-relation', 'core-validation', 'unknown'})
+    'metadata-missing', 'metadata-invalid', 'date-relation', 'core-validation', 'unknown',
+    'envelope-root-type', 'envelope-root-fields', 'envelope-ret-code-type', 'envelope-ret-msg-type',
+    'envelope-data-type', 'envelope-data-fields', 'envelope-next-time', 'envelope-volume-precision'})
 
 
 class MarketStoreError(ValueError):
@@ -226,20 +228,27 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
         except Exception:rejected = True
         if rejected:guard(False, 'decode-screen')
     else:value = decode(raw, secrets)
-    guard(isinstance(value, dict) and set(value) == {'ret_code', 'ret_msg', 'data'}
-          and type(value['ret_code']) is int and isinstance(value['ret_msg'], str), 'envelope')
+    if kind == 'history':
+        guard(isinstance(value, dict), 'envelope-root-type')
+        guard(set(value) == {'ret_code', 'ret_msg', 'data'}, 'envelope-root-fields')
+        guard(type(value['ret_code']) is int, 'envelope-ret-code-type')
+        guard(isinstance(value['ret_msg'], str), 'envelope-ret-msg-type')
+    else:
+        guard(isinstance(value, dict) and set(value) == {'ret_code', 'ret_msg', 'data'}
+              and type(value['ret_code']) is int and isinstance(value['ret_msg'], str), 'envelope')
     guard(value['ret_code'] == 0, 'provider-rejection')
     rows = value['data']
     if kind == 'snapshot':
         need(isinstance(rows, dict) and set(rows) == {'snapshot_list'}, 'invalid-response')
         rows = rows['snapshot_list']
     elif kind == 'history':
-        guard(isinstance(rows, dict) and 'kline_list' in rows
-              and set(rows) <= {'kline_list','next_time','volume_precision'}, 'envelope')
+        guard(isinstance(rows, dict), 'envelope-data-type')
+        guard('kline_list' in rows and set(rows) <= {'kline_list','next_time','volume_precision'},
+              'envelope-data-fields')
         guard('next_time' not in rows or type(rows['next_time']) is int and 0<=rows['next_time']<=2**63-1,
-              'envelope')
+              'envelope-next-time')
         guard('volume_precision' not in rows or type(rows['volume_precision']) is int
-              and 0<=rows['volume_precision']<=18, 'envelope')
+              and 0<=rows['volume_precision']<=18, 'envelope-volume-precision')
         rows = rows['kline_list']
     guard(isinstance(rows, list) and len(rows) <= (len(request['codes']) if kind == 'snapshot'
           else int(request['num']) if kind == 'history' else int(request['size'])), 'history-rows')

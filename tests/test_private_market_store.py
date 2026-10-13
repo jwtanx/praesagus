@@ -604,14 +604,16 @@ def diagnostic_cases():
                   {'x': 'https://example.invalid/?token=canary'},
                   {'x': '-----BEGIN SYNTHETIC'}, {'x': 'SYNTHETIC-CREDENTIAL-CANARY'}):
         cases.append((diagnostic_history_body(**extra), 'decode-screen'))
-    for outer in ({'ret_code': True}, {'ret_msg': 3}, {'pagination': {}}, {'data': []},
-                  {'data': {'kline_list': [], 'extra': 1}},
-                  {'data': {'kline_list': [], 'next_time': True}},
-                  {'data': {'kline_list': [], 'volume_precision': 19}}):
-        cases.append((diagnostic_history_body(**outer), 'envelope'))
-    cases += [(b'[]', 'envelope'), (b'{"ret_code":0}', 'envelope'),
+    for outer,stage in (({'ret_code': True},'envelope-ret-code-type'),
+                  ({'ret_msg': 3},'envelope-ret-msg-type'), ({'pagination': {}},'envelope-root-fields'),
+                  ({'data': []},'envelope-data-type'),
+                  ({'data': {'kline_list': [], 'extra': 1}},'envelope-data-fields'),
+                  ({'data': {'kline_list': [], 'next_time': True}},'envelope-next-time'),
+                  ({'data': {'kline_list': [], 'volume_precision': 19}},'envelope-volume-precision')):
+        cases.append((diagnostic_history_body(**outer), stage))
+    cases += [(b'[]', 'envelope-root-type'), (b'{"ret_code":0}', 'envelope-root-fields'),
               (diagnostic_history_body(ret_code=1234567, data=None), 'provider-rejection'),
-              (diagnostic_history_body(ret_code=1234567, ret_msg=False), 'envelope')]
+              (diagnostic_history_body(ret_code=1234567, ret_msg=False), 'envelope-ret-msg-type')]
     for missing in ({'date'}, {'time_key'}, {'time_zone'}, {'date', 'time_key', 'time_zone'}):
         cases.append((diagnostic_history_body({k:v for k,v in row.items() if k not in missing}), 'metadata-missing'))
     for change in ({'date': None}, {'date': True}, {'date': '20261001'}, {'date': 20260230},
@@ -683,3 +685,68 @@ def test_history_stage_first_guard_and_single_decode(row,stage,monkeypatch):
     with pytest.raises(MarketStoreError) as caught:
         module.normalized(diagnostic_history_body(row),kind,query,version=3)
     assert caught.value.diagnostic_stage==stage and len(calls)==1
+
+
+@pytest.mark.parametrize('outer,stage',[
+ ({'pagination':{},'ret_code':True,'ret_msg':False,'data':None},'envelope-root-fields'),
+ ({'ret_code':True,'ret_msg':False,'data':None},'envelope-ret-code-type'),
+ ({'ret_code':1234567,'ret_msg':False,'data':None},'envelope-ret-msg-type'),
+ ({'ret_code':1234567,'data':None},'provider-rejection'),
+ ({'data':None},'envelope-data-type'),
+ ({'data':{'next_time':True,'volume_precision':19}},'envelope-data-fields'),
+ ({'data':{'kline_list':None,'extra':1,'next_time':True}},'envelope-data-fields'),
+ ({'data':{'kline_list':None,'next_time':True,'volume_precision':19}},'envelope-next-time'),
+ ({'data':{'kline_list':None,'next_time':0,'volume_precision':19}},'envelope-volume-precision'),
+ ({'data':{'kline_list':None,'next_time':0,'volume_precision':18}},'history-rows'),
+])
+def test_envelope_first_failure_and_single_decode(outer,stage,monkeypatch):
+    from ingest import private_market_store as module
+    original=module.decode;calls=[]
+    def counted(*a,**k):calls.append(1);return original(*a,**k)
+    monkeypatch.setattr(module,'decode',counted)
+    kind,query,_=module.request_meta(diagnostic_history_request())
+    with pytest.raises(MarketStoreError) as caught:module.normalized(diagnostic_history_body(**outer),kind,query,version=3)
+    assert caught.value.diagnostic_stage==stage and len(calls)==1
+    assert str(caught.value)=='invalid-response' and 'CANARY' not in repr(caught.value)
+
+
+@pytest.mark.parametrize('field,value,stage',[
+ ('next_time',-1,'envelope-next-time'),('next_time',2**63,'envelope-next-time'),
+ ('next_time',1.0,'envelope-next-time'),('next_time',None,'envelope-next-time'),
+ ('next_time','0','envelope-next-time'),('volume_precision',-1,'envelope-volume-precision'),
+ ('volume_precision',True,'envelope-volume-precision'),('volume_precision',18.0,'envelope-volume-precision'),
+ ('volume_precision',None,'envelope-volume-precision'),('volume_precision','0','envelope-volume-precision'),
+])
+def test_envelope_scalars_keep_exact_original_bounds(field,value,stage):
+    from ingest.private_market_store import normalized,request_meta
+    kind,query,_=request_meta(diagnostic_history_request())
+    with pytest.raises(MarketStoreError) as caught:
+        normalized(diagnostic_history_body(data={'kline_list':[],field:value}),kind,query,version=3)
+    assert caught.value.diagnostic_stage==stage
+
+
+@pytest.mark.parametrize('next_time',[0,2**63-1])
+@pytest.mark.parametrize('precision',[0,18])
+def test_envelope_valid_scalar_boundaries_still_accept(next_time,precision):
+    from ingest.private_market_store import normalized,request_meta
+    kind,query,_=request_meta(diagnostic_history_request())
+    assert normalized(diagnostic_history_body(data={'kline_list':[],'next_time':next_time,'volume_precision':precision}),
+                      kind,query,version=3)==[]
+
+
+@pytest.mark.parametrize('raw',[b'x'*(MAX_RAW+1),b'{"ret_code":0,"ret_code":1}',
+    b'{"ret_code":0,"ret_msg":"SYNTHETIC-CREDENTIAL-CANARY","data":null}',
+    b'{"ret_code":0,"ret_msg":false,"data":{"kline_list":[NaN]}}'])
+def test_envelope_detail_never_bypasses_decode_or_secret_screen(raw):
+    from ingest.private_market_store import normalized,request_meta
+    kind,query,_=request_meta(diagnostic_history_request())
+    with pytest.raises(MarketStoreError) as caught:normalized(raw,kind,query,('SYNTHETIC-CREDENTIAL-CANARY',),version=3)
+    assert caught.value.diagnostic_stage=='decode-screen' and 'CANARY' not in repr(caught.value)
+
+
+@pytest.mark.parametrize('kind',['snapshot','news'])
+def test_nonhistory_envelope_errors_still_have_no_stage(kind):
+    from ingest.private_market_store import normalized,request_meta
+    actual,query,_=request_meta(request(kind))
+    with pytest.raises(MarketStoreError) as caught:normalized(b'{"ret_code":true,"ret_msg":false,"data":null}',actual,query)
+    assert str(caught.value)=='invalid-response' and caught.value.diagnostic_stage is None

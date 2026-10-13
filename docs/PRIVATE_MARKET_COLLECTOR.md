@@ -134,7 +134,15 @@ identifiers, paths, credential values or exception text:
 | Stage | Boundary |
 |---|---|
 | `decode-screen` | Bounded bytes/UTF-8/JSON, duplicate/nonfinite or secret screening |
-| `envelope` | Current exact envelope types, history container or pagination scalar guards |
+| `envelope` | Legacy coarse stage retained for earlier frames; new history rejections use the fixed boundaries below |
+| `envelope-root-type` | Root is not an object |
+| `envelope-root-fields` | Root field set does not match the exact contract |
+| `envelope-ret-code-type` | Return code fails the existing integer type guard |
+| `envelope-ret-msg-type` | Return message fails the existing string type guard |
+| `envelope-data-type` | History data container is not an object |
+| `envelope-data-fields` | History data field set fails the existing required/allowlisted contract |
+| `envelope-next-time` | Optional pagination cursor fails its existing integer/range guard |
+| `envelope-volume-precision` | Optional volume precision fails its existing integer/range guard |
 | `provider-rejection` | Typed exact envelope with a nonzero integer return code; its value is withheld |
 | `history-rows` | List/count/row shape, close, request-date range or duplicates |
 | `metadata-missing` | At least one required history metadata key is absent |
@@ -145,7 +153,8 @@ identifiers, paths, credential values or exception text:
 
 Syntax and secret rejection share `decode-screen`; no secret-specific diagnostic
 is exposed. Guards retain their acceptance policy and order: decode/screen,
-exact envelope types, provider rejection, history container/scalars/list/row
+root type, exact root fields, return-code type, return-message type, provider
+rejection, history container type, container fields, cursor, precision, list/row
 shape, metadata presence, metadata validity, date relationship, range/duplicates,
 then close. The first rejected guard supplies the stage. No metadata is inferred,
 pagination whitelist expanded, row salvaged or rejected body decoded again for
@@ -174,3 +183,12 @@ rights remain unconfirmed.
 ```sh
 python3 -m pytest -q tests/test_market_collector.py tests/test_private_market_store.py tests/test_moomoo_rest.py tests/test_moomoo_rest_live.py
 ```
+
+PRSG-104 splits only the existing history composite envelope guards. It does not
+add accepted fields, wrappers, defaults or pagination shapes. Multiple faults
+report the first guard above; actual return code/message, extra or absent keys,
+values and rejected bytes remain undisclosed. A root-fields stage alone cannot
+identify which arbitrary field differed. Legacy `envelope` remains allowlisted
+for older private summaries/version2 frames; immutable store records stay
+unchanged. This change performs no live request and does not establish source
+readiness; a fresh bounded request requires separate reviewed execution.

@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-104",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "financial-data",
+      "observability"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-13",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-13/PRSG-104-history-envelope-boundaries.md",
+  "objective": "Identify the exact rejected history envelope boundary without retaining private payloads.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "f1f58aa7c750dc8eb1206998932c648d8eee9f95",
+  "allowed_paths": [
+    "ingest/private_market_store.py",
+    "tests/test_private_market_store.py",
+    "tests/test_market_collector.py",
+    "docs/PRIVATE_MARKET_COLLECTOR.md",
+    "plans/2026-10-13/PRSG-104-history-envelope-boundaries.md",
+    "plans/2026-10-13/PRSG-104.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "ingest/daily_report_projection.py",
+    "harness/"
+  ],
+  "checks": [
+    {
+      "id": "contract",
+      "kind": "manual",
+      "description": "Fixed diagnostic boundaries and preserved acceptance",
+      "status": "passed",
+      "evidence": [
+        "Lead accepted eight exact fixed enums and original guard/legacy acceptance order; six frozen paths, base f1f58aa."
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "manual",
+      "description": "Guard and privacy regressions",
+      "status": "passed",
+      "evidence": [
+        "Approved Python3.11 -m pytest -q tests/test_private_market_store.py tests/test_market_collector.py: 419 passed in 3.22s, no skips.",
+        "git diff --check and complete six-path ticket validation passed. No live calls."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead exact scope review",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed all six paths;419focused passed3.12s, exact first-failure types/order and privacy/legacy controls preserved. No acceptance/schema relaxation, provider call or numeric report claim."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-104-D1",
+      "description": "Fixed diagnostic boundaries and preserved acceptance",
+      "check_ids": [
+        "contract"
+      ],
+      "status": "done",
+      "evidence": [
+        "See matching passed check and Engineer evidence in dated spec; Lead final review remains pending."
+      ]
+    },
+    {
+      "id": "PRSG-104-D2",
+      "description": "Guard and privacy regressions",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "See matching passed check and Engineer evidence in dated spec; Lead final review remains pending."
+      ]
+    },
+    {
+      "id": "PRSG-104-D3",
+      "description": "Lead exact scope review",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed all six paths;419focused passed3.12s, exact first-failure types/order and privacy/legacy controls preserved. No acceptance/schema relaxation, provider call or numeric report claim."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed all six paths;419focused passed3.12s, exact first-failure types/order and privacy/legacy controls preserved. No acceptance/schema relaxation, provider call or numeric report claim."
+    ]
+  }
+}
