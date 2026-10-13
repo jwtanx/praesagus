@@ -258,7 +258,7 @@ def compact_data(mapped,as_of):
             verified_forecast_reference_count=1,session_direction_counts=dict(bullish=0,bearish=0,neutral=0,unavailable=5)))
 
 
-def test_generated_mapping_passes_current_compact_validator_and_same_day_limit(case):
+def test_generated_mapping_passes_compact_validator_with_same_day_future_close(case):
     result=build(case);mapped=f.apply_scenario_to_row(row(),result)
     data=compact_data(mapped,CUTOFF)
     # Invoke the exact compact forecast checks without any report/calendar file I/O.
@@ -267,8 +267,7 @@ def test_generated_mapping_passes_current_compact_validator_and_same_day_limit(c
     assert same['status']=='generated'
     mapped=f.apply_scenario_to_row(row(),same)
     data=compact_data(mapped,'2026-10-22T08:01:00+08:00')
-    with pytest.raises(ValueError,match='invalid forecast time/reference/target date'):
-        validator.validate_compact(Path('authored-fixture.json'),data,f._time('2026-10-22T08:01:00+08:00'))
+    validator.validate_compact(Path('authored-fixture.json'),data,f._time('2026-10-22T08:01:00+08:00'))
 
 
 def test_complete_report_validation_with_generated_fields(case,tmp_path):
@@ -363,3 +362,42 @@ process.stdout.write(JSON.stringify({good,bad}));"""
     states=json.loads(result.stdout)
     assert states['good']==dict(direction=mapped['direction'],target=mapped['estimated_mid_case'],range=mapped['estimated_range'],reason=None)
     assert states['bad']['direction']=='unknown'
+
+
+def test_generated_time_basis_is_derived_and_withheld_null(case):
+    result=build(case);audit=result['private_audit'];basis=result['report_fields']['forecast_time_basis']
+    assert basis==dict(schema_version=1,method_id=f.METHOD['method_id'],venue_timezone='America/New_York',
+        calendar_version=case[0]['calendar']['version'],reference_close_at=audit['reference_close_at'],target_close_at=audit['target_close_at'])
+    assert f.build_forecast_scenario(case[0],admission=None,issued_at=ISSUE,report_cutoff=CUTOFF)['report_fields']['forecast_time_basis'] is None
+
+
+@pytest.mark.parametrize('mutate',[
+ lambda r:r['report_fields']['forecast_time_basis'].update(target_close_at='2026-10-22T21:00:00Z'),
+ lambda r:r['report_fields']['forecast_time_basis'].update(calendar_version='tampered-calendar'),
+ lambda r:r['report_fields']['forecast_time_basis'].update(venue_timezone='UTC'),
+ lambda r:r['private_audit'].update(calendar_version='tampered-calendar'),
+ lambda r:r['report_fields']['forecast_time_basis'].update(schema_version=True),
+ lambda r:r['report_fields']['forecast_time_basis'].update(extra='private'),
+])
+def test_mapper_crosschecks_public_time_against_private_audit(case,mutate):
+    result=build(case);mutate(result)
+    with pytest.raises(f.ScenarioValidationError):f.apply_scenario_to_row(row(),result)
+
+
+def test_equivalent_close_offset_representation_links_to_audit(case):
+    result=build(case)
+    basis=result['report_fields']['forecast_time_basis']
+    basis.update(reference_close_at='2026-10-21T16:00:00-04:00',target_close_at='2026-10-22T16:00:00-04:00')
+    mapped=f.apply_scenario_to_row(row(),result)
+    assert f.validate_forecast_time_basis(mapped,CUTOFF)
+
+
+def test_same_date_future_close_complete_report(case,tmp_path):
+    issue='2026-10-22T08:00:00+08:00';cutoff='2026-10-22T08:01:00+08:00'
+    result=build(case,issue=issue,cutoff=cutoff)
+    data=compact_data(f.apply_scenario_to_row(row(),result),cutoff)
+    data['metadata']['presentation_profile']='compact-v1';data['watchlist_config']['groups'][0]['key']='semiconductors'
+    for value in data['forecasts']:value['sector_category']='semiconductors'
+    folder=tmp_path/'daily-market-brief';folder.mkdir();calendar=tmp_path/'financial-calendar';calendar.mkdir()
+    (calendar/'2026-10.json').write_text(json.dumps(dict(schema_version=1,month='2026-10',timezone='Asia/Kuala_Lumpur',notes=[],entries=[])))
+    assert validator.validate_report(folder/'2026-10-22.json',data,compact=True)[:2]==(5,0)

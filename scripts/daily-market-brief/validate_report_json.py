@@ -18,6 +18,7 @@ from ingest.daily_report_projection import (validate_observed_quote, validate_pu
     validate_public_report_boundary, validate_market_snapshot, forecast_basis_error,
     validate_moomoo_trend, validate_moomoo_session_direction)
 from ingest.private_market_store import parse_aware
+from ingest.forecast_scenario import MODEL as SCENARIO_MODEL, validate_forecast_time_basis
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
@@ -147,6 +148,8 @@ def validate_compact(path, d, cutoff):
         trends+=trend.get('status')=='available'
         basis=row.get('forecast_basis')
         references+=compact_reference(basis,cutoff)
+        if not validate_forecast_time_basis(row,cutoff):
+            fail(path,f'{loc} invalid forecast venue-time contract')
         rated=row['direction']!='unknown' or row.get('forecast_status')!='unavailable'
         if not rated:continue
         required={'reference_close_date','reference_close','reference_source','horizon_type','bull_case','bear_case','invalidation'}
@@ -168,7 +171,7 @@ def validate_compact(path, d, cutoff):
             target=date.fromisoformat(target)
             if (as_of.tzinfo is None or as_of.utcoffset() is None or as_of>cutoff
                     or date.fromisoformat(basis['reference_close_date'])>as_of.date()
-                    or target<=as_of.date()):raise ValueError()
+                    or (row.get('forecast_model')!=SCENARIO_MODEL and target<=as_of.date())):raise ValueError()
         except (ValueError,TypeError,KeyError,OverflowError):fail(path,f'{loc} invalid forecast time/reference/target date')
         low,mid,high=(row.get(k) for k in ('range_low_value','estimated_mid_case_value','range_high_value'))
         if any(type(v) not in (int,float) or not math.isfinite(v) or v<=0 for v in (low,mid,high)) or not low<=mid<=high:
@@ -283,6 +286,8 @@ def validate_report(path: Path, d, universe_data=None, *, public=False, compact=
             if f['confidence'] not in {'low','medium','high','unavailable'}:fail(path,f'forecasts[{i}] confidence must be low/medium/high/unavailable')
             if not isinstance(f.get('confidence_reason'),str) or not f['confidence_reason'].strip():fail(path,f'forecasts[{i}] confidence_reason required')
             if f.get('forecast_status')=='unavailable' and (f['confidence']!='unavailable' or f['direction']!='unknown' or any(f.get(k) is not None for k in ('estimated_mid_case_value','range_low_value','range_high_value'))):fail(path,f'forecasts[{i}] unavailable forecast must be unknown/unrated with null targets')
+        if not validate_forecast_time_basis(f,as_of):
+            fail(path,f'forecasts[{i}] invalid forecast venue-time contract')
         if f['ticker'] in symbols:fail(path,f'duplicate ticker: {f["ticker"]}')
         if modern:
             basis_error=forecast_basis_error(f,meta['as_of'])

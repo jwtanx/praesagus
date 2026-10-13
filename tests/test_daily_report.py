@@ -375,3 +375,71 @@ def test_compact_future_indicator_evidence_and_missing_coverage_reject(compact_r
     else:
         rated_row(data);row['forecast_as_of']='2026-10-01T07:59:59.1234567+08:00'
     with pytest.raises(ValueError):validator.validate_report(path,data)
+
+
+def scenario_time_row(data):
+    from ingest.forecast_scenario import MODEL, METHOD
+    value=rated_row(data)
+    value.update(ticker='SPY',currency='USD',market='US',forecast_model=MODEL,target_date='2026-10-01',
+        forecast_time_basis=dict(schema_version=1,method_id=METHOD['method_id'],venue_timezone='America/New_York',
+            calendar_version='authored-calendar-v1',reference_close_at='2026-09-30T20:00:00Z',target_close_at='2026-10-01T20:00:00Z'))
+    return value
+
+
+def test_same_date_scenario_future_venue_close_passes(compact_report):
+    path,data=compact_report;value=scenario_time_row(data)
+    assert value['target_date']==value['forecast_as_of'][:10]
+    assert validator.validate_report(path,data,compact=True)[:2]==(10,0)
+
+
+@pytest.mark.parametrize('field,value',[
+ ('schema_version',True),('schema_version',2),('method_id','different'),('calendar_version',''),
+ ('calendar_version','bad version'),('calendar_version','x'*129),('venue_timezone','Unknown/Zone'),
+ ('venue_timezone',None),('reference_close_at','2026-10-01T00:00:00Z'),
+ ('reference_close_at','2026-09-29T20:00:00Z'),('reference_close_at','2026-09-30T20:00:00'),
+ ('target_close_at','2026-09-30T23:55:00Z'),('target_close_at','2026-09-30T23:54:59Z'),
+ ('target_close_at','2026-10-02T20:00:00Z'),('target_close_at','2026-10-01T20:00:00'),
+])
+def test_malformed_or_past_venue_time_contract_rejected(compact_report,field,value):
+    path,data=compact_report;row=scenario_time_row(data);row['forecast_time_basis'][field]=value
+    with pytest.raises(ValueError):validator.validate_report(path,data,compact=True)
+
+
+@pytest.mark.parametrize('case',['missing','extra','observations','horizon','horizon-type','wrong-model','wrong-ticker','cutoff'])
+def test_scenario_time_linkage_and_reserved_method(compact_report,case):
+    path,data=compact_report;row=scenario_time_row(data)
+    if case=='missing':row.pop('forecast_time_basis')
+    elif case=='extra':row['forecast_time_basis']['private_id']='forbidden'
+    elif case=='observations':row['forecast_observations']=21
+    elif case=='horizon':row['forecast_horizon_sessions']=2
+    elif case=='horizon-type':row['forecast_basis']['horizon_type']='week_end'
+    elif case=='wrong-model':row['forecast_model']='Other legacy model'
+    elif case=='wrong-ticker':row['ticker']='QQQ'
+    else:row['forecast_as_of']='2026-10-01T09:00:00+08:00'
+    with pytest.raises(ValueError):validator.validate_report(path,data,compact=True)
+
+
+def test_legacy_date_only_guard_and_injected_unrated_contract(compact_report):
+    path,data=compact_report;row=rated_row(data)
+    assert validator.validate_report(path,data,compact=True)[:2]==(10,0)
+    row['target_date']='2026-10-01'
+    with pytest.raises(ValueError,match='invalid forecast time/reference/target date'):validator.validate_report(path,data,compact=True)
+    row.update(direction='unknown',forecast_status='unavailable',confidence='unavailable',estimated_mid_case_value=None,
+               range_low_value=None,range_high_value=None,forecast_time_basis={})
+    with pytest.raises(ValueError,match='invalid forecast venue-time contract'):validator.validate_report(path,data,compact=True)
+
+
+def test_offset_representations_and_early_close_pass(compact_report):
+    path,data=compact_report;row=scenario_time_row(data)
+    row['forecast_time_basis'].update(reference_close_at='2026-09-30T16:00:00-04:00',target_close_at='2026-10-01T13:00:00-04:00')
+    assert validator.validate_report(path,data,compact=True)[:2]==(10,0)
+
+
+@pytest.mark.parametrize('scenario',[True,False])
+def test_noncompact_profile_does_not_bypass_reserved_time_contract(compact_report,scenario):
+    path,data=compact_report
+    row=scenario_time_row(data) if scenario else rated_row(data)
+    data['metadata'].pop('presentation_profile')
+    if scenario:row['forecast_time_basis']['target_close_at']='2026-09-30T23:55:00Z'
+    else:row['forecast_time_basis']={}
+    with pytest.raises(ValueError,match='invalid forecast venue-time contract'):validator.validate_report(path,data)

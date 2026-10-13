@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-102",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-13",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-13/PRSG-102-future-target-close-validation.md",
+  "objective": "Validate future target closes using venue instants for the accepted scenario method.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "74af5a94d3a8428cec4f9af6924874d6d60447d0",
+  "allowed_paths": [
+    "ingest/forecast_scenario.py",
+    "tests/test_forecast_scenario.py",
+    "docs/FORECAST_SCENARIO.md",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "tests/test_daily_report.py",
+    "plans/2026-10-13/PRSG-102-future-target-close-validation.md",
+    "plans/2026-10-13/PRSG-102.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "ingest/daily_report_projection.py",
+    "harness/"
+  ],
+  "checks": [
+    {
+      "id": "contract",
+      "kind": "manual",
+      "description": "Exact public venue-time contract",
+      "status": "passed",
+      "evidence": [
+        "Lead accepted exact six-field venue-time contract and seven-path scope; Engineer implemented/froze internal-linkage details in spec, preserving seven-key forecast_basis and legacy behavior. Independent final review pending."
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "manual",
+      "description": "Future-close and legacy regressions",
+      "status": "passed",
+      "evidence": [
+        "Exact approvedPython -m pytest -q tests/test_forecast_scenario.py tests/test_daily_report.py tests/test_daily_report_projection.py, bytecode/cacheoff, isolated cwd:260passed in1.04s, exit0/no skips; exact argv/runtime in dated spec.",
+        "Same-date future-close full fixture passes; equal/past/malformed/mismatched/injected contracts fail, including Unrated/noncompact; legacy/provenance/numeric guards and actual JS viewer replay pass. Authored plumbing evidence only, no real forecast publication."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent review",
+      "status": "passed",
+      "evidence": [
+        "Lead independent seven-path review:260focused passed1.08s including actual Node viewer. Time linkage accepted; no real history/source admission or current report issuance claimed."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-102-D1",
+      "description": "Exact public venue-time contract",
+      "check_ids": [
+        "contract"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead accepted exact six-field venue-time contract and seven-path scope; Engineer implemented/froze internal-linkage details in spec, preserving seven-key forecast_basis and legacy behavior. Independent final review pending."
+      ]
+    },
+    {
+      "id": "PRSG-102-D2",
+      "description": "Future-close and legacy regressions",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Exact approvedPython -m pytest -q tests/test_forecast_scenario.py tests/test_daily_report.py tests/test_daily_report_projection.py, bytecode/cacheoff, isolated cwd:260passed in1.04s, exit0/no skips; exact argv/runtime in dated spec.",
+        "Same-date future-close full fixture passes; equal/past/malformed/mismatched/injected contracts fail, including Unrated/noncompact; legacy/provenance/numeric guards and actual JS viewer replay pass. Authored plumbing evidence only, no real forecast publication."
+      ]
+    },
+    {
+      "id": "PRSG-102-D3",
+      "description": "Independent review",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent seven-path review:260focused passed1.08s including actual Node viewer. Time linkage accepted; no real history/source admission or current report issuance claimed."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independent seven-path review:260focused passed1.08s including actual Node viewer. Time linkage accepted; no real history/source admission or current report issuance claimed."
+    ]
+  }
+}

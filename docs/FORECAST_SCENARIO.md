@@ -50,16 +50,25 @@ results with a fixed ScenarioValidationError; no caller input or exception text
 is exposed. Generated reviewed_real results remain subject to independent source
 acceptance, complete-report validation and separate publication authority.
 
-The current compact report validator rejects a target on the issuance calendar
-date even if its venue close is future. This ticket does not alter that validator
-or protected daily_report_projection.py. Tests demonstrate successful generated
-mapping when the target date follows issuance, and the same-date/future-close
-rejection. No issuance timestamp shift or publication workaround is used. A
-separate accepted venue-close time-contract amendment is required for that case.
+Generated fields now include a closed forecast_time_basis: schema1, fixed method
+ID, venue IANA timezone, calendar version and reference/target close instants.
+Those zone/version values are also retained in private audit and mapper-linked
+to the public contract; private evidence IDs/hashes remain private. The seven-key
+forecast_basis is unchanged. Withheld time contracts are null.
 
-Tests use authored in-memory evidence only and the unchanged report validators.
+The report validator requires the complete linked time contract only for this
+exact SPY/USD method, observations20/h1/next_session. It checks venue-local
+reference/target dates, reference close<=issuance<=report cutoff and future target
+close>issuance. A same-calendar-date target can therefore pass without shifting
+issuance. Equal/past targets, malformed linkage and injected contracts on other
+methods reject, including Unrated/noncompact rows. Other methods with no contract
+retain legacy date-only behavior. Existing public/provenance/numeric guards and
+protected daily_report_projection.py remain unchanged. These checks establish
+internal linkage, not source authenticity or calendar completeness.
+
+Tests use authored in-memory evidence only and the current report validators.
 They cover formula/baselines/rounding, matching-row mapping and isolation,
 fixture refusal, withheld gap preservation, missing/future/stale/session/unit/
-action/rights/method/nonfinite failures and the current time-contract limitation.
+action/rights/method/nonfinite failures and future-close/legacy time-contract regressions.
 No eligible current history or actual public numeric issuance is established by
 passing these tests.

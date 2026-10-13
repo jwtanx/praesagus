@@ -24,11 +24,11 @@ ADMISSION = {'schema_version','classification','evidence_sha256','method_sha256'
 GATES = ('identity_units','calendar_window','bar_provenance','close_convention','basis_actions','rights','method')
 FIELDS = {'direction','direction_label','forecast_status','estimated_mid_case','estimated_range','estimated_mid_case_value',
           'range_low_value','range_high_value','forecast_as_of','target_date','forecast_model','forecast_observations',
-          'forecast_horizon_sessions','confidence','confidence_reason','scenario','forecast_basis'}
+          'forecast_horizon_sessions','confidence','confidence_reason','scenario','forecast_basis','forecast_time_basis'}
 BASIS = {'reference_close_date','reference_close','reference_source','horizon_type','bull_case','bear_case','invalidation'}
 AUDIT = {'classification','evidence_sha256','admission_sha256','method_sha256','issued_at','report_cutoff',
          'reference_session','reference_close_at','target_session','target_close_at','reference_close','observations',
-         'horizon_sessions','mu','sample_sd','point','low','high','baseline_point','baseline_low','baseline_high'}
+         'horizon_sessions','mu','sample_sd','point','low','high','baseline_point','baseline_low','baseline_high','venue_timezone','calendar_version'}
 REASONS = dict(schema='Forecast evidence is missing or malformed.', admission_missing='Reviewed admission is missing.',
  admission_binding='Reviewed evidence bindings do not match.', admission_time='Evidence review is outside the issuance boundary.',
  identity_units='Instrument identity or price units are unsupported.', calendar_window='Consecutive completed sessions are unavailable.',
@@ -43,6 +43,7 @@ BULL = 'Positive raw-close drift may persist under unchanged price basis.'
 BEAR = 'Recent drift may reverse; historical volatility does not capture all event risk.'
 INVALIDATION = 'Withhold if close evidence, action coverage or input basis becomes invalid.'
 ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}', re.ASCII)
+TIME_BASIS = {'schema_version','method_id','venue_timezone','calendar_version','reference_close_at','target_close_at'}
 SHA = re.compile(r'[0-9a-f]{64}', re.ASCII)
 STAMP = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})', re.ASCII)
 
@@ -241,13 +242,15 @@ def build_forecast_scenario(evidence, *, admission, issued_at, report_cutoff):
                 forecast_status='available',estimated_mid_case=f'USD {mid:.2f}',estimated_range=f'USD {lo:.2f}–USD {hi:.2f}',
                 estimated_mid_case_value=float(mid),range_low_value=float(lo),range_high_value=float(hi),
                 forecast_as_of=issued_at,target_date=target[0].isoformat(),forecast_model=MODEL,forecast_observations=20,
-                forecast_horizon_sessions=1,confidence='low',confidence_reason=CONFIDENCE,scenario=SCENARIO,forecast_basis=basis)
+                forecast_horizon_sessions=1,confidence='low',confidence_reason=CONFIDENCE,scenario=SCENARIO,forecast_basis=basis,
+                forecast_time_basis=dict(schema_version=1,method_id=METHOD['method_id'],venue_timezone=c['timezone'],
+                    calendar_version=c['version'],reference_close_at=reference[1].isoformat(),target_close_at=target[1].isoformat()))
     audit=dict(classification='fixture_only' if e['classification']=='authored_fixture' else 'reviewed_real',
                evidence_sha256=a['evidence_sha256'],admission_sha256=_hash(a),method_sha256=a['method_sha256'],
                issued_at=issued_at,report_cutoff=report_cutoff,reference_session=reference[0].isoformat(),
                reference_close_at=reference[1].isoformat(),target_session=target[0].isoformat(),target_close_at=target[1].isoformat(),
                reference_close=ref,observations=20,horizon_sessions=1,mu=mu,sample_sd=sd,point=point,low=low,high=high,
-               baseline_point=ref,baseline_low=baseline_low,baseline_high=baseline_high)
+               baseline_point=ref,baseline_low=baseline_low,baseline_high=baseline_high,venue_timezone=c['timezone'],calendar_version=c['version'])
     return dict(status='generated',reasons=[],report_fields=fields,private_audit=audit)
 
 
@@ -264,6 +267,10 @@ def _valid_result(result):
         if not all(_positive(f[k]) for k in ('estimated_mid_case_value','range_low_value','range_high_value')):return False
         if not all(_sha(audit[k]) for k in ('evidence_sha256','admission_sha256','method_sha256')):return False
         if not (_obj(f['forecast_basis'],BASIS) and _url(f['forecast_basis']['reference_source'])):return False
+        if not validate_forecast_time_basis(dict(f,ticker='SPY',market='US',currency='USD'),audit['report_cutoff']):return False
+        time_basis=f['forecast_time_basis']
+        if time_basis['venue_timezone']!=audit['venue_timezone'] or time_basis['calendar_version']!=audit['calendar_version']:return False
+        if any(_time(time_basis[k])!=_time(audit[k]) for k in ('reference_close_at','target_close_at')):return False
         if not all(_positive(audit[k]) for k in ('reference_close','point','low','high','baseline_point','baseline_low','baseline_high')):return False
         if not all(type(audit[k]) is float and math.isfinite(audit[k]) for k in ('mu','sample_sd')) or audit['sample_sd']<0:return False
         if not audit['low']<=audit['point']<=audit['high'] or not audit['baseline_low']<=audit['baseline_point']<=audit['baseline_high']:return False
@@ -291,6 +298,35 @@ def _valid_result(result):
                 and _positive(b['reference_close']) and b['horizon_type']=='next_session'
                 and (b['bull_case'],b['bear_case'],b['invalidation'])==(BULL,BEAR,INVALIDATION))
     except (ValueError,TypeError,KeyError,OverflowError,InvalidOperation):return False
+
+
+
+def validate_forecast_time_basis(row, report_cutoff):
+    """Check internal method/session-time linkage; never source authenticity.
+
+    Null/absent contracts retain legacy behavior on other methods. Nonnull
+    contracts are reserved for the exact accepted MODEL, including Unrated rows.
+    """
+    if type(row) is not dict:return False
+    basis=row.get('forecast_time_basis')
+    if row.get('forecast_model')!=MODEL:return basis is None
+    if not _obj(basis,TIME_BASIS) or any(row.get(k)!=v for k,v in (('ticker','SPY'),('market','US'),('currency','USD'))):return False
+    try:
+        if type(basis['schema_version']) is not int or basis['schema_version']!=1:return False
+        if basis['method_id']!=METHOD['method_id'] or type(basis['method_id']) is not str:return False
+        if not _id(basis['calendar_version']) or not _text(basis['venue_timezone']) or len(basis['venue_timezone'])>128:return False
+        zone=ZoneInfo(basis['venue_timezone'])
+        if any(type(row.get(k)) is not int or row[k]!=v for k,v in (('forecast_observations',20),('forecast_horizon_sessions',1))):return False
+        frozen=row.get('forecast_basis')
+        if not _obj(frozen,BASIS) or frozen['horizon_type']!='next_session':return False
+        issue=_time(row['forecast_as_of'])
+        cutoff=report_cutoff if type(report_cutoff) is datetime else _time(report_cutoff)
+        if cutoff.utcoffset() is None:return False
+        reference=_time(basis['reference_close_at']);target=_time(basis['target_close_at'])
+        reference_day=_day(frozen['reference_close_date']);target_day=_day(row['target_date'])
+        return (reference<=issue<=cutoff and issue<target and reference_day<target_day
+                and reference.astimezone(zone).date()==reference_day and target.astimezone(zone).date()==target_day)
+    except (ValueError,TypeError,KeyError,OverflowError,ZoneInfoNotFoundError):return False
 
 
 def apply_scenario_to_row(row, result):
