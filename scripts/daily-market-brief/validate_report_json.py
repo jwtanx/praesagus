@@ -18,7 +18,7 @@ from ingest.daily_report_projection import (validate_observed_quote, validate_pu
     validate_public_report_boundary, validate_market_snapshot, forecast_basis_error,
     validate_moomoo_trend, validate_moomoo_session_direction)
 from ingest.private_market_store import parse_aware
-from ingest.forecast_scenario import MODEL as SCENARIO_MODEL, validate_forecast_time_basis
+from ingest.forecast_scenario import MODELS as SCENARIO_MODELS, validate_forecast_time_basis
 
 REQUIRED_SECTIONS = {'outlook','top10','calendar','swing','etfs','news','trends','score'}
 SOURCE_URL_KEYS = {'url'}
@@ -171,7 +171,7 @@ def validate_compact(path, d, cutoff):
             target=date.fromisoformat(target)
             if (as_of.tzinfo is None or as_of.utcoffset() is None or as_of>cutoff
                     or date.fromisoformat(basis['reference_close_date'])>as_of.date()
-                    or (row.get('forecast_model')!=SCENARIO_MODEL and target<=as_of.date())):raise ValueError()
+                    or (row.get('forecast_model') not in SCENARIO_MODELS and target<=as_of.date())):raise ValueError()
         except (ValueError,TypeError,KeyError,OverflowError):fail(path,f'{loc} invalid forecast time/reference/target date')
         low,mid,high=(row.get(k) for k in ('range_low_value','estimated_mid_case_value','range_high_value'))
         if any(type(v) not in (int,float) or not math.isfinite(v) or v<=0 for v in (low,mid,high)) or not low<=mid<=high:

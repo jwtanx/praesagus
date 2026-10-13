@@ -443,3 +443,19 @@ def test_noncompact_profile_does_not_bypass_reserved_time_contract(compact_repor
     if scenario:row['forecast_time_basis']['target_close_at']='2026-09-30T23:55:00Z'
     else:row['forecast_time_basis']={}
     with pytest.raises(ValueError,match='invalid forecast venue-time contract'):validator.validate_report(path,data)
+
+
+@pytest.mark.parametrize('change',[None,'original-id','unknown-model','missing','past','unrated'])
+def test_cash_method_uses_exact_reserved_time_contract(compact_report,change):
+    from ingest.forecast_scenario import CASH_MODEL,CASH_METHOD
+    path,data=compact_report;row=scenario_time_row(data)
+    row['forecast_model']=CASH_MODEL;row['forecast_time_basis']['method_id']=CASH_METHOD['method_id']
+    if change is None:
+        assert validator.validate_report(path,data,compact=True)[:2]==(10,0);return
+    if change=='original-id':row['forecast_time_basis']['method_id']='spy_raw_close_drift_lognormal_h1_v1'
+    if change=='unknown-model':row['forecast_model']='Cash-return unknown variant'
+    if change=='missing':row.pop('forecast_time_basis')
+    if change=='past':row['forecast_time_basis']['target_close_at']='2026-09-30T23:55:00Z'
+    if change=='unrated':row.update(direction='unknown',forecast_status='unavailable',confidence='unavailable',forecast_time_basis={},
+                                   estimated_mid_case_value=None,range_low_value=None,range_high_value=None)
+    with pytest.raises(ValueError,match='invalid forecast venue-time contract'):validator.validate_report(path,data,compact=True)

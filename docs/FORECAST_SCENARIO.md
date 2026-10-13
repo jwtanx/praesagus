@@ -72,3 +72,38 @@ fixture refusal, withheld gap preservation, missing/future/stale/session/unit/
 action/rights/method/nonfinite failures and future-close/legacy time-contract regressions.
 No eligible current history or actual public numeric issuance is established by
 passing these tests.
+
+## Cash-return variant
+
+PRSG-103 adds closed evidence/admission schema2 and exact method
+`spy_cash_return_drift_lognormal_h1_v1`. The original schema1/raw method and audit
+shape are unchanged. The public model is `Cash-return drift/lognormal median
+scenario v1 (uncalibrated)`. V2 audit adds method_id; six-key time linkage keeps
+schema1 and binds the exact selected method. Validators recognize exactly these
+two models; other method strings retain prior reserved-contract/date guards.
+
+V2 corporate-action events contain exactly event_id, effective_date, kind, amount,
+currency, unit, source_url, source_sha256, source_publication_at, retrieved_at,
+ingested_at and known_at. Effective_date is the EX-date, kind cash_distribution,
+currency USD and unit gross_cash_per_share. Amount must be positive finite and
+not bool. IDs are unique; original source/timestamps/events are evidence/hash
+bound. Publication may be null; if present it must be aware and <=retrieval.
+Actual retrieval<=ingestion<=known<=coverage-known<=review<=issuance is required.
+Unknown amounts and incorrect units/dates/events withhold instead of becoming zero.
+
+Complete action coverage is an externally reviewed **as-of declared-event**
+convention across the entire close window and target, not a future-event guarantee.
+The external admission evidence reference must preserve the review procedure,
+window, sources, failures and limitations. This calculator cannot authenticate
+that review. Residual source-index, revisions and unexpected-event risk remains.
+No forecast is generated from the current missing history by this implementation.
+
+For return positions1..20, r_i=log(C_i+D_i)-log(C_previous), with distinct gross
+cash events aggregated on their verified session EX-date. Zero cash requires
+complete admitted coverage. First-window-close events are retained/validated but
+have no return contribution. Target-session events, noncash/split/basis changes,
+incomplete or future-known evidence withhold. Historical reinvestment is an
+authored end-session proxy, not vendor adjusted-series equivalence. Current raw
+USD close remains the target/range anchor; mean, sampleSD(ddof1), h1, z1.959964,
+low qualitative confidence and uncalibrated range remain unchanged. This module
+still has no collection, report-generator CLI, scheduler or publication behavior.

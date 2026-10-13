@@ -320,7 +320,10 @@ def test_future_source_publication_and_reversed_bar_order_fail(case):
     assert 'bar_provenance' in build(reseal(e,a))['reasons']
 
 
-def test_timezone_dst_calendar_dates_are_checked_against_instants(case):
+@pytest.mark.parametrize('cash',[False,True])
+def test_timezone_dst_calendar_dates_are_checked_against_instants(case,cash):
+    if cash:
+        case=cash_case();case[0]['corporate_actions']['events']=[]
     e,a=case
     # This authored calendar crosses New York's November DST transition.
     for n,(session,bar) in enumerate(zip(e['calendar']['sessions'][:21],e['bars'])):
@@ -345,7 +348,9 @@ def test_bounded_resources_and_cycle_withhold():
     assert build((e,a))['reasons']==['schema']
 
 
-def test_generated_values_reach_actual_viewer_prediction_guard(case):
+@pytest.mark.parametrize('cash',[False,True])
+def test_generated_values_reach_actual_viewer_prediction_guard(case,cash):
+    if cash:case=cash_case()
     node=shutil.which('node')
     if node is None:pytest.skip('Node runtime unavailable; run viewer guard replay in review environment')
     mapped=f.apply_scenario_to_row(row(),build(case))
@@ -401,3 +406,121 @@ def test_same_date_future_close_complete_report(case,tmp_path):
     folder=tmp_path/'daily-market-brief';folder.mkdir();calendar=tmp_path/'financial-calendar';calendar.mkdir()
     (calendar/'2026-10.json').write_text(json.dumps(dict(schema_version=1,month='2026-10',timezone='Asia/Kuala_Lumpur',notes=[],entries=[])))
     assert validator.validate_report(folder/'2026-10-22.json',data,compact=True)[:2]==(5,0)
+
+
+def cash_case():
+    e,a=make_case();e['schema_version']=a['schema_version']=2;e['method']=deepcopy(f.CASH_METHOD)
+    e['corporate_actions']['events']=[dict(event_id='authored-cash-1',effective_date='2026-10-11',kind='cash_distribution',
+        amount=2.0,currency='USD',unit='gross_cash_per_share',source_url='https://example.invalid/cash',source_sha256='d'*64,
+        source_publication_at=None,retrieved_at='2026-10-10T12:00:00Z',ingested_at='2026-10-10T12:01:00Z',known_at='2026-10-10T12:02:00Z')]
+    return reseal(e,a)
+
+
+def test_cash_formula_independent_proxy_and_raw_anchor():
+    case=cash_case();e,a=case
+    result=build(case);audit=result['private_audit'];prices=[b['close'] for b in e['bars']]
+    expected=[math.log((prices[n]+(2 if n==10 else 0))/prices[n-1]) for n in range(1,21)]
+    mean=sum(expected)/20;sd=math.sqrt(sum((v-mean)**2 for v in expected)/19)
+    assert audit['mu']==pytest.approx(mean,abs=1e-15)
+    assert audit['sample_sd']==pytest.approx(sd,abs=1e-15)
+    assert audit['reference_close']==prices[-1]
+    assert audit['point']==pytest.approx(prices[-1]*math.exp(mean))
+    assert audit['low']==pytest.approx(prices[-1]*math.exp(mean-1.959964*sd))
+    assert audit['high']==pytest.approx(prices[-1]*math.exp(mean+1.959964*sd))
+    assert audit['method_id']==f.CASH_METHOD['method_id']
+    assert result['report_fields']['forecast_model']==f.CASH_MODEL
+    assert 'reinvestment proxy' in result['report_fields']['scenario']
+    mapped=f.apply_scenario_to_row(row(),result)
+    assert mapped['data_gaps']==row()['data_gaps'] and mapped['sources']==row()['sources']
+    assert mapped['confidence']=='low'
+
+
+@pytest.mark.parametrize('change',[
+ {'amount':None},{'amount':0},{'amount':-1},{'amount':True},{'amount':float('inf')},
+ {'currency':'MYR'},{'unit':'net_cash_per_share'},{'kind':'split'},{'kind':'distribution'},
+ {'kind':'payment_date'},{'effective_date':'2026-10-22'},{'effective_date':'2026-10-23'},
+ {'effective_date':'not-date'},{'event_id':''},{'source_url':'http://example.invalid'},
+ {'source_sha256':'unknown'},{'known_at':'2026-10-22T12:00:00Z'},
+ {'known_at':'2026-10-21T20:35:00Z'}, {'ingested_at':'2026-10-10T11:59:00Z'},
+ {'source_publication_at':'2026-10-10T12:01:00Z'}, {'source_publication_at':'2026-10-10'},
+ {'retrieved_at':None},{'known_at':'2026-10-10T12:02:00'}, {'extra':'unsupported'},
+])
+def test_cash_event_fail_closed(change):
+    e,a=cash_case();e['corporate_actions']['events'][0].update(change)
+    # Nonfinite evidence is malformed before JSON binding; no invented serialization.
+    if change.get('amount')==float('inf'):
+        assert build((e,a))['status']=='withheld';return
+    reseal(e,a);result=build((e,a))
+    assert result['status']=='withheld' and result['report_fields']['estimated_mid_case_value'] is None
+    assert result['report_fields']['forecast_time_basis'] is None
+
+
+@pytest.mark.parametrize('field',['amount','effective_date','source_sha256','known_at'])
+def test_cash_event_tamper_invalidates_admission(field):
+    e,a=cash_case();event=e['corporate_actions']['events'][0]
+    event[field]={'amount':3,'effective_date':'2026-10-12','source_sha256':'e'*64,'known_at':'2026-10-10T12:03:00Z'}[field]
+    assert 'admission_binding' in build((e,a))['reasons']
+
+
+def test_cash_duplicates_aggregation_and_first_close():
+    e,a=cash_case();event=e['corporate_actions']['events'][0]
+    e['corporate_actions']['events'].append(deepcopy(event));reseal(e,a)
+    assert 'basis_actions' in build((e,a))['reasons']
+    e['corporate_actions']['events'][1]['event_id']='authored-cash-2';reseal(e,a)
+    doubled=build((e,a))
+    one,ad=cash_case();one['corporate_actions']['events'][0]['amount']=4;reseal(one,ad)
+    assert doubled['private_audit']['mu']==build((one,ad))['private_audit']['mu']
+    e,a=cash_case();e['corporate_actions']['events'][0]['effective_date']='2026-10-01';reseal(e,a)
+    assert build((e,a))['private_audit']['mu']==build(make_case())['private_audit']['mu']
+
+
+@pytest.mark.parametrize('mutation',['coverage','schema','method','fixture','publication'])
+def test_cash_complete_review_and_method_safeguards(mutation):
+    e,a=cash_case()
+    if mutation=='coverage':e['corporate_actions']['complete']=False
+    if mutation=='schema':a['schema_version']=1
+    if mutation=='method':e['method']=deepcopy(f.METHOD)
+    if mutation=='fixture':e['classification']='authored_fixture'
+    if mutation=='publication':e['corporate_actions']['events'][0]['source_publication_at']='2026-10-10T11:00:00Z'
+    reseal(e,a);result=build((e,a))
+    if mutation in ('fixture','publication'):
+        assert result['status']=='generated'
+        if mutation=='fixture':
+            with pytest.raises(f.ScenarioValidationError):f.apply_scenario_to_row(row(),result)
+    else:assert result['status']=='withheld'
+
+
+def test_cash_empty_reviewed_coverage_matches_raw_arithmetic():
+    e,a=cash_case();e['corporate_actions']['events']=[];reseal(e,a)
+    cash=build((e,a));raw=build(make_case())
+    for key in ('mu','sample_sd','point','low','high'):assert cash['private_audit'][key]==raw['private_audit'][key]
+    assert set(raw['private_audit'])==f.AUDIT
+
+
+@pytest.mark.parametrize('tamper',['method_id','model','audit_method','zone','target'])
+def test_cash_mapper_exact_identity_and_linkage(tamper):
+    result=build(cash_case())
+    if tamper=='method_id':result['report_fields']['forecast_time_basis']['method_id']=f.METHOD['method_id']
+    if tamper=='model':result['report_fields']['forecast_model']=f.MODEL
+    if tamper=='audit_method':result['private_audit']['method_id']=f.METHOD['method_id']
+    if tamper=='zone':result['report_fields']['forecast_time_basis']['venue_timezone']='UTC'
+    if tamper=='target':result['report_fields']['forecast_time_basis']['target_close_at']=ISSUE
+    with pytest.raises(f.ScenarioValidationError):f.apply_scenario_to_row(row(),result)
+
+
+def test_cash_same_date_future_close_complete_report(tmp_path):
+    issue='2026-10-22T08:00:00+08:00';cutoff='2026-10-22T08:01:00+08:00'
+    data=compact_data(f.apply_scenario_to_row(row(),build(cash_case(),issue=issue,cutoff=cutoff)),cutoff)
+    data['metadata']['presentation_profile']='compact-v1';data['watchlist_config']['groups'][0]['key']='semiconductors'
+    for value in data['forecasts']:value['sector_category']='semiconductors'
+    folder=tmp_path/'daily-market-brief';folder.mkdir();calendar=tmp_path/'financial-calendar';calendar.mkdir()
+    (calendar/'2026-10.json').write_text(json.dumps(dict(schema_version=1,month='2026-10',timezone='Asia/Kuala_Lumpur',notes=[],entries=[])))
+    assert validator.validate_report(folder/'2026-10-22.json',data,compact=True)[:2]==(5,0)
+
+
+def test_cash_missing_session_and_withheld_gap_preservation():
+    e,a=cash_case();e['bars'][10]['session_date']='2026-10-12';reseal(e,a)
+    result=build((e,a));assert 'bar_provenance' in result['reasons']
+    mapped=f.apply_scenario_to_row(row(),result)
+    assert mapped['sources']==row()['sources'] and row()['data_gaps'][0] in mapped['data_gaps']
+    assert f.apply_scenario_to_row(mapped,result)['data_gaps']==mapped['data_gaps']

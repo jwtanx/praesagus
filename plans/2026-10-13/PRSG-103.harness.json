@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-103",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-13",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-13/PRSG-103-dividend-aware-price-scenario.md",
+  "objective": "Generate cash-distribution-inclusive research price scenarios from reviewed raw history.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "b22704d5f982e64a550a0985ca1ad6c39a0a95eb",
+  "allowed_paths": [
+    "ingest/forecast_scenario.py",
+    "tests/test_forecast_scenario.py",
+    "docs/FORECAST_SCENARIO.md",
+    "plans/2026-10-13/PRSG-103-dividend-aware-price-scenario.md",
+    "plans/2026-10-13/PRSG-103.harness.json",
+    "scripts/daily-market-brief/validate_report_json.py",
+    "tests/test_daily_report.py"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "artifacts/",
+    "skills/",
+    "ingest/daily_report_projection.py",
+    "harness/"
+  ],
+  "checks": [
+    {
+      "id": "contract",
+      "kind": "manual",
+      "description": "Cash-return and raw target unit contract",
+      "status": "passed",
+      "evidence": [
+        "Lead confirmed exact v2 method/event/admission contract, nullable publication and seven-path scope on 2026-10-13; frozen spec interface."
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "manual",
+      "description": "Distribution correction and rejection regressions",
+      "status": "passed",
+      "evidence": [
+        "Approved Python3.11 -m pytest -q tests/test_forecast_scenario.py tests/test_daily_report.py tests/test_daily_report_projection.py: 311 passed in 1.23s; no skips; Node actual viewer guard replay both methods.",
+        "git diff --check passed. Initial authored unrated fixture failed earlier null-target guard; corrected fixture and rerun 311 passed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead integration and readiness review",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed seven owned paths and exact cash/event/time/mapper behavior;311focused passed1.21s, actual Node guard for both methods. No real history capture or current report issuance claimed."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-103-D1",
+      "description": "Cash-return and raw target unit contract",
+      "check_ids": [
+        "contract"
+      ],
+      "status": "done",
+      "evidence": [
+        "See frozen spec and passed matching contract/tests check; Lead final review remains pending."
+      ]
+    },
+    {
+      "id": "PRSG-103-D2",
+      "description": "Distribution correction and rejection regressions",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "See frozen spec and passed matching contract/tests check; Lead final review remains pending."
+      ]
+    },
+    {
+      "id": "PRSG-103-D3",
+      "description": "Lead integration and readiness review",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed seven owned paths and exact cash/event/time/mapper behavior;311focused passed1.21s, actual Node guard for both methods. No real history capture or current report issuance claimed."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed seven owned paths and exact cash/event/time/mapper behavior;311focused passed1.21s, actual Node guard for both methods. No real history capture or current report issuance claimed."
+    ]
+  }
+}
