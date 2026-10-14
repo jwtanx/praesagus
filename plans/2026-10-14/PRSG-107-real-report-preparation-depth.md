@@ -16,7 +16,7 @@ Eightpaths only, no artifacts/collector/credentials/skills changes. Separate rep
 
 - [x] PRSG-107-D1: Real published report + source/audit structure reproduces old failure; separate exact bound accepted.
 - [x] PRSG-107-D2: Fullreal-template CLI/helper succeeds with explicit withholding, depth13/oversize/nonfinite rejected; evidence9 stillrejects; fullsource/audit/otherrows preserve.
-- [ ] PRSG-107-D3: Lead independently reviews all8paths/checks, delivers and Trader successfullyreplays actual committedCLI.
+- [x] PRSG-107-D3: Lead independently reviews all8paths/checks, delivers and Trader successfullyreplays actual committedCLI.
 
 ## Checks
 
@@ -38,3 +38,7 @@ Independent Lead review, installed Git hooks/delivery and actual Trader committe
 ## Lead code review checkpoint
 
 Lead independently read all8paths and real9depth6742-nodepublicreport; focused411passed2.15s or current exactrun retained separately. Report-only12/defaultfinancial8, allvalue/privacy/fullcompactguards preserved. Actual committedTrader replay pending. D3 remainsopen untilactualTraderreplay, then separate acceptancecommit.
+
+## Lead acceptance and actual execution
+
+Lead independently reviewed all8paths;411focusedpassed2.23s/full2313hook34.22s,push32.74s. Traderactualcommittedcad1065CLI exit0/fullpubliccompact, explicitwithheld admission_binding+rights. Lead independentlyvalidated actualprivate50rowbundle,120audit/other49/30quoteprovenance preserved. Numericgoalunfinished/accountuseunknown. Correction: firstimplementationreviewcheckpoint runtime2.15s was an incorrectplaceholder; actualLeadfocused411 result2.23s. Counts/passaccurate, priorcheckpoint retained. No currentnumericforecastclaimed.

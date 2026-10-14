@@ -20,7 +20,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-107-real-report-preparation-depth.md",
   "objective": "Prepare normal full report without dropping primary provenance or weakening evidence bounds.",
-  "status": "review",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -68,9 +68,9 @@
       "id": "review",
       "kind": "manual",
       "description": "Independent delivery and actual Trader CLI replay",
-      "status": "pending",
+      "status": "passed",
       "evidence": [
-        "Lead independently read all8paths and real9depth6742-nodepublicreport; focused411passed2.15s or current exactrun retained separately. Report-only12/defaultfinancial8, allvalue/privacy/fullcompactguards preserved. Actual committedTrader replay pending."
+        "Lead independently reviewed all8paths;411focusedpassed2.23s/full2313hook34.22s,push32.74s. Traderactualcommittedcad1065CLI exit0/fullpubliccompact, explicitwithheld admission_binding+rights. Lead independentlyvalidated actualprivate50rowbundle,120audit/other49/30quoteprovenance preserved. Numericgoalunfinished/accountuseunknown."
       ]
     }
   ],
@@ -103,14 +103,16 @@
       "check_ids": [
         "review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed all8paths;411focusedpassed2.23s/full2313hook34.22s,push32.74s. Traderactualcommittedcad1065CLI exit0/fullpubliccompact, explicitwithheld admission_binding+rights. Lead independentlyvalidated actualprivate50rowbundle,120audit/other49/30quoteprovenance preserved. Numericgoalunfinished/accountuseunknown."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
+    "status": "accepted",
     "evidence": [
-      "Lead independently read all8paths and real9depth6742-nodepublicreport; focused411passed2.15s or current exactrun retained separately. Report-only12/defaultfinancial8, allvalue/privacy/fullcompactguards preserved. Actual committedTrader replay pending."
+      "Lead independently reviewed all8paths;411focusedpassed2.23s/full2313hook34.22s,push32.74s. Traderactualcommittedcad1065CLI exit0/fullpubliccompact, explicitwithheld admission_binding+rights. Lead independentlyvalidated actualprivate50rowbundle,120audit/other49/30quoteprovenance preserved. Numericgoalunfinished/accountuseunknown."
     ]
   }
 }
