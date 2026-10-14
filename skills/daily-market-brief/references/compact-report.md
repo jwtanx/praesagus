@@ -127,3 +127,64 @@ its rating despite missing native observations. No unavailable field becomes
 zero, a new target or inferred confidence to populate the single chip.
 Verify the one chip and closed details on keyboard and mobile, then verify
 deployment before reporting publication.
+
+
+## Reusable private prediction preparation
+
+After existing collector/projection and new-edition narrative review, prepare
+owned private copies of the current schema3 compact template, current universe
+and shared monthly calendar (0600 or0400 regular JSON files under owned0700
+directories, canonical absolute paths). Keep the original morning report intact.
+Use the existing approved Python3.11+ environment:
+
+```sh
+python3 scripts/daily-market-brief/prepare_forecast_report.py \
+  --template /absolute/private/current-template.json \
+  --universe /absolute/private/current-universe.json \
+  --calendar /absolute/private/current-calendar.json \
+  --evidence /absolute/private/reviewed-evidence.json \
+  --admission /absolute/private/reviewed-admission.json \
+  --issued-at ACTUAL_AWARE_ISSUANCE \
+  --cutoff ACTUAL_AWARE_CUTOFF \
+  --template-reviewed \
+  --output-directory /absolute/private/new-preparation-bundle
+```
+
+Supply both evidence/admission options or omit both when unavailable. A mismatched
+CLI pair fails before reads; the pure helper safely withholds if either is missing.
+Do not invent receipts, publication times, admission or target values to make
+this invocation succeed. Template metadata.as_of must exactly match cutoff;
+metadata.date is its MYT date. Receipts preserve1–6 fractional digits without
+rounding; seven or more reject. Issuance is after review/eligible intake and no
+later than report cutoff. The calculator checks latest completed21-close window,
+next venue target, source/rights/as-of event gates and fixture refusal.
+
+The flag attests that Trader reviewed current-edition prose, summary/footer and
+forecast gaps. It does not authenticate sources or approve publication. Generated
+SPY overlay refuses the known stale missing-history/no-supported-method notes
+and previous calculator missing-input strings. Revise those forecast-specific
+notes through actual review in the new template before preparation; retain
+snapshot timeout and other genuine coverage gaps. There is no arbitrary English
+rewrite. All other49rows, quotes, sources, narrative, existing gaps and metadata
+are preserved; only SPY forecast fields and verified-reference count are overlaid.
+
+The CLI runs the existing universe/full/public/compact validator using a private
+calendar context before creating a new private bundle. `prepared-report.json`
+contains the allowed report; `audit.json` contains private admission hashes and
+method audit. Never copy audit into the public report. Both files are private and
+written without replacing existing destinations. Each file is atomic; the pair
+is not crash-atomic. Ordinary errors roll back created outputs; review crash
+remnants and use a new destination rather than overwrite. Fixed stdout reports
+prepared/withheld and count0/1 or a fixed failed category, not provider values.
+Withheld keeps SPY Unrated/null targets and fixed gaps; record the exact blocker,
+not numeric completion. Failed validation/write is a failed preparation, with
+no report publication authorized by the attempt.
+
+Tomorrow's report requires a fresh latest completed reference/history window,
+new issuance/cutoff and renewed calendar/as-of declared-event/rights review.
+Previous target/session values are historical; do not carry them forward as a
+new prediction. Reuse the existing mature-cohort ledger/review obligations and
+quote projection. The CLI does not fetch, sign, read Keychain, write public
+artifacts, score forecasts or provision a scheduler. After independent acceptance
+and existing publication authorization, deliver the prepared report through the
+normal dated flow, rerun final public compact validation and verify live output.

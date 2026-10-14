@@ -107,3 +107,50 @@ authored end-session proxy, not vendor adjusted-series equivalence. Current raw
 USD close remains the target/range anchor; mean, sampleSD(ddof1), h1, z1.959964,
 low qualitative confidence and uncalibrated range remain unchanged. This module
 still has no collection, report-generator CLI, scheduler or publication behavior.
+
+
+## Normal-report preparation
+
+`ingest.report_forecast.prepare_report_forecast(template, *, evidence, admission,
+issued_at, report_cutoff, template_reviewed)` is a pure deep-copy overlay returning
+exactly status, reasons, report and audit. It requires a current schema3
+compact-v1 template, exactly one US/SPY/USD row and reviewed template notes.
+Metadata.as_of must equal the supplied cutoff string and its MYT date must equal
+metadata.date. Issuance<=cutoff; no metadata dates are rewritten. The review flag
+is an external workflow attestation, not authentication or financial approval.
+Calculator/mapper and existing compact_reference semantics are reused; only SPY
+forecast fields and collection.verified_forecast_reference_count change. Missing
+either evidence/admission withholds. Generated fixture mapping rejects. Known
+stale forecast-only gap strings reject generated overlay instead of being deleted;
+review other stale prose/summary/footer in the current-edition template externally.
+Preserve price coverage/provenance and every other row.
+
+The committed private CLI `scripts/daily-market-brief/prepare_forecast_report.py`
+accepts --template, --universe, --calendar, optional --evidence/--admission,
+--issued-at, --cutoff, --template-reviewed and --output-directory. CLI evidence
+and admission options must be supplied together or both omitted; mismatched
+flags fail before reads (the pure helper still safely withholds missing inputs).
+It reads only
+bounded2MiB private JSON copies, with duplicate/nonfinite/structure checks,
+canonical paths outside every Git checkout, no symlink traversal and owned
+private file/directory permissions.
+It invokes the existing current-universe/full/public/compact validator with a
+private temporary shared-calendar context; this is not a second report grader.
+No provider, credentials, private store or public artifact writes occur.
+
+New owned0700 output bundle contains prepared-report.json and separate audit.json
+(0600); no replacement. Files are individually atomic, not a crash-atomic pair.
+Ordinary write errors remove only newly created outputs. Review possible crash
+remnants separately; use a new destination. Fixed output distinguishes prepared
+count1 from explicit withheld count0 and fixed failures; it discloses no private
+paths, hashes, provider/user values or underlying exception text. Successful
+withholding returns zero as a prepared unavailable report, never numeric fulfillment.
+Inputs/narrative and original morning edition are not modified. Calendar/universe
+copies are validated then discarded from the temporary context.
+
+Scenario timestamp syntax now preserves1–6 fractional digits, matching genuine
+Python receipt precision;7+ reject. No flooring/ceiling/backdating is performed.
+Each new day requires a new latest completed21-close window, renewed as-of
+review and next venue session. Stale previous-day evidence withholds. Preparation
+does not itself update ledger, provision schedules, approve source admission,
+publish reports or establish actual current numeric source readiness.

@@ -52,7 +52,7 @@ MODELS = {MODEL: METHOD, CASH_MODEL: CASH_METHOD}
 ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}', re.ASCII)
 TIME_BASIS = {'schema_version','method_id','venue_timezone','calendar_version','reference_close_at','target_close_at'}
 SHA = re.compile(r'[0-9a-f]{64}', re.ASCII)
-STAMP = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})', re.ASCII)
+STAMP = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})', re.ASCII)
 
 
 class ScenarioValidationError(ValueError):

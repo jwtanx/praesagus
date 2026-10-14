@@ -524,3 +524,33 @@ def test_cash_missing_session_and_withheld_gap_preservation():
     mapped=f.apply_scenario_to_row(row(),result)
     assert mapped['sources']==row()['sources'] and row()['data_gaps'][0] in mapped['data_gaps']
     assert f.apply_scenario_to_row(mapped,result)['data_gaps']==mapped['data_gaps']
+
+
+@pytest.mark.parametrize('digits',range(1,7))
+def test_microsecond_receipts_preserved_without_rounding(digits):
+    e,a=make_case();suffix='123456'[:digits]
+    issue=f'2026-10-21T21:00:00.{suffix}Z';cutoff=f'2026-10-21T22:00:00.{suffix}Z'
+    e['bars'][-1]['known_at']=f'2026-10-21T20:20:00.{suffix}Z';reseal(e,a)
+    result=build((e,a),issue=issue,cutoff=cutoff)
+    assert result['status']=='generated'
+    assert result['report_fields']['forecast_as_of']==issue
+    assert result['private_audit']['issued_at']==issue and result['private_audit']['report_cutoff']==cutoff
+    assert f._time(issue).microsecond==int(suffix.ljust(6,'0'))
+
+
+@pytest.mark.parametrize('field',['issuance','cutoff','review','bar-known','action-known','calendar-known'])
+def test_seven_digit_receipts_rejected(field):
+    e,a=make_case();issue=ISSUE;cutoff=CUTOFF
+    if field=='issuance':issue='2026-10-21T21:00:00.1234567Z'
+    if field=='cutoff':cutoff='2026-10-21T22:00:00.1234567Z'
+    if field=='review':a['reviewed_at']='2026-10-21T20:40:00.1234567Z'
+    if field=='bar-known':e['bars'][-1]['known_at']='2026-10-21T20:20:00.1234567Z'
+    if field=='action-known':e['corporate_actions']['known_at']='2026-10-21T20:30:00.1234567Z'
+    if field=='calendar-known':e['calendar']['known_at']='2026-10-01T00:00:00.1234567Z'
+    reseal(e,a);assert build((e,a),issue=issue,cutoff=cutoff)['status']=='withheld'
+
+
+def test_microsecond_future_order_not_floored():
+    e,a=make_case();a['reviewed_at']='2026-10-21T21:00:00.000002Z'
+    reseal(e,a)
+    assert 'admission_time' in build((e,a),issue='2026-10-21T21:00:00.000001Z')['reasons']

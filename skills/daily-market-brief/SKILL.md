@@ -7,7 +7,7 @@ description: >-
 license: MIT
 metadata:
   author: praesagus
-  version: "2.4"
+  version: "2.5"
   category: market-research
   tags: [daily-brief, catalysts, news, provenance, market-research]
 ---
@@ -127,10 +127,27 @@ actual paths/identifiers or credential values into public reports.
    `run_private_quote_report.py` or `project_private_quotes.py`. No committed CLI
    currently authors the full normal narrative report automatically; authoring
    that report remains Trader's task, not a reason to rewrite provider intake.
-6. Continue the existing narrative/calendar/forecast workflow and, after the final
-   dated report/index write, run the committed public report validator with
-   `--compact` for the new compact report. Collection
-   success alone establishes neither financial eligibility nor publication rights.
+6. Prepare the new current edition's forecast with the committed
+   `scripts/daily-market-brief/prepare_forecast_report.py` between normal snapshot
+   projection/current narrative review and the final dated report write. Read
+   [compact-report.md](references/compact-report.md#reusable-private-prediction-preparation)
+   for its exact private CLI invocation and completion checks. Supply independently
+   reviewed evidence/admission when available; absent inputs produce explicit
+   withholding. `--template-reviewed` attests current prose/gap review only,
+   never source authentication. Preserve the original morning edition and quote
+   failures; revise stale forecast-only prose/gaps in the new edition template
+   through review, not automatic deletion. Use actual issuance/cutoff, preserving
+   up to six fractional digits, and a newly completed reference/next-session
+   target each day. Reusing yesterday's target or admission is not a refreshed
+   next-day prediction. A successful withheld preparation does not fulfill numeric
+   targets. Validate the complete prepared private report and separate audit;
+   source admission/publication rights remain independently reviewed.
+7. Continue existing calendar/ledger follow-through and, after a separately
+   authorized final dated report/index write, run the committed public report
+   validator with `--compact`. Verify live delivery before success claims. This
+   reusable preparation step authors only the forecast overlay; Trader still
+   authors the current report narrative. It does not provision a schedule,
+   fetch data, authenticate admissions, publish or score outcomes.
 
 ### Shared monthly financial calendar
 
