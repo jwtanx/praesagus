@@ -505,7 +505,7 @@ def pack_stage_frame(header,body=b''):
     (ReadResponse(200,b'\xff{SYNTHETIC-BODY-CANARY'), 'decode-screen'),
     (stage_history_response(token='synthetic-api-key'), 'decode-screen'),
     (stage_history_response(x=LOCATOR['directory']), 'decode-screen'),
-    (stage_history_response(pagination={'private':'SYNTHETIC-BODY-CANARY'}), 'envelope-root-fields'),
+    (stage_history_response(pagination={'private':'SYNTHETIC-BODY-CANARY'}), 'envelope-pagination'),
     (ReadResponse(200,b'[]'), 'envelope-root-type'),
     (stage_history_response(ret_code=True), 'envelope-ret-code-type'),
     (stage_history_response(ret_msg=False), 'envelope-ret-msg-type'),
@@ -523,7 +523,7 @@ def pack_stage_frame(header,body=b''):
 ])
 def test_stage_worker_discards_body_and_propagates_private_outcome(resp,stage,store,capsys):
     raw=stage_worker(resp);header,body=unpack_stage_frame(raw)
-    assert header['version']==2 and header['diagnostic_stage']==stage and body==b''
+    assert header['version']==3 and header['normalization_version']==4 and header['diagnostic_stage']==stage and body==b''
     parsed=c.parse_reply(raw,HISTORY)
     assert parsed.failure=='invalid-response' and parsed.diagnostic_stage==stage
     outcomes=c.collect(store,{'schema_version':1,'codes':[],'news':[],'history':[{'code':'US.SYN','end':'2026-10-02'}]},
@@ -724,3 +724,188 @@ def test_stage_legacy_injected_history_failure_keeps_null(store):
     outcome=c.collect(store,{'schema_version':1,'codes':[],'news':[],'history':[{'code':'US.SYN','end':'2026-10-02'}]},
         LOCATOR,run_id='synthetic',supervisor=lambda *a,**k:injected,wall=wall_clock())[0]
     assert outcome.failure=='invalid-response' and outcome.diagnostic_stage is None
+
+
+def v4_response(**root):
+    return stage_history_response(pagination={'has_more':False},extra={'next_time':0},**root)
+
+
+def history_plan():
+    return {'schema_version':1,'codes':[],'news':[],'history':[{'code':'US.SYN','end':'2026-10-02'}]}
+
+
+def test_new_worker_v4_parent_store_and_legacy_frames(store):
+    raw=stage_worker(v4_response());header,body=unpack_stage_frame(raw)
+    assert header['version']==3 and header['normalization_version']==4 and header['diagnostic_structure'] is None
+    parsed=c.parse_reply(raw,HISTORY)
+    outcome=c.collect(store,history_plan(),LOCATOR,run_id='synthetic-v4',supervisor=lambda *a,**k:parsed,wall=wall_clock())[0]
+    assert outcome.status=='success' and outcome.normalization_version==4
+    assert store.attempts(ING)[0]['normalization_version']==4 and store.query('history',ING)
+    assert store.raw(store.attempts(ING)[0]['raw_hash'])==body
+    # Old successful exact envelope keeps v3 metadata when replayed by new parent.
+    legacy=c.encode_reply(HISTORY,stage_history_response(),OBS)
+    parsed=c.parse_reply(legacy,HISTORY);assert parsed.normalization_version==3 and parsed.diagnostic_structure is None
+    outcome=c.collect(store,history_plan(),LOCATOR,run_id='synthetic-v3',supervisor=lambda *a,**k:parsed,wall=wall_clock())[0]
+    assert outcome.status=='success' and {m['normalization_version'] for m in store.attempts(ING)}=={3,4}
+    # Old successful frame cannot smuggle the new optional envelope shape.
+    header['version']=2;header.pop('normalization_version');header.pop('diagnostic_structure')
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header,body),HISTORY)
+
+
+@pytest.mark.parametrize('change',[
+ {'normalization_version':3},{'normalization_version':True},{'normalization_version':None},
+ {'diagnostic_structure':{}},{'diagnostic_structure':{'schema_version':1,'status':'available','PRIVATE-CANARY':'secret'}},
+ {'diagnostic_structure':{'schema_version':True,'status':'unavailable'}},
+ {'version':4},{'diagnostic_structure':{'schema_version':1,'status':'unavailable','extra':'secret'}},
+])
+def test_new_frame_forged_inventory_and_version_fail_closed(change):
+    raw=stage_worker(stage_history_response(code=1234567,error={'code':-1234567}))
+    header,body=unpack_stage_frame(raw);header.update(change)
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header,body),HISTORY)
+
+
+def test_structure_types_and_arbitrary_labels_cannot_be_injected(store):
+    from copy import deepcopy
+    raw=stage_worker(stage_history_response(code=1234567));header,_=unpack_stage_frame(raw)
+    structure=deepcopy(header['diagnostic_structure']);structure['root']['fields']['ret_code']='PRIVATE-CANARY'
+    header['diagnostic_structure']=structure
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header),HISTORY)
+    invalid=c.WorkerReply(ReadResponse(200,b''),OBS,'invalid-response',diagnostic_stage='envelope-root-fields',
+                          normalization_version=4,diagnostic_structure=structure)
+    outcome=c.collect(store,history_plan(),LOCATOR,run_id='synthetic-forged',supervisor=lambda *a,**k:invalid,wall=wall_clock())[0]
+    assert outcome.failure=='bad-frame' and outcome.diagnostic_stage is None and outcome.diagnostic_structure is None
+    assert 'CANARY' not in repr(outcome)
+
+
+@pytest.mark.parametrize('replacement',['cleanup','storage','clock','budget'])
+def test_structural_inventory_replacement_rules(store,replacement):
+    parsed=c.parse_reply(stage_worker(stage_history_response(code=1234567)),HISTORY)
+    def supervisor(*args,**kwargs):
+        if replacement=='cleanup':
+            return c.WorkerReply(parsed.response,parsed.observed_at,parsed.failure,False,parsed.diagnostic_stage,
+                                 parsed.normalization_version,parsed.diagnostic_structure)
+        return parsed
+    class BrokenStore:
+        def ingest(self,*args,**kwargs):raise OSError('PRIVATE-CANARY')
+    kwargs={'wall':wall_clock()}
+    if replacement=='clock':kwargs['wall']=lambda:'2026-10-01T00:00:00Z'
+    if replacement=='budget':
+        times=iter([0,0,999]);kwargs['clock']=lambda:next(times,999)
+    target=BrokenStore() if replacement=='storage' else store
+    outcome=c.collect(target,history_plan(),LOCATOR,run_id='synthetic-replacement',supervisor=supervisor,**kwargs)[0]
+    if replacement=='budget':assert outcome.failure=='invalid-response' and outcome.diagnostic_structure==parsed.diagnostic_structure
+    else:assert outcome.diagnostic_structure is None and outcome.diagnostic_stage is None
+
+
+@pytest.fixture
+def receipt_parent(tmp_path):
+    root=tmp_path.resolve()/'receipt-private';root.mkdir(mode=0o700);return root
+
+
+def diagnostic_outcome():
+    parsed=c.parse_reply(stage_worker(stage_history_response(code=1234567,error={'code':-1234567})),HISTORY)
+    return c.JobOutcome('PRIVATE-JOB-CANARY','failed','PRIVATE-ATTEMPT-CANARY',parsed.failure,
+                        parsed.diagnostic_stage,parsed.normalization_version,parsed.diagnostic_structure)
+
+
+def test_private_receipt_atomic_no_values_or_ids(receipt_parent):
+    path=receipt_parent/'receipt.json';receipt=c.DiagnosticReceipt(str(path))
+    try:receipt.write([diagnostic_outcome()])
+    finally:receipt.close()
+    assert path.stat().st_mode&0o777==0o600 and list(receipt_parent.iterdir())==[path]
+    raw=path.read_text();value=json.loads(raw)
+    assert set(value)=={'schema_version','history_failures'} and len(value['history_failures'])==1
+    assert 'CANARY' not in raw and '1234567' not in raw and str(receipt_parent) not in raw
+    assert value['history_failures'][0]['structure']['root']['fields']['code']=='int'
+    original=path.read_bytes()
+    with pytest.raises(ValueError):c.DiagnosticReceipt(str(path))
+    assert path.read_bytes()==original
+
+
+@pytest.mark.parametrize('unsafe',['exists','symlink','ancestor-symlink','mode','git','public','unowned'])
+def test_receipt_path_preflight_before_collection(store,receipt_parent,monkeypatch,capsys,unsafe):
+    from scripts import market_collect as cli
+    plan=receipt_parent/'plan.json';plan.write_text(json.dumps(history_plan()))
+    path=receipt_parent/'receipt.json'
+    if unsafe=='exists':path.write_text('PRIVATE-CANARY')
+    if unsafe=='symlink':path.symlink_to(plan)
+    if unsafe=='ancestor-symlink':
+        alias=receipt_parent/'alias';alias.symlink_to(receipt_parent,target_is_directory=True);path=alias/'receipt.json'
+    if unsafe=='mode':receipt_parent.chmod(0o755)
+    if unsafe=='git':(receipt_parent/'.git').write_text('Authored Git marker')
+    if unsafe=='public':path=receipt_parent/'public'/'receipt.json'
+    if unsafe=='unowned':monkeypatch.setattr(c.os,'getuid',lambda:os.stat(plan).st_uid+1)
+    calls=[]
+    monkeypatch.setattr(cli,'collect',lambda *a,**k:calls.append('collector'))
+    args=['--root',str(store.root),'--plan',str(plan),'--credential-directory',LOCATOR['directory'],
+          '--app-key-name','synthetic-key','--run-id','synthetic','--diagnostic-receipt',str(path)]
+    assert cli.main(args)==1 and not calls
+    output=capsys.readouterr();assert 'CANARY' not in output.out+output.err and str(receipt_parent) not in output.out+output.err
+    if unsafe=='exists':assert path.read_text()=='PRIVATE-CANARY'
+
+
+def test_cli_receipt_never_changes_stdout_or_retains_raw(store,receipt_parent,monkeypatch,capsys):
+    from scripts import market_collect as cli
+    plan=receipt_parent/'plan.json';plan.write_text(json.dumps(history_plan()));path=receipt_parent/'receipt.json'
+    outcome=diagnostic_outcome();monkeypatch.setattr(cli,'collect',lambda *a,**k:[outcome])
+    args=['--root',str(store.root),'--plan',str(plan),'--credential-directory',LOCATOR['directory'],
+          '--app-key-name','synthetic-key','--run-id','synthetic','--diagnostic-receipt',str(path),'--diagnostics']
+    assert cli.main(args)==1
+    output=capsys.readouterr();summary=json.loads(output.out)
+    assert summary['schema_version']==2 and 'diagnostic_structure' not in output.out
+    assert 'ret_code' not in output.out and str(path) not in output.out
+    assert set(summary['outcomes'][0])=={'job_id','status','attempt_id','failure','diagnostic_stage'}
+    assert path.exists() and '1234567' not in path.read_text() and not list(receipt_parent.glob('.history-receipt-*'))
+
+
+def test_failed_receipt_write_removes_temporary_no_overwrite(receipt_parent,monkeypatch):
+    receipt=c.DiagnosticReceipt(str(receipt_parent/'receipt.json'))
+    monkeypatch.setattr(c.os,'link',lambda *a,**k:(_ for _ in ()).throw(OSError('PRIVATE-CANARY')))
+    try:
+        with pytest.raises(OSError):receipt.write([diagnostic_outcome()])
+    finally:receipt.close()
+    assert not list(receipt_parent.iterdir())
+
+
+def test_receipt_temporary_collision_never_deletes_existing(receipt_parent,monkeypatch):
+    monkeypatch.setattr(c.os,'urandom',lambda _:b'x'*16)
+    existing=receipt_parent/('.history-receipt-'+(b'x'*16).hex());existing.write_text('PRIVATE-CANARY')
+    with pytest.raises(FileExistsError):c.DiagnosticReceipt(str(receipt_parent/'receipt.json'))
+    assert existing.read_text()=='PRIVATE-CANARY' and not (receipt_parent/'receipt.json').exists()
+
+
+def test_receipt_fsync_failure_removes_only_own_new_link(receipt_parent,monkeypatch):
+    receipt=c.DiagnosticReceipt(str(receipt_parent/'receipt.json'));original=c.os.fsync
+    def failed(fd):
+        if fd==receipt.parent:raise OSError('PRIVATE-CANARY')
+        return original(fd)
+    monkeypatch.setattr(c.os,'fsync',failed)
+    try:
+        with pytest.raises(OSError):receipt.write([diagnostic_outcome()])
+    finally:receipt.close()
+    assert not list(receipt_parent.iterdir())
+
+
+def test_receipt_close_failure_is_fixed_cli_error(store,receipt_parent,monkeypatch,capsys):
+    from scripts import market_collect as cli
+    plan=receipt_parent/'plan.json';plan.write_text(json.dumps(history_plan()))
+    monkeypatch.setattr(cli,'collect',lambda *a,**k:[diagnostic_outcome()]);original=c.DiagnosticReceipt.close
+    def failed(self):original(self);raise OSError('PRIVATE-CANARY')
+    monkeypatch.setattr(c.DiagnosticReceipt,'close',failed)
+    args=['--root',str(store.root),'--plan',str(plan),'--credential-directory',LOCATOR['directory'],
+          '--app-key-name','synthetic-key','--run-id','synthetic','--diagnostic-receipt',str(receipt_parent/'receipt.json')]
+    assert cli.main(args)==1
+    output=capsys.readouterr();assert output.out=='' and 'CANARY' not in output.err
+
+
+@pytest.mark.parametrize('change',['data-link','row-link','root-absent','code-flag'])
+def test_private_frame_structure_linkage_rejects_impossible_states(change):
+    header,_=unpack_stage_frame(stage_worker(stage_history_response(code=1234567)))
+    structure=header['diagnostic_structure']
+    if change=='data-link':structure['root']['fields']['data']='string'
+    if change=='row-link':structure['data']['fields']['kline_list']='string'
+    if change=='root-absent':
+        structure['root'].update(type='absent',unexpected_fields='unavailable')
+        structure['root']['fields']={key:'absent' for key in structure['root']['fields']}
+    if change=='code-flag':structure['root']['unexpected_fields']='absent'
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header),HISTORY)

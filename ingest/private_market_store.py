@@ -50,14 +50,80 @@ for _table in list(DDL):
 HISTORY_STAGES = frozenset({'decode-screen', 'envelope', 'provider-rejection', 'history-rows',
     'metadata-missing', 'metadata-invalid', 'date-relation', 'core-validation', 'unknown',
     'envelope-root-type', 'envelope-root-fields', 'envelope-ret-code-type', 'envelope-ret-msg-type',
-    'envelope-data-type', 'envelope-data-fields', 'envelope-next-time', 'envelope-volume-precision'})
+    'envelope-data-type', 'envelope-data-fields', 'envelope-next-time', 'envelope-volume-precision',
+    'envelope-pagination', 'envelope-extra', 'envelope-cursor-conflict'})
+
+
+_STRUCTURE_FIELDS = {
+    'root': ('ret_code','ret_msg','data','pagination','extra','code','error'),
+    'data': ('kline_list','next_time','volume_precision'),
+    'pagination': ('has_more','total'), 'extra': ('next_time',),
+    'first_row': ('time_key','date','time_zone','close'),
+}
+_STRUCTURE_TYPES = frozenset({'absent','null','bool','int','float','string','array','object'})
+_ABSENT = object()
+
+
+def unavailable_structure():
+    return {'schema_version':1,'status':'unavailable'}
+
+
+def valid_structure(value):
+    """Closed static labels/types only; cannot carry arbitrary names or values."""
+    if type(value) is not dict or type(value.get('schema_version')) is not int or value['schema_version']!=1:
+        return False
+    if value.get('status')=='unavailable':return set(value)=={'schema_version','status'}
+    if value.get('status')!='available' or set(value)!=({'schema_version','status'}|set(_STRUCTURE_FIELDS)):return False
+    for name,keys in _STRUCTURE_FIELDS.items():
+        part=value[name]
+        if type(part) is not dict or set(part)!={'type','fields','unexpected_fields'}:return False
+        if type(part['type']) is not str or part['type'] not in _STRUCTURE_TYPES:return False
+        if type(part['unexpected_fields']) is not str or part['unexpected_fields'] not in {'absent','present','unavailable'}:return False
+        fields=part['fields']
+        if type(fields) is not dict or set(fields)!=set(keys):return False
+        if any(type(t) is not str or t not in _STRUCTURE_TYPES for t in fields.values()):return False
+        if part['type']!='object' and (part['unexpected_fields']!='unavailable' or any(t!='absent' for t in fields.values())):return False
+        if part['type']=='object' and part['unexpected_fields']=='unavailable':return False
+    if value['root']['type']=='absent':return False
+    for name in ('data','pagination','extra'):
+        if value['root']['fields'][name]!=value[name]['type']:return False
+    if value['data']['fields']['kline_list']!='array' and value['first_row']['type']!='absent':return False
+    if any(value['root']['fields'][key]!='absent' for key in ('code','error')) and value['root']['unexpected_fields']!='present':return False
+    return True
+
+
+def history_structure(value):
+    """Call only with already decoded/secret-screened JSON; no recursive projection."""
+    def kind(v):
+        if v is _ABSENT:return 'absent'
+        return {type(None):'null',bool:'bool',int:'int',float:'float',str:'string',list:'array',dict:'object'}.get(type(v))
+    def child(v,key):return v.get(key,_ABSENT) if type(v) is dict else _ABSENT
+    def part(v,keys,expected):
+        t=kind(v)
+        if t is None:raise ValueError()
+        fields={key:kind(child(v,key)) for key in keys}
+        if any(t is None for t in fields.values()):raise ValueError()
+        return dict(type=t,fields=fields,unexpected_fields=('present' if set(v)-set(expected) else 'absent')
+                    if type(v) is dict else 'unavailable')
+    try:
+        data=child(value,'data');rows=child(data,'kline_list')
+        first=rows[0] if type(rows) is list and rows else _ABSENT
+        sections={'root':value,'data':data,'pagination':child(value,'pagination'),
+                  'extra':child(value,'extra'),'first_row':first}
+        result=dict(schema_version=1,status='available')
+        for name,keys in _STRUCTURE_FIELDS.items():
+            expected=keys if name!='root' else ('ret_code','ret_msg','data','pagination','extra')
+            result[name]=part(sections[name],keys,expected)
+        return result if valid_structure(result) else unavailable_structure()
+    except (ValueError,TypeError,KeyError,OverflowError):return unavailable_structure()
 
 
 class MarketStoreError(ValueError):
     """Controlled categories; no path/provider/credential exception data."""
-    def __init__(self, category, *, diagnostic_stage=None):
+    def __init__(self, category, *, diagnostic_stage=None, diagnostic_structure=None):
         self.diagnostic_stage = (diagnostic_stage if type(diagnostic_stage) is str
                                  and diagnostic_stage in HISTORY_STAGES else None)
+        self.diagnostic_structure = diagnostic_structure if valid_structure(diagnostic_structure) else None
         super().__init__(category)
 
 
@@ -217,10 +283,13 @@ def request_meta(request):
 
 
 def normalized(raw, kind, request, secrets=(), *, version=2):
-    need(type(version) is int and version in (1,2,3), 'invalid-response')
+    need(type(version) is int and version in (1,2,3,4) and (version!=4 or kind=='history'), 'invalid-response')
+    value=_ABSENT
     def guard(condition, stage):
         if not condition:
-            raise MarketStoreError('invalid-response', diagnostic_stage=stage if kind=='history' else None)
+            raise MarketStoreError('invalid-response', diagnostic_stage=stage if kind=='history' else None,
+                                   diagnostic_structure=(history_structure(value) if value is not _ABSENT else unavailable_structure())
+                                   if kind=='history' and version==4 else None) from None
     if kind == 'history':
         guard(isinstance(raw, bytes) and 0 < len(raw) <= MAX_RAW, 'decode-screen')
         rejected = False
@@ -230,7 +299,8 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
     else:value = decode(raw, secrets)
     if kind == 'history':
         guard(isinstance(value, dict), 'envelope-root-type')
-        guard(set(value) == {'ret_code', 'ret_msg', 'data'}, 'envelope-root-fields')
+        guard(({'ret_code','ret_msg','data'} <= set(value) <= {'ret_code','ret_msg','data','pagination','extra'})
+              if version==4 else set(value)=={'ret_code','ret_msg','data'}, 'envelope-root-fields')
         guard(type(value['ret_code']) is int, 'envelope-ret-code-type')
         guard(isinstance(value['ret_msg'], str), 'envelope-ret-msg-type')
     else:
@@ -249,6 +319,18 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
               'envelope-next-time')
         guard('volume_precision' not in rows or type(rows['volume_precision']) is int
               and 0<=rows['volume_precision']<=18, 'envelope-volume-precision')
+        if version==4:
+            if 'pagination' in value:
+                page=value['pagination']
+                guard(type(page) is dict and {'has_more'}<=set(page)<={'has_more','total'}
+                      and type(page['has_more']) is bool
+                      and ('total' not in page or type(page['total']) is int and 0<=page['total']<=2**63-1),
+                      'envelope-pagination')
+            if 'extra' in value:
+                extra=value['extra']
+                guard(type(extra) is dict and set(extra)=={'next_time'} and type(extra['next_time']) is int
+                      and 0<=extra['next_time']<=2**63-1, 'envelope-extra')
+                guard('next_time' not in rows or rows['next_time']==extra['next_time'], 'envelope-cursor-conflict')
         rows = rows['kline_list']
     guard(isinstance(rows, list) and len(rows) <= (len(request['codes']) if kind == 'snapshot'
           else int(request['num']) if kind == 'history' else int(request['size'])), 'history-rows')
@@ -290,7 +372,7 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
                 # Use explicit offset and integer milliseconds, never inferred timezone.
                 local_date=date(1970,1,1)+timedelta(days=(stamp+zone*60000)//86400000)
             except (ValueError,OverflowError):
-                raise MarketStoreError('invalid-response', diagnostic_stage='metadata-invalid') from None
+                guard(False,'metadata-invalid')
             guard(parsed==local_date, 'date-relation')
             guard(parsed.strftime('%Y%m%d')==f'{market_date:08d}'
                  and parsed.isoformat()<=request['end']
@@ -408,7 +490,7 @@ class PrivateMarketStore:
         try:os.fsync(fd)
         finally:os.close(fd)
 
-    def ingest(self, request, response, *, run_id, observed_at, ingested_at, origin='trusted-capture'):
+    def ingest(self, request, response, *, run_id, observed_at, ingested_at, origin='trusted-capture', normalization_version=None):
         def append():
             need(origin in ('synthetic', 'trusted-capture'))
             need(isinstance(run_id, str) and re.fullmatch(r'[A-Za-z0-9_-]{1,128}', run_id))
@@ -418,7 +500,9 @@ class PrivateMarketStore:
             kind, query, secrets = request_meta(request)
             need(isinstance(response, ReadResponse) and type(response.status) is int
                  and (response.status == 0 or 100 <= response.status <= 599))
-            version=2 if kind=='snapshot' else 3 if kind=='history' else 1
+            version=normalization_version if normalization_version is not None else 2 if kind=='snapshot' else 4 if kind=='history' else 1
+            need(type(version) is int and (kind=='snapshot' and version in (1,2)
+                 or kind=='history' and version in (3,4) or kind=='news' and version==1))
             records, raw_hash, raw = [], None, None
             reason = None
             if response.status != 200:
@@ -471,9 +555,9 @@ class PrivateMarketStore:
              and meta['observed_ms'] == aware_ms(meta['observed_at'], True) and meta['ingested_ms'] == aware_ms(meta['ingested_at'], True)
              and meta['run_id'] == row['run_id'] and meta['kind'] == row['kind'], 'database-integrity-failed')
         version=meta.get('normalization_version',1)
-        need(type(version) is int and version in (1,2,3)
+        need(type(version) is int and version in (1,2,3,4)
              and (meta['kind']=='snapshot' and version in (1,2)
-                  or meta['kind']=='history' and version==3
+                  or meta['kind']=='history' and version in (3,4)
                   or meta['kind']=='news' and version==1), 'database-integrity-failed')
         return meta
 

@@ -643,7 +643,7 @@ def test_history_trusted_stages_generic_errors_and_store_disposal(raw, stage, st
         req = ReadRequest(req.method, req.path, req.query, req.body,
                           {'X-API-Key': 'SYNTHETIC-CREDENTIAL-CANARY'}, req.timeout)
     attempt = store.ingest(req, ReadResponse(200, raw), run_id='synthetic-stage',
-                           observed_at=OBS, ingested_at=ING, origin='synthetic')
+                           observed_at=OBS, ingested_at=ING, origin='synthetic', normalization_version=3)
     assert attempt.status == 'failed' and attempt.raw_hash is None
     assert not list(store.raw_dir.iterdir()) and store.query('history', ING) == []
     meta = store.attempts(ING)[0]
@@ -750,3 +750,118 @@ def test_nonhistory_envelope_errors_still_have_no_stage(kind):
     actual,query,_=request_meta(request(kind))
     with pytest.raises(MarketStoreError) as caught:normalized(b'{"ret_code":true,"ret_msg":false,"data":null}',actual,query)
     assert str(caught.value)=='invalid-response' and caught.value.diagnostic_stage is None
+
+
+# PRSG-106 documented-shape fixtures only; no real provider capture.
+def documented_history(**root):
+    return diagnostic_history_body(pagination={'has_more':False,'total':1},extra={'next_time':0},**root)
+
+
+@pytest.mark.parametrize('optional',[{}, {'pagination':{'has_more':True}}, {'extra':{'next_time':2**63-1}},
+    {'pagination':{'has_more':False,'total':0},'extra':{'next_time':0}}])
+def test_v4_documented_shape_and_unchanged_old_versions(optional):
+    from ingest.private_market_store import normalized,request_meta
+    kind,query,_=request_meta(diagnostic_history_request());raw=diagnostic_history_body(**optional)
+    actual=normalized(raw,kind,query,version=4)
+    baseline=normalized(diagnostic_history_body(),kind,query,version=3)
+    assert actual==baseline
+    for version in (1,2,3):
+        if optional:
+            with pytest.raises(MarketStoreError) as caught:normalized(raw,kind,query,version=version)
+            assert caught.value.diagnostic_stage=='envelope-root-fields'
+            assert caught.value.diagnostic_structure is None
+        else:assert normalized(raw,kind,query,version=version)==baseline
+
+
+@pytest.mark.parametrize('outer,stage',[
+ ({'pagination':None},'envelope-pagination'),({'pagination':[]},'envelope-pagination'),
+ ({'pagination':{}},'envelope-pagination'),({'pagination':{'has_more':1}},'envelope-pagination'),
+ ({'pagination':{'has_more':True,'next_key':'CANARY'}},'envelope-pagination'),
+ ({'pagination':{'has_more':False,'total':True}},'envelope-pagination'),
+ ({'pagination':{'has_more':False,'total':-1}},'envelope-pagination'),
+ ({'pagination':{'has_more':False,'total':2**63}},'envelope-pagination'),
+ ({'pagination':{'has_more':False,'total':1.0}},'envelope-pagination'),
+ ({'extra':None},'envelope-extra'),({'extra':{}},'envelope-extra'),
+ ({'extra':{'next_time':True}},'envelope-extra'),({'extra':{'next_time':-1}},'envelope-extra'),
+ ({'extra':{'next_time':2**63}},'envelope-extra'),({'extra':{'next_time':'0'}},'envelope-extra'),
+ ({'extra':{'next_time':0,'other':0}},'envelope-extra'),
+ ({'data':{'kline_list':[],'next_time':0},'extra':{'next_time':1}},'envelope-cursor-conflict'),
+ ({'code':0},'envelope-root-fields'),({'error':{'code':1234567}},'envelope-root-fields'),
+ ({'s':'ok','d':[]},'envelope-root-fields'),
+ ({'ret_code':1234567,'pagination':None},'provider-rejection'),
+ ({'data':{'kline_list':[],'next_time':True},'pagination':None},'envelope-next-time'),
+])
+def test_v4_malformed_documented_metadata_and_no_aliases(outer,stage,store):
+    from ingest.private_market_store import normalized,request_meta,valid_structure
+    req=diagnostic_history_request();kind,query,_=request_meta(req);raw=diagnostic_history_body(**outer)
+    with pytest.raises(MarketStoreError) as caught:normalized(raw,kind,query,version=4)
+    assert caught.value.diagnostic_stage==stage and valid_structure(caught.value.diagnostic_structure)
+    assert caught.value.diagnostic_structure['status']=='available'
+    failed=store.ingest(req,ReadResponse(200,raw),run_id='synthetic-v4',observed_at=OBS,ingested_at=ING,origin='synthetic')
+    assert failed.status=='failed' and failed.raw_hash is None and not list(store.raw_dir.iterdir())
+    assert store.attempts(ING)[0]['normalization_version']==4
+    assert 'diagnostic_structure' not in store.attempts(ING)[0]
+
+
+def test_v4_equal_cursors_and_empty_rows_do_not_claim_window(store):
+    from ingest.private_market_store import normalized,request_meta
+    req=diagnostic_history_request();kind,query,_=request_meta(req)
+    raw=diagnostic_history_body(data={'kline_list':[],'next_time':0,'volume_precision':18},
+                              pagination={'has_more':True,'total':999999},extra={'next_time':0})
+    assert normalized(raw,kind,query,version=4)==[]
+    result=store.ingest(req,ReadResponse(200,raw),run_id='synthetic-empty',observed_at=OBS,ingested_at=ING,origin='synthetic')
+    assert result.status=='all-missing' and store.attempts(ING)[0]['record_count']==0
+    assert store.raw(result.raw_hash)==raw
+
+
+def test_v3_and_v4_store_metadata_replay_preserves_raw_shape(store):
+    req=diagnostic_history_request();old=diagnostic_history_body();new=documented_history()
+    first=store.ingest(req,ReadResponse(200,old),run_id='synthetic-old',observed_at=OBS,ingested_at=ING,
+                       origin='synthetic',normalization_version=3)
+    frozen=store.attempts(ING)[0]
+    second=store.ingest(req,ReadResponse(200,new),run_id='synthetic-new',observed_at=OBS,ingested_at=ING,origin='synthetic')
+    assert first.status==second.status=='success'
+    assert store.raw(first.raw_hash)==old and store.raw(second.raw_hash)==new
+    assert frozen in store.attempts(ING)
+    assert {v['normalization_version'] for v in store.attempts(ING)}=={3,4}
+    assert store.query('history',ING)[0]['record']['close']==10
+
+
+@pytest.mark.parametrize('missing',['date','time_key','time_zone'])
+def test_v4_never_infers_row_metadata(missing):
+    from ingest.private_market_store import normalized,request_meta
+    body=json.loads(documented_history());del body['data']['kline_list'][0][missing]
+    kind,query,_=request_meta(diagnostic_history_request())
+    with pytest.raises(MarketStoreError) as caught:normalized(json.dumps(body).encode(),kind,query,version=4)
+    assert caught.value.diagnostic_stage=='metadata-missing'
+    assert caught.value.diagnostic_structure['first_row']['fields'][missing]=='absent'
+
+
+@pytest.mark.parametrize('raw',[b'{',b'x'*(MAX_RAW+1),b'{"a":1,"a":2}',b'{"a":NaN}',
+    b'{"ret_code":0,"ret_msg":"SYNTHETIC-CREDENTIAL-CANARY","data":{}}'])
+def test_v4_screen_failure_structure_unavailable(raw):
+    from ingest.private_market_store import normalized,request_meta
+    kind,query,_=request_meta(diagnostic_history_request())
+    with pytest.raises(MarketStoreError) as caught:normalized(raw,kind,query,('SYNTHETIC-CREDENTIAL-CANARY',),version=4)
+    assert caught.value.diagnostic_stage=='decode-screen'
+    assert caught.value.diagnostic_structure=={'schema_version':1,'status':'unavailable'}
+
+
+@pytest.mark.parametrize('unknown',['private_uuid_1234','MixedCaseName','x'*65,'路径','field-PRIVATE-CANARY'])
+def test_structure_fixed_labels_no_arbitrary_key_names_or_values(unknown):
+    from ingest.private_market_store import normalized,request_meta
+    raw=diagnostic_history_body(**{unknown:'BODY-VALUE-CANARY','code':1234567,'error':{'code':-1234567}})
+    kind,query,_=request_meta(diagnostic_history_request())
+    with pytest.raises(MarketStoreError) as caught:normalized(raw,kind,query,version=4)
+    structure=caught.value.diagnostic_structure;encoded=json.dumps(structure)
+    assert unknown not in encoded and 'CANARY' not in encoded and '1234567' not in encoded
+    assert structure['root']['fields']['code']=='int' and structure['root']['fields']['error']=='object'
+    assert structure['root']['unexpected_fields']=='present'
+    assert sum(len(part['fields']) for key,part in structure.items() if key not in ('schema_version','status'))==17
+
+
+@pytest.mark.parametrize('kind',['snapshot','news'])
+def test_v4_history_only(kind):
+    from ingest.private_market_store import normalized,request_meta
+    actual,query,_=request_meta(request(kind))
+    with pytest.raises(MarketStoreError):normalized(response(kind=kind).body,actual,query,version=4)

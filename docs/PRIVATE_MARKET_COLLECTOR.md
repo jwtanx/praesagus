@@ -83,10 +83,13 @@ An overrun is visible as `run-budget`, stops subsequent jobs and does not forcib
 kill the SQLite writer. An already persisted attempt remains persisted.
 
 One length-prefixed reply contains a bounded JSON header and exact body bytes.
-New workers emit version 2 with exactly `version`, `job_digest`, `status`,
-`observed_at`, `failure`, `body_size`, `retry_after`, and `diagnostic_stage`.
-The parent also accepts exact version-1 seven-key legacy headers, with a null
-stage. Deploy worker and parent together: older parents reject version 2.
+New workers emit version3 with exactly `version`, `job_digest`, `status`,
+`observed_at`, `failure`, `body_size`, `retry_after`, `diagnostic_stage`,
+`normalization_version` and `diagnostic_structure`. History uses normalization4,
+snapshot2 and news1. The parent also accepts exact version1 seven-key and
+version2 eight-key legacy headers; legacy history remains normalization3 and
+legacy structures null. Deploy worker and parent together: older parents reject
+version3. Private inventory is carried only on eligible history rejections.
 Unknown versions, extra/missing keys, duplicate keys, wrong digest, malformed
 stage combinations, truncation, excessive sizes and extra body bytes fail closed
 as `bad-frame`, with no retained stage. Failure bodies must be empty; successful
@@ -192,3 +195,71 @@ identify which arbitrary field differed. Legacy `envelope` remains allowlisted
 for older private summaries/version2 frames; immutable store records stay
 unchanged. This change performs no live request and does not establish source
 readiness; a fresh bounded request requires separate reviewed execution.
+
+
+## Version4 history envelope and private structural receipt (PRSG-106)
+
+Current history intake uses normalization4. History1–3 acceptance/replay remains
+unchanged; stored history metadata3 and4 replay using their recorded version.
+Snapshot/news normalization, payloads and connector validation are unchanged.
+No previous attempt is rewritten or diagnostic added to immutable SQLite data.
+
+V4 root requires ret_code/ret_msg/data with only optional pagination/extra.
+Return code is nonbool integer, message string; provider rejection precedes deeper
+metadata validation. Existing data.kline_list plus optional next_time and
+volume_precision and exact scalar bounds remain. If present, pagination is an
+exact object with required bool has_more and optional nonbool int total0..2**63-1;
+extra is exactly next_time nonbool int0..2**63-1. No next_key/aliases/alternate
+status/error wrappers or other root fields. Duplicate cursors in data and extra
+must both be valid and equal. Malformed metadata uses fixed envelope-pagination,
+envelope-extra or envelope-cursor-conflict stages. Existing data cursor/precision
+checks run before these new v4 guards, followed by unchanged list/row/date/offset/
+dedup/close guards. Explicit date/time_zone still required. No automatic paging,
+requests/retries, window-completeness inference, currency or finality assertion.
+Pagination/empty rows are not proof that21 qualifying closes exist. Accepted raw
+bytes retain their original shape in the private archive; failed bodies remain
+empty/discarded with null raw hash.
+
+Optionally add `--diagnostic-receipt /absolute/private/new-history-receipt.json`
+to the existing approved manual collector invocation. Preflight occurs before
+plan/store/collector/credential activity: canonical new JSON path outside every
+Git checkout/public serving path; no symlink traversal; owned0700 parent. The
+0600 receipt is atomic/no-overwrite and its temporary is removed on ordinary
+failure. A failure after linking/fsync clears only its own new link. Existing
+files are never replaced/deleted, including temporary-name collisions. Closing
+or writing failures produce the existing fixed private collector error.
+This flag does not grant live-call authorization or change plans/credentials.
+
+The exact private receipt is schema_version1/history_failures, each entry only
+fixed diagnostic_stage and structure. No run/job/attempt IDs, codes, timestamps,
+paths, hashes, prices, return-code/cursor/count values or raw body. At most30
+history failures within the existing41-job cap. Inventory exists only for
+HTTP200/history/invalid-response after existing bounded decode/duplicate/nonfinite/
+secret screening. Syntax/screening failure gives only schema_version1/status
+unavailable. Core/unknown failures may likewise lack usable structure. Diagnostics
+cannot recover a previous discarded body or authenticate a provider/reviewer.
+
+Available structure contains schema_version1/status available and root/data/
+pagination/extra/first_row sections. Each has a fixed type enum, fixed fields
+mapped to type enums and unexpected_fields absent/present/unavailable. Root's
+seven fixed labels are ret_code/ret_msg/data/pagination/extra/code/error; data
+three labels kline_list/next_time/volume_precision; pagination has_more/total;
+extra next_time; first_row time_key/date/time_zone/close. These17 labels are code
+constants, never provider names copied from input. `code`/`error` are diagnostic
+only and still reject admission. No error.code recursion or arbitrary nested
+projection. Types are absent/null/bool/int/float/string/array/object, with bool
+separate from integer. Unknown field names (including ASCII IDs) never emitted;
+a fixed presence flag indicates them. First-row presence/types do not imply
+accepted bars; no row length/count or values. Unsupported inventory becomes
+unavailable; invalid/extra/forged fields or inconsistent type linkage fail closed.
+
+Clock/storage/cleanup/status/frame replacements clear inventory with stage;
+run-budget retains only a prior actual rejected job's diagnostic. New frame3
+requires exact normalization4/history eligibility for inventory; old frames1/2
+cannot carry it and cannot admit v4 optional metadata. Repr remains generic.
+No receipt flag means inventory is discarded after in-memory collection. Existing
+stdout and `--diagnostics` schema2 remain unchanged and never include structural
+fields/types. An empty receipt is not proof of accepted rows. Review the private
+receipt after a separately approved bounded intake; if mandatory field types
+conflict, obtain the exact official contract/support clarification rather than
+admit undocumented wrappers or repeat the same request indefinitely.

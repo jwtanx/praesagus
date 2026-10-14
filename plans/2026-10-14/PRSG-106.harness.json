@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-106",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "financial-data",
+      "connectors"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-106-documented-history-pagination.md",
+  "objective": "Accept strict documented history pagination metadata with versioned replay.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "06da92bfa691449bd13baaa01cb29836f615a043",
+  "allowed_paths": [
+    "ingest/private_market_store.py",
+    "ingest/market_collector.py",
+    "scripts/market_collect.py",
+    "tests/test_private_market_store.py",
+    "tests/test_market_collector.py",
+    "docs/PRIVATE_MARKET_COLLECTOR.md",
+    "plans/2026-10-14/PRSG-106-documented-history-pagination.md",
+    "plans/2026-10-14/PRSG-106.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "ingest/daily_report_projection.py",
+    "skills/",
+    "harness/"
+  ],
+  "checks": [
+    {
+      "id": "contract",
+      "kind": "manual",
+      "description": "Versioned documented envelope contract",
+      "status": "passed",
+      "evidence": [
+        "Lead accepted exact private interface/17 fixed labels, strict history4, legacy replay and eight-path/base06da92b scope on 2026-10-14; fixed diagnostic code/error are not admission aliases."
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "manual",
+      "description": "Focused and worker/store replay",
+      "status": "passed",
+      "evidence": [
+        "Approved Python3.11 focused four-file set: 761 passed in 3.63s/no skips; full isolated pytest: 2290 passed, 41 dependency deprecation warnings in 43.35s.",
+        "Complete eight-path ticket validation and git diff --check passed; synthetic documented/malformed/legacy/inventory/privacy/receipt/IPC/store regressions executed.",
+        "Initial65failures reflected old default3/frame2 assertions; legacy tests retain explicit3 and current-worker tests reflectframe3. Recorded in spec; no guard weakening."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent scope review and delivery",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed all8paths/versionedworker-store-replay/private17fieldtypedreceipt;761focusedpassed3.58s. Existingguards/protectedprojection unchanged. Fullhooks required. Noactualproviderresponse/cause/historyadmission inferred."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-106-D1",
+      "description": "Versioned documented envelope contract",
+      "check_ids": [
+        "contract"
+      ],
+      "status": "done",
+      "evidence": [
+        "See matching passed contract/tests checks and Engineer evidence; Lead final review remains pending."
+      ]
+    },
+    {
+      "id": "PRSG-106-D2",
+      "description": "Focused and worker/store replay",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "See matching passed contract/tests checks and Engineer evidence; Lead final review remains pending."
+      ]
+    },
+    {
+      "id": "PRSG-106-D3",
+      "description": "Independent scope review and delivery",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed all8paths/versionedworker-store-replay/private17fieldtypedreceipt;761focusedpassed3.58s. Existingguards/protectedprojection unchanged. Fullhooks required. Noactualproviderresponse/cause/historyadmission inferred."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed all8paths/versionedworker-store-replay/private17fieldtypedreceipt;761focusedpassed3.58s. Existingguards/protectedprojection unchanged. Fullhooks required. Noactualproviderresponse/cause/historyadmission inferred."
+    ]
+  }
+}

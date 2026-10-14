@@ -21,7 +21,7 @@ from connectors.moomoo_rest import MoomooRESTConnector, ReadRequest, ReadRespons
 from connectors.moomoo_rest_live import (EncryptedEd25519Signer, SecureReadTransport,
                                         encrypted_pem, keychain_passphrase)
 from ingest.private_market_store import (MAX_RAW, REPO, PrivateMarketStore, canonical,
-    decode, normalized, parse_aware, private, request_meta, safe, MarketStoreError, HISTORY_STAGES)
+    decode, normalized, parse_aware, private, request_meta, safe, MarketStoreError, HISTORY_STAGES, valid_structure, unavailable_structure)
 
 MAX_INPUT = 65536
 MAX_HEADER = 4096
@@ -132,6 +132,8 @@ class WorkerReply:
     failure: str | None
     cleanup_ok: bool = True
     diagnostic_stage: str | None = None
+    normalization_version: int | None = None
+    diagnostic_structure: dict | None = None
     def __repr__(self):return '<PrivateCollectorReply>'
 
 
@@ -142,6 +144,8 @@ class JobOutcome:
     attempt_id: str | None
     failure: str | None
     diagnostic_stage: str | None = None
+    normalization_version: int | None = None
+    diagnostic_structure: dict | None = None
     def __repr__(self):return '<PrivateCollectorOutcome>'
 
 
@@ -152,13 +156,35 @@ def valid_stage(job, status, failure, stage, *, legacy=False):
     return stage is None
 
 
-def encode_reply(job, response, observed_at, failure=None, retry_after=None, diagnostic_stage=None):
+def normalization_for(job, version=None, *, current=False):
+    expected = (4 if current else 3) if job.get('kind')=='history' else 2 if job.get('kind')=='snapshot' else 1
+    if version is None:return expected
+    require(type(version) is int and (job.get('kind')=='history' and version in (3,4)
+            or job.get('kind')=='snapshot' and version==2 or job.get('kind')=='news' and version==1))
+    return version
+
+
+def valid_diagnostic_structure(job, status, failure, stage, version, structure):
+    eligible=job.get('kind')=='history' and status==200 and failure=='invalid-response' and version==4
+    if not eligible:return structure is None
+    return (valid_structure(structure) and
+            (stage!='decode-screen' or structure['status']=='unavailable'))
+
+
+def encode_reply(job, response, observed_at, failure=None, retry_after=None, diagnostic_stage=None,
+                 *, frame_version=2, normalization_version=None, diagnostic_structure=None):
     require(failure is None or type(failure) is str and failure in FAILURES)
     require(valid_stage(job, response.status, failure, diagnostic_stage))
     require(failure is None or response.body == b'')
-    header = {'version': 2, 'job_digest': job_digest(job), 'status': response.status,
+    require(type(frame_version) is int and frame_version in (2,3))
+    version=normalization_for(job,normalization_version,current=frame_version==3)
+    require(frame_version!=2 or normalization_version is None and diagnostic_structure is None)
+    require(frame_version!=3 or version==normalization_for(job,current=True))
+    require(valid_diagnostic_structure(job,response.status,failure,diagnostic_stage,version,diagnostic_structure))
+    header = {'version': frame_version, 'job_digest': job_digest(job), 'status': response.status,
               'observed_at': observed_at, 'failure': failure, 'body_size': len(response.body),
               'retry_after': retry_after, 'diagnostic_stage': diagnostic_stage}
+    if frame_version==3:header.update(normalization_version=version,diagnostic_structure=diagnostic_structure)
     payload = canonical(header).encode()
     require(len(payload) <= MAX_HEADER and len(response.body) <= MAX_RAW)
     return struct.pack('!I', len(payload)) + payload + response.body
@@ -171,9 +197,15 @@ def parse_reply(raw, job):
     header = decode(raw[4:4+size])
     keys = {'version', 'job_digest', 'status', 'observed_at', 'failure', 'body_size', 'retry_after'}
     require(isinstance(header, dict) and type(header.get('version')) is int
-            and header['version'] in (1,2)
-            and set(header) == (keys if header['version']==1 else keys | {'diagnostic_stage'}))
+            and header['version'] in (1,2,3)
+            and set(header) == (keys if header['version']==1 else keys | {'diagnostic_stage'}
+                 if header['version']==2 else keys | {'diagnostic_stage','normalization_version','diagnostic_structure'}))
     stage = header.get('diagnostic_stage')
+    version=normalization_for(job,header.get('normalization_version'))
+    structure=header.get('diagnostic_structure')
+    require(header['version']!=3 or version==normalization_for(job,current=True)
+            and header['normalization_version'] is not None)
+    require(valid_diagnostic_structure(job,header['status'],header['failure'],stage,version,structure))
     require(header['job_digest'] == job_digest(job)
             and type(header['body_size']) is int and 0 <= header['body_size'] <= MAX_RAW
             and len(raw) == 4 + size + header['body_size']
@@ -186,25 +218,31 @@ def parse_reply(raw, job):
     if header['failure'] is None:
         require(header['status'] == 200)
         kind, query, _ = request_meta(job_request(job))
-        normalized(body, kind, query, version=3 if kind=='history' else 2 if kind=='snapshot' else 1)
+        normalized(body, kind, query, version=version)
     else:require(not body)
-    return WorkerReply(ReadResponse(header['status'], body), header['observed_at'], header['failure'], diagnostic_stage=stage)
+    return WorkerReply(ReadResponse(header['status'], body), header['observed_at'], header['failure'],
+                       diagnostic_stage=stage,normalization_version=version,diagnostic_structure=structure)
 
 
 def execute_job(job, locator, *, credentials=load_credentials, transport_factory=SecureReadTransport, clock=utc_now):
     """Worker memory only; shared policy screens headers/known secrets pre-IPC."""
     job_request(job);validate_locator(locator)
+    version=normalization_for(job,current=True)
+    def reply(response,observed,failure=None,*,stage=None,structure=None):
+        return encode_reply(job,response,observed,failure,diagnostic_stage=stage,frame_version=3,
+                            normalization_version=version,diagnostic_structure=structure)
     captured = None
     observed = None
     failure = None
     screening_rejected = False
     diagnostic_stage = None
+    diagnostic_structure = None
     try:key, signer = credentials(locator)
     except Exception:failure = 'credentials'
     if failure:
-        return encode_reply(job, ReadResponse(0, b''), clock(), failure)
+        return reply(ReadResponse(0,b''),clock(),failure)
     def capture(request):
-        nonlocal captured, observed, screening_rejected, diagnostic_stage
+        nonlocal captured, observed, screening_rejected, diagnostic_stage, diagnostic_structure
         response = transport(request)
         require(isinstance(response, ReadResponse) and type(response.status) is int
                 and 100 <= response.status <= 599)
@@ -214,12 +252,14 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
             kind, query, secrets = request_meta(request)
             try:
                 normalized(response.body, kind, query, (*secrets, key, locator['directory']),
-                           version=3 if kind=='history' else 2 if kind=='snapshot' else 1)
+                           version=version)
             except Exception as error:
                 screening_rejected = True
                 if kind == 'history':
                     stage = error.diagnostic_stage if type(error) is MarketStoreError else None
                     diagnostic_stage = stage if type(stage) is str and stage in HISTORY_STAGES else 'unknown'
+                    structure=error.diagnostic_structure if type(error) is MarketStoreError else None
+                    diagnostic_structure=structure if valid_structure(structure) else unavailable_structure()
                 raise
         captured = response
         return response
@@ -235,14 +275,15 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
                    'http-failed':'http-failed', 'malformed-response':'invalid-response',
                    'provider-failed':'invalid-response'}.get(error.kind, 'transport')
         if not screening_rejected and job['kind']=='history' and captured is not None and captured.status==200:
-            if error.kind in ('malformed-response','provider-failed'):diagnostic_stage = 'core-validation'
+            if error.kind in ('malformed-response','provider-failed'):
+                diagnostic_stage='core-validation';diagnostic_structure=unavailable_structure()
     except Exception:failure = 'worker-failed'
     if screening_rejected:failure = 'invalid-response'
-    if captured is None:return encode_reply(job, ReadResponse(0, b''), clock(), failure or 'worker-failed')
+    if captured is None:return reply(ReadResponse(0,b''),clock(),failure or 'worker-failed')
     if failure:
         # The exact body is deliberately not emitted when shape/core validation fails.
-        return encode_reply(job, ReadResponse(captured.status, b''), observed, failure, diagnostic_stage=diagnostic_stage)
-    return encode_reply(job, ReadResponse(200, captured.body), observed)
+        return reply(ReadResponse(captured.status,b''),observed,failure,stage=diagnostic_stage,structure=diagnostic_structure)
+    return reply(ReadResponse(200,captured.body),observed)
 
 
 def worker_main(stdin, stdout):
@@ -338,8 +379,8 @@ def supervise(job, locator, *, timeout=20.0, cleanup=2.0, popen=subprocess.Popen
                 try:
                     if stream is not None:stream.close()
                 except Exception:cleanup_ok = False
-    if not cleanup_ok:return WorkerReply(None, None, 'cleanup-failed', False)
-    if failure:return WorkerReply(None, None, failure)
+    if not cleanup_ok:return WorkerReply(None,None,'cleanup-failed',False,normalization_version=normalization_for(job,current=True))
+    if failure:return WorkerReply(None,None,failure,normalization_version=normalization_for(job,current=True))
     try:reply = parse_reply(bytes(raw), job)
     except Exception:return WorkerReply(None, None, 'bad-frame')
     return reply
@@ -378,8 +419,12 @@ def collect(store, plan, locator, *, run_id, supervisor=supervise, clock=time.mo
                 and isinstance(reply.response.body, bytes) and len(reply.response.body) <= MAX_RAW)
             failure_ok = reply.failure is None or type(reply.failure) is str and reply.failure in FAILURES
             status = reply.response.status if response_ok and reply.response is not None else 0
-            stage_ok = valid_stage(job, status, reply.failure, reply.diagnostic_stage, legacy=True)
-            if (not response_ok or not failure_ok or not stage_ok
+            stage_ok = valid_stage(job,status,reply.failure,reply.diagnostic_stage,legacy=True)
+            try:
+                version=normalization_for(job,reply.normalization_version)
+                structure_ok=valid_diagnostic_structure(job,status,reply.failure,reply.diagnostic_stage,version,reply.diagnostic_structure)
+            except Exception:structure_ok=False
+            if (not response_ok or not failure_ok or not stage_ok or not structure_ok
                     or reply.failure is not None and reply.response is not None and reply.response.body != b''):
                 reply = WorkerReply(None, None, 'bad-frame')
         observed = reply.observed_at if reply.response is not None else wall()
@@ -397,7 +442,8 @@ def collect(store, plan, locator, *, run_id, supervisor=supervise, clock=time.mo
         over_budget = clock() >= end
         response = reply.response or ReadResponse(0, b'')
         failed = False
-        try:stored = store.ingest(job_request(job), response, run_id=run_id, observed_at=observed, ingested_at=ingested)
+        try:stored = store.ingest(job_request(job),response,run_id=run_id,observed_at=observed,ingested_at=ingested,
+                                 normalization_version=normalization_for(job,reply.normalization_version))
         except Exception:failed = True
         if failed:
             outcomes.append(JobOutcome(job_digest(job), 'not-persisted', None, 'storage-failed'));break
@@ -405,9 +451,81 @@ def collect(store, plan, locator, *, run_id, supervisor=supervise, clock=time.mo
         over_budget = over_budget or clock() >= end
         outcomes.append(JobOutcome(job_digest(job), stored.status, stored.attempt_id,
                                    reply.failure or ('run-budget' if over_budget else None),
-                                   reply.diagnostic_stage if reply.failure=='invalid-response' else None))
+                                   reply.diagnostic_stage if reply.failure=='invalid-response' else None,
+                                   normalization_for(job,reply.normalization_version),
+                                   reply.diagnostic_structure if reply.failure=='invalid-response' else None))
         if not reply.cleanup_ok or over_budget:
             reason = 'cleanup-failed' if not reply.cleanup_ok else 'run-budget'
             outcomes.extend(JobOutcome(job_digest(j), 'unattempted', None, reason) for j in jobs[index+1:])
             break
     return outcomes
+
+
+class DiagnosticReceipt:
+    """Preflight private new path before collection; inventory never stdout."""
+    def __init__(self, destination):
+        self.parent=None;self.fd=None;self.temporary=None;self.temp_created=False
+        try:
+            path=Path(destination)
+            require(path.is_absolute() and path==path.resolve() and path.suffix=='.json'
+                    and len(str(path))<=4096 and not path.is_relative_to(REPO)
+                    and not any(part.lower() in {'public','www','htdocs','artifacts','dist'} for part in path.parts)
+                    and not any((a/'.git').exists() or (a/'.git').is_symlink() for a in path.parents))
+            parent=os.open('/',os.O_RDONLY|os.O_DIRECTORY)
+            try:
+                for part in path.parent.parts[1:]:
+                    child=os.open(part,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW,dir_fd=parent)
+                    os.close(parent);parent=child
+                info=os.fstat(parent)
+                require(info.st_uid==os.getuid() and stat.S_IMODE(info.st_mode)==0o700)
+                try:os.stat(path.name,dir_fd=parent,follow_symlinks=False)
+                except FileNotFoundError:pass
+                else:require(False)
+                self.parent=parent;parent=None
+            finally:
+                if parent is not None:os.close(parent)
+            self.name=path.name
+            self.temporary='.history-receipt-'+os.urandom(16).hex()
+            self.fd=os.open(self.temporary,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600,dir_fd=self.parent)
+            self.temp_created=True
+        except BaseException:
+            self.close();raise
+
+    def write(self, outcomes):
+        require(type(outcomes) is list and len(outcomes)<=41)
+        failures=[]
+        for outcome in outcomes:
+            require(type(outcome) is JobOutcome)
+            if outcome.diagnostic_stage is None:
+                require(outcome.diagnostic_structure is None);continue
+            require(outcome.failure=='invalid-response' and type(outcome.diagnostic_stage) is str
+                    and outcome.diagnostic_stage in HISTORY_STAGES)
+            structure=outcome.diagnostic_structure if outcome.diagnostic_structure is not None else unavailable_structure()
+            require(valid_structure(structure) and (outcome.diagnostic_stage!='decode-screen' or structure['status']=='unavailable'))
+            failures.append(dict(diagnostic_stage=outcome.diagnostic_stage,structure=structure))
+        require(len(failures)<=30)
+        raw=(canonical(dict(schema_version=1,history_failures=failures))+'\n').encode()
+        require(len(raw)<=MAX_INPUT and self.fd is not None)
+        with os.fdopen(self.fd,'wb') as stream:
+            self.fd=None;stream.write(raw);stream.flush();os.fchmod(stream.fileno(),0o600);os.fsync(stream.fileno())
+        linked=False
+        try:
+            os.link(self.temporary,self.name,src_dir_fd=self.parent,dst_dir_fd=self.parent,follow_symlinks=False)
+            linked=True;os.fsync(self.parent)
+        except BaseException:
+            if linked:
+                target=os.stat(self.name,dir_fd=self.parent,follow_symlinks=False)
+                owned=os.stat(self.temporary,dir_fd=self.parent,follow_symlinks=False)
+                if (target.st_dev,target.st_ino)==(owned.st_dev,owned.st_ino):os.unlink(self.name,dir_fd=self.parent)
+            raise
+
+    def close(self):
+        if self.fd is not None:os.close(self.fd);self.fd=None
+        if self.parent is not None:
+            try:
+                if self.temp_created:
+                    try:os.unlink(self.temporary,dir_fd=self.parent)
+                    except FileNotFoundError:pass
+            finally:os.close(self.parent);self.parent=None
+
+    def __repr__(self):return '<PrivateHistoryDiagnosticReceipt>'
