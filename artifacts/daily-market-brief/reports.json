@@ -1,7 +1,11 @@
 {
   "schema_version": 1,
-  "latest": "2026-10-13",
+  "latest": "2026-10-14",
   "reports": [
+    {
+      "date": "2026-10-14",
+      "label": "14 October 2026"
+    },
     {
       "date": "2026-10-13",
       "label": "13 October 2026"
