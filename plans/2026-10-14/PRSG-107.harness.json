@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-107",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.2,
+      "high": 0.4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-107-real-report-preparation-depth.md",
+  "objective": "Prepare normal full report without dropping primary provenance or weakening evidence bounds.",
+  "status": "review",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "f4fd317988dedfab2708c46bea231a95ce4b0884",
+  "allowed_paths": [
+    "ingest/forecast_scenario.py",
+    "ingest/report_forecast.py",
+    "scripts/daily-market-brief/prepare_forecast_report.py",
+    "tests/test_report_forecast.py",
+    "tests/test_forecast_scenario.py",
+    "docs/FORECAST_SCENARIO.md",
+    "plans/2026-10-14/PRSG-107-real-report-preparation-depth.md",
+    "plans/2026-10-14/PRSG-107.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "ingest/private_market_store.py",
+    "ingest/market_collector.py",
+    "skills/",
+    "harness/"
+  ],
+  "checks": [
+    {
+      "id": "contract",
+      "kind": "manual",
+      "description": "Real-template reproduced/exact separate bounds",
+      "status": "passed",
+      "evidence": [
+        "Lead accepted exact separate8/12depth interface, eight paths/basef4fd317 on 2026-10-14. Old committed realOct14report CLI failure reproduced before code: exit1/private-input-invalid/no bundle;120audit rows preserved."
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "manual",
+      "description": "Real-schema preservation and financial bound regressions",
+      "status": "passed",
+      "evidence": [
+        "Approved Python3.11 focused four-file set:411passed2.09s/no skips. Full isolatedpytest:2313passed41dependencywarnings42.24s.",
+        "Committed realOct14report/universe/monthlycalendar now fullpubliccompactvalidated privateCLI withheld/count0; allsource/120audit/inputbytes/metadata/other49rows preserved; nestedsource numericfixture and12/13/evidence9/privacy/size/value regressions passed.",
+        "git diff --check and complete eight-path ticket validation passed; Lead-owned pre-existing108spec/manifest excluded."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent delivery and actual Trader CLI replay",
+      "status": "pending",
+      "evidence": [
+        "Lead independently read all8paths and real9depth6742-nodepublicreport; focused411passed2.15s or current exactrun retained separately. Report-only12/defaultfinancial8, allvalue/privacy/fullcompactguards preserved. Actual committedTrader replay pending."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-107-D1",
+      "description": "Real-template reproduced/exact separate bounds",
+      "check_ids": [
+        "contract"
+      ],
+      "status": "done",
+      "evidence": [
+        "See matching passed checks and exact interface/Engineer evidence; Lead delivery/Trader real replay pending."
+      ]
+    },
+    {
+      "id": "PRSG-107-D2",
+      "description": "Real-schema preservation and financial bound regressions",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "See matching passed checks and exact interface/Engineer evidence; Lead delivery/Trader real replay pending."
+      ]
+    },
+    {
+      "id": "PRSG-107-D3",
+      "description": "Independent delivery and actual Trader CLI replay",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "Lead independently read all8paths and real9depth6742-nodepublicreport; focused411passed2.15s or current exactrun retained separately. Report-only12/defaultfinancial8, allvalue/privacy/fullcompactguards preserved. Actual committedTrader replay pending."
+    ]
+  }
+}

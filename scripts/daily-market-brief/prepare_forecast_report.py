@@ -11,7 +11,7 @@ import tempfile
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from ingest.forecast_scenario import _bounded
-from ingest.report_forecast import prepare_report_forecast, validator
+from ingest.report_forecast import prepare_report_forecast, validator, REPORT_TEMPLATE_MAX_DEPTH
 
 MAX_JSON = 2 * 1024 * 1024
 FORBIDDEN = {'public', 'www', 'htdocs', 'artifacts', 'dist'}
@@ -64,7 +64,7 @@ def _constant(value):
     raise PreparationCLIError('json-invalid')
 
 
-def read_private_json(value):
+def read_private_json(value, *, max_depth=8):
     path = _path(value)
     parent = _directory(path.parent)
     try:
@@ -78,7 +78,7 @@ def read_private_json(value):
         if not 0 < len(raw) <= MAX_JSON:
             raise PreparationCLIError('json-invalid')
         data = json.loads(raw.decode('utf-8'), object_pairs_hook=_pairs, parse_constant=_constant)
-        if not _bounded(data):
+        if not _bounded(data,max_depth=max_depth):
             raise PreparationCLIError('json-invalid')
         # 1e999 is valid JSON syntax but must not bypass finite-value validation.
         json.dumps(data, allow_nan=False)
@@ -159,7 +159,8 @@ def main(argv=None):
         if bool(args.evidence) != bool(args.admission):
             raise PreparationCLIError('arguments-invalid')
         stage = 'private-input-invalid'
-        template, universe, calendar = (read_private_json(getattr(args, name)) for name in ('template','universe','calendar'))
+        template, universe, calendar = (read_private_json(getattr(args,name),max_depth=REPORT_TEMPLATE_MAX_DEPTH if name=='template' else 8)
+                                       for name in ('template','universe','calendar'))
         evidence = read_private_json(args.evidence) if args.evidence else None
         admission = read_private_json(args.admission) if args.admission else None
         output = _path(args.output_directory)

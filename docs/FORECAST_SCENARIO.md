@@ -154,3 +154,29 @@ Each new day requires a new latest completed21-close window, renewed as-of
 review and next venue session. Stale previous-day evidence withholds. Preparation
 does not itself update ledger, provision schedules, approve source admission,
 publish reports or establish actual current numeric source readiness.
+
+
+## Full-report provenance depth (PRSG-107)
+
+Report templates use a separate fixed iterative nesting bound12 in both the
+private CLI loader and pure preparation helper. Ordinary primary-source paragraph
+metadata in the committed October14report reaches depth9 and was rejected by the
+original shared depth8 guard before authoritative validation. No citations,
+source timing fields or collapsed120-row audit are flattened or dropped.
+
+The existing `_bounded(value, *, max_depth=8)` supports only nonbool integer8 or12.
+`REPORT_TEMPLATE_MAX_DEPTH=12` is shared by CLI/helper, and only template loading/
+validation opts in. Financial evidence, admission, mapper rows/results, universe,
+calendar and all other default callers keep8. There is no CLI depth option or
+unbounded recursion. The100000-node/pending budget,2048-character/control limits,
+2MiB input/output caps, finite JSON/duplicate checks and full public compact
+validation remain. Depth13templates, depth9financial/other inputs and private
+fields still reject with fixed errors/no bundle. Private ownership/symlink/paired
+admission/new destination/write guards and exact time boundaries are unchanged.
+
+Regression replays the committed October14report/universe/monthlycalendar through
+private preparation with original recorded issuance/cutoff and omitted paired
+inputs: a validated withheld report, preserving all sources, audit, other49rows
+and input bytes. Nested-source admitted-shaped fixtures prove numeric plumbing
+only. Neither replay authenticates sources or establishes current eligible history;
+actual Trader committed-CLI delivery and numeric issuance require separate review.

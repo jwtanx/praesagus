@@ -105,11 +105,12 @@ def _positive(value):
     except OverflowError:return False
 
 
-def _bounded(value):
+def _bounded(value, *, max_depth=8):
+    if type(max_depth) is not int or max_depth not in (8,12):return False
     stack=[(value,0)];count=0
     while stack:
         value,depth=stack.pop();count+=1
-        if depth>8 or count>100000:return False
+        if depth>max_depth or count>100000:return False
         kind=type(value)
         if kind not in (dict,list,str,int,float,bool,type(None)):return False
         if kind is str and (len(value)>2048 or any(ord(c)<32 for c in value)):return False

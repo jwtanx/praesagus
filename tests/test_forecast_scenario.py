@@ -554,3 +554,19 @@ def test_microsecond_future_order_not_floored():
     e,a=make_case();a['reviewed_at']='2026-10-21T21:00:00.000002Z'
     reseal(e,a)
     assert 'admission_time' in build((e,a),issue='2026-10-21T21:00:00.000001Z')['reasons']
+
+
+@pytest.mark.parametrize('configured',[True,False,0,9,13,'12',12.0,None])
+def test_depth_configuration_only_fixed_nonbool8_or12(configured):
+    assert not f._bounded({},max_depth=configured)
+
+
+def test_financial_evidence_default_depth_not_expanded():
+    e,a=make_case();value=0
+    for _ in range(8):value=[value]
+    e['depth_extension']=value
+    assert not f._bounded(e) and f._bounded(e,max_depth=12)
+    assert build((e,a))['reasons']==['schema']
+    e,a=make_case();a['depth_extension']=value
+    assert not f._bounded(a) and f._bounded(a,max_depth=12)
+    assert build((e,a))['reasons']==['schema']

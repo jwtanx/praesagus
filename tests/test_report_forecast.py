@@ -334,3 +334,109 @@ def test_cli_mismatched_pair_rejected_before_any_read(private,capsys,monkeypatch
     assert cli.main(argv)==1
     assert json.loads(capsys.readouterr().out)==dict(status='failed',reason='arguments-invalid')
     assert not (private/'bundle').exists()
+
+
+# PRSG-107: replay the committed full report that failed actual Trader CLI intake.
+def committed_report_inputs():
+    sources=dict(template=BASE/'artifacts/daily-market-brief/2026-10-14.json',
+                 universe=BASE/'artifacts/daily-market-brief/watchlist-universe-five.json',
+                 calendar=BASE/'artifacts/financial-calendar/2026-10.json')
+    return {key:json.loads(path.read_text()) for key,path in sources.items()}
+
+
+def test_actual_committed_oct14_report_preserves_sources_and_120_row_audit(private,capsys):
+    inputs=committed_report_inputs();report=inputs['template'];before=deepcopy(inputs)
+    assert not f._bounded(report) and f._bounded(report,max_depth=12)
+    assert len(report['forecasts'])==50 and len(report['sections']['score']['tables'][0]['rows'])==120
+    issue=report['metadata']['as_of']
+    prepared=prepare(report,issued_at=issue,report_cutoff=issue)
+    assert prepared['status']=='withheld' and prepared['reasons']==['admission_missing']
+    assert inputs==before
+    assert prepared['report']['sections']==report['sections']
+    assert prepared['report']['forecasts'][1:]==report['forecasts'][1:]
+    assert prepared['report']['forecasts'][0]['sources']==report['forecasts'][0]['sources']
+    assert all(gap in prepared['report']['forecasts'][0]['data_gaps'] for gap in report['forecasts'][0]['data_gaps'])
+    cli.validate_prepared(prepared['report'],inputs['universe'],inputs['calendar'],private)
+    argv=[]
+    for key,value in inputs.items():argv += ['--'+key,put(private/(key+'.json'),value)]
+    frozen={p.name:p.read_bytes() for p in private.iterdir()}
+    argv+=['--issued-at',issue,'--cutoff',issue,'--template-reviewed','--output-directory',str(private/'bundle')]
+    assert cli.main(argv)==0
+    assert json.loads(capsys.readouterr().out)==dict(status='withheld',reasons=['admission_missing'],forecast_generated_count=0)
+    actual=json.loads((private/'bundle/prepared-report.json').read_text())
+    assert actual==prepared['report'] and actual['metadata']==report['metadata']
+    assert actual['sections']==before['template']['sections']
+    assert len(actual['sections']['score']['tables'][0]['rows'])==120
+    assert all((private/name).read_bytes()==raw for name,raw in frozen.items())
+
+
+def nested_source_template():
+    template=normal_inputs()[0]
+    template['sections']['outlook']['items']=[dict(title='Authored issuer source',paragraphs=[dict(
+        text='Authored source interpretation',sources=[dict(label='Issuer source',url='https://example.invalid/issuer',
+            provider='Authored fixture',published_at=None,retrieved_at=ISSUE,timezone='UTC',
+            data_period='Authored period',connector='authored-only')])])]
+    return template
+
+
+def test_numeric_admitted_shaped_nested_source_provenance_preserved(private,capsys):
+    template=nested_source_template();e,a=packet(cash=True)
+    assert not f._bounded(template)
+    prepared=prepare(template,e,a)
+    assert prepared['status']=='generated' and prepared['report']['sections']==template['sections']
+    argv=arguments(private,cash=True)
+    put(private/'template.json',template)
+    assert cli.main(argv)==0 and json.loads(capsys.readouterr().out)['forecast_generated_count']==1
+    actual=json.loads((private/'bundle/prepared-report.json').read_text())
+    assert actual['sections']['outlook']==template['sections']['outlook']
+    assert actual['forecasts'][1:]==template['forecasts'][1:]
+
+
+def at_depth(depth):
+    value=0
+    for _ in range(depth):value=[value]
+    return value
+
+
+@pytest.mark.parametrize('depth',[12,13])
+def test_template_only_depth_limit_helper_and_cli(private,capsys,depth):
+    template=nested_source_template();template['depth_extension']=at_depth(depth-1)
+    if depth==12:
+        assert prepare(template)['status']=='withheld'
+    else:
+        with pytest.raises(ReportForecastError):prepare(template)
+    argv=arguments(private,evidence=False);put(private/'template.json',template)
+    assert cli.main(argv)==(0 if depth==12 else 1)
+    summary=json.loads(capsys.readouterr().out)
+    assert summary['status']==('withheld' if depth==12 else 'failed')
+    if depth==13:assert summary['reason']=='private-input-invalid' and not (private/'bundle').exists()
+
+
+@pytest.mark.parametrize('input_name',['evidence','admission','universe','calendar'])
+def test_non_template_cli_inputs_keep_depth8(private,capsys,input_name):
+    argv=arguments(private)
+    path=private/(input_name+'.json');data=json.loads(path.read_text())
+    data['depth_extension']=at_depth(8);put(path,data)
+    assert f._bounded(data,max_depth=12) and not f._bounded(data)
+    assert cli.main(argv)==1
+    assert json.loads(capsys.readouterr().out)==dict(status='failed',reason='private-input-invalid')
+    assert not (private/'bundle').exists()
+
+
+@pytest.mark.parametrize('bad',['nonfinite','oversize','duplicate','private-field','long-string','nodes'])
+def test_deeper_template_retains_existing_value_size_and_privacy_guards(private,capsys,bad):
+    template=nested_source_template();argv=arguments(private,evidence=False);put(private/'template.json',template)
+    path=private/'template.json'
+    if bad=='nonfinite':path.write_text('{"x":1e999}')
+    if bad=='oversize':path.write_bytes(b' '*(cli.MAX_JSON+1))
+    if bad=='duplicate':path.write_text('{"x":1,"x":2}')
+    if bad=='private-field':
+        template['sections']['outlook']['items'][0]['paragraphs'][0]['sources'][0]['account_id']='PRIVATE-CANARY';put(path,template)
+    if bad=='long-string':
+        template['sections']['outlook']['items'][0]['paragraphs'][0]['sources'][0]['label']='x'*2049;put(path,template)
+    if bad=='nodes':
+        template['large_extension']=[0]*100000;put(path,template)
+    assert cli.main(argv)==1
+    summary=json.loads(capsys.readouterr().out)
+    assert summary==dict(status='failed',reason='report-validation-failed' if bad=='private-field' else 'private-input-invalid')
+    assert not (private/'bundle').exists()

@@ -18,6 +18,8 @@ try:
 finally:
     sys.path.pop(0)
 
+REPORT_TEMPLATE_MAX_DEPTH = 12
+
 STALE_GAPS = frozenset({
     'Completed history and verified close/currency/adjustment reference unavailable.',
     'No supported numeric target/range method.',
@@ -39,7 +41,7 @@ def prepare_report_forecast(template, *, evidence, admission, issued_at,
     Full public/compact/universe/calendar validation is the CLI's I/O step.
     """
     try:
-        if not _bounded(template) or type(template) is not dict or template_reviewed is not True:
+        if not _bounded(template,max_depth=REPORT_TEMPLATE_MAX_DEPTH) or type(template) is not dict or template_reviewed is not True:
             raise ReportForecastError()
         meta = template['metadata']
         if (template['schema_version'] != 3 or type(template['schema_version']) is not int
