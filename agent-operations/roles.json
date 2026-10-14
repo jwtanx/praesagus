@@ -28,6 +28,13 @@
       "model": null,
       "reasoning_effort": null,
       "schedules": []
+    },
+    {
+      "role": "AI Engineer",
+      "startup_prompt": "agent-operations/startup-prompts/ai-engineer.md",
+      "model": null,
+      "reasoning_effort": null,
+      "schedules": []
     }
   ]
 }

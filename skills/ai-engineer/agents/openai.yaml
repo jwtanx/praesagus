@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Engineer"
+  short_description: "Causal model training and inference evidence"
+  default_prompt: "Use $ai-engineer to implement the accepted model ticket with chronological validation and reproducible evidence."

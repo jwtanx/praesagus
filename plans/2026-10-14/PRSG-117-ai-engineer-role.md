@@ -29,10 +29,20 @@ Lead owns these ticket metadata files. Implementation owner changes for model wo
 
 ## When it's considered done
 
-- [ ] PRSG-117-D1: Role configuration/startup and ticket owner vocabulary discover AI Engineer without changing existing identities.
-- [ ] PRSG-117-D2: Reusable AI Engineer skill passes metadata/reference validation and independent missing/future/leakage/promotion replay.
-- [ ] PRSG-117-D3: Human-requested fresh AI Engineer chat acknowledges held startup and is registered/released with no schedules.
+- [x] PRSG-117-D1: Role configuration/startup and ticket owner vocabulary discover AI Engineer without changing existing identities.
+- [x] PRSG-117-D2: Reusable AI Engineer skill passes metadata/reference validation and independent missing/future/leakage/promotion replay.
+- [x] PRSG-117-D3: Human-requested fresh AI Engineer chat acknowledges held startup and is registered/released with no schedules.
 
 ## Evidence
 
 Pending implementation and independent review; tests alone do not establish real data access or forecasting quality.
+
+## Lead acceptance evidence
+
+Lead independentlyreviewed all10role/skill/validator paths;69focusedtests+skillvalidation passed; existing3roles/historicalowners preserved.
+
+Independent initial5 +revised3 behavioralreplays rejectedfuture/leakage/undersampled/subgroup82%/terminalfailure/crossing/retrospectivebaseline promotion; instructionvalidationonly, no modelquality claim.
+
+ActualfreshhumanrequestedAIEngineer session created, appidentity/projectverified, startupreadiness andWAITINGrelease acknowledgments received; private registry/receipt recorded; no schedules or inheritedoldwork.
+
+Base refrozen to 3acd97b4e035cfbc576ff74dae766629019a6abf after the separate Lead program-metadata commit; role implementation bytes did not depend on any other code change.
