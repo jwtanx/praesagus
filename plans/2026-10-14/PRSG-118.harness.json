@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-118",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "harness",
+      "skills"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-118-ai-engineer-spawn-routing.md",
+  "objective": "Extend spawn and coordination routing to AI Engineer with verified single-role/all semantics.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "allowed_paths": [
+    "skills/spawn/",
+    "agent-operations/startup-prompts/lead.md",
+    "agent-operations/startup-prompts/engineer.md",
+    "agent-operations/startup-prompts/trader.md",
+    "agent-operations/handoffs/records.md",
+    "tests/test_spawn_routing.py",
+    "plans/2026-10-14/PRSG-118-ai-engineer-spawn-routing.md",
+    "plans/2026-10-14/PRSG-118.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/daily_report_projection.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-12/ui-ux-improvement-input.md",
+    "plans/2026-10-13/forecast-input-unblock.md"
+  ],
+  "checks": [
+    {
+      "id": "check-1",
+      "kind": "manual",
+      "description": "AI Engineer aliases/discovery and all-role creation instructions preserve held/release/unique schedule guards.",
+      "status": "pending"
+    },
+    {
+      "id": "check-2",
+      "kind": "manual",
+      "description": "Model versus infrastructure versus financial scopes route to distinct owners with behavioral replay.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-118-D1",
+      "description": "AI Engineer aliases/discovery and all-role creation instructions preserve held/release/unique schedule guards.",
+      "check_ids": [
+        "check-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-118-D2",
+      "description": "Model versus infrastructure versus financial scopes route to distinct owners with behavioral replay.",
+      "check_ids": [
+        "check-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}

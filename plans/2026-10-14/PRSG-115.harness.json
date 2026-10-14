@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-115",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-115-stock-research-exports-guide.md",
+  "objective": "Timestamped CSV/XLSX bundles, safe output paths, zero-argument defaults and reproducible dummy preview.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "allowed_paths": [
+    "scripts/stock-research/export.py",
+    "scripts/stock-research/run.py",
+    "scripts/stock-research/demo.py",
+    "scripts/stock-research/README.md",
+    "scripts/stock-research/examples/",
+    ".gitignore",
+    "tests/test_stock_research_exports.py",
+    "plans/2026-10-14/PRSG-115-stock-research-exports-guide.md",
+    "plans/2026-10-14/PRSG-115.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/daily_report_projection.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-12/ui-ux-improvement-input.md",
+    "plans/2026-10-13/forecast-input-unblock.md"
+  ],
+  "checks": [
+    {
+      "id": "check-1",
+      "kind": "manual",
+      "description": "Master/horizons/top20/ranking/sector/ETF/speculative/evaluation exports reconcile with typed values and safe workbook formatting.",
+      "status": "pending"
+    },
+    {
+      "id": "check-2",
+      "kind": "manual",
+      "description": "Zero-arg/demo/offline workflows, immutable timestamp collisions and Git exclusion proven; actual bundle verified separately.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-115-D1",
+      "description": "Master/horizons/top20/ranking/sector/ETF/speculative/evaluation exports reconcile with typed values and safe workbook formatting.",
+      "check_ids": [
+        "check-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-115-D2",
+      "description": "Zero-arg/demo/offline workflows, immutable timestamp collisions and Git exclusion proven; actual bundle verified separately.",
+      "check_ids": [
+        "check-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}

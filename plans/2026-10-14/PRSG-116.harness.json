@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-116",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-116-stock-research-sentiment.md",
+  "objective": "AI Engineer model logic and Engineer RSS plumbing: permitted local-first cutoff-safe sentiment, optional remote/fallback.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "allowed_paths": [
+    "scripts/stock-research/news.py",
+    "scripts/stock-research/sentiment.py",
+    "tests/test_stock_research_sentiment.py",
+    "plans/2026-10-14/PRSG-116-stock-research-sentiment.md",
+    "plans/2026-10-14/PRSG-116.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/daily_report_projection.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-12/ui-ux-improvement-input.md",
+    "plans/2026-10-13/forecast-input-unblock.md"
+  ],
+  "checks": [
+    {
+      "id": "check-1",
+      "kind": "manual",
+      "description": "RSS conditional caching/dedup/backoff/budgets and text/source/cutoff handling tested.",
+      "status": "pending"
+    },
+    {
+      "id": "check-2",
+      "kind": "manual",
+      "description": "Numeric local sentiment calibration/training and forecast benefit assessed; absent/unvalidated addon falls back to price-only.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-116-D1",
+      "description": "RSS conditional caching/dedup/backoff/budgets and text/source/cutoff handling tested.",
+      "check_ids": [
+        "check-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-116-D2",
+      "description": "Numeric local sentiment calibration/training and forecast benefit assessed; absent/unvalidated addon falls back to price-only.",
+      "check_ids": [
+        "check-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-117",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "harness",
+      "skills"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-117-ai-engineer-role.md",
+  "objective": "Define discoverable AI Engineer with model evidence gates; verify actual fresh-chat bootstrap separately.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "allowed_paths": [
+    "agent-operations/roles.json",
+    "agent-operations/startup-prompts/ai-engineer.md",
+    "agent-operations/README.md",
+    "AGENTS.md",
+    "skills/ai-engineer/",
+    ".agents/skills/ai-engineer",
+    "scripts/planning/validate_ticket.py",
+    "tests/test_ai_engineer_role.py",
+    "plans/2026-10-14/PRSG-117-ai-engineer-role.md",
+    "plans/2026-10-14/PRSG-117.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/daily_report_projection.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-12/ui-ux-improvement-input.md",
+    "plans/2026-10-13/forecast-input-unblock.md"
+  ],
+  "checks": [
+    {
+      "id": "check-1",
+      "kind": "manual",
+      "description": "Role configuration/startup and ticket owner vocabulary discover AI Engineer without changing existing identities.",
+      "status": "pending"
+    },
+    {
+      "id": "check-2",
+      "kind": "manual",
+      "description": "Reusable AI Engineer skill passes metadata/reference validation and independent missing/future/leakage/promotion replay.",
+      "status": "pending"
+    },
+    {
+      "id": "check-3",
+      "kind": "manual",
+      "description": "Human-requested fresh AI Engineer chat acknowledges held startup and is registered/released with no schedules.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-117-D1",
+      "description": "Role configuration/startup and ticket owner vocabulary discover AI Engineer without changing existing identities.",
+      "check_ids": [
+        "check-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-117-D2",
+      "description": "Reusable AI Engineer skill passes metadata/reference validation and independent missing/future/leakage/promotion replay.",
+      "check_ids": [
+        "check-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-117-D3",
+      "description": "Human-requested fresh AI Engineer chat acknowledges held startup and is registered/released with no schedules.",
+      "check_ids": [
+        "check-3"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}

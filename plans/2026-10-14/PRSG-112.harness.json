@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-112",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-112-stock-research-datasets.md",
+  "objective": "AI Engineer to own causal features, whole-window labels, CSV/SQLite equivalence and purged splits after role registration.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "allowed_paths": [
+    "scripts/stock-research/data.py",
+    "scripts/stock-research/features.py",
+    "scripts/stock-research/calendar.py",
+    "tests/test_stock_research_data.py",
+    "plans/2026-10-14/PRSG-112-stock-research-datasets.md",
+    "plans/2026-10-14/PRSG-112.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/daily_report_projection.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-12/ui-ux-improvement-input.md",
+    "plans/2026-10-13/forecast-input-unblock.md"
+  ],
+  "checks": [
+    {
+      "id": "check-1",
+      "kind": "manual",
+      "description": "Completed-session OHLC adjustment/calendar/missing/future and CSV/SQLite contracts tested.",
+      "status": "pending"
+    },
+    {
+      "id": "check-2",
+      "kind": "manual",
+      "description": "Hand-computed extrema/week labels, availability and date-purged partitions proven.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-112-D1",
+      "description": "Completed-session OHLC adjustment/calendar/missing/future and CSV/SQLite contracts tested.",
+      "check_ids": [
+        "check-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-112-D2",
+      "description": "Hand-computed extrema/week labels, availability and date-purged partitions proven.",
+      "check_ids": [
+        "check-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}

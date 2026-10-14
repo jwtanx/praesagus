@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-111",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-111-stock-research-universe-ingestion.md",
+  "objective": "Dynamic 80-stock/20ETF plus10speculative selection and immutable vintages/actuals retention.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "allowed_paths": [
+    "scripts/stock-research/universe.py",
+    "scripts/stock-research/collect.py",
+    "scripts/stock-research/storage.py",
+    "tests/test_stock_research_universe.py",
+    "plans/2026-10-14/PRSG-111-stock-research-universe-ingestion.md",
+    "plans/2026-10-14/PRSG-111.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/daily_report_projection.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-12/ui-ux-improvement-input.md",
+    "plans/2026-10-13/forecast-input-unblock.md"
+  ],
+  "checks": [
+    {
+      "id": "check-1",
+      "kind": "manual",
+      "description": "Deterministic dedup/refill/liquidity/sector/exposure filters and honest shortfalls tested.",
+      "status": "pending"
+    },
+    {
+      "id": "check-2",
+      "kind": "manual",
+      "description": "Incremental histories/revisions and prior forecast instruments retained in timestamp folders.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-111-D1",
+      "description": "Deterministic dedup/refill/liquidity/sector/exposure filters and honest shortfalls tested.",
+      "check_ids": [
+        "check-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-111-D2",
+      "description": "Incremental histories/revisions and prior forecast instruments retained in timestamp folders.",
+      "check_ids": [
+        "check-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}
