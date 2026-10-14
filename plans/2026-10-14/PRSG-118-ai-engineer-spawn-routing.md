@@ -27,11 +27,17 @@ Lead owns these ticket metadata files. Implementation owner changes for model wo
 
 ## When it's considered done
 
-- [ ] PRSG-118-D1: AI Engineer aliases/discovery and all-role creation instructions preserve held/release/unique schedule guards.
-- [ ] PRSG-118-D2: Model versus infrastructure versus financial scopes route to distinct owners with behavioral replay.
+- [x] PRSG-118-D1: AI Engineer aliases/discovery and all-role creation instructions preserve held/release/unique schedule guards.
+- [x] PRSG-118-D2: Model versus infrastructure versus financial scopes route to distinct owners with behavioral replay.
 
 ## Evidence
 
 Pending implementation and independent review; tests alone do not establish real data access or forecasting quality.
 
 Lead refrozen base `15ff7ccef9c7f5d2dc948c5e8296a701027df518` after accepted117; scoped routing updates also include AGENTS.md, operationsREADME, project-lead and implementationskill routing.
+
+## Lead acceptance
+
+Lead independentlyran34focusedrouting/rolechecks; allpassed0.12s; reviewedreadonlyselector andall12guidance/test paths, config-drivenall+AIaliases+single/freshmodes withno mutations.
+
+Independent5behaviorcases passedincludingpartialAIreadinesshold, calleradoption/no-context, explicitfreshnewsession, idempotentEngineer anddisjointmixedrouting; skillmetadata/references valid. No liveall-transfer or runtime-enforcedrouter claimed.

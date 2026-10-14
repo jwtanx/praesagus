@@ -20,11 +20,11 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-118-ai-engineer-spawn-routing.md",
   "objective": "Extend spawn and coordination routing to AI Engineer with verified single-role/all semantics.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "15ff7ccef9c7f5d2dc948c5e8296a701027df518",
+  "base_sha": "c8e5953498c1c143d0e98045529889d541b69563",
   "allowed_paths": [
     "skills/spawn/",
     "agent-operations/startup-prompts/lead.md",
@@ -48,16 +48,39 @@
   ],
   "checks": [
     {
+      "id": "routing-checks",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_spawn_routing.py",
+        "tests/test_ai_engineer_role.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independentlyran34focusedrouting/rolechecks; allpassed0.12s; reviewedreadonlyselector andall12guidance/test paths, config-drivenall+AIaliases+single/freshmodes withno mutations."
+      ]
+    },
+    {
       "id": "check-1",
       "kind": "manual",
       "description": "AI Engineer aliases/discovery and all-role creation instructions preserve held/release/unique schedule guards.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Independent5behaviorcases passedincludingpartialAIreadinesshold, calleradoption/no-context, explicitfreshnewsession, idempotentEngineer anddisjointmixedrouting; skillmetadata/references valid. No liveall-transfer or runtime-enforcedrouter claimed."
+      ]
     },
     {
       "id": "check-2",
       "kind": "manual",
       "description": "Model versus infrastructure versus financial scopes route to distinct owners with behavioral replay.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Independent5behaviorcases passedincludingpartialAIreadinesshold, calleradoption/no-context, explicitfreshnewsession, idempotentEngineer anddisjointmixedrouting; skillmetadata/references valid. No liveall-transfer or runtime-enforcedrouter claimed."
+      ]
     }
   ],
   "acceptance": [
@@ -67,7 +90,11 @@
       "check_ids": [
         "check-1"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independentlyran34focusedrouting/rolechecks; allpassed0.12s; reviewedreadonlyselector andall12guidance/test paths, config-drivenall+AIaliases+single/freshmodes withno mutations.",
+        "Independent5behaviorcases passedincludingpartialAIreadinesshold, calleradoption/no-context, explicitfreshnewsession, idempotentEngineer anddisjointmixedrouting; skillmetadata/references valid. No liveall-transfer or runtime-enforcedrouter claimed."
+      ]
     },
     {
       "id": "PRSG-118-D2",
@@ -75,10 +102,17 @@
       "check_ids": [
         "check-2"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independentlyran34focusedrouting/rolechecks; allpassed0.12s; reviewedreadonlyselector andall12guidance/test paths, config-drivenall+AIaliases+single/freshmodes withno mutations.",
+        "Independent5behaviorcases passedincludingpartialAIreadinesshold, calleradoption/no-context, explicitfreshnewsession, idempotentEngineer anddisjointmixedrouting; skillmetadata/references valid. No liveall-transfer or runtime-enforcedrouter claimed."
+      ]
     }
   ],
   "review": {
-    "status": "pending"
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewed exact12ownedpaths, helperbehavior, actualnarrowchecks and independentreplay; accepts instruction/proceduralchangeonly."
+    ]
   }
 }

@@ -4,7 +4,7 @@ description: Implement accepted Lead decisions with Trader or temporary research
 license: MIT
 metadata:
   author: praesagus
-  version: "1.1"
+  version: "1.2"
   category: engineering
   tags: [implementation, testing, harness, praesagus]
 ---
@@ -15,6 +15,10 @@ metadata:
 
 - Trader, a temporary research subagent or Lead has supplied a report, decision, or scoped implementation task for this repository.
 - A feature or fix needs a focused test harness as part of implementation.
+
+## Ownership routing
+
+Engineer owns supporting ingestion/storage/CLI/export and application infrastructure. AI Engineer owns causal datasets, training, calibration, saved model artifacts, inference/evaluation and sentiment modeling using [its role skill](../ai-engineer/SKILL.md). Trader reviews financial meaning and research decisions; Lead freezes scope and accepts integration. On mixed tickets use one accepted owner with disjoint delegated scopes, preserving historical owners. Route model assignments through the verified registered AI Engineer; missing registration holds dependent delegation rather than inventing a chat or overlapping Engineer work. These skills do not create agents or enforce runtime promotion gates.
 
 ## Workflow
 
