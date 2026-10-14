@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-109",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "harness",
+      "skills",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "L",
+    "effort_person_days": {
+      "low": 8,
+      "high": 15
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-109-stock-research-program.md",
+  "objective": "Deliver a separate user-run Moomoo US stock/ETF research workflow with numerical whole-period forecasts, training, CSV/XLSX artifacts and immutable ongoing evaluation. Publish the plan before implementation.",
+  "status": "planned",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "9bb29d28be8d9427f7b06dd00945df9b31dedcb5",
+  "allowed_paths": [
+    "plans/2026-10-14/PRSG-109-stock-research-program.md",
+    "plans/2026-10-14/PRSG-109.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/",
+    "connectors/",
+    "scripts/",
+    "skills/",
+    "agent-operations/",
+    "tests/",
+    "plans/2026-10-08/PRSG-76.harness.json"
+  ],
+  "implementation_authorized": true,
+  "checks": [
+    {
+      "id": "plan",
+      "kind": "manual",
+      "description": "Lead reviews updated requirements, new epic scope and plan-only path boundary.",
+      "status": "passed",
+      "evidence": [
+        "2026-10-14 MYT: Lead independently inspected the revised human implementation specification; saved complete plan and declared plan-only publication scope. No implementation or strong-model success claimed."
+      ]
+    },
+    {
+      "id": "implementation",
+      "kind": "manual",
+      "description": "Accepted child epic implementations, tests, docs and Lead review.",
+      "status": "pending"
+    },
+    {
+      "id": "strong-model",
+      "kind": "manual",
+      "description": "Actual-data strong-model validation and resource gates, without substituting synthetic proof.",
+      "status": "pending"
+    },
+    {
+      "id": "real-output",
+      "kind": "manual",
+      "description": "Actual bundle and subsequent immutable forecast/realized-OHLC scoring.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-109-D1",
+      "description": "Approved plan and epic list saved, scope-validated and Lead reviewed for publication.",
+      "check_ids": [
+        "plan"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed the saved updated program specification and plan-only two-file boundary."
+      ]
+    },
+    {
+      "id": "PRSG-109-D2",
+      "description": "Implementation, user-runnable scripts, outputs and guide accepted through child epics.",
+      "check_ids": [
+        "implementation"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-109-D3",
+      "description": "Actual strong-model validation and hardware acceptance demonstrated.",
+      "check_ids": [
+        "strong-model"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-109-D4",
+      "description": "Real output bundle and later realized outcome scoring verified.",
+      "check_ids": [
+        "real-output"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Plan scope accepted by human implementation request and independently reviewed by Lead. This acceptance covers the specification only, not model promotion or implementation completion."
+    ]
+  }
+}
