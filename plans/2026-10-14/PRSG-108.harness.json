@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-108",
+  "tags": {
+    "type": "chore",
+    "modules": [
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Trader",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.2,
+      "high": 0.4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-14",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-14/PRSG-108-current-history-admission-review.md",
+  "objective": "Obtain current actual history/shape evidence once and review eligible forecast input.",
+  "status": "complete",
+  "owner": "Trader",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "f4fd317988dedfab2708c46bea231a95ce4b0884",
+  "allowed_paths": [
+    "plans/2026-10-14/PRSG-108-current-history-admission-review.md",
+    "plans/2026-10-14/PRSG-108.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/",
+    "connectors/",
+    "scripts/",
+    "skills/",
+    "harness/"
+  ],
+  "checks": [
+    {
+      "id": "capture",
+      "kind": "manual",
+      "description": "Exactlyone frozen existingcollector intake",
+      "status": "passed",
+      "evidence": [
+        "RegisteredTrader exactly1read atf4fd317, historyendOct13/rawdaily100/0retries; success100normalizedv4bars. ExistingKeychainsigningpath read, noOSaudit/no secretsprinted. Privatefullreceipts retained."
+      ]
+    },
+    {
+      "id": "admission",
+      "kind": "manual",
+      "description": "Actual typed response and financial coverage/admission",
+      "status": "passed",
+      "evidence": [
+        "Lead independentlyverified21uniquepositiveSep15-Oct13/latest13/issuerOct12closeexact. LeadTrader6conditionaltechnicalfinancialgate judgments with daily-date/calendar/OURreceiptfreeze; rawoffset-4unitUNKNOWN preserved/notconverted/usedforecasttimebasis. PrimarySEC/issuer/NYSE+ISO10383 venue mapping reviewed. RightsUNKNOWN, classificationpending, NO forecastadmission/export/targets."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead independent evidence review",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewedcapture/code/window/real21bars/financialpolicy+limitations/privatepipeline evidence. Actual107CLI thenfullpubliccompactwithheld rights+admission_binding. This assessmentcompletesintake/reviewonly; originalgoalactualnumericcurrent+nextdayreport UNFINISHED. Useraccountuseinfo pending."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-108-D1",
+      "description": "Exactlyone frozen existingcollector intake",
+      "check_ids": [
+        "capture"
+      ],
+      "status": "done",
+      "evidence": [
+        "RegisteredTrader exactly1read atf4fd317, historyendOct13/rawdaily100/0retries; success100normalizedv4bars. ExistingKeychainsigningpath read, noOSaudit/no secretsprinted. Privatefullreceipts retained."
+      ]
+    },
+    {
+      "id": "PRSG-108-D2",
+      "description": "Actual typed response and financial coverage/admission",
+      "check_ids": [
+        "admission"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independentlyverified21uniquepositiveSep15-Oct13/latest13/issuerOct12closeexact. LeadTrader6conditionaltechnicalfinancialgate judgments with daily-date/calendar/OURreceiptfreeze; rawoffset-4unitUNKNOWN preserved/notconverted/usedforecasttimebasis. PrimarySEC/issuer/NYSE+ISO10383 venue mapping reviewed. RightsUNKNOWN, classificationpending, NO forecastadmission/export/targets."
+      ]
+    },
+    {
+      "id": "PRSG-108-D3",
+      "description": "Lead independent evidence review",
+      "check_ids": [
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewedcapture/code/window/real21bars/financialpolicy+limitations/privatepipeline evidence. Actual107CLI thenfullpubliccompactwithheld rights+admission_binding. This assessmentcompletesintake/reviewonly; originalgoalactualnumericcurrent+nextdayreport UNFINISHED. Useraccountuseinfo pending."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewedcapture/code/window/real21bars/financialpolicy+limitations/privatepipeline evidence. Actual107CLI thenfullpubliccompactwithheld rights+admission_binding. This assessmentcompletesintake/reviewonly; originalgoalactualnumericcurrent+nextdayreport UNFINISHED. Useraccountuseinfo pending."
+    ]
+  }
+}
