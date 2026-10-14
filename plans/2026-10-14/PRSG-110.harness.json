@@ -21,11 +21,11 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-110-stock-research-api-contracts.md",
   "objective": "Bounded standalone REST discovery and typed field/unit/OHLC contracts reusing secure signing.",
-  "status": "planned",
+  "status": "in_progress",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "base_sha": "a7a3ca581c53de030819c611f2ff1001f0939f9a",
   "allowed_paths": [
     "scripts/stock-research/provider.py",
     "scripts/stock-research/contracts.py",
@@ -34,7 +34,9 @@
     "scripts/stock-research/requirements.txt",
     "tests/test_stock_research_provider.py",
     "plans/2026-10-14/PRSG-110-stock-research-api-contracts.md",
-    "plans/2026-10-14/PRSG-110.harness.json"
+    "plans/2026-10-14/PRSG-110.harness.json",
+    "scripts/stock-research/etf_metadata.csv",
+    "scripts/stock-research/API_CONTRACTS.md"
   ],
   "protected_paths": [
     "artifacts/",
@@ -44,6 +46,19 @@
     "plans/2026-10-13/forecast-input-unblock.md"
   ],
   "checks": [
+    {
+      "id": "provider-tests",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_stock_research_provider.py"
+      ],
+      "cwd": ".",
+      "status": "pending"
+    },
     {
       "id": "check-1",
       "kind": "manual",

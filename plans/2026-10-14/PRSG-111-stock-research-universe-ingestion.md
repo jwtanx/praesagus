@@ -31,3 +31,11 @@ Lead owns these ticket metadata files. Implementation owner changes for model wo
 ## Evidence
 
 Pending implementation and independent review; tests alone do not establish real data access or forecasting quality.
+
+## Storage/universe invariants
+
+Defaultparent ~/Documents/stock-research-data; every collect/train/predict generation creates exclusiveMYT YYYY-MM-DD_HHMMSS folder, rejects collisions, neveroverwrites. Artifacts/cache/modelstate liveinsidegenerationfolders. Latestcompatible state/modeldiscovery reads manifests; no destructive fixedlatestcache/model writes. In-repoparents require completeGit exclusion and reject repositoryroot/codepaths.
+
+Universeselection is fromwholemarketdiscovery, not privateportfolio/reportlists. ForETFverifiedregistrytagging doesnotseedmarket discovery; sector/exposurefamilies need sourcedidentity. Corestocks>=5price,median20turnover>=25M,>=252validcompletedbars, sectorcap16;ETFsameprice/turnover/history and verifiedsignedleverage/reset, cap2perfam. Compute medians fromhistoricalbars, never substitute screenermean. Up to10speculativenamesdisjoint price>=1/median20turnover>=5M; flagsprice<5 orhistory<252 orATRfraction>.08 orabsreturn>.15. Noforceddailyrotation orfill.
+
+Retain priorforecastsymbols inactualscollection even afterleavingselection; revisionvintagesappendonly. Point-in-timemembershipstarts atobservedfirstcollection; don'tbackfillfictionalhistoricalmembership. Historical backfillmode explicitlyretrospective and cannotqualifystrongdynamicuniverseacceptance. Defaultconfigsmallboundedrequestbudget+transparentpartialcoverage; resume incrementalcollector withoutautomaticretry orsilentquotaexpansion.

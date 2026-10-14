@@ -33,3 +33,11 @@ Lead owns these ticket metadata files. Implementation owner changes for model wo
 ## Evidence
 
 Pending implementation and independent review; tests alone do not establish real data access or forecasting quality.
+
+## Reviewed wire/data requirements
+
+Standalonewrapper must not weaken the old SecureReadTransport allowlist or collector quotas. Reuse injectable request/signing/credential interfaces with a new explicit allowlist for POSTstock-screen/stock-basicinfo/snapshot and USdailyhistory; noaccount/order/arbitrary URL. Stockscreen data.items/orderedresultwrappers and TOPLEVELpagination; result_type1double/2integer/3string with exact descriptor matching, no formatted value fallback. Price2201andturnover3105 magnification1000; volume3104raw; screeneraverage20 isNOTmedian20. ChangeRatebaseunitsremainunverified; usecompletedbarreturns forverifiedwinner/loserfinalranks. Bodyopaque next_key pagination, unchangedquery, duplicate/repeated/no-progressguards, request/page/rowbudgets, sequentialcalls/noautomaticretries. NumericRESTquotasunknown are explicit; nevercopyOpenDquota.
+
+Basic stock_typeETF/trust flags do not prove exactfundtype/leverage/reset. Include issuer-sourced ETFclassificationregistry only for classifying market-discoveredcandidates, neverseedportfolio/reportuniverse. Sector sourcedmapping orUNKNOWN, no inventedplate equivalence. Canonical OHLC rows require finitepositiveprices and consistentlow<=open/close<=high, sessiondate, currencyUSDonlywhenproviderestablished, adjustmentunits, source timestamps/ownretrievalknown, explicithistory mode and revisionvintage. Rawtimezonefield isretained; inconsistent documentedunits cannot be silentlyreinterpreted. Bootstrap requested3years usesboundeddatebackfill; provider next_time unit mismatch cannot silentlytreat as enddate. Historybarsonly prove>=252 whencompleteactualcalendarcoverage.
+
+References: https://open.moomoo.com/zh-cn/api/quote/screening/stock-screen ; https://open.moomoo.com/zh-cn/api/quote/basic-data/stock-basicinfo ; https://open.moomoo.com/zh-cn/api/quote/basic-data/history-kline ; https://open.moomoo.com/mcp-docs/available-tools . No authenticatedprovider calls occurred in this contractreview.
