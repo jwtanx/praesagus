@@ -1,6 +1,6 @@
 # PRSG-113 — stock research training validation
 
-Type: feature · Owner: Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
+Type: feature · Owner: AI Engineer · Priority: P1 · Effort: M (2–4 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
 Created 2026-10-14 MYT.
 

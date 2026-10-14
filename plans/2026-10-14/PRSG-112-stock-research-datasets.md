@@ -1,6 +1,6 @@
 # PRSG-112 — stock research datasets
 
-Type: feature · Owner: Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
+Type: feature · Owner: AI Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
 Created 2026-10-14 MYT.
 
@@ -34,4 +34,4 @@ Pending implementation and independent review; tests alone do not establish real
 
 ## Frozen financial/data contract
 
-Every completed label has label_available_at equal to maximum actual availability of all required outcome bars. Require label_available_at <= fit cutoff; purge across ALL instruments/windows when label/end availability reaches the next partition. Next-calendar-week extrema use ONLY following Mon–Fri exchange sessions, not intervening current-week sessions; terminal logreturn is C_week_last/C_origin and includes intervening movement. Missing any required session makes the full label pending. One instrument/origin has total training weight1 divided across available horizons; repeated generation runs do not increase independent observations. Do not apply current financial/class/ETFmandate metadata retrospectively without contemporaneous evidence.
+Every completed label has label_available_at equal to maximum actual availability of all required outcome bars. Require label_available_at <= fit cutoff; purge across ALL instruments/windows when label/end availability reaches the next partition. Next-calendar-week extrema use ONLY following Mon–Fri exchange sessions, not intervening current-week sessions; terminal logreturn is log(C_week_last/C_origin) and includes intervening movement. Missing any required session makes the full label pending. One instrument/origin has total training weight1 divided across available horizons; repeated generation runs do not increase independent observations. Do not apply current financial/class/ETFmandate metadata retrospectively without contemporaneous evidence.

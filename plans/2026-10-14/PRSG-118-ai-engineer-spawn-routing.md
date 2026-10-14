@@ -33,3 +33,5 @@ Lead owns these ticket metadata files. Implementation owner changes for model wo
 ## Evidence
 
 Pending implementation and independent review; tests alone do not establish real data access or forecasting quality.
+
+Lead refrozen base `15ff7ccef9c7f5d2dc948c5e8296a701027df518` after accepted117; scoped routing updates also include AGENTS.md, operationsREADME, project-lead and implementationskill routing.

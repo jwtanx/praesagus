@@ -20,11 +20,11 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-118-ai-engineer-spawn-routing.md",
   "objective": "Extend spawn and coordination routing to AI Engineer with verified single-role/all semantics.",
-  "status": "planned",
+  "status": "in_progress",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "base_sha": "15ff7ccef9c7f5d2dc948c5e8296a701027df518",
   "allowed_paths": [
     "skills/spawn/",
     "agent-operations/startup-prompts/lead.md",
@@ -33,7 +33,11 @@
     "agent-operations/handoffs/records.md",
     "tests/test_spawn_routing.py",
     "plans/2026-10-14/PRSG-118-ai-engineer-spawn-routing.md",
-    "plans/2026-10-14/PRSG-118.harness.json"
+    "plans/2026-10-14/PRSG-118.harness.json",
+    "AGENTS.md",
+    "agent-operations/README.md",
+    "skills/praesagus-project-lead/SKILL.md",
+    "skills/praesagus-implementation/SKILL.md"
   ],
   "protected_paths": [
     "artifacts/",
