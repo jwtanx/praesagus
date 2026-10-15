@@ -21,15 +21,15 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-112-stock-research-datasets.md",
   "objective": "AI Engineer to own causal features, whole-window labels, CSV/SQLite equivalence and purged splits after role registration.",
-  "status": "planned",
+  "status": "complete",
   "owner": "AI Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "base_sha": "c162360064443307c68490d40b3e58a1eae1ec13",
   "allowed_paths": [
     "scripts/stock-research/data.py",
     "scripts/stock-research/features.py",
-    "scripts/stock-research/calendar.py",
+    "scripts/stock-research/market_calendar.py",
     "tests/test_stock_research_data.py",
     "plans/2026-10-14/PRSG-112-stock-research-datasets.md",
     "plans/2026-10-14/PRSG-112.harness.json"
@@ -43,16 +43,38 @@
   ],
   "checks": [
     {
+      "id": "dataset-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_stock_research_data.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead exactconfiguredtest command32passed0.47s final; earlier20/30preliminarypasses retained asprogress. Independent additional whollybelowreference low97/high99 fixture passed; longer incompletewindows pending."
+      ]
+    },
+    {
       "id": "check-1",
       "kind": "manual",
       "description": "Completed-session OHLC adjustment/calendar/missing/future and CSV/SQLite contracts tested.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed data/features/calendar/test4filepatch and complete6pathscope, generation hashes29column CSV/readonlySQLite equivalence, typedinteger/decimalstringIDs, actualavailability/revisions/completion/units/identity rejection, boundedaggregateinputs and symbol/calendar indexing. Currentmetadata/PITqualification remains explicitlyinsufficient."
+      ]
     },
     {
       "id": "check-2",
       "kind": "manual",
       "description": "Hand-computed extrema/week labels, availability and date-purged partitions proven.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Independent handcomputed holiday/earlyclose/followingcalendarweek/extrema/logreturn checks, missing and gapcases, reference+outcome availability, datedmetadata/maxactualknowledge orunsupportedtimestamprejection, benchmark/missingness, allinstrument open-boundarypurging andoriginweights accepted; no actualtraining/modelqualityclaim."
+      ]
     }
   ],
   "acceptance": [
@@ -60,20 +82,31 @@
       "id": "PRSG-112-D1",
       "description": "Completed-session OHLC adjustment/calendar/missing/future and CSV/SQLite contracts tested.",
       "check_ids": [
+        "dataset-tests",
         "check-1"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead accepted implementation/fictionalregressionevidence at2026-10-15T05:45:56.182180+00:00; strongactualmodel gates remainseparate."
+      ]
     },
     {
       "id": "PRSG-112-D2",
       "description": "Hand-computed extrema/week labels, availability and date-purged partitions proven.",
       "check_ids": [
+        "dataset-tests",
         "check-2"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead accepted implementation/fictionalregressionevidence at2026-10-15T05:45:56.182180+00:00; strongactualmodel gates remainseparate."
+      ]
     }
   ],
   "review": {
-    "status": "pending"
+    "status": "accepted",
+    "evidence": [
+      "All6ownedpaths againstfrozen c162360;32focused0.47s +independentgapfixture;gitdiff--checkclean. AIownerfinalstopverified. StrictactualavailabilitydoesnotitselfestablishPITuniverse/mandate/adjustmentqualification. No credentials/providers/modeltraining orpromotion."
+    ]
   }
 }
