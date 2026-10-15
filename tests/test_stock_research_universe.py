@@ -452,3 +452,38 @@ def test_future_actual_availability_overrides_earlier_asserted_known_time():
     record=evidence(available_at='2026-10-15T01:00:00Z')
     assert not universe.reviewed(record,NOW)
     assert universe.known_ms(record)>NOW
+
+
+def test_generation_joblib_bytes_roundtrip_manifest_hash_and_private_permissions(tmp_path):
+    # Deliberately not a serialized model: storage must not interpret or load bytes.
+    import hashlib
+    payload=b'\x00\xfffictional-opaque-model-bytes\r\n'
+    generation=storage.Generation(tmp_path,generated_at=STAMP,kind='stock-research-model')
+    generation.write('quantiles_v1.joblib',payload)
+    folder=generation.finish(status='research-only')
+    artifact=folder/'quantiles_v1.joblib'
+    assert artifact.read_bytes()==payload and artifact.stat().st_mode&0o777==0o600
+    assert folder.stat().st_mode&0o777==0o700
+    entry=json.loads((folder/'manifest.json').read_text())['artifacts']['quantiles_v1.joblib']
+    assert entry=={'path':'quantiles_v1.joblib','sha256':hashlib.sha256(payload).hexdigest(),'bytes':len(payload)}
+    with pytest.raises(storage.StorageError):generation.write('after_close.joblib',payload)
+    assert not (folder/'after_close.joblib').exists()
+
+
+def test_joblib_write_collision_keeps_existing_bytes_and_manifest(tmp_path):
+    generation=storage.Generation(tmp_path,generated_at=STAMP)
+    generation.write('model.joblib',b'first-opaque-bytes')
+    original=copy.deepcopy(generation.manifest)
+    with pytest.raises(FileExistsError):generation.write('model.joblib',b'replacement')
+    assert (generation.path/'model.joblib').read_bytes()==b'first-opaque-bytes'
+    assert generation.manifest==original
+    with pytest.raises(storage.StorageError):generation.write('other.joblib','not-bytes')
+    assert not (generation.path/'other.joblib').exists()
+
+
+@pytest.mark.parametrize('name',['../model.joblib','/tmp/model.joblib','nested/model.joblib',
+                                  'model.joblib.exe','model.pkl','model.xlsx','model..joblib'])
+def test_joblib_unsafe_or_unapproved_names_rejected(tmp_path,name):
+    generation=storage.Generation(tmp_path,generated_at=STAMP)
+    with pytest.raises(storage.StorageError):generation.write(name,b'opaque')
+    assert list(generation.path.iterdir())==[] and generation.manifest['artifacts']=={}

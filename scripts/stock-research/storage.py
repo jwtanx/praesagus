@@ -75,7 +75,7 @@ class Generation:
         self.closed = False
 
     def write(self, name, data):
-        need(not self.closed and isinstance(name,str) and re.fullmatch(r'[A-Za-z0-9_-]+\.(?:json|csv)',name) is not None
+        need(not self.closed and isinstance(name,str) and re.fullmatch(r'[A-Za-z0-9_-]+\.(?:json|csv|joblib)',name) is not None
              and name != 'manifest.json', 'invalid-artifact-name')
         need(isinstance(data,bytes) and len(data)<=MAX_ARTIFACT_BYTES,'artifact-size')
         fd=os.open(self.path/name,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)

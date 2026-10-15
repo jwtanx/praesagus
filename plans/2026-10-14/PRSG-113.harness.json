@@ -21,17 +21,19 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-113-stock-research-training-validation.md",
   "objective": "AI Engineer to own baseline/nine quantile fits, calibrated artifacts and strong actual-data gates after registration.",
-  "status": "planned",
+  "status": "blocked",
   "owner": "AI Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "base_sha": "4974b79235b95c8599b643c04add5ea1798602e5",
   "allowed_paths": [
     "scripts/stock-research/model.py",
     "scripts/stock-research/train.py",
     "tests/test_stock_research_model.py",
     "plans/2026-10-14/PRSG-113-stock-research-training-validation.md",
-    "plans/2026-10-14/PRSG-113.harness.json"
+    "plans/2026-10-14/PRSG-113.harness.json",
+    "scripts/stock-research/storage.py",
+    "tests/test_stock_research_universe.py"
   ],
   "protected_paths": [
     "artifacts/",
@@ -42,16 +44,41 @@
   ],
   "checks": [
     {
+      "id": "model-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_stock_research_model.py",
+        "tests/test_stock_research_data.py",
+        "tests/test_stock_research_universe.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead exactconfigured3suite106passed6.60s final; earlier89passed5.90s preliminary. Engineer2pathwriter independently44passed2.70s.",
+        "Firstfullcommithook2failed2540passed43.46s: newmodeltestloaderreloadeddataafterdatasetfunctionaliaseswerebound, soexistingbudgettestsmonkeypatcheddifferentmodule. Newmodeltestloadernowreusesmatchingmodulepaths; existingbudgetassertionsunchanged. Independentdata-first3suite106passed6.70s afterfix. Fullhookmustreplaybeforedelivery."
+      ]
+    },
+    {
       "id": "check-1",
       "kind": "manual",
       "description": "Baseline/quantile train/save/reload, no random temporal validation and reproducibility tested.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead complete7pathreview:fixed9HGB+conditionedvolbaseline, training-onlyactivefeatureselection, explicitfit/calibrateavailability/cutoffandnorefit, purgedsplitwalk-forward/holdout reports/commondatebootstrap, privateexclusiveartifact andSAMEverifiedbytesreload/runtimepolicy compatibility; CLIhelp/missing/fictionalCSVfreeze checks. 8additionalindependentfrozengatecases passed."
+      ]
     },
     {
       "id": "check-2",
       "kind": "manual",
       "description": "Actual-data walk-forward/untouched holdout passes frozen strong-model gates and measured hardware budgets.",
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "BLOCKED: no actualPITmembership/delistings/origin-vintage evidence, acceptedactualforecastquality orfullshape8GBhardwareprofile. 250000preparedrecordlimit isbelow100\u2013110names x3\u20135years x4windows; no silenttruncation orstrong-modelacceptance."
+      ]
     }
   ],
   "acceptance": [
@@ -59,9 +86,13 @@
       "id": "PRSG-113-D1",
       "description": "Baseline/quantile train/save/reload, no random temporal validation and reproducibility tested.",
       "check_ids": [
+        "model-tests",
         "check-1"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "D1researchimplementation/fixturesacceptedbyLead at2026-10-15T06:28:27.022839+00:00; notactualmodelstrength."
+      ]
     },
     {
       "id": "PRSG-113-D2",
@@ -69,10 +100,16 @@
       "check_ids": [
         "check-2"
       ],
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "D2remainsblockedonactual-datachronologicalevidence/stronggates/full-sizeboundedlayout+profile; no productionpromotion."
+      ]
     }
   ],
   "review": {
-    "status": "pending"
+    "status": "accepted",
+    "evidence": [
+      "PartialD1implementationreviewONLY accepted; D2explicitlyunmet andticketnotcomplete. All7ownedpathsvalidateagainst4974b79;106focused6.60s+8independentgatecases;AI3paths/Engineer2paths frozen. Mandatoryfullhooksbeforedelivery."
+    ]
   }
 }
