@@ -20,7 +20,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-15/PRSG-119-stock-research-owner-plate-types.md",
   "objective": "Preserve explicitly unsupported raw owner-plate types without blocking valid industry intake or inferring classification.",
-  "status": "review",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -56,14 +56,18 @@
       "cwd": ".",
       "status": "passed",
       "evidence": [
-        "Lead complete2pathreview; independent173focusedpassed; owner173passed2.76s; malformed/unsupported/currentprovenance/downstreamexclusion covered."
+        "Lead complete2pathreview; independent173focusedpassed; owner173passed2.76s; malformed/unsupported/currentprovenance/downstreamexclusion covered.",
+        "Lead173passed2.63s; implementationcommitfull2625passed41warnings46.31s; pushfull2629passed41warnings45.34s (concurrent114draftnotaccepted)."
       ]
     },
     {
       "id": "lead-review",
       "kind": "manual",
       "description": "Complete scoped diff, canonical metadata and delivery reviewed; actual provider/model readiness remains separate.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "All4ownedpaths reviewed/validated; scopedimplementationc79013f053c515e4d20e87f0265c3a51eeba2322PUSHED/exactremoteverified; current-onlyunknownsnotadmitted; noactualreadiness/promotion."
+      ]
     }
   ],
   "acceptance": [
@@ -84,10 +88,16 @@
       "check_ids": [
         "lead-review"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead scope/regression/delivery acceptance after independently verified implementation push; closurechecksrunseparately."
+      ]
     }
   ],
   "review": {
-    "status": "pending"
+    "status": "accepted",
+    "evidence": [
+      "119onlyaccepted; observedSPECIALretainedunsupported withstructuralrejection unchanged.173focusedandfullcommit/push verified; nootherworkacceptedfromthosechecks."
+    ]
   }
 }
