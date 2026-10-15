@@ -5,6 +5,7 @@ import json
 import math
 import subprocess
 import csv
+import sqlite3
 from pathlib import Path
 import sys
 
@@ -170,6 +171,34 @@ def test_offline_reader_to_frozen_empty_fold_generation(calendar,tmp_path):
     assert result.returncode==0, result.stdout+result.stderr
     manifest=json.loads((Path(json.loads(result.stdout)['generation'])/'manifest.json').read_text())
     assert manifest['strong_model_accepted'] is False and not manifest['model_available']
+    # Same canonical observations through all three production reader paths.
+    db=tmp_path/'ohlcv.sqlite'
+    with sqlite3.connect(db) as connection:
+        connection.execute('CREATE TABLE ohlcv ('+','.join('"'+name+'"' for name in HISTORY_COLUMNS)+')')
+        connection.executemany('INSERT INTO ohlcv VALUES ('+','.join('?' for _ in HISTORY_COLUMNS)+')',
+            [[row[name] for name in HISTORY_COLUMNS] for row in rows])
+    common=command[command.index('--policy'):]
+    sqlite_command=[sys.executable,str(SCRIPT/'train.py'),'--sqlite',str(db),'--receipt',str(receipt_path),
+        '--model-dir',str(tmp_path/'sqlite-models')]+common
+    sqlite_result=subprocess.run(sqlite_command,capture_output=True,text=True,timeout=30)
+    assert sqlite_result.returncode==0, sqlite_result.stdout+sqlite_result.stderr
+    from collect import compatibility
+    from config import load_collection_config
+    generation_parent=tmp_path/'generations'
+    generation=Generation(generation_parent,kind='stock-research-collection',generated_at=datetime(2026,10,3,tzinfo=timezone.utc),
+        compatibility_id=compatibility(load_collection_config()),as_of_ms=known)
+    generation.csv('history.csv',rows,HISTORY_COLUMNS)
+    generation.json('identity_bindings.json',history.receipts[0]['identity_bindings'])
+    schedule=[{'session_date':day,'close_at_ms':calendar.close_ms(day)} for day in days]
+    generation.json('calendar.json',{'sessions':schedule,'schedule_sha256':sha(canonical(schedule))})
+    generation.json('metadata_input.json',{})
+    generation.finish(adjustment_policy={'required_basis':'forward-excluding-dividends','currency':'USD'})
+    generation_result=subprocess.run([sys.executable,str(SCRIPT/'train.py'),'--state-dir',str(generation_parent),
+        '--model-dir',str(tmp_path/'generation-models')]+common,capture_output=True,text=True,timeout=30)
+    assert generation_result.returncode==0, generation_result.stdout+generation_result.stderr
+    freezes=[json.loads((Path(json.loads(item.stdout)['generation'])/'freeze.json').read_text()) for item in (result,sqlite_result,generation_result)]
+    assert len({item['data_sha256'] for item in freezes})==1
+    assert len({item['prepared_capacity']['rows'] for item in freezes})==1
 
 
 def test_all_missing_feature_variant_is_explicit_and_immutable(calendar):
@@ -518,3 +547,42 @@ def test_sparse_and_invalid_stream_reference_parity(calendar):
     invalid=artificial_predictions([rows[0]])[0]|{'valid':False}
     only=DailyScores();only.add(invalid)
     assert only.score('holdout')==score_predictions([invalid],evaluation_kind='holdout')
+
+
+
+def test_all_four_causal_windows_match_accepted_legacy_preparation(calendar):
+    from data import make_labels
+    from features import causal_features
+    from train import prepare_records
+    from model import canonical_records_hash
+    from storage import HISTORY_COLUMNS
+    days=calendar.sessions('2026-01-02','2026-06-01');known=calendar.close_ms('2026-06-02')
+    rows=[]
+    for i,day in enumerate(days):
+        close=calendar.close_ms(day);price=100+i*.1;row={key:None for key in HISTORY_COLUMNS}
+        row.update(code='US.DEMO',session_date=day,open=price,low=price-1,high=price+2,close=price+.5,
+            volume=1000+i,turnover=(1000+i)*price,currency='USD',adjustment='forward-excluding-dividends',
+            source='fixture',source_at_ms=close,raw_time_key=close,raw_date=int(day.replace('-','')),raw_time_zone=-300,
+            time_zone_unit_status='unverified',time_zone_unit_source_url='https://example.com',provider_finality_status='unverified',
+            retrieved_at_ms=known,known_at_ms=known,price_known_at_ms=known,currency_known_at_ms=known,
+            revision_vintage='fictional',completed=True,completion_status='completed',volume_precision=0,
+            currency_source_url='https://example.com',currency_evidence_hash='a'*64,currency_status='verified')
+        rows.append(row)
+    history=assemble(rows,[{'identity_bindings':[{'code':'US.DEMO','stock_id':1}]}])
+    start,end='2026-04-01','2026-04-15';indices={day:i for i,day in enumerate(calendar._sessions)}
+    legacy=[]
+    for origin in calendar.sessions(start,end):
+        cutoff=calendar.close_ms(origin)+1000
+        for label in make_labels(history,'US.DEMO',origin,calendar=calendar,fit_cutoff_ms=known,
+                origin_cutoff_ms=cutoff,policy='research-retrospective',declared_gaps=GAPS):
+            assert label['status']=='complete'
+            item=causal_features(history,'US.DEMO',origin,calendar=calendar,origin_cutoff_ms=cutoff,
+                horizon=label['horizon'],policy='research-retrospective',declared_gaps=GAPS)
+            legacy.append(label|item|{'origin_at_ms':cutoff,'origin_session_index':indices[origin],
+                'window_distance':indices[label['end']]-indices[origin]})
+    legacy=clean_records(legacy)
+    compact,rejected=prepare_records(history,calendar=calendar,start=start,end=end,fit_cutoff_ms=known,
+        policy='research-retrospective',declared_gaps=GAPS)
+    assert not rejected and set(compact.column('horizon'))=={'1d','3d','5d','next_week'}
+    assert canonical(list(compact))==canonical(legacy)
+    assert canonical_records_hash(compact)==sha(canonical(legacy))

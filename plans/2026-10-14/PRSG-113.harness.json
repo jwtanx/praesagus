@@ -87,7 +87,8 @@
       "status": "passed",
       "evidence": [
         "BLOCKED: actual contemporaneousmembership/delistings/origin-vintages, walk-forward/untouchedholdout forecastquality and full prepare/train/calibrate/infer/score/export8GBhardwareprofile remainunverified.",
-        "Old250000prepared-row representation capresolved in reviewed exactcompactcheckpoint;532400minimalfictionalrows processed; this doesnotqualifyfulltrainingresources."
+        "Old250000prepared-row representation capresolved in reviewed exactcompactcheckpoint;532400minimalfictionalrows processed; this doesnotqualifyfulltrainingresources.",
+        "Runtimecheckpoint75e9c14 fullhook2551passed41warnings43.85s. Previouslyrequestedtest-onlyfollowup:4causalwindows+CSV/SQLite/savedgenerationCLIhashparity;owner116passed8.96s;Lead2changedtestsreplayed. Runtime2hashesunchanged;followupfullhookbeforedelivery."
       ]
     }
   ],
