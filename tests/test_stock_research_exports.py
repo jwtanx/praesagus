@@ -100,12 +100,13 @@ def test_quote_financials_require_exact_typed_current_security(case):
     assert not any(k.startswith('quote_financial_metrics_') for k in row)
 
 
-@pytest.mark.parametrize('case',['typed-id','row-id','duplicate','missing-window','window-date','window-time','started','origin',
+@pytest.mark.parametrize('case',['typed-id','row-id','missing-row-id','duplicate','missing-window','window-date','window-time','started','origin',
     'axes','shape','price','terminal','crossing','nan','baseline','model-version','data-version','candidate-count'])
 def test_invalid_forecast_contract_rejects_before_any_artifact(case,tmp_path):
     u,s,p,e=demo.fixtures();r=p['forecasts'][0]
     if case=='typed-id':r['instrument']=dict(r['instrument'],stock_id=str(r['instrument']['stock_id']))
     elif case=='row-id':r['stock_id']=str(r['stock_id'])
+    elif case=='missing-row-id':r['stock_id']=None
     elif case=='duplicate':p['forecasts'].append(copy.deepcopy(r))
     elif case=='missing-window':p['forecasts'].pop(0)
     elif case=='window-date':r['window']['end']='2026-10-19'

@@ -124,7 +124,9 @@ def tables(universe,state,payload,evaluation,*,is_demo=False):
         require(row['forecast_id']==sha(canonical({k:v for k,v in row.items() if k!='forecast_id'})),'export-forecast-id-mismatch')
         require(row['decision']['action'] in ACTIONS,'export-action')
         require(row.get('status') in {'available','unavailable','invalid'},'export-forecast-status')
-        if row['status']=='available':require(row.get('model') is not None and row.get('baseline') is not None,'export-matched-baseline-required')
+        if row['status']=='available':
+            require(row.get('stock_id') is not None,'export-available-security-binding-required')
+            require(row.get('model') is not None and row.get('baseline') is not None,'export-matched-baseline-required')
         window=row['window'];expected=calendar.windows(row['origin'])[row['horizon']]
         require(window['horizon']==row['horizon'] and window['sessions']==expected and window['start']==expected[0] and window['end']==expected[-1], 'export-window-mismatch')
         require(window.get('first_open_ms')==calendar.open_ms(expected[0]) and window.get('last_close_ms')==calendar.close_ms(expected[-1]) and type(window.get('started')) is bool and window['started']==(row['as_of_ms']>=calendar.open_ms(expected[0])),'export-window-times')
