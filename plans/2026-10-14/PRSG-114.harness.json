@@ -21,11 +21,11 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-114-stock-research-inference-evaluation.md",
   "objective": "AI Engineer to own four-window inference/immutable ongoing scores with ETF-aware ranking after registration.",
-  "status": "planned",
+  "status": "complete",
   "owner": "AI Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "base_sha": "0fc637f80372610b44d45db9536b63e79d8086fb",
   "allowed_paths": [
     "scripts/stock-research/inference.py",
     "scripts/stock-research/predict.py",
@@ -44,16 +44,40 @@
   ],
   "checks": [
     {
+      "id": "inference-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_stock_research_inference.py",
+        "tests/test_stock_research_model.py",
+        "tests/test_stock_research_data.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead final exact3suite116passed7.03s; owner1167.02s; all7ownedpaths reviewed; fixture-only evidence, not actualforecast/modelquality."
+      ]
+    },
+    {
       "id": "check-1",
       "kind": "manual",
       "description": "Numerical forecasts/dates/invalid input/baseline labels and long-only actions/caps tested.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed saved forecast/cutoff/calendar/quantile/action/revision logic and focused deterministic regressions; Trader reviewed financial meaning. No actual provider/LLM/fit invocation by new runtime."
+      ]
     },
     {
       "id": "check-2",
       "kind": "manual",
       "description": "Matured saved forecasts/baselines matched against actuals with pending/missing and no silent model changes.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed saved forecast/cutoff/calendar/quantile/action/revision logic and focused deterministic regressions; Trader reviewed financial meaning. No actual provider/LLM/fit invocation by new runtime."
+      ]
     }
   ],
   "acceptance": [
@@ -61,9 +85,13 @@
       "id": "PRSG-114-D1",
       "description": "Numerical forecasts/dates/invalid input/baseline labels and long-only actions/caps tested.",
       "check_ids": [
+        "inference-tests",
         "check-1"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independently accepted implementation/fictionalregressions ONLY; PRSG113actualstrongmodel/hardwaregate unchanged/unmet."
+      ]
     },
     {
       "id": "PRSG-114-D2",
@@ -71,10 +99,17 @@
       "check_ids": [
         "check-2"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independently accepted implementation/fictionalregressions ONLY; PRSG113actualstrongmodel/hardwaregate unchanged/unmet."
+      ]
     }
   ],
   "review": {
-    "status": "pending"
-  }
+    "status": "accepted",
+    "evidence": [
+      "All7scopedpaths reviewed and sourcehashes match frozenownerhandoff.116focusedpassed7.03s; actualdata/modelpromotion excluded. Clean delivery checkout omits concurrent115draft."
+    ]
+  },
+  "implementation_base_sha": "63d17c706c27731309c2ca982404e9d37ebeb3ff"
 }
