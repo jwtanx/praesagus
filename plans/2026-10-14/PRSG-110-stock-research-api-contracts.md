@@ -30,7 +30,7 @@ Lead owns these ticket metadata files. Implementation owner changes for model wo
 ## When it's considered done
 
 - [x] PRSG-110-D1: Mocked screen/snapshot/history paging and field units/errors/caps validated; no account/order access.
-- [ ] PRSG-110-D2: Capability receipt distinguishes exact native UI counts, entitlements and quota unknowns.
+- [x] PRSG-110-D2: Capability receipt distinguishes exact native UI counts, entitlements and quota unknowns.
 
 ## Evidence
 
@@ -51,3 +51,10 @@ References: https://open.moomoo.com/zh-cn/api/quote/screening/stock-screen ; htt
 ## Implementation checkpoint — 2026-10-15 MYT
 
 Lead independently reviewed the eight owned provider/config/contract/registry/doc/test paths. All five preliminary findings and the final daily change-rate request/sort gap were resolved. Exact configured Python3.11 command runs provider + existing REST + secure-transport regressions: **344passed in0.43s** (79newprovider cases); prior343passed0.40s was before the final interface addition. Registry41unique issuer observations reconcile with the reviewed classification input; no universe is seeded from it. Old transport/collector remain unchanged. D1 accepted; D2 remains pending a separately bounded, supervised live capability receipt. No authenticated requests, credential reads, model training or numeric forecasts occurred in these checks. API_CONTRACTS explicitly reports all unsupported/unverified capabilities and evidence limits.
+
+
+## Lead acceptance — 2026-10-15 MYT
+
+The reviewed implementation was committed and pushed as `c0c05d7`; mandatory full hooks passed2426tests/41existingwarnings (commit34.78s, push33.68s). Lead separately reviewed and replayed13private pilot controls, then accepted exactlyone supervised authenticated read-only pilot: **5requests,25returnedrows,5.394s,cleanupconfirmed**. The earlier reported23rows was corrected to25 (3screen+3basic+3snapshot+8history+8history); Lead reconciled the artifact hashes, counts and private permissions. No public raw/provider payloads or secrets are committed.
+
+The pilot established sample access to the four allowed endpoint families. It observed `cumulative_property_result`, integer period_average echo and typed integer-string factor results; the current decoder continues to withhold those unverified fields pending a scoped normalization follow-up. History raw time_zone=-4 is retained with runtime-unit/finality uncertainty; no silent conversion occurred. Native UI counts, rate base units, numeric REST quotas, broad entitlements, data rights and full history/point-in-time universe readiness remain unknown. D1/D2 are accepted as the bounded API contract/capability-assessment epic, not acceptance of ingestion100, strong forecasts or production model promotion. NextPRSG-111 owns ingestion and any explicitly frozen provider enrichment/decoder follow-up.
