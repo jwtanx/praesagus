@@ -1,3 +1,10 @@
 # Python >=3.11. Offline contract/fixture core uses only the standard library.
 # Existing encrypted Ed25519 signer, loaded lazily for an explicitly authorized live pilot.
 cryptography>=50.0.2,<51
+
+# CPU-first dataset/calendar/numerical/workbook dependencies for accepted later stages.
+exchange_calendars>=4.13,<5
+numpy>=2,<3
+pandas>=2.2,<3
+scikit-learn>=1.4,<2
+openpyxl>=3.1,<4

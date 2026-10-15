@@ -21,12 +21,14 @@ from config import ProviderConfig
 SCREEN = '/api/v1.0/quote/stock-screen'
 BASIC = '/api/v1.0/quote/stock-basicinfo'
 SNAPSHOT = '/api/v1.0/quote/snapshot'
+INDUSTRY = '/api/v1.0/quote/plate-list'
+META_RE = r'/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,63}/(?:owner-plate|company/profile)'
 POST_PATHS = frozenset({SCREEN, BASIC, SNAPSHOT})
 
 
 def allowed_request(method, path):
     return (method == 'POST' and path in POST_PATHS or method == 'GET' and isinstance(path, str)
-            and re.fullmatch(r'/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,63}/history-kline', path) is not None)
+            and (re.fullmatch(r'/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,63}/history-kline', path) is not None or re.fullmatch(META_RE, path) is not None or path == INDUSTRY))
 
 
 class ResearchReadTransport(SecureReadTransport):
@@ -36,7 +38,11 @@ class ResearchReadTransport(SecureReadTransport):
         if not isinstance(request, ReadRequest) or not allowed_request(request.method, request.path):
             raise LiveReadError('invalid-request')
         # Shared shape/header validation, without changing bytes actually sent/signed.
-        shared = replace(request, path=SNAPSHOT) if request.method == 'POST' else request
+        metadata = request.method == 'GET' and (request.path == INDUSTRY or re.fullmatch(META_RE, request.path))
+        if metadata and (request.body or request.query != ('market=US&plate_class=INDUSTRY' if request.path == INDUSTRY else '')):
+            raise LiveReadError('invalid-request')
+        shared = (replace(request, path='/api/v1.0/quote/find-news') if metadata else
+                  replace(request, path=SNAPSHOT) if request.method == 'POST' else request)
         return SecureReadTransport._validate(shared)
 
     def __repr__(self):
@@ -68,7 +74,7 @@ class ResearchProvider:
         return {'native_bullish_count': None, 'native_bearish_count': None,
                 'native_count_status': 'methodology-unverified', 'rest_numeric_quota': None,
                 'entitlements': 'unverified', 'live_coverage': 'unverified',
-                'cumulative_response_shape': 'unverified', 'history_next_time_paging': 'unverified-not-used', 'provider_bar_finality': 'unverified'}
+                'cumulative_response_shape': 'reviewed-daily-wrapper/int-flag-echo', 'metadata_endpoints': 'documented/mocked-only', 'history_next_time_paging': 'unverified-not-used', 'provider_bar_finality': 'unverified'}
 
     def _clock(self):
         value = _invoke(self._clock_ms, kind='clock-failed')
@@ -144,7 +150,7 @@ class ResearchProvider:
         need(isinstance(rows, list) and len(rows) <= limit and all(isinstance(row, dict) for row in rows), 'invalid-page')
         return rows
 
-    def screen(self, *, retrieve_queries, sort, screen_queries=None):
+    def screen(self, *, retrieve_queries, sort, screen_queries=None, page_limit=None):
         need(isinstance(retrieve_queries, list) and 1 <= len(retrieve_queries) <= 16, 'invalid-screen-query')
         for query in retrieve_queries:
             descriptor(query)
@@ -155,6 +161,8 @@ class ResearchProvider:
         queries = [us_filter] if screen_queries is None else screen_queries
         # Initial reviewed contract supports US market identity only; eligibility uses actual history later.
         need(self._body(queries) == self._body([us_filter]), 'unsupported-screen-filter')
+        pages_allowed = self.config.max_pages if page_limit is None else page_limit
+        need(integer(pages_allowed, 1, self.config.max_pages), 'invalid-page-budget')
         frozen = {'limit': self.config.screen_limit, 'retrieve_queries': retrieve_queries,
                   'screen_queries': queries, 'sort': sort}
         base = json.loads(self._body(frozen))
@@ -162,7 +170,7 @@ class ResearchProvider:
         cursor = None
         started = ended = None
         reported_total = None
-        for page in range(1, self.config.max_pages + 1):
+        for page in range(1, pages_allowed + 1):
             request = dict(base)
             if cursor is not None:
                 request['next_key'] = cursor
@@ -198,7 +206,7 @@ class ResearchProvider:
                              metadata={'total_reported': pagination['total'], 'budgets': self.budgets})
             cursors.add(next_key)
             cursor = next_key
-        return Batch(tuple(output), 'screen', 'truncated', 'page-budget', self.config.max_pages,
+        return Batch(tuple(output), 'screen', 'truncated', 'page-budget', pages_allowed,
                      requested_at_ms=started, retrieved_at_ms=ended, metadata={'budgets': self.budgets})
 
     def _codes(self, codes, path, row_key, normalizer):
@@ -225,6 +233,47 @@ class ResearchProvider:
     def snapshots(self, codes):
         return self._codes(codes, SNAPSHOT, 'snapshot_list', normalize_snapshot)
 
+    def source_metadata(self, security_code, kind):
+        code(security_code)
+        need(kind in {'owner-plate', 'company/profile'}, 'unsupported-metadata')
+        path = f'/api/v1.0/quote/{security_code}/{kind}'
+        payload, started, ended, vintage = self._read('GET', path)
+        key = 'sectors' if kind == 'owner-plate' else 'items'
+        rows = self._rows(payload['data'], key, 400)
+        self._count_rows(len(rows))
+        normalized = []
+        for row in rows:
+            if kind == 'owner-plate':
+                need(text(row.get('plate_code')) and text(row.get('plate_name'))
+                     and row.get('plate_type') in {'INDUSTRY', 'CONCEPT', 'OTHER'}, 'invalid-industry-record')
+                value = {name: row.get(name) for name in ('plate_code', 'plate_name', 'plate_type', 'name')}
+            else:
+                need(text(row.get('name')) and isinstance(row.get('value'), str) and len(row['value']) <= 16384
+                     and type(row.get('field_type')) is int and row['field_type'] in (0, 1, 2)
+                     and ('attribute_type' not in row or integer(row['attribute_type'], 0, 10000)), 'invalid-profile-record')
+                value = {name: row.get(name) for name in ('name', 'value', 'field_type', 'attribute_type')}
+            normalized.append(value)
+        return Batch(tuple(normalized), kind, 'success' if rows else 'empty', None, 1,
+                     requested_at_ms=started, retrieved_at_ms=ended,
+                     metadata={'code': security_code, 'raw_payload_hash': vintage, 'known_at_ms': ended,
+                               'effective_from': None, 'effective_to': None, 'classification': 'raw-current-only'})
+
+    def industry_catalog(self):
+        payload, started, ended, vintage = self._read('GET', INDUSTRY, [('market', 'US'), ('plate_class', 'INDUSTRY')])
+        rows = self._rows(payload['data'], 'plate_list', 2000)
+        self._count_rows(len(rows))
+        seen = set()
+        output = []
+        for row in rows:
+            need(text(row.get('code')) and row['code'].startswith('US.') and text(row.get('plate_id'))
+                 and text(row.get('plate_name')) and row['code'] not in seen, 'invalid-taxonomy')
+            seen.add(row['code'])
+            output.append({key: row.get(key) for key in ('code', 'plate_id', 'plate_name', 'sc_name', 'tc_name')})
+        return Batch(tuple(output), 'industry-catalog', 'success' if rows else 'empty', None, 1,
+                     requested_at_ms=started, retrieved_at_ms=ended,
+                     metadata={'taxonomy_id': 'moomoo-rest-US-INDUSTRY', 'taxonomy_snapshot_hash': vintage,
+                               'known_at_ms': ended, 'effective_from': None, 'effective_to': None})
+
     def history(self, security_code, *, start, end, currency_evidence=None, session_closes=None):
         code(security_code)
         first, last = iso_date(start), iso_date(end)
@@ -237,7 +286,16 @@ class ResearchProvider:
             left = max(first, right - timedelta(days=self.config.history_window_days - 1))
             query = [('start', left.isoformat()), ('end', right.isoformat()), ('ktype', 2),
                      ('autype', self.config.autype), ('num', self.config.history_num)]
-            payload, stamp, retrieved, vintage = self._read('GET', f'/api/v1.0/quote/{security_code}/history-kline', query)
+            failure=None
+            try:payload, stamp, retrieved, vintage = self._read('GET', f'/api/v1.0/quote/{security_code}/history-kline', query)
+            except RESTError as error:failure=error
+            if failure is not None:
+                if output:
+                    return Batch(tuple(sorted(output,key=lambda row:row['session_date'])),'history','partial',failure.kind,pages,
+                        requested_at_ms=requested,retrieved_at_ms=retrieved,
+                        metadata={'windows':sources,'coverage':'incomplete','stopped_on_failure':True,'budgets':self.budgets})
+                raise RESTError(failure.kind,failure.retry_after)
+
             requested = requested or stamp
             pages += 1
             data = payload['data']

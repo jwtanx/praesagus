@@ -9,4 +9,15 @@ screen_limit = 300
 history_num = 370
 history_window_days = 180
 timeout_seconds = 10.0
-autype = 0
+autype = 1
+
+[collection]
+state_parent = "~/Documents/stock-research-data"
+credential_locator_file = "" # Or PRSG_MOOMOO_CREDENTIAL_LOCATOR; private0600 locator reference, outsideGit.
+metadata_file = "" # Optional reviewed sector/issuer/field-currency JSON; unknown is explicit.
+calendar = "XNYS"
+history_years = 3
+revision_sessions = 5
+discovery_pages = 1
+max_candidates = 900
+metadata_enabled = false # Raw provider enrichment optional; never fabricates a reviewed crosswalk.

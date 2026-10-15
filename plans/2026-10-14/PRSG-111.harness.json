@@ -21,18 +21,26 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-111-stock-research-universe-ingestion.md",
   "objective": "Dynamic 80-stock/20ETF plus10speculative selection and immutable vintages/actuals retention.",
-  "status": "planned",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "base_sha": "2961a216d777167119803999dcb5a965142ba02a",
   "allowed_paths": [
     "scripts/stock-research/universe.py",
     "scripts/stock-research/collect.py",
     "scripts/stock-research/storage.py",
     "tests/test_stock_research_universe.py",
     "plans/2026-10-14/PRSG-111-stock-research-universe-ingestion.md",
-    "plans/2026-10-14/PRSG-111.harness.json"
+    "plans/2026-10-14/PRSG-111.harness.json",
+    "scripts/stock-research/config.py",
+    "scripts/stock-research/config.example.toml",
+    "scripts/stock-research/requirements.txt",
+    "scripts/stock-research/provider.py",
+    "scripts/stock-research/contracts.py",
+    "scripts/stock-research/API_CONTRACTS.md",
+    "scripts/stock-research/etf_metadata.csv",
+    "tests/test_stock_research_provider.py"
   ],
   "protected_paths": [
     "artifacts/",
@@ -43,16 +51,39 @@
   ],
   "checks": [
     {
+      "id": "ingestion-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_stock_research_universe.py",
+        "tests/test_stock_research_provider.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently replayed exact configured command:122passed2.64s after final cachedmetadata replay, identityreuse and latestturnover ranking corrections; prior119passed2.30s retained as preliminaryprogress."
+      ]
+    },
+    {
       "id": "check-1",
       "kind": "manual",
       "description": "Deterministic dedup/refill/liquidity/sector/exposure filters and honest shortfalls tested.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed all14ownedpaths and49issuerlookuprows:41previouscorefieldsunchanged +8exactreviewedsourcefields. Quota-aware stockclass/issuercap/sector andETFfamilyallocation, actual252/latest20sessionliquidity, expiry/currencyidentity, speculative separation and honestpartialcoverage regressions accepted."
+      ]
     },
     {
       "id": "check-2",
       "kind": "manual",
       "description": "Incremental histories/revisions and prior forecast instruments retained in timestamp folders.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Immutable exclusiveMYTgenerations/hashverifiedstate, oldforecastactualsretention, revisions/latecurrencyknown-time/equal-knownconflict, defaultoffline metadatareplay andchangedsecurityIDquarantine/fullbackfill, calendarhash/currentidentitysidecars andadjustmentvintage policy reviewed. No newlivecalls, benchmarkseeds, SQLitewriter, training or forecasts."
+      ]
     }
   ],
   "acceptance": [
@@ -60,20 +91,31 @@
       "id": "PRSG-111-D1",
       "description": "Deterministic dedup/refill/liquidity/sector/exposure filters and honest shortfalls tested.",
       "check_ids": [
+        "ingestion-tests",
         "check-1"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independent implementation/fixture review accepted at2026-10-15T05:34:22.980487+00:00; realfull100selection/sourcecurrency/sector/issuerreadiness andmodelquality are not established."
+      ]
     },
     {
       "id": "PRSG-111-D2",
       "description": "Incremental histories/revisions and prior forecast instruments retained in timestamp folders.",
       "check_ids": [
+        "ingestion-tests",
         "check-2"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independent implementation/fixture review accepted at2026-10-15T05:34:22.980487+00:00; realfull100selection/sourcecurrency/sector/issuerreadiness andmodelquality are not established."
+      ]
     }
   ],
   "review": {
-    "status": "pending"
+    "status": "accepted",
+    "evidence": [
+      "Complete14pathscopevalidated against2961a216; no unexpected changes exceptLead-owned112draft. Focused122pass2.64s; gitdiff--checkclean. Mandatory fullcommit/pushhooks willrunbeforedelivery. Actualcollection remainsunreleasedpendingseparateboundedreview; no account/order/providersecret access."
+    ]
   }
 }

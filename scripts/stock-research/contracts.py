@@ -35,6 +35,16 @@ def numeric(value, *, positive=False):
     return number
 
 
+def signed_numeric(value):
+    need(type(value) in (int, float), 'invalid-numeric-field')
+    failed=False
+    try:number=float(value)
+    except (OverflowError, ValueError):failed=True
+    if failed:raise ContractError('invalid-numeric-field')
+    need(math.isfinite(number), 'invalid-numeric-field')
+    return number
+
+
 def code(value):
     need(isinstance(value, str) and re.fullmatch(r'US\.[A-Z][A-Z0-9.-]{0,63}', value) is not None, 'invalid-code')
     return value
@@ -85,13 +95,20 @@ def descriptor(query):
 
 def screen_field(wrapper, query):
     family, properties = descriptor(query)
+    expected_key = family + '_result'
+    if family == 'cumulative_property' and isinstance(wrapper, dict) and expected_key not in wrapper:
+        return FieldValue(None, None, ('average_' if properties['period_average'] else '') + {3104: 'volume', 3105: 'turnover'}.get(properties['name'], '') or None,
+                          'unavailable', 'cumulative-response-shape-unverified')
+    need(isinstance(wrapper, dict) and set(wrapper) == {expected_key}, 'descriptor-mismatch')
+    result = wrapper[expected_key]
+    need(isinstance(result, dict) and isinstance(result.get('property'), dict)
+         and isinstance(result.get('res'), dict), 'descriptor-mismatch')
+    echo = result['property']
+    need(set(echo) == set(properties) and type(echo.get('name')) is int and echo['name'] == properties['name'], 'descriptor-mismatch')
     if family == 'cumulative_property':
-        need(isinstance(wrapper, dict), 'descriptor-mismatch')
-        unit = {3104: 'average_volume', 3105: 'average_turnover'}.get(properties['name'])
-        return FieldValue(None, None, unit, 'unavailable', 'cumulative-response-shape-unverified')
-    need(isinstance(wrapper, dict) and set(wrapper) == {family + '_result'}, 'descriptor-mismatch')
-    result = wrapper[family + '_result']
-    need(isinstance(result, dict) and result.get('property') == properties and type(result['property'].get('name')) is int and isinstance(result.get('res'), dict), 'descriptor-mismatch')
+        need(type(echo.get('days')) is int and echo['days'] == properties['days']
+             and type(echo.get('period_average')) is int and echo['period_average'] in (0, 1)
+             and echo['period_average'] == int(properties['period_average']), 'descriptor-mismatch')
     raw = result['res']
     tag = raw.get('result_type')
     need(type(tag) is int and tag in (1, 2, 3), 'invalid-result-type')
@@ -105,7 +122,7 @@ def screen_field(wrapper, query):
     if unit is not None:
         need(tag in (1, 2), 'invalid-typed-value')
     if tag == 1:
-        number = numeric(value)
+        number = signed_numeric(value)
     elif tag == 2:
         need(type(value) is int or isinstance(value, str) and re.fullmatch(r'[+-]?\d+(?:\.\d+)?', value) is not None, 'invalid-typed-value')
         number = float(Decimal(value))
@@ -173,6 +190,21 @@ def normalize_snapshot(row, retrieved_at_ms):
         need(name not in row or type(row[name]) is bool, 'invalid-snapshot')
         output[name] = row.get(name)
     output['sec_status'] = row.get('sec_status') if text(row.get('sec_status')) else None
+    financial_periods = {'earning_per_share': 'previous-fiscal-year/end-unknown', 'net_profit': 'previous-fiscal-year/end-unknown',
+        'pe_ttm_ratio': 'trailing-12-months/end-unknown', 'dividend_ttm': 'trailing-12-months/end-unknown',
+        'dividend_ratio_ttm': 'trailing-12-months/end-unknown'}
+    ratios = {'pe_ratio', 'pe_ttm_ratio', 'pb_ratio'}
+    fields = {'total_market_val','circular_market_val','pe_ratio','pe_ttm_ratio','pb_ratio','earning_per_share',
+              'net_profit','net_asset_per_share','dividend_ttm','dividend_ratio_ttm'}
+    output['financial_metrics'] = {}
+    for name in sorted(fields):
+        value = row.get(name) if row.get('equity_valid') is True else None
+        value = None if value is None else signed_numeric(value)
+        output['financial_metrics'][name] = {'value': value, 'unit': 'ratio' if name in ratios else 'percentage-points' if name == 'dividend_ratio_ttm' else 'monetary/currency-unverified',
+            'period': financial_periods.get(name, 'unknown'), 'currency': None,
+            'status': 'available' if value is not None else 'unavailable', 'source_at_ms': stamp}
+    for name in ('bid_price','ask_price','price_spread','bid_vol','ask_vol'):
+        output[name] = None if row.get(name) is None else numeric(row[name])
     output.update(currency=None, native_bullish_count=None, native_bearish_count=None,
                   native_count_status='methodology-unverified', observation_kind='live-snapshot-not-completed-bar')
     return output

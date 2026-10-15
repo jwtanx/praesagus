@@ -260,7 +260,7 @@ def test_complete_ohlc_raw_timezone_provenance_and_explicit_currency_calendar():
     assert row['provider_finality_status'] == 'unverified'
     assert row['raw_time_zone'] == -240 and row['raw_time_key'] == BAR_TIME and row['session_date'] == '2026-10-14'
     assert row['currency'] == 'USD' and row['completed'] and row['known_at_ms'] == NOW
-    assert row['adjustment'] == 'unadjusted' and len(row['revision_vintage']) == 64
+    assert row['adjustment'] == 'forward-excluding-dividends' and len(row['revision_vintage']) == 64
     assert parse_qs(requests[0].query)['ktype'] == ['2']
     coverage = contracts.history_coverage(result.rows, expected_sessions=['2026-10-14'], cutoff_ms=NOW, minimum=1)
     assert coverage['status'] == 'complete'
@@ -488,3 +488,67 @@ def test_daily_change_rate_discovery_request_sort_keeps_numeric_rate_unavailable
             contracts.descriptor({'cumulative_property': properties})
     with pytest.raises(RESTError, match='factor-family-mismatch'):
         contracts.descriptor({'simple_property': {'name': 3102}})
+
+
+def cumulative_row(factor=3105, *, days=1, flag=0, value='25000'):
+    return {'code':'US.DEMO','name':'Fictional','results':[{'cumulative_property_result':{
+        'property':{'name':factor,'days':days,'period_average':flag},'res':{'result_type':2,'ival':value}}}]}
+
+
+def test_live_reviewed_cumulative_wrapper_exact_integer_echo_and_units():
+    for factor,expected,unit in [(3104,25000,'volume'),(3105,25,'turnover'),(3102,None,None)]:
+        query={'cumulative_property':{'name':factor,'days':1,'period_average':False}}
+        item,_,_=client([screen_page([cumulative_row(factor,value='-3159' if factor==3102 else '25000')])])
+        field=item.screen(retrieve_queries=[query],sort={'direction':2,**query}).rows[0]['fields'][0]
+        assert field.value==expected and field.unit==unit
+        if factor==3102:assert field.reason=='change-rate-base-unit-unverified'
+
+
+@pytest.mark.parametrize('flag,days,factor',[(True,1,3105),(2,1,3105),(1,1,3105),(0,2,3105),(0,1,3104)])
+def test_cumulative_echo_rejects_bool_alternative_integer_wrong_window_or_factor(flag,days,factor):
+    query={'cumulative_property':{'name':3105,'days':1,'period_average':False}}
+    item,_,_=client([screen_page([cumulative_row(factor,days=days,flag=flag)])])
+    with pytest.raises(RESTError,match='descriptor-mismatch'):
+        item.screen(retrieve_queries=[query],sort={'direction':2,**query})
+
+
+def test_signed_fundamentals_have_equity_guard_and_explicit_period_currency():
+    row=snapshot(earning_per_share=-2.5,net_profit=-1000,pe_ratio=-4,dividend_ratio_ttm=3.0)
+    item,_,_=client([envelope({'snapshot_list':[row]})])
+    metrics=item.snapshots(['US.DEMO']).rows[0]['financial_metrics']
+    assert metrics['earning_per_share']['value']==-2.5 and metrics['net_profit']['value']==-1000
+    assert metrics['earning_per_share']['period']=='previous-fiscal-year/end-unknown'
+    assert metrics['earning_per_share']['currency'] is None and metrics['pe_ratio']['unit']=='ratio'
+    assert metrics['dividend_ratio_ttm']['unit']=='percentage-points'
+    row['equity_valid']=False
+    item,_,_=client([envelope({'snapshot_list':[row]})])
+    assert item.snapshots(['US.DEMO']).rows[0]['financial_metrics']['net_profit']['value'] is None
+
+
+def test_closed_metadata_routes_and_raw_taxonomy_no_sector_inference():
+    owner={'plate_code':'US.INDUSTRY1','plate_name':'Fictional industry','plate_type':'INDUSTRY','name':'Company name differs'}
+    profile={'name':'Industry label','value':'Fictional industry','field_type':0,'attribute_type':50}
+    plate={'code':'US.INDUSTRY1','plate_id':'INDUSTRY1','plate_name':'Fictional industry'}
+    item,requests,_=client([envelope({'sectors':[owner]}),envelope({'items':[profile]}),envelope({'plate_list':[plate]})])
+    assert item.source_metadata('US.DEMO','owner-plate').rows[0]['plate_name']=='Fictional industry'
+    assert item.source_metadata('US.DEMO','company/profile').rows[0]['attribute_type']==50
+    catalog=item.industry_catalog()
+    assert catalog.metadata['taxonomy_id']=='moomoo-rest-US-INDUSTRY' and 'sector_id' not in catalog.rows[0]
+    assert requests[-1].query=='market=US&plate_class=INDUSTRY'
+    assert all(request.method=='GET' and not request.body for request in requests)
+    for request in requests:
+        with pytest.raises(LiveReadError):SecureReadTransport._validate(request)
+        with pytest.raises(LiveReadError):provider.ResearchReadTransport._validate(replace(request,query='market=HK&plate_class=INDUSTRY'))
+
+
+def test_raw_mode_is_explicit_not_split_continuous_and_empty_metadata_valid():
+    item,_,_=client([history_page(),envelope({'sectors':[]})],autype=0)
+    assert history(item).rows[0]['adjustment']=='unadjusted'
+    assert item.source_metadata('US.DEMO','owner-plate').status=='empty'
+
+
+def test_history_keeps_prior_pages_when_global_request_budget_stops_backfill():
+    item,requests,_=client([history_page()],max_requests=1,history_window_days=1)
+    result=item.history('US.DEMO',start='2026-10-13',end='2026-10-14')
+    assert result.status=='partial' and result.reason=='request-budget' and len(result.rows)==1
+    assert result.metadata['stopped_on_failure'] is True and len(requests)==1
