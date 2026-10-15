@@ -64,7 +64,8 @@
       "cwd": ".",
       "status": "passed",
       "evidence": [
-        "Lead independently replayed exact configured command:122passed2.64s after final cachedmetadata replay, identityreuse and latestturnover ranking corrections; prior119passed2.30s retained as preliminaryprogress."
+        "Lead independently replayed exact configured command:122passed2.64s after final cachedmetadata replay, identityreuse and latestturnover ranking corrections; prior119passed2.30s retained as preliminaryprogress.",
+        "Final two handoff additions (physical security-ID dedup and maximum actual evidence availability) independently reviewed; combined collection/provider/existingREST/security suite389passed2.83s, including124collection/provider cases. Implementatione1e6422341ca453977ef3b291fb79f4bb5b45442 fullcommit hook2471passed41existingwarnings37.60s."
       ]
     },
     {
@@ -115,7 +116,8 @@
   "review": {
     "status": "accepted",
     "evidence": [
-      "Complete14pathscopevalidated against2961a216; no unexpected changes exceptLead-owned112draft. Focused122pass2.64s; gitdiff--checkclean. Mandatory fullcommit/pushhooks willrunbeforedelivery. Actualcollection remainsunreleasedpendingseparateboundedreview; no account/order/providersecret access."
+      "Complete14pathscopevalidated against2961a216; no unexpected changes exceptLead-owned112draft. Focused122pass2.64s; gitdiff--checkclean. Mandatory fullcommit/pushhooks willrunbeforedelivery. Actualcollection remainsunreleasedpendingseparateboundedreview; no account/order/providersecret access.",
+      "Final owner freeze verified; both late identity/availability regressions reviewed and independently replayed389passed2.83s. Working tree onlyLead112drafts afterimplementationcommit. No livecollection/deployment/strongmodel claims."
     ]
   }
 }
