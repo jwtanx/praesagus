@@ -9,3 +9,6 @@ frontend/pnpm-workspace.yaml
 .localstack/
 localstack/
 artifacts/tickets/audit.json
+
+# Entire optional local research data parent; generated datasets/models/workbooks stay private.
+/stock-research-data/

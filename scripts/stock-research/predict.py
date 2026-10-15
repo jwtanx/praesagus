@@ -58,7 +58,7 @@ def main(argv=None):
     stamp=datetime.fromisoformat(args.as_of.replace('Z','+00:00')) if args.as_of else datetime.fromtimestamp(issued/1000,timezone.utc)
     require(stamp.tzinfo is not None,'as-of-timezone-required');as_of=int(stamp.timestamp()*1000)
     require(0<as_of<=issued,'issuance-cutoff-order')
-    generations=manifests(parent,kind='stock-research-collection',compatibility_id=compatibility(settings))
+    generations=manifests(parent,component='collection',compatibility_id=compatibility(settings))
     generations=[g for g in generations if type(g[2].get('as_of_ms')) is int and g[2]['as_of_ms']<=as_of]
     require(generations,'compatible-cached-collection-missing')
     _,folder,collection_manifest=generations[-1];universe=json.loads(private_read(folder/'universe.json'))

@@ -20,7 +20,7 @@ for name in ('storage','data','market_calendar','features','model','ranking','in
 from data import GAPS,assemble
 from market_calendar import MarketCalendar
 from model import WINDOW_POLICY
-from storage import HISTORY_COLUMNS,Generation,canonical,sha
+from storage import HISTORY_COLUMNS,Generation,canonical,sha,StorageError
 from inference import build_forecasts,converted_quantiles,write_forecast_payload
 from evaluation import review_forecasts,load_saved_predictions
 from ranking import decide,select_top20
@@ -386,3 +386,107 @@ def test_next_week_terminal_risk_includes_lead_sessions(calendar):
     features=causal_features(local,'US.DEMO','2026-11-18',calendar=calendar,origin_cutoff_ms=cutoff,
         horizon='next_week',policy='research-retrospective',declared_gaps=GAPS)
     assert week['decision']['holding_period_volatility']==pytest.approx(features['features']['volatility20']*math.sqrt(6))
+
+
+def saved_prediction_generation(parent,bundle,stamp,*,kind='stock-research-run',demo=False,extra=False):
+    """Consumer fixture uses the frozen explicit component contract, no provider."""
+    gen=Generation(parent,kind=kind,generated_at=stamp,compatibility_id='collection-policy',as_of_ms=bundle['as_of_ms'])
+    gen.json('predictions.json',bundle)
+    gen.json('outcomes.json',{'schema_version':1,'outcome_revisions':[]})
+    if extra:gen.write('unconsumed.xlsx',b'fictional opaque export bytes')
+    metadata={'is_demo':demo}
+    if kind=='stock-research-run':
+        metadata.update(components_schema_version=1,components={'prediction':{'schema_version':1,'status':'research-only',
+            'artifacts':['predictions.json','outcomes.json'],'compatibility_id':'prediction-policy'}})
+    return gen.finish(**metadata)
+
+
+def test_prediction_component_discovers_legacy_and_shared_without_rewriting_ids(calendar,tmp_path):
+    from datetime import timedelta
+    first=payload(calendar);second=payload(calendar)
+    # A second wire-typed identity is retained exactly; no coercion in discovery.
+    second['forecasts']=[rehash(row|{'issued_at_ms':row['issued_at_ms']+1000,'stock_id':'123',
+        'instrument':row['instrument']|{'stock_id':'123'}}) for row in second['forecasts']]
+    stamp=datetime(2026,11,18,23,tzinfo=timezone.utc)
+    saved_prediction_generation(tmp_path,first,stamp,kind='stock-research-prediction')
+    saved_prediction_generation(tmp_path,second,stamp+timedelta(seconds=1))
+    saved_prediction_generation(tmp_path,first,stamp+timedelta(seconds=2))  # Same immutable issuance deduped.
+    actual,outcomes=load_saved_predictions(tmp_path)
+    assert len(actual)==8 and outcomes==[]
+    expected={r['forecast_id']:canonical(r) for r in first['forecasts']+second['forecasts']}
+    assert {r['forecast_id']:canonical(r) for r in actual}==expected
+    assert {(type(r['stock_id']).__name__,r['stock_id']) for r in actual}=={('int',123),('str','123')}
+
+
+def test_prediction_component_ignores_demo_incomplete_unrelated_generations(calendar,tmp_path):
+    from datetime import timedelta
+    bundle=payload(calendar);stamp=datetime(2026,11,18,23,tzinfo=timezone.utc)
+    saved_prediction_generation(tmp_path,bundle,stamp,demo=True)
+    saved_prediction_generation(tmp_path,bundle,stamp+timedelta(seconds=1),kind='unrelated')
+    Generation(tmp_path,kind='stock-research-run',generated_at=stamp+timedelta(seconds=2))
+    assert load_saved_predictions(tmp_path)==([],[])
+
+
+def test_prediction_component_validates_even_unconsumed_artifact(calendar,tmp_path):
+    bundle=payload(calendar);folder=saved_prediction_generation(tmp_path,bundle,datetime(2026,11,18,23,tzinfo=timezone.utc),extra=True)
+    (folder/'unconsumed.xlsx').write_bytes(b'tampered despite unused export')
+    with pytest.raises(StorageError,match='invalid-state-generation'):load_saved_predictions(tmp_path)
+
+
+@pytest.mark.parametrize('shared',[False,True])
+def test_offline_predict_component_collection_preserves_cutoff_and_exact_model_kind(calendar,tmp_path,monkeypatch,shared):
+    import predict as module
+    import storage
+    from collect import compatibility
+    from config import load_collection_config
+    from datetime import timedelta
+    history,instrument,contract,ref,cutoff,_=fixture_inputs(calendar)
+    parent=tmp_path/'state';policy=compatibility(load_collection_config())
+    def collection(stamp,at_ms,*,wrong_identity=False):
+        gen=Generation(parent,kind='stock-research-run' if shared else 'stock-research-collection',
+            generated_at=stamp,compatibility_id=policy,as_of_ms=at_ms)
+        visible=[row for row in history.rows if row['known_at_ms']<=at_ms]
+        gen.csv('history.csv',visible,HISTORY_COLUMNS)
+        gen.csv('history_revisions.csv',[],('code','session_date','change_type','known_at_ms'))
+        gen.json('state.json',{'schema_version':1});gen.json('metadata_input.json',{})
+        gen.json('identity_bindings.json',history.receipts[0]['identity_bindings'])
+        sessions=[{'session_date':row['session_date'],'close_at_ms':calendar.close_ms(row['session_date'])} for row in visible]
+        gen.json('calendar.json',{'schema_version':1,'sessions':sessions,'schedule_sha256':sha(canonical(sessions))})
+        candidate=dict(instrument,stock_id=999 if wrong_identity else instrument['stock_id'])
+        gen.json('universe.json',{'main':[candidate],'speculative':[]});gen.json('coverage.json',{})
+        metadata={'adjustment_policy':{'required_basis':'forward-excluding-dividends','currency':'USD'}}
+        if shared:metadata.update(components_schema_version=1,components={'collection':{'schema_version':1,'status':'complete',
+            'artifacts':sorted(storage.COMPONENT_REQUIRED['collection']),'compatibility_id':policy}})
+        return gen.finish(**metadata)
+    stamp=datetime.fromtimestamp((cutoff-1000)/1000,timezone.utc)
+    collection(stamp,cutoff-1000)
+    # This later source has the wrong binding and must never be chosen at the earlier as_of.
+    collection(stamp+timedelta(seconds=30),cutoff+30000,wrong_identity=True)
+    model_root=tmp_path/'models'
+    model=Generation(model_root,kind='stock-research-model',generated_at=stamp-timedelta(seconds=1))
+    model.json('model_contract.json',{'selector-test-only':True});model.finish()
+    calls=[];original=storage.manifests
+    def observed(*args,**kwargs):
+        calls.append((Path(args[0]),dict(kwargs)));return original(*args,**kwargs)
+    monkeypatch.setattr(module,'manifests',observed)
+    class FixedTime(datetime):
+        @classmethod
+        def now(cls,tz=None):return datetime.fromtimestamp(cutoff/1000,timezone.utc)
+    monkeypatch.setattr(module,'datetime',FixedTime)
+    def existing_only(folder,*,trusted_root,expected_contract):
+        assert Path(folder)==model.path and Path(trusted_root)==model_root
+        assert expected_contract=={'selector-test-only':True}
+        return ExistingModel(),contract,ref
+    monkeypatch.setattr(module,'load_existing_model',existing_only)
+    def no_collect(*args,**kwargs):raise AssertionError('offline CLI must not collect or request credentials')
+    monkeypatch.setattr(module.subprocess,'run',no_collect)
+    output=tmp_path/'prediction-output'
+    assert module.main(['--offline','--state-dir',str(parent),'--model-dir',str(model_root),
+        '--output-dir',str(output),'--as-of',datetime.fromtimestamp(cutoff/1000,timezone.utc).isoformat()])==0
+    assert (parent,{'component':'collection','compatibility_id':policy}) in calls
+    assert (model_root,{'kind':'stock-research-model'}) in calls
+    assert not any(k.get('kind')=='stock-research-collection' for _,k in calls)
+    rows,_=load_saved_predictions(output)
+    assert len(rows)==4 and all(row['stock_id']==123 and type(row['stock_id']) is int for row in rows)
+    assert all(row['as_of_ms']==cutoff and row['instrument']['metadata_known_at_ms']==cutoff-1000 for row in rows)
+    assert all(row['status']=='available' for row in rows)

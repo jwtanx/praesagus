@@ -159,7 +159,7 @@ def cumulative_metrics(outcomes,forecasts):
 
 def load_saved_predictions(parent):
     forecasts={};outcomes={}
-    for _,folder,manifest in manifests(parent,kind='stock-research-prediction'):
+    for _,folder,manifest in manifests(parent,component='prediction'):
         if 'predictions.json' in manifest['artifacts']:
             payload=json.loads(private_read(folder/'predictions.json'))
             require(payload.get('schema_version')==FORECAST_SCHEMA,'saved-forecast-schema')

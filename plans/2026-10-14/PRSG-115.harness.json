@@ -21,11 +21,11 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-115-stock-research-exports-guide.md",
   "objective": "Timestamped CSV/XLSX bundles, safe output paths, zero-argument defaults and reproducible dummy preview.",
-  "status": "planned",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "c64f975ffc9654f91d63c3c54f03af718cf0342c",
+  "base_sha": "d7e739a0bf17ba15759b0ff9b6f07ff0c28546ee",
   "allowed_paths": [
     "scripts/stock-research/export.py",
     "scripts/stock-research/run.py",
@@ -35,27 +35,63 @@
     ".gitignore",
     "tests/test_stock_research_exports.py",
     "plans/2026-10-14/PRSG-115-stock-research-exports-guide.md",
-    "plans/2026-10-14/PRSG-115.harness.json"
+    "plans/2026-10-14/PRSG-115.harness.json",
+    "scripts/stock-research/storage.py",
+    "scripts/stock-research/collect.py",
+    "scripts/stock-research/data.py",
+    "tests/test_stock_research_universe.py",
+    "tests/test_stock_research_data.py",
+    "AGENTS.md",
+    "scripts/stock-research/predict.py",
+    "scripts/stock-research/evaluation.py",
+    "tests/test_stock_research_inference.py"
   ],
   "protected_paths": [
     "artifacts/",
     "ingest/daily_report_projection.py",
     "tests/daily_report_viewer_checks.cjs",
     "plans/2026-10-12/ui-ux-improvement-input.md",
-    "plans/2026-10-13/forecast-input-unblock.md"
+    "plans/2026-10-13/forecast-input-unblock.md",
+    "scripts/stock-research/inference.py",
+    "scripts/stock-research/ranking.py",
+    "scripts/stock-research/provider.py"
   ],
   "checks": [
+    {
+      "id": "exports-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_stock_research_universe.py",
+        "tests/test_stock_research_data.py",
+        "tests/test_stock_research_exports.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed full scoped implementation;135universe/data/export tests passed10.36s;122inference/model/data passed6.61s. Fictional025753 workbook verified13tabs/20authoredforecasts/0validatedcandidates; alltabviews rendered and finalSummary visually reviewed. No actual-source/model-quality/nativeExcel acceptance."
+      ]
+    },
     {
       "id": "check-1",
       "kind": "manual",
       "description": "Master/horizons/top20/ranking/sector/ETF/speculative/evaluation exports reconcile with typed values and safe workbook formatting.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed full scoped implementation;135universe/data/export tests passed10.36s;122inference/model/data passed6.61s. Fictional025753 workbook verified13tabs/20authoredforecasts/0validatedcandidates; alltabviews rendered and finalSummary visually reviewed. No actual-source/model-quality/nativeExcel acceptance."
+      ]
     },
     {
       "id": "check-2",
       "kind": "manual",
       "description": "Zero-arg/demo/offline workflows, immutable timestamp collisions and Git exclusion proven; actual bundle verified separately.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed full scoped implementation;135universe/data/export tests passed10.36s;122inference/model/data passed6.61s. Fictional025753 workbook verified13tabs/20authoredforecasts/0validatedcandidates; alltabviews rendered and finalSummary visually reviewed. No actual-source/model-quality/nativeExcel acceptance."
+      ]
     }
   ],
   "acceptance": [
@@ -63,9 +99,13 @@
       "id": "PRSG-115-D1",
       "description": "Master/horizons/top20/ranking/sector/ETF/speculative/evaluation exports reconcile with typed values and safe workbook formatting.",
       "check_ids": [
+        "exports-tests",
         "check-1"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed full scoped implementation;135universe/data/export tests passed10.36s;122inference/model/data passed6.61s. Fictional025753 workbook verified13tabs/20authoredforecasts/0validatedcandidates; alltabviews rendered and finalSummary visually reviewed. No actual-source/model-quality/nativeExcel acceptance."
+      ]
     },
     {
       "id": "PRSG-115-D2",
@@ -73,10 +113,18 @@
       "check_ids": [
         "check-2"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed full scoped implementation;135universe/data/export tests passed10.36s;122inference/model/data passed6.61s. Fictional025753 workbook verified13tabs/20authoredforecasts/0validatedcandidates; alltabviews rendered and finalSummary visually reviewed. No actual-source/model-quality/nativeExcel acceptance."
+      ]
     }
   ],
   "review": {
-    "status": "pending"
-  }
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed full scoped implementation;135universe/data/export tests passed10.36s;122inference/model/data passed6.61s. Fictional025753 workbook verified13tabs/20authoredforecasts/0validatedcandidates; alltabviews rendered and finalSummary visually reviewed. No actual-source/model-quality/nativeExcel acceptance.",
+      "Original failure history retained: export loader1failed134passed10.06s then fixed module reuse without weakening production type checks. Actual-source program109D4 and strongmodel113D2 remain open."
+    ]
+  },
+  "implementation_base_sha": "0fc637f80372610b44d45db9536b63e79d8086fb"
 }

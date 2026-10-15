@@ -165,7 +165,7 @@ def test_generation_exclusive_private_timestamp_and_compatible_manifest_discover
     with pytest.raises(storage.StorageError):storage.latest_state(tmp_path,'policy')
 
 
-@pytest.mark.parametrize('path',[ROOT,ROOT/'scripts/data',ROOT/'frontend/node_modules/data',ROOT/'stock-research-data'])
+@pytest.mark.parametrize('path',[ROOT,ROOT/'scripts/data',ROOT/'frontend/node_modules/data',ROOT/'unignored-research-data'])
 def test_output_root_codepaths_and_unignored_parent_rejected(path):
     with pytest.raises(storage.StorageError):storage.output_parent(path)
 
@@ -392,10 +392,10 @@ def test_offline_entrypoint_from_other_working_directory_never_loads_locator(tmp
 
 
 def test_unignored_in_repo_cli_error_explains_setup_without_private_values(tmp_path):
-    result=subprocess.run([sys.executable,str(ROOT/'scripts/stock-research/collect.py'),'--offline','--state-dir',str(ROOT/'stock-research-data')],
+    result=subprocess.run([sys.executable,str(ROOT/'scripts/stock-research/collect.py'),'--offline','--state-dir',str(ROOT/'unignored-research-data')],
                           cwd=tmp_path,capture_output=True,text=True,timeout=10)
     assert result.returncode==2
-    assert 'fully Git-ignored' in json.loads(result.stdout)['setup'] and not (ROOT/'stock-research-data').exists()
+    assert 'fully Git-ignored' in json.loads(result.stdout)['setup'] and not (ROOT/'unignored-research-data').exists()
 
 
 def test_default_offline_replay_reuses_hash_checked_metadata_but_explicit_empty_withdraws(tmp_path):
@@ -482,8 +482,122 @@ def test_joblib_write_collision_keeps_existing_bytes_and_manifest(tmp_path):
 
 
 @pytest.mark.parametrize('name',['../model.joblib','/tmp/model.joblib','nested/model.joblib',
-                                  'model.joblib.exe','model.pkl','model.xlsx','model..joblib'])
+                                  'model.joblib.exe','model.pkl','model.xlsx.exe','model..joblib'])
 def test_joblib_unsafe_or_unapproved_names_rejected(tmp_path,name):
     generation=storage.Generation(tmp_path,generated_at=STAMP)
     with pytest.raises(storage.StorageError):generation.write(name,b'opaque')
     assert list(generation.path.iterdir())==[] and generation.manifest['artifacts']=={}
+
+
+def test_generation_xlsx_opaque_bytes_preserve_integrity_and_exclusivity(tmp_path):
+    payload=b'PK\x00fictional-workbook-bytes'
+    generation=storage.Generation(tmp_path,generated_at=STAMP,kind='stock-research-exports')
+    generation.write('research.xlsx',payload)
+    original=copy.deepcopy(generation.manifest)
+    with pytest.raises(FileExistsError):generation.write('research.xlsx',b'replacement')
+    assert generation.manifest==original and (generation.path/'research.xlsx').read_bytes()==payload
+    folder=generation.finish()
+    assert storage.manifests(tmp_path,kind='stock-research-exports')[0][1]==folder
+    assert (folder/'research.xlsx').stat().st_mode&0o777==0o600
+    with pytest.raises(storage.StorageError):generation.write('later.xlsx',payload)
+
+
+def combined_generation(tmp_path,*,demo=False):
+    generation=storage.Generation(tmp_path,generated_at=STAMP,kind='stock-research-run',compatibility_id='policy',as_of_ms=NOW)
+    for name in storage.COMPONENT_REQUIRED['collection']:
+        if name=='history.csv':generation.csv(name,[],storage.HISTORY_COLUMNS)
+        else:generation.json(name,{'schema_version':1} if name=='state.json' else {})
+    generation.json('predictions.json',{'schema_version':1});generation.json('outcomes.json',{'schema_version':1})
+    components={name:{'schema_version':1,'status':'partial','artifacts':sorted(storage.COMPONENT_REQUIRED[name]),
+        'compatibility_id':'policy' if name=='collection' else 'model-data'} for name in ('collection','prediction')}
+    return generation,{'components_schema_version':1,'components':components,'is_demo':demo,
+        'pending_forecast_symbols':['US.EXITED']}
+
+
+def test_components_explicit_kind_filter_legacy_parity_and_pending_symbols(tmp_path):
+    g,metadata=combined_generation(tmp_path);folder=g.finish(**metadata)
+    assert storage.manifests(tmp_path,kind='stock-research-collection')==[]
+    assert storage.manifests(tmp_path,component='collection',compatibility_id='policy')[0][1]==folder
+    assert storage.manifests(tmp_path,component='prediction',compatibility_id='model-data')[0][1]==folder
+    assert storage.manifests(tmp_path,component='prediction',compatibility_id='wrong')==[]
+    assert storage.latest_state(tmp_path,'policy')['folder']==str(folder)
+    assert storage.forecast_symbols(tmp_path)=={'US.EXITED'}
+    with pytest.raises(storage.StorageError):g.finish(**metadata)
+
+
+@pytest.mark.parametrize('change',['version','unknown','status','missing','compatibility','duplicate-owner'])
+def test_component_declarations_fail_before_final_manifest(tmp_path,change):
+    g,m=combined_generation(tmp_path)
+    if change=='version':m['components_schema_version']=True
+    elif change=='unknown':m['components']['unknown']=m['components']['prediction']
+    elif change=='status':m['components']['collection']['status']='success-but-failed'
+    elif change=='missing':m['components']['collection']['artifacts'].remove('history.csv')
+    elif change=='compatibility':m['components']['collection']['compatibility_id']='wrong'
+    elif change=='duplicate-owner':m['components']['prediction']['artifacts'].append('history.csv')
+    with pytest.raises(storage.StorageError):g.finish(**m)
+    assert not (g.path/'manifest.json').exists() and not g.closed
+
+
+def test_component_demo_incomplete_and_unrelated_kind_never_actual_state(tmp_path):
+    g,m=combined_generation(tmp_path,demo=True);g.finish(**m)
+    assert storage.manifests(tmp_path,component='collection')==[]
+    other=storage.Generation(tmp_path,generated_at=STAMP+timedelta(seconds=1),kind='unrelated')
+    other.finish(forecast_symbols=['US.SEED'])
+    storage.Generation(tmp_path,generated_at=STAMP+timedelta(seconds=2),kind='stock-research-run')
+    assert storage.manifests(tmp_path,component='prediction')==[] and storage.forecast_symbols(tmp_path)==set()
+
+
+def test_component_discovery_verifies_unconsumed_xlsx_and_artifact_key(tmp_path):
+    g,m=combined_generation(tmp_path);g.write('unused.xlsx',b'opaque');folder=g.finish(**m)
+    (folder/'unused.xlsx').write_bytes(b'tampered')
+    with pytest.raises(storage.StorageError,match='invalid-state-generation'):storage.manifests(tmp_path,component='collection')
+
+
+def test_collect_into_shared_open_deferred_csv_and_preflight(tmp_path):
+    settings=config.CollectionConfig(state_parent=str(tmp_path));fake=FakeProvider(settings)
+    g=storage.Generation(tmp_path,generated_at=STAMP,kind='stock-research-run',compatibility_id=collect.compatibility(settings),as_of_ms=NOW)
+    result=collect.collect_into(settings,generation=g,provider=fake,metadata=metadata_for(),as_of_ms=NOW)
+    assert result.generation is g and not g.closed and not (g.path/'manifest.json').exists()
+    assert not (g.path/'speculative.csv').exists() and not (g.path/'universe.csv').exists()
+    assert set(storage.COMPONENT_REQUIRED['collection'])<=g.manifest['artifacts'].keys()
+    assert result.receipt['open_generation_artifacts']['history.csv']==g.manifest['artifacts']['history.csv']
+    assert 'manifest_sha256' not in result.receipt
+    calls=len(fake.calls)
+    with pytest.raises(ValueError,match='occupied'):collect.collect_into(settings,generation=g,provider=fake,as_of_ms=NOW)
+    assert len(fake.calls)==calls
+
+
+@pytest.mark.parametrize('bad',['parent','policy','cutoff','closed','occupied'])
+def test_collect_into_rejects_incompatible_generation_before_provider(tmp_path,bad):
+    settings=config.CollectionConfig(state_parent=str(tmp_path));fake=FakeProvider(settings)
+    g=storage.Generation(tmp_path/ 'elsewhere' if bad=='parent' else tmp_path,generated_at=STAMP,
+        compatibility_id='wrong' if bad=='policy' else collect.compatibility(settings),as_of_ms=NOW-1 if bad=='cutoff' else NOW)
+    if bad=='closed':g.finish()
+    elif bad=='occupied':g.json('state.json',{})
+    with pytest.raises(ValueError):collect.collect_into(settings,generation=g,provider=fake,as_of_ms=NOW)
+    assert fake.calls==[]
+
+
+@pytest.mark.parametrize('change',['alias','bytes-bool','bytes-negative','hash-type','hash-format','extra','extension'])
+def test_all_manifest_artifact_metadata_strict_even_unused(tmp_path,change):
+    g,m=combined_generation(tmp_path);g.write('unused.xlsx',b'opaque')
+    entry=g.manifest['artifacts']['unused.xlsx']
+    if change=='alias':entry['path']='state.json'
+    elif change=='bytes-bool':entry['bytes']=True
+    elif change=='bytes-negative':entry['bytes']=-1
+    elif change=='hash-type':entry['sha256']=123
+    elif change=='hash-format':entry['sha256']='not-a-hash'
+    elif change=='extra':entry['external']='file:///outside'
+    elif change=='extension':g.manifest['artifacts']['unused.exe']=g.manifest['artifacts'].pop('unused.xlsx')
+    with pytest.raises(storage.StorageError):g.finish(**m)
+    assert not (g.path/'manifest.json').exists()
+
+
+def test_invalid_collection_handle_rejects_before_provider(tmp_path):
+    settings=config.CollectionConfig(state_parent=str(tmp_path));fake=FakeProvider(settings)
+    with pytest.raises(ValueError,match='open-generation-required'):collect.collect_into(settings,generation=None,provider=fake)
+    assert fake.calls==[]
+
+
+def test_entire_ignored_research_parent_is_allowed_without_creating_files():
+    assert storage.output_parent(ROOT/'stock-research-data')==(ROOT/'stock-research-data').resolve()

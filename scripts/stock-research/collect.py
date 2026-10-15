@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Manual market discovery and immutable local collection. No orders or model work."""
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from datetime import date, datetime, timedelta, timezone
 import argparse
 import json
@@ -18,7 +18,7 @@ from config import CollectionConfig, load_collection_config
 from contracts import RESTError, code, integer
 from provider import build_live_provider, classify_discovered_etfs
 from storage import (Generation, HISTORY_COLUMNS, MAX_HISTORY_ROWS, StorageError, canonical,
-                     forecast_symbols, latest_state, merge_history, sha)
+                     forecast_symbols, latest_state, merge_history, sha, output_parent, COMPONENT_REQUIRED)
 from universe import build_candidate, reviewed, select_universe
 
 
@@ -82,13 +82,42 @@ def apply_field_currency(rows,record,cutoff,identity=None):
     return result
 
 
+@dataclass
+class CollectionResult:
+    generation: Generation
+    universe: dict
+    state: dict
+    history_rows: list
+    receipt: dict
+    manifest_metadata: dict
+
+
 def run_collection(settings,*,provider=None,metadata=None,offline=False,generated_at=None,as_of_ms=None,
                    clock_ms=lambda:int(time.time()*1000),session_provider=completed_sessions):
     if not isinstance(settings,CollectionConfig):raise ValueError('invalid-collection-config')
-    stamp=generated_at or datetime.now(ZoneInfo('Asia/Kuala_Lumpur'))
     initial=as_of_ms if as_of_ms is not None else clock_ms()
     if not integer(initial,1):raise ValueError('invalid-cutoff')
+    generation=Generation(settings.state_parent,generated_at=generated_at,compatibility_id=compatibility(settings),as_of_ms=initial)
+    result=collect_into(settings,generation=generation,provider=provider,metadata=metadata,offline=offline,
+        as_of_ms=as_of_ms,clock_ms=clock_ms,session_provider=session_provider,write_selection_csv=True)
+    return generation.finish(**result.manifest_metadata)
+
+
+def collect_into(settings,*,generation,provider=None,metadata=None,offline=False,generated_at=None,as_of_ms=None,
+                 write_selection_csv=False,
+                   clock_ms=lambda:int(time.time()*1000),session_provider=completed_sessions):
+    if not isinstance(settings,CollectionConfig):raise ValueError('invalid-collection-config')
+    if not isinstance(generation,Generation) or generation.closed:raise ValueError('open-generation-required')
+    if type(write_selection_csv) is not bool:raise ValueError('selection-csv-flag')
+    if generated_at is not None and generated_at.isoformat()!=generation.manifest['generated_at']:raise ValueError('generation-time-mismatch')
+    initial=as_of_ms if as_of_ms is not None else generation.manifest.get('as_of_ms')
+    if not integer(initial,1):raise ValueError('invalid-cutoff')
     policy=compatibility(settings)
+    if generation.parent!=output_parent(settings.state_parent) or generation.manifest.get('compatibility_id')!=policy or generation.manifest.get('as_of_ms')!=initial:
+        raise ValueError('generation-parent-policy-cutoff-mismatch')
+    if generation.manifest.get('kind') not in {'stock-research-run','stock-research-collection'}:raise ValueError('collection-generation-kind')
+    names=COMPONENT_REQUIRED['collection']|({'universe.csv','speculative.csv'} if write_selection_csv else set())
+    if any(name in generation.manifest['artifacts'] or (generation.path/name).exists() or (generation.path/name).is_symlink() for name in names):raise ValueError('collection-artifact-occupied')
     previous=latest_state(settings.state_parent,policy)
     old=previous['state'] if previous else {}
     histories=previous['histories'] if previous else {}
@@ -105,7 +134,6 @@ def run_collection(settings,*,provider=None,metadata=None,offline=False,generate
         revisions.extend(changes)
     sessions,closes=session_provider(initial,settings.history_years)
     if len(sessions)<252:raise ValueError('calendar-history-too-short')
-    generation=Generation(settings.state_parent,generated_at=stamp,compatibility_id=policy,as_of_ms=initial)
     issues=[];statuses={};fatal=False
     def invoke(method,*args,**kwargs):
         nonlocal fatal
@@ -255,9 +283,10 @@ def run_collection(settings,*,provider=None,metadata=None,offline=False,generate
     generation.json('coverage.json',selected['coverage'])
     # Stable machine-readable current shortlist; numeric CSVs are not workbook forecasts.
     columns=('code','stock_id','name','asset_type','sector_id','issuer_group_id','signed_leverage','exposure_family','price','reference_session_date','median20_turnover','latest_turnover','latest_volume','latest_return','valid_sessions','selection_bucket','selection_reasons')
-    generation.csv('universe.csv',selected['main'],columns)
-    generation.csv('speculative.csv',selected['speculative'],columns+('speculative_flags',))
-    return generation.finish(as_of_ms=cutoff,status='partial' if issues or any(selected['coverage']['shortfalls'].values()) else 'complete',
+    if write_selection_csv:
+        generation.csv('universe.csv',selected['main'],columns)
+        generation.csv('speculative.csv',selected['speculative'],columns+('speculative_flags',))
+    finish_metadata=dict(as_of_ms=cutoff,status='partial' if issues or any(selected['coverage']['shortfalls'].values()) else 'complete',
         offline=offline,history_interpretation='retrospective-backfill/current-vintages-not-historical-membership',
         retained_forecast_symbols=sorted(retained),identity_quarantined_symbols=sorted(state['identity_quarantine']),current_discovered_symbols=sorted(discovered),
         selected_symbols=[row['code'] for row in selected['main']],source_capabilities=provider.capabilities() if provider else {'live':'not-called'},
@@ -265,6 +294,11 @@ def run_collection(settings,*,provider=None,metadata=None,offline=False,generate
         adjustment_policy={'autype':settings.provider.autype,'vintage_consistency':'response-vintages-kept; reviewed adjustment_vintage_id change forces fresh backfill',
             'factor_evidence':'not-supplied-by-provider; unknown unless separately reviewed','price_volume_adjustment':'not-assumed-equivalent',
             'historical_point_in_time':'not-established'})
+    receipt={'identity_bindings':bindings,'calendar':{'schema_version':1,**calendar_metadata,'sessions':schedule},
+        'metadata_input':metadata,'adjustment_policy':finish_metadata['adjustment_policy'],'as_of_ms':cutoff,
+        'historical_membership':finish_metadata['history_interpretation'],
+        'open_generation_artifacts':dict(generation.manifest['artifacts'])}
+    return CollectionResult(generation,selected,state,rows,receipt,finish_metadata)
 
 
 def load_secure_locator(reference):

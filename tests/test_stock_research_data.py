@@ -103,12 +103,20 @@ def test_research_feature_masks_and_actual_label_gate(cal):
     assert result['assumed_feature_vintage'] and result['feature_known_at_ms']==present
     with pytest.raises(ValueError):causal_features(data,'US.DEMO',days[-1],calendar=cal,origin_cutoff_ms=present,horizon='1d')
 
-def test_hash_verified_generations(cal,tmp_path):
+@pytest.mark.parametrize('combined',[False,True])
+def test_hash_verified_generations(cal,tmp_path,combined):
     row=bar(cal,'2026-11-18');schedule=[{'session_date':row['session_date'],'close_at_ms':cal.close_ms(row['session_date'])}]
-    gen=Generation(tmp_path,generated_at=datetime(2026,11,19,tzinfo=timezone.utc),compatibility_id='demo',as_of_ms=row['known_at_ms'])
+    gen=Generation(tmp_path,generated_at=datetime(2026,11,19,tzinfo=timezone.utc),compatibility_id='demo',as_of_ms=row['known_at_ms'],kind='stock-research-run' if combined else 'stock-research-collection')
     gen.csv('history.csv',[row],HISTORY_COLUMNS);gen.json('identity_bindings.json',[{'code':'US.DEMO','stock_id':'123'}])
     gen.json('calendar.json',{'sessions':schedule,'schedule_sha256':sha(canonical(schedule))})
-    gen.json('metadata_input.json',{});folder=gen.finish(adjustment_policy={'historical_point_in_time':'not-established'})
+    gen.json('metadata_input.json',{})
+    finish={}
+    if combined:
+        from storage import COMPONENT_REQUIRED
+        for name in COMPONENT_REQUIRED['collection']-set(gen.manifest['artifacts']):gen.json(name,{})
+        finish={'components_schema_version':1,'components':{'collection':{'schema_version':1,'status':'partial',
+            'artifacts':sorted(gen.manifest['artifacts']),'compatibility_id':'demo'}}}
+    folder=gen.finish(adjustment_policy={'historical_point_in_time':'not-established'},**finish)
     assert read_generations(tmp_path,compatibility_id='demo').rows==history([row]).rows
     (folder/'history.csv').write_text('tampered')
     with pytest.raises(ValueError):read_generations(tmp_path,compatibility_id='demo')

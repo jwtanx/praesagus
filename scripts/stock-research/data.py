@@ -171,7 +171,7 @@ def read_generations(parent, *, compatibility_id):
                     if artifact.is_file():
                         total+=artifact.stat().st_size
                         require(total<=MAX_TOTAL_BYTES,'aggregate-input-byte-budget')
-    generations=manifests(parent,kind='stock-research-collection',compatibility_id=compatibility_id)
+    generations=manifests(parent,component='collection',compatibility_id=compatibility_id)
     require(len(generations)<=MAX_FILES,'input-file-budget')
     for _,folder,manifest in generations:
         required={'history.csv','identity_bindings.json','calendar.json','metadata_input.json'}

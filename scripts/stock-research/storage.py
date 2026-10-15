@@ -75,7 +75,7 @@ class Generation:
         self.closed = False
 
     def write(self, name, data):
-        need(not self.closed and isinstance(name,str) and re.fullmatch(r'[A-Za-z0-9_-]+\.(?:json|csv|joblib)',name) is not None
+        need(not self.closed and isinstance(name,str) and re.fullmatch(r'[A-Za-z0-9_-]+\.(?:json|csv|joblib|xlsx)',name) is not None
              and name != 'manifest.json', 'invalid-artifact-name')
         need(isinstance(data,bytes) and len(data)<=MAX_ARTIFACT_BYTES,'artifact-size')
         fd=os.open(self.path/name,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
@@ -96,6 +96,9 @@ class Generation:
     def finish(self,**metadata):
         need(not self.closed,'generation-already-finalized')
         need(not {'schema_version','kind','generated_at','compatibility_id','artifacts'} & metadata.keys(),'reserved-manifest-field')
+        candidate = self.manifest | metadata
+        validate_artifact_entries(candidate)
+        validate_components(candidate)
         self.manifest.update(metadata)
         raw=canonical(self.manifest)
         fd=os.open(self.path/'manifest.json',os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
@@ -104,7 +107,44 @@ class Generation:
         return self.path
 
 
-def manifests(parent, *, kind=None, compatibility_id=None):
+COMPONENT_KINDS = {'collection':'stock-research-collection','prediction':'stock-research-prediction','exports':'stock-research-exports'}
+COMPONENT_REQUIRED = {'collection':{'history.csv','history_revisions.csv','state.json','metadata_input.json','identity_bindings.json','calendar.json','universe.json','coverage.json'},
+    'prediction':{'predictions.json','outcomes.json'},'exports':{'master.csv','forecasts.csv','top20.csv','export_coverage.json','research.xlsx'}}
+
+
+def validate_artifact_entries(value):
+    entries=value.get('artifacts')
+    need(isinstance(entries,dict),'manifest-artifacts')
+    for name,entry in entries.items():
+        need(isinstance(name,str) and re.fullmatch(r'[A-Za-z0-9_-]+\.(?:json|csv|joblib|xlsx)',name) is not None
+             and name!='manifest.json' and isinstance(entry,dict) and set(entry)=={'path','sha256','bytes'}
+             and entry['path']==name,'artifact-reference')
+        need(isinstance(entry['sha256'],str) and re.fullmatch('[0-9a-f]{64}',entry['sha256']) is not None
+             and type(entry['bytes']) is int and 0<=entry['bytes']<=MAX_ARTIFACT_BYTES,'artifact-metadata')
+
+
+def validate_components(value):
+    if value.get('kind')!='stock-research-run':
+        need('components' not in value and 'components_schema_version' not in value,'unexpected-components')
+        return
+    need(value.get('components_schema_version')==1 and type(value.get('components_schema_version')) is int,'component-version')
+    components=value.get('components')
+    need(isinstance(components,dict) and bool(components) and set(components)<=set(COMPONENT_KINDS),'component-allowlist')
+    owned=set()
+    for name,entry in components.items():
+        need(isinstance(entry,dict) and set(entry)=={'schema_version','status','artifacts','compatibility_id'},'component-fields')
+        need(type(entry['schema_version']) is int and entry['schema_version']==1,'component-version')
+        need(isinstance(entry['status'],str) and entry['status'] in {'complete','partial','research-only','unavailable'},'component-status')
+        names=entry['artifacts']
+        need(isinstance(names,list) and all(isinstance(n,str) for n in names) and len(names)==len(set(names)),'component-artifacts')
+        need(COMPONENT_REQUIRED[name]<=set(names) and set(names)<=set(value['artifacts']) and not owned.intersection(names),'component-artifacts')
+        owned.update(names)
+        need(isinstance(entry['compatibility_id'],str) and bool(entry['compatibility_id']),'component-compatibility')
+        if name=='collection':need(entry['compatibility_id']==value.get('compatibility_id'),'component-compatibility')
+
+
+def manifests(parent, *, kind=None, compatibility_id=None, component=None):
+    need(component is None or component in COMPONENT_KINDS,'component-allowlist')
     parent=output_parent(parent)
     if not parent.exists():return []
     found=[]
@@ -117,12 +157,26 @@ def manifests(parent, *, kind=None, compatibility_id=None):
             value=json.loads(private_read(path))
             if value.get('schema_version')!=1 or value.get('kind')=='capability-pilot':continue
             if kind is not None and value.get('kind')!=kind:continue
-            if compatibility_id is not None and value.get('compatibility_id')!=compatibility_id:continue
+            if component is not None:
+                if value.get('is_demo') is True:continue
+                if value.get('kind')=='stock-research-run':
+                    validate_components(value)
+                    if component not in value['components']:continue
+                elif value.get('kind')!=COMPONENT_KINDS[component]:continue
+            elif kind in {'stock-research-collection','stock-research-prediction'} and value.get('is_demo') is True:continue
+            if value.get('kind')=='stock-research-run':validate_components(value)
+            actual_compatibility=(value['components'][component]['compatibility_id'] if component is not None and value.get('kind')=='stock-research-run' else value.get('compatibility_id'))
+            if compatibility_id is not None and actual_compatibility!=compatibility_id:continue
+            validate_artifact_entries(value)
             stamp=datetime.fromisoformat(value['generated_at'])
             need(stamp.tzinfo is not None and stamp.astimezone(ZoneInfo('Asia/Kuala_Lumpur')).strftime('%Y-%m-%d_%H%M%S')==folder.name,'manifest-time')
             need(isinstance(value.get('artifacts'),dict),'manifest-artifacts')
+            info=folder.stat()
+            need(info.st_uid==os.getuid() and stat.S_IMODE(info.st_mode)==0o700,'generation-permissions')
             # Validate every referenced artifact, including unconsumed ones.
-            for entry in value['artifacts'].values():
+            for name,entry in value['artifacts'].items():
+                need(isinstance(name,str) and re.fullmatch(r'[A-Za-z0-9_-]+\.(?:json|csv|joblib|xlsx)',name) is not None
+                     and isinstance(entry,dict) and entry.get('path')==name,'artifact-reference')
                 artifact=folder/entry['path']
                 need(artifact.parent==folder and not artifact.is_symlink() and artifact.resolve().is_relative_to(folder.resolve()),'unsafe-artifact')
                 data=private_read(artifact)
@@ -134,7 +188,7 @@ def manifests(parent, *, kind=None, compatibility_id=None):
 
 
 def latest_state(parent,compatibility_id):
-    matches=manifests(parent,kind='stock-research-collection',compatibility_id=compatibility_id)
+    matches=manifests(parent,component='collection',compatibility_id=compatibility_id)
     if not matches:return None
     _,folder,manifest=matches[-1]
     need('state.json' in manifest['artifacts'] and 'history.csv' in manifest['artifacts'],'state-artifacts-missing')
@@ -170,7 +224,7 @@ def latest_state(parent,compatibility_id):
 
 def forecast_symbols(parent):
     symbols=set()
-    for _,_,manifest in manifests(parent,kind='stock-research-prediction'):
+    for _,_,manifest in manifests(parent,component='prediction'):
         codes=manifest.get('pending_forecast_symbols',manifest.get('forecast_symbols',[]))
         need(isinstance(codes,list) and all(isinstance(code,str) and re.fullmatch(r'US\.[A-Z][A-Z0-9.-]{0,63}',code) for code in codes),'forecast-symbol-contract')
         symbols.update(codes)
