@@ -362,3 +362,159 @@ def test_new_inference_data_checks_policy_not_training_data_hash(calendar):
     assert validate_runtime_policy(contract,**kwargs)
     for field,value in [('feature_variant','with-benchmark'),('calendar_version','other'),('adjustment','unadjusted'),('currency','UNKNOWN')]:
         with pytest.raises(ValueError):validate_runtime_policy(contract,**(kwargs|{field:value}))
+
+
+def test_compact_exact_record_hash_matrix_weights_and_missing_masks(calendar):
+    from model import compact_records, canonical_records_hash, weights, PreparedDataset
+    rows=records(calendar)[:45]
+    rows+=[row|{'horizon':'3d','features':row['features']|{'window_count':3,'window_lead':1}} for row in rows[:10]]
+    legacy=clean_records(rows);compact=compact_records(list(reversed(rows)))
+    assert isinstance(compact,PreparedDataset) and len(compact)==len(legacy)
+    assert canonical(list(compact))==canonical(legacy)
+    assert canonical_records_hash(compact)==sha(canonical(legacy))
+    np.testing.assert_array_equal(matrix(compact,ModelConfig()),matrix(legacy,ModelConfig()))
+    np.testing.assert_allclose(weights(compact),weights(legacy),rtol=0,atol=1e-15)
+    assert compact.store.b==45  # Four window features do not duplicate base vectors.
+    subset=compact.select(np.asarray(compact.column('horizon'))=='1d')
+    assert canonical_records_hash(subset)==sha(canonical(clean_records([r for r in legacy if r['horizon']=='1d'])))
+
+
+def test_compact_fits_predictions_calibration_and_purged_fold_parity(calendar):
+    from model import compact_records
+    rows=records(calendar);compact=compact_records(rows)
+    a=QuantileModel().fit(rows[:60],cutoff_ms=rows[61]['origin_at_ms']-1)
+    b=QuantileModel().fit(compact[:60],cutoff_ms=rows[61]['origin_at_ms']-1)
+    a.calibrate(rows[65:95],cutoff_ms=rows[96]['origin_at_ms']-1)
+    b.calibrate(compact[65:95],cutoff_ms=rows[96]['origin_at_ms']-1)
+    for name in ('model','baseline'):
+        np.testing.assert_allclose(a.predict(rows[100:110])[name],b.predict(compact[100:110])[name],rtol=0,atol=1e-15)
+    _,legacy=train_frozen(rows,frozen(rows,calendar),calendar=calendar)
+    _,current=train_frozen(compact,frozen(compact,calendar),calendar=calendar)
+    assert legacy['folds']==current['folds']
+    for old,new in zip(legacy['predictions'],current['predictions']):
+        assert canonical(old['record'])==canonical(new['record'])
+        np.testing.assert_allclose(old['model'],new['model'],rtol=0,atol=1e-15)
+    assert current['resources']['wall_seconds']>=0
+
+
+def test_daily_sufficient_statistics_exact_reference_parity(calendar):
+    from model import DailyScores
+    rows=records(calendar)[:45]
+    predictions=artificial_predictions(rows)+artificial_predictions([r|{'code':'US.OTHER'} for r in rows[5:]],class_name='ordinary-etf')
+    predictions=sorted(predictions,key=lambda p:(p['record']['origin'],p['record']['code'],p['record']['horizon']))
+    reference=score_predictions(predictions,evaluation_kind='holdout');stats=DailyScores()
+    for p in predictions:stats.add(p)
+    actual=stats.score('holdout')
+    assert actual['dates']==reference['dates'] and actual['block_ids']==reference['block_ids']
+    for name in ('model','baseline'):
+        np.testing.assert_allclose(actual['metrics'][name]['mae'],reference['metrics'][name]['mae'],rtol=0,atol=1e-15)
+        np.testing.assert_allclose(actual['metrics'][name]['pinball'],reference['metrics'][name]['pinball'],rtol=0,atol=1e-15)
+    np.testing.assert_allclose(actual['paired_ci'],reference['paired_ci'],rtol=0,atol=1e-15)
+    for group,value in actual['groups'].items():
+        assert value['block_anchor_session_index']==reference['groups'][group]['block_anchor_session_index']
+        np.testing.assert_allclose(value['paired_ci'],reference['groups'][group]['paired_ci'],rtol=0,atol=1e-15)
+        assert value['joint_envelope_containment']==pytest.approx(reference['groups'][group]['joint_envelope_containment'])
+
+
+def test_preflight_and_pool_limits_are_visible_no_truncation(calendar,monkeypatch):
+    import model
+    row=records(calendar)[0]
+    with pytest.raises(ValueError,match='prepared-row-capacity'):model.PreparedBuilder(model.MAX_RECORDS+1,1,row.keys())
+    builder=model.PreparedBuilder(1,1,row.keys());builder.append(row)
+    with pytest.raises(ValueError,match='prepared-row-overrun'):builder.append(row)
+    monkeypatch.setattr(model,'MAX_POOL_BYTES',1)
+    builder=model.PreparedBuilder(1,1,row.keys())
+    with pytest.raises(ValueError,match='prepared-metadata-budget'):builder.append(row)
+
+
+def test_forecast_shards_bounded_exclusive_and_all_verified(calendar,tmp_path):
+    from model import ForecastShards
+    rows=records(calendar)[:15];generation=Generation(tmp_path,kind='stock-research-model',generated_at=datetime(2026,10,3,tzinfo=timezone.utc))
+    writer=ForecastShards(generation,max_bytes=2048)
+    predictions=artificial_predictions(rows)
+    for prediction in predictions:writer.add(prediction)
+    index=writer.finish()
+    assert len(index['shards'])>1 and index['rows']==15
+    recovered=[]
+    for entry in index['shards']:
+        raw=(generation.path/entry['name']).read_bytes()
+        assert len(raw)<=2048 and sha(raw)==entry['sha256']
+        recovered.extend(json.loads(raw)['predictions'])
+    for old,new in zip(predictions,recovered):
+        assert old['record']['origin']==new['record']['origin']
+        np.testing.assert_array_equal(old['model'],new['model'])
+    with pytest.raises(FileExistsError):generation.write(index['shards'][0]['name'],b'{}')
+    receipt=frozen(rows,calendar)
+    estimator=QuantileModel().fit(rows[:5],cutoff_ms=rows[6]['origin_at_ms']-1)
+    generation.json('freeze.json',receipt);save_artifact(generation,estimator,receipt,{'forecast_archive':index})
+    folder=generation.finish();contract=json.loads((folder/'model_contract.json').read_text())
+    assert load_artifact(folder,trusted_root=tmp_path,expected_contract=contract)[0].fitted
+    (folder/index['shards'][0]['name']).write_bytes(b'corrupt unconsumed shard')
+    with pytest.raises(ValueError,match='integrity'):load_artifact(folder,trusted_root=tmp_path,expected_contract=contract)
+
+
+def test_prepared_storage_immutable_and_rejects_origin_conflicts(calendar):
+    from model import compact_records, PreparedBuilder
+    rows=records(calendar)[:2];table=compact_records(rows)
+    assert not table.store.base.flags.writeable and not table.store.values.flags.writeable
+    with pytest.raises(ValueError):table.store.values[0,0]=1
+    with pytest.raises(ValueError,match='already-finalized'):table.store.append(rows[0])
+    builder=PreparedBuilder(2,1,rows[0].keys());builder.append(rows[0])
+    changed=rows[0]|{'horizon':'3d','features':rows[0]['features']|{'return1':.123}}
+    with pytest.raises(ValueError,match='conflicting-origin-features'):builder.append(changed)
+
+
+def test_streamed_prediction_summaries_match_legacy_folds(calendar,tmp_path):
+    from model import compact_records, ForecastShards, evaluate_scopes, iter_forecast_shards
+    rows=records(calendar);table=compact_records(rows)
+    _,reference=train_frozen(rows,frozen(rows,calendar),calendar=calendar)
+    gen=Generation(tmp_path,kind='stock-research-model',generated_at=datetime(2026,10,3,tzinfo=timezone.utc))
+    writer=ForecastShards(gen,max_bytes=4096)
+    _,evaluation=train_frozen(table,frozen(table,calendar),calendar=calendar,forecast_writer=writer)
+    assert 'predictions' not in evaluation
+    summary=writer.stats.assessment(evidence={},resources=evaluation['resources'])
+    expected=evaluate_scopes(reference['predictions'],evidence={},resources=reference['resources'])
+    for name in ('model','baseline'):
+        np.testing.assert_allclose(summary['scopes']['holdout']['score']['metrics'][name]['pinball'],
+            expected['scopes']['holdout']['score']['metrics'][name]['pinball'],rtol=0,atol=1e-15)
+    gen.json('evaluation.json',evaluation);folder=gen.finish()
+    predictions=list(iter_forecast_shards(folder,evaluation['forecast_archive']))
+    assert len(predictions)==len(reference['predictions'])
+    for old,new in zip(reference['predictions'],predictions):
+        np.testing.assert_allclose(old['model'],new['model'],rtol=0,atol=1e-15)
+        assert old['record']['origin']==new['record']['origin']
+    (folder/evaluation['forecast_archive']['shards'][0]['name']).write_bytes(b'bad')
+    with pytest.raises(ValueError,match='integrity'):list(iter_forecast_shards(folder,evaluation['forecast_archive']))
+
+
+def test_nonfinite_forecasts_remain_explicit_in_shards(calendar,tmp_path):
+    from model import ForecastShards
+    gen=Generation(tmp_path,generated_at=datetime(2026,10,3,tzinfo=timezone.utc));writer=ForecastShards(gen)
+    prediction=artificial_predictions(records(calendar)[:1])[0];prediction['model'][0][0]=float('nan')
+    writer.add(prediction);index=writer.finish()
+    row=json.loads((gen.path/index['shards'][0]['name']).read_text())['predictions'][0]
+    assert row['valid'] is False and row['model'][0][0] is None
+    assert writer.stats.invalid['holdout']==1
+
+
+def test_sparse_and_invalid_stream_reference_parity(calendar):
+    from model import DailyScores
+    rows=records(calendar)[:35]
+    predictions=artificial_predictions(rows)+artificial_predictions([rows[-1]|{'code':'US.OTHER'}],class_name='ordinary-etf')
+    predictions[0]['valid']=False;predictions[0]['record']=predictions[0]['record']|{'window_distance':30}
+    predictions=sorted(predictions,key=lambda p:(p['record']['origin'],p['record']['code'],p['record']['horizon']))
+    stats=DailyScores()
+    for p in predictions:stats.add(p)
+    reference=score_predictions(predictions,evaluation_kind='holdout');actual=stats.score('holdout')
+    assert actual['invalid']==reference['invalid']==1
+    assert actual['block_sessions']==reference['block_sessions']==10
+    for key in actual['groups']:
+        current=actual['groups'][key];expected=reference['groups'][key]
+        assert current['block_ids']==expected['block_ids']
+        assert current['bootstrap_missing_draws']==expected['bootstrap_missing_draws']
+        if current['bootstrap_missing_draws']:
+            assert current['paired_ci']==expected['paired_ci']==[[None]*5,[None]*5]
+        else:np.testing.assert_allclose(current['paired_ci'],expected['paired_ci'],rtol=0,atol=1e-15)
+    invalid=artificial_predictions([rows[0]])[0]|{'valid':False}
+    only=DailyScores();only.add(invalid)
+    assert only.score('holdout')==score_predictions([invalid],evaluation_kind='holdout')

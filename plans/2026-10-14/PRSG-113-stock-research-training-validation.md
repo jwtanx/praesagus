@@ -12,7 +12,7 @@ Use [PRSG-109](PRSG-109-stock-research-program.md) as the complete human-approve
 
 ## Frozen scope
 
-Base: `4974b79235b95c8599b643c04add5ea1798602e5`. Allowed paths:
+Base: `b6fe446afa2a1bbd3b801a8b5894c57129e148b1`. Allowed paths:
 
 - `scripts/stock-research/model.py`
 - `scripts/stock-research/train.py`
@@ -64,3 +64,24 @@ Artifacts retain actual fit/calibration bounds, data hashes, variants, calendar/
 **D2 remains unmet.** No actual-data-trained strong model, full-universe forecast, measured full-size hardware acceptance or promotion is delivered by this checkpoint. The current250000 prepared-record budget can reject100–110names across3–5years/four horizons (for example100×706×4≈282400). A bounded layout/resource decision and measured profile are required before that full-size fit; no silent truncation, shortened history or relaxed validation is accepted. Current-universe backfills cannot establish historical membership/delistings/origin vintages. Model artifacts remain research only; already-approved research inference/export code may proceed without treating D2 as done.
 
 The first mandatory full commit check failed2 budget-test cases (2540passed,43.46s): the new model test loader reloaded the dataset module after existing aliases were bound. The new loader now reuses an already loaded module from the same source path; both existing budget assertions remain intact. Lead replayed the dataset-first ordering:106passed in6.70s. The failed attempt remains part of delivery evidence; full hooks are rerun before publication.
+
+
+## Resource-layout slice — 2026-10-15 MYT
+
+After the D1 research checkpoint, Lead accepts exact compact-array representation (Option A in the private resource-layout decision) within the same three AI-owned code/test paths. Preserve every admissible instrument/origin/horizon and the full chronological calibration/evaluation/holdout, model configuration, baseline, weights, random seeds and numerical quality gates. No sampling, precision reduction, history shortening or bare cap increase is authorized. Keep PRSG-112 reader/feature/calendar APIs and the Engineer storage writer unchanged.
+
+Use shared origin features and indexed horizon/target/time arrays, bounded current-fold matrices, incremental legacy-compatible canonical hashes and immutable bounded forecast shards with daily/group/block sufficient statistics. Preflight capacity before allocation; support at least the110-name3–5year/four-window scenario (310640/532400 illustrative records) with an explicit finite budget, rejecting excess without truncation. Keep versioned representation/codebooks/masks, provenance and exact parity against the accepted reference.
+
+Keep verify-all artifact integrity semantics: verify unconsumed evaluation shards sequentially and discard buffers, retaining the SAME verified bytes only for consumed model/contract/freeze artifacts before parsing/deserialization. Do not silently switch to consumption-only verification. Record archive verification separately from cached inference timing. CLI, forecast-shard, frozen hash and model-loader interfaces must be coordinated before PRSG-114/115 consumers are released.
+
+A bounded above-old-cap fictional allocation/hash/streaming/summary dry run (no estimators) may use a private supervisor with at most90seconds and768MiB process RSS, stopping on overrun and saving truthful receipts. This proves representation capacity only. Full prepare/train/calibrate/predict/score/export on a reviewed actual dataset and the actual target still must measure <=2GiB/10minutes; cached110-name inference <=10seconds remains unmeasured. D2 stays pending until actual provenance, performance and quality gates pass. Lead owns integration and checks; no provider calls, LLM, Colab, new model-policy training, purchases or promotion are authorized.
+
+## Exact compact-data checkpoint — 2026-10-15 MYT
+
+The old 250,000 prepared-row limitation is replaced by a bounded exact representation: shared origin features with indexed horizon/target/time rows, float64-preserving integer bit storage, incremental legacy-compatible canonical hashes, one fold matrix at a time, and chunked immutable forecast shards. The finite limits are640,000 rows/180,000 origins,384MiB typed allocation and48MiB estimated intern-pool accounting; those accounting limits exclude interpreter, dictionaries, sorting and total process RSS. Over-budget input fails before allocation or without truncation. Historical rows, folds, targets, quantiles, seeds, baseline and promotion policy are unchanged.
+
+Lead independently ran the data-first three-suite check: **115passed in8.02s**. Compact/legacy fixtures cover records/hashes/features/missingness/weights, fit/calibration/purge/predictions, daily/group/common-block statistics, immutable storage, CLI, shard corruption and nonfinite preservation. Two additional Lead cases initially found all-invalid forecasts mislabeled missing and invalid long-window rows changing the bootstrap block length; both were corrected and independently replayed successfully. Prior failed progress remains recorded.
+
+A supervised, source-hash-frozen representation-only probe allocated AND populated532,400 minimal fictional rows/133,100 origins, hashed all rows and streamed532,400 forecasts into66 shards with1,210 summary dates. Child wall68.437s, peak238,174,208bytes; supervisor68.560s under90s/768MiB bounds. The earlier partial-population probe is retained as intermediate pre-final-fix evidence. This demonstrates the tested representation path above the previous cap, not full canonical-history preparation, nine-estimator training, forecast accuracy, a complete8GB-machine pipeline profile, or110-name inference acceptance. Actual D2 requirements remain unmet.
+
+Versioned interfaces: `origin-array-v1`, `legacy-canonical-list-sha256-v1`, forecast shard schema2. Shards carry observed labels, exact available window/timestamps and class/leverage projection; freeze/input receipts retain source provenance. `iter_forecast_shards` verifies one bounded shard at a time. Trusted model loading verifies every artifact sequentially and retains only the same verified model/contract/freeze bytes needed for loading. No actual-data fit, provider/LLM call, automatic retraining or promotion occurred in this checkpoint.

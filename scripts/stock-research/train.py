@@ -19,14 +19,17 @@ from data import GAPS, make_labels, read_csv, read_generations, read_sqlite, req
 from features import causal_features
 from market_calendar import MarketCalendar
 from model import (ModelConfig, clean_records, freeze, research_fit, save_artifact,
-                   evaluate_scopes, train_frozen)
+                   evaluate_scopes, train_frozen, PreparedBuilder, ForecastShards, canonical_records_hash,
+                   MAX_RECORDS, MAX_ORIGINS)
 from storage import Generation, canonical, sha
 
 
 def prepare_records(history,*,calendar,start,end,fit_cutoff_ms,policy,declared_gaps=(),metadata=(),benchmark=None):
     """Build only observed labels; rejected origins are counted with bounded reasons."""
-    records=[];rejected={}
+    rejected={};builder=None
     sessions=calendar.sessions(start,end)
+    origins=len(history._index)*len(sessions);capacity=origins*4
+    require(0<origins<=MAX_ORIGINS and capacity<=MAX_RECORDS,'prepared-preflight-capacity-overrun')
     session_indices={day:i for i,day in enumerate(calendar._sessions)}
     by_code={}
     for item in metadata:by_code.setdefault(item['code'],[]).append(item)
@@ -38,18 +41,25 @@ def prepare_records(history,*,calendar,start,end,fit_cutoff_ms,policy,declared_g
             try:
                 labels=make_labels(history,code,origin,calendar=calendar,fit_cutoff_ms=fit_cutoff_ms,
                     origin_cutoff_ms=origin_at,policy=policy,declared_gaps=declared_gaps)
+                base=None
                 for label in labels:
                     if label['status']!='complete':
                         reason='pending:'+label.get('reason','unknown');rejected[reason]=rejected.get(reason,0)+1;continue
-                    item=causal_features(history,code,origin,calendar=calendar,origin_cutoff_ms=origin_at,
-                        horizon=label['horizon'],policy=policy,declared_gaps=declared_gaps,
-                        dated_metadata=dated[0] if dated else None,benchmark=benchmark)
-                    records.append(label|item|{'origin_at_ms':origin_at,'origin_session_index':session_indices[origin],
-                        'window_distance':session_indices[label['end']]-session_indices[origin]})
+                    if base is None:
+                        base=causal_features(history,code,origin,calendar=calendar,origin_cutoff_ms=origin_at,
+                            horizon=label['horizon'],policy=policy,declared_gaps=declared_gaps,
+                            dated_metadata=dated[0] if dated else None,benchmark=benchmark)
+                    features=base['features']|{'window_lead':len(calendar.sessions(origin,label['sessions'][0]))-1,
+                        'window_count':len(label['sessions'])}
+                    row=label|base|{'horizon':label['horizon'],'features':features,'origin_at_ms':origin_at,
+                        'origin_session_index':session_indices[origin],'window_distance':session_indices[label['end']]-session_indices[origin]}
+                    if builder is None:builder=PreparedBuilder(capacity,origins,row.keys())
+                    builder.append(row)
             except ValueError as error:
+                if str(error).startswith(('prepared-','conflicting-origin-','duplicate-training-')):raise
                 reason=str(error);rejected[reason]=rejected.get(reason,0)+1
-    require(records,'no-eligible-records: provide completed canonical OHLC and attributable identity/receipt; fresh backfill cannot create historical availability')
-    return clean_records(records),rejected
+    require(builder is not None and builder.n,'no-eligible-records: provide completed canonical OHLC and attributable identity/receipt; fresh backfill cannot create historical availability')
+    return builder.finish(),rejected
 
 
 def run_training(history,*,calendar,start,end,fit_cutoff_ms,folds,model_dir,
@@ -57,19 +67,22 @@ def run_training(history,*,calendar,start,end,fit_cutoff_ms,folds,model_dir,
     config=ModelConfig(feature_variant='with-benchmark' if benchmark else 'no-benchmark')
     records,rejected=prepare_records(history,calendar=calendar,start=start,end=end,fit_cutoff_ms=fit_cutoff_ms,
         policy=policy,declared_gaps=declared_gaps,metadata=metadata,benchmark=benchmark)
-    provenance=history.receipt(policy,declared_gaps)|{'calendar':{'name':calendar.name,'version':calendar.version,
+    provenance={'policy':policy,'declared_gaps':sorted(declared_gaps),'point_in_time':False,
+        'qualification':'insufficient-until-dated-universe-mandate-adjustment-evidence-reviewed',
+        'inputs':history.receipts,'rows_sha256':canonical_records_hash(history.rows)}|{'calendar':{'name':calendar.name,'version':calendar.version,
         'schedule_sha256':sha(canonical([{'session_date':day,'close_at_ms':calendar.close_ms(day)} for day in calendar._sessions]))},
         'adjustment_policy':{'required_basis':'forward-excluding-dividends','currency':'USD',
             'source_receipts':[r.get('adjustment_policy') for r in history.receipts],
             'historical_point_in_time':'not-established-without-independent-reviewed-evidence'},
-        'metadata_sha256':sha(canonical(metadata)),'benchmark_sha256':None if benchmark is None else sha(canonical(benchmark[0].rows)),
+        'metadata_sha256':sha(canonical(metadata)),'benchmark_sha256':None if benchmark is None else canonical_records_hash(benchmark[0].rows),
         'rejected_origins':rejected,'target_source':'observed OHLC only'}
     receipt=freeze(records,folds=folds,config=config,provenance=provenance,fit_cutoff_ms=fit_cutoff_ms)
     generation=Generation(model_dir,kind='stock-research-model',generated_at=generated_at,
         compatibility_id=sha(canonical({'config':receipt['config'],'provenance':provenance})),as_of_ms=fit_cutoff_ms)
     generation.json('freeze.json',receipt)  # Durable freeze precedes every estimator fit.
-    model,evaluation=train_frozen(records,receipt,calendar=calendar)
-    evaluation['assessment']=evaluate_scopes(evaluation['predictions'],evidence={},resources=evaluation['resources'])
+    writer=ForecastShards(generation)
+    model,evaluation=train_frozen(records,receipt,calendar=calendar,forecast_writer=writer)
+    evaluation['assessment']=writer.stats.assessment(evidence={},resources=evaluation['resources'])
     if present_research_fit:
         require(policy=='research-retrospective','present-fit-requires-explicit-research-policy')
         model,present=research_fit(records,receipt);evaluation['present_research_fit']=present

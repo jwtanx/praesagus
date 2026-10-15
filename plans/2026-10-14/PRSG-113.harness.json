@@ -21,11 +21,11 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-14/PRSG-113-stock-research-training-validation.md",
   "objective": "AI Engineer to own baseline/nine quantile fits, calibrated artifacts and strong actual-data gates after registration.",
-  "status": "blocked",
+  "status": "in_progress",
   "owner": "AI Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "4974b79235b95c8599b643c04add5ea1798602e5",
+  "base_sha": "b6fe446afa2a1bbd3b801a8b5894c57129e148b1",
   "allowed_paths": [
     "scripts/stock-research/model.py",
     "scripts/stock-research/train.py",
@@ -79,6 +79,16 @@
       "evidence": [
         "BLOCKED: no actualPITmembership/delistings/origin-vintage evidence, acceptedactualforecastquality orfullshape8GBhardwareprofile. 250000preparedrecordlimit isbelow100\u2013110names x3\u20135years x4windows; no silenttruncation orstrong-modelacceptance."
       ]
+    },
+    {
+      "id": "resource-layout",
+      "kind": "manual",
+      "description": "Exact compact representation/hash/weights/folds/predictions/streamed scores and bounded capacity checked; no full-training qualification.",
+      "status": "passed",
+      "evidence": [
+        "BLOCKED: actual contemporaneousmembership/delistings/origin-vintages, walk-forward/untouchedholdout forecastquality and full prepare/train/calibrate/infer/score/export8GBhardwareprofile remainunverified.",
+        "Old250000prepared-row representation capresolved in reviewed exactcompactcheckpoint;532400minimalfictionalrows processed; this doesnotqualifyfulltrainingresources."
+      ]
     }
   ],
   "acceptance": [
@@ -87,7 +97,8 @@
       "description": "Baseline/quantile train/save/reload, no random temporal validation and reproducibility tested.",
       "check_ids": [
         "model-tests",
-        "check-1"
+        "check-1",
+        "resource-layout"
       ],
       "status": "done",
       "evidence": [
@@ -109,7 +120,8 @@
   "review": {
     "status": "accepted",
     "evidence": [
-      "PartialD1implementationreviewONLY accepted; D2explicitlyunmet andticketnotcomplete. All7ownedpathsvalidateagainst4974b79;106focused6.60s+8independentgatecases;AI3paths/Engineer2paths frozen. Mandatoryfullhooksbeforedelivery."
+      "PartialD1implementationreviewONLY accepted; D2explicitlyunmet andticketnotcomplete. All7ownedpathsvalidateagainst4974b79;106focused6.60s+8independentgatecases;AI3paths/Engineer2paths frozen. Mandatoryfullhooksbeforedelivery.",
+      "Additional exactcompactresourcecheckpoint accepted 2026-10-15T06:52:10.937167+00:00;115focused8.02s+2independentfailurecase replays+sourcehash-frozenboundedfullrepresentationprobe. D2stillpending/ticketnotcomplete; mandatoryfullhooksandpush verification required."
     ]
   }
 }
