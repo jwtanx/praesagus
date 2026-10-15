@@ -1,0 +1,3 @@
+# Python >=3.11. Offline contract/fixture core uses only the standard library.
+# Existing encrypted Ed25519 signer, loaded lazily for an explicitly authorized live pilot.
+cryptography>=50.0.2,<51

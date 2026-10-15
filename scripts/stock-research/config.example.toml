@@ -1,0 +1,12 @@
+# Local safety budgets, NOT verified Moomoo quotas or market-data entitlements.
+# Credentials are loaded only through the existing secure locator interface;
+# never place keys, tokens, passphrases or private paths in this file.
+[provider]
+max_requests = 128
+max_pages = 16
+max_rows = 100000
+screen_limit = 300
+history_num = 370
+history_window_days = 180
+timeout_seconds = 10.0
+autype = 0

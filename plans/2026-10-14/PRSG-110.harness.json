@@ -25,7 +25,7 @@
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "a7a3ca581c53de030819c611f2ff1001f0939f9a",
+  "base_sha": "e955e4b92e73cab4800b09a4c6559c85c517c5c4",
   "allowed_paths": [
     "scripts/stock-research/provider.py",
     "scripts/stock-research/contracts.py",
@@ -50,26 +50,37 @@
       "id": "provider-tests",
       "kind": "command",
       "argv": [
-        "python3",
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
         "-m",
         "pytest",
         "-q",
-        "tests/test_stock_research_provider.py"
+        "tests/test_stock_research_provider.py",
+        "tests/test_moomoo_rest.py",
+        "tests/test_moomoo_rest_live.py"
       ],
       "cwd": ".",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead independently ran exact command:344 passed0.43s, including79newprovider cases; previous343pass0.40s before final daily3102 interface addition retained as progress."
+      ]
     },
     {
       "id": "check-1",
       "kind": "manual",
       "description": "Mocked screen/snapshot/history paging and field units/errors/caps validated; no account/order access.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed all8ownedimplementation/test/doc/registry paths; fixed5initialfindings and finaldocumenteddaily3102request/sortgap; inheritedTLS/request/size/deadlineguards preserved, account/order/arbitraryURL rejection tested. All41uniqueclassificationCSVrows match reviewedsource includingnull-as-blank."
+      ]
     },
     {
       "id": "check-2",
       "kind": "manual",
       "description": "Capability receipt distinguishes exact native UI counts, entitlements and quota unknowns.",
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "Capability doc correctly leaves cumulativewrapper, nativecounts, numericquotas, entitlements, sourcefinality andoffsetruntimeunits unknown. Actual separatelyboundedlivecapabilityreceipt pending; no credential/providercall occurred in implementation tests."
+      ]
     }
   ],
   "acceptance": [
@@ -79,7 +90,10 @@
       "check_ids": [
         "check-1"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "IndependentLead344focusedpasses and complete8path offline diff/source review accepted at2026-10-15T01:24:00.907104+00:00."
+      ]
     },
     {
       "id": "PRSG-110-D2",
@@ -91,6 +105,9 @@
     }
   ],
   "review": {
-    "status": "pending"
+    "status": "pending",
+    "evidence": [
+      "Offlineimplementation accepted; ticket remainsin_progress pending boundedlivecapabilitypilot review, not complete/production/strongforecast acceptance."
+    ]
   }
 }

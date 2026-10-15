@@ -1,0 +1,490 @@
+"""Offline fictional REST fixtures. No credentials, Keychain, network or orders."""
+import copy
+from dataclasses import replace
+from datetime import datetime, timezone
+import hashlib
+import importlib
+import json
+from pathlib import Path
+import ssl
+import sys
+import traceback
+from urllib.parse import parse_qs
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'scripts/stock-research'))
+provider = importlib.import_module('provider')
+contracts = importlib.import_module('contracts')
+config = importlib.import_module('config')
+from connectors.moomoo_rest import ReadRequest, ReadResponse, RESTError
+from connectors.moomoo_rest_live import SecureReadTransport, LiveReadError
+
+NOW = int(datetime(2026, 10, 15, tzinfo=timezone.utc).timestamp() * 1000)
+BAR_TIME = int(datetime(2026, 10, 14, 4, tzinfo=timezone.utc).timestamp() * 1000)
+CLOSE_TIME = BAR_TIME + 16 * 3600000
+PRICE = {'simple_property': {'name': 2201}}
+SORT = {'direction': 2, **PRICE}
+
+
+def envelope(data, *, pagination=None, ret_code=0):
+    value = {'ret_code': ret_code, 'ret_msg': 'fictional-private-provider-text', 'data': data}
+    if pagination is not None:
+        value['pagination'] = pagination
+    return ReadResponse(200, json.dumps(value).encode())
+
+
+def screen_row(identity='US.DEMO', value='25000', *, tag=2):
+    return {'code': identity, 'name': 'Fictional instrument', 'results': [
+        {'simple_property_result': {'property': {'name': 2201},
+         'res': {'result_type': tag, {1: 'dval', 2: 'ival', 3: 'sval'}[tag]: value}, 'value': 'untrusted-formatted'}}]}
+
+
+def screen_page(rows=None, *, more=False, cursor='-1', total=None):
+    rows = [screen_row()] if rows is None else rows
+    return envelope({'items': rows}, pagination={'total': len(rows) if total is None else total,
+                                               'has_more': more, 'next_key': cursor})
+
+
+def client(responses=(), **settings):
+    pending = iter(responses)
+    requests, signatures = [], []
+    def transport(request):
+        requests.append(request)
+        return next(pending)
+    def sign(value):
+        signatures.append(value)
+        return b'fictional-signature'
+    item = provider.ResearchProvider(api_key='fictional-api-key', signer=sign, transport=transport,
+        clock_ms=lambda: NOW, nonce_factory=lambda: 'fixture-nonce',
+        config=config.ProviderConfig(**({'screen_limit': 2, 'max_pages': 3} | settings)))
+    return item, requests, signatures
+
+
+def snapshot(**changes):
+    return {'code': 'US.DEMO', 'name': 'Fictional', 'update_time': CLOSE_TIME,
+            'data_date': '2026-10-14', 'last_price': 25.1, 'volume': 1000, 'turnover': 25100,
+            'equity_valid': True, **changes}
+
+
+def bar(**changes):
+    return {'date': 20261014, 'time_key': BAR_TIME, 'time_zone': -240,
+            'open': 25.0, 'high': 27.0, 'low': 24.0, 'close': 26.0,
+            'volume': 12345, 'turnover': 100000, **changes}
+
+
+def history_page(rows=None, **changes):
+    return envelope({'kline_list': [bar()] if rows is None else rows, 'volume_precision': 2, **changes})
+
+
+def history(item, **changes):
+    return item.history('US.DEMO', start='2026-10-14', end='2026-10-14', **changes)
+
+
+def screen(item):
+    return item.screen(retrieve_queries=[PRICE], sort=SORT)
+
+
+def assert_private(error):
+    rendered = str(error) + repr(error) + ''.join(traceback.format_exception(error))
+    assert error.__context__ is None
+    for secret in ('fictional-api-key', 'fictional-signature', 'fictional-private-provider-text'):
+        assert secret not in rendered
+
+
+def test_documented_simple_price_fixture_and_exact_signing_bytes():
+    item, requests, signed = client([screen_page()])
+    batch = screen(item)
+    field = batch.rows[0]['fields'][0]
+    assert field.value == 25 and field.unit == 'price' and field.raw_value == '25000'
+    assert batch.status == 'success' and batch.retrieved_at_ms == NOW
+    request = requests[0]
+    expected = '\n'.join((str(NOW), 'POST', provider.SCREEN, '', hashlib.sha256(request.body).hexdigest())).encode()
+    assert signed == [expected]
+    assert json.loads(request.body)['screen_queries'] == [{'simple_field_query': {'simple_field': 1, 'screen_value_list': [2]}}]
+    assert 'fictional-api-key' not in repr(request) + repr(item) + repr(batch)
+
+
+def test_top_level_opaque_cursor_preserves_frozen_query_and_order():
+    pages = [screen_page(more=True, cursor='opaque /+==', total=2),
+             screen_page([screen_row('US.OTHER')], total=2)]
+    item, requests, _ = client(pages)
+    result = screen(item)
+    first, second = map(lambda request: json.loads(request.body), requests)
+    assert second.pop('next_key') == 'opaque /+==' and second == first
+    assert [row['code'] for row in result.rows] == ['US.DEMO', 'US.OTHER']
+    assert result.pages == 2
+
+
+@pytest.mark.parametrize('case', ['repeated', 'empty', 'duplicate', 'oversized', 'nested-pagination', 'changed-total'])
+def test_screen_page_failures_are_visible_and_bounded(case):
+    first = screen_page(more=True, cursor='cursor', total=2)
+    second = screen_page([screen_row('US.OTHER')], more=True, cursor='cursor', total=2)
+    if case == 'empty':
+        first = screen_page([], more=True, cursor='cursor', total=2)
+    elif case == 'duplicate':
+        second = screen_page([screen_row()], total=2)
+    elif case == 'oversized':
+        first = screen_page([screen_row('US.A'), screen_row('US.B'), screen_row('US.C')])
+    elif case == 'nested-pagination':
+        value = json.loads(first.body);value['data']['pagination'] = value.pop('pagination')
+        first = ReadResponse(200, json.dumps(value).encode())
+    elif case == 'changed-total':
+        second = screen_page([screen_row('US.OTHER')], total=3)
+    item, requests, _ = client([first, second])
+    with pytest.raises(RESTError) as caught:
+        screen(item)
+    assert len(requests) <= 2
+    assert_private(caught.value)
+
+
+def test_screen_exhaustion_and_page_cap_never_claim_complete_coverage():
+    item, _, _ = client([screen_page(total=2)])
+    assert screen(item).reason == 'reported-total-incomplete'
+    item, requests, _ = client([screen_page(more=True, cursor='next', total=2)], max_pages=1)
+    batch = screen(item)
+    assert batch.status == 'truncated' and batch.reason == 'page-budget' and len(requests) == 1
+
+
+@pytest.mark.parametrize('mutation', ['missing', 'descriptor', 'order', 'bool', 'decimal', 'formatted-only', 'wrong-type'])
+def test_screen_typed_value_missingness_and_rejections(mutation):
+    row = screen_row()
+    wrapper = row['results'][0]['simple_property_result']
+    if mutation in ('missing', 'formatted-only'):
+        wrapper['res'].pop('ival')
+    elif mutation == 'descriptor':
+        wrapper['property']['name'] = 2301
+    elif mutation == 'order':
+        row['results'].append(copy.deepcopy(row['results'][0]))
+    elif mutation == 'bool':
+        wrapper['res']['ival'] = True
+    elif mutation == 'decimal':
+        wrapper['res']['ival'] = '25,000'
+    elif mutation == 'wrong-type':
+        wrapper['res'] = {'sval': '25000', 'result_type': 3}
+    item, _, _ = client([screen_page([row])])
+    if mutation in ('missing', 'formatted-only'):
+        field = screen(item).rows[0]['fields'][0]
+        assert field.value is None and field.reason == 'typed-value-missing'
+    else:
+        with pytest.raises(RESTError):
+            screen(item)
+
+
+def test_known_simple_scaling_and_unknown_string_factor():
+    wrapper = screen_row()['results'][0]
+    wrapper['simple_property_result']['property']['name'] = 2301
+    result = contracts.screen_field(wrapper, {'simple_property': {'name': 2301}})
+    assert result.value == 25 and result.unit == 'market_cap'
+    text_wrapper = screen_row(value='Fictional sector text', tag=3)['results'][0]
+    text_wrapper['simple_property_result']['property']['name'] = 9999
+    result = contracts.screen_field(text_wrapper, {'simple_property': {'name': 9999}})
+    assert result.value is None and result.raw_value == 'Fictional sector text'
+    assert result.reason == 'factor-unit-unverified'
+
+
+@pytest.mark.parametrize('factor', [3102, 3104, 3105])
+def test_cumulative_factors_cannot_be_requested_or_scaled_as_simple_fields(factor):
+    wrapper = screen_row()['results'][0]
+    wrapper['simple_property_result']['property']['name'] = factor
+    with pytest.raises(RESTError, match='factor-family-mismatch'):
+        contracts.screen_field(wrapper, {'simple_property': {'name': factor}})
+    item, requests, signed = client()
+    with pytest.raises(RESTError, match='factor-family-mismatch'):
+        item.screen(retrieve_queries=[{'simple_property': {'name': factor}}], sort=SORT)
+    assert not requests and not signed
+
+
+def test_reviewed_cumulative_request_does_not_assume_unknown_response_shape():
+    query = {'cumulative_property': {'name': 3105, 'days': 20, 'period_average': True}}
+    row = screen_row();row['results'] = [{'unverified_provider_wrapper': {'value': '999999'}}]
+    item, requests, _ = client([screen_page([row])])
+    batch = item.screen(retrieve_queries=[query], sort={'direction': 2, **query})
+    assert json.loads(requests[0].body)['retrieve_queries'] == [query]
+    field = batch.rows[0]['fields'][0]
+    assert field.value is None and field.raw_value is None and field.unit == 'average_turnover'
+    assert field.reason == 'cumulative-response-shape-unverified'
+
+
+@pytest.mark.parametrize('codes', [[], ['US.DEMO', 'US.DEMO'], ['HK.TEST'], ['US.DEMO/../../accounts'], ['US.A'] * 401])
+def test_code_requests_reject_before_signing_or_transport(codes):
+    item, requests, signed = client()
+    with pytest.raises(RESTError):
+        item.snapshots(codes)
+    assert not requests and not signed
+
+
+def test_basic_partial_identity_is_not_etf_strategy_or_fundamental_period():
+    row = {'code': 'US.DEMO', 'name': 'Fictional trust', 'stock_type': 'ETF', 'exchange': 'NYSE',
+           'suspension': False, 'listing_date': BAR_TIME, 'stock_id': '12345'}
+    item, _, _ = client([envelope({'basic_list': [row]})])
+    result = item.basicinfo(['US.DEMO', 'US.OTHER'])
+    assert result.status == 'partial' and result.missing_codes == ('US.OTHER',)
+    assert result.rows[0]['sector'] is None and result.rows[0]['fundamental_period'] is None
+    assert 'signed_leverage' not in result.rows[0]
+    assert result.rows[0]['stock_id'] == '12345'
+
+
+@pytest.mark.parametrize('rows', [[snapshot(code='US.OTHER')], [snapshot(), snapshot()]])
+def test_unrequested_or_duplicate_snapshot_rejected(rows):
+    item, _, _ = client([envelope({'snapshot_list': rows})])
+    with pytest.raises(RESTError):
+        item.snapshots(['US.DEMO'])
+
+
+def test_snapshot_units_and_native_counts_stay_separate_from_patterns():
+    item, _, _ = client([envelope({'snapshot_list': [snapshot(native_bullish_count=42, change_rate=5)]})])
+    result = item.snapshots(['US.DEMO']).rows[0]
+    assert result['last_price'] == 25.1 and result['turnover'] == 25100
+    assert result['currency'] is None and result['native_bullish_count'] is None
+    assert result['native_bearish_count'] is None and result['source_at_ms'] == CLOSE_TIME
+    assert result['observation_kind'] == 'live-snapshot-not-completed-bar'
+
+
+@pytest.mark.parametrize('change', [{'update_time': NOW + 1}, {'last_price': True}, {'last_price': -1},
+                                  {'volume': float('nan')}, {'equity_valid': 1}, {'data_date': '2026-11-01'}])
+def test_snapshot_future_malformed_and_invalid_flags(change):
+    item, _, _ = client([envelope({'snapshot_list': [snapshot(**change)]})])
+    with pytest.raises(RESTError):
+        item.snapshots(['US.DEMO'])
+
+
+def test_complete_ohlc_raw_timezone_provenance_and_explicit_currency_calendar():
+    evidence = contracts.CurrencyEvidence('US.DEMO', 'USD', 'https://example.org/fictional-currency', NOW - 1)
+    item, requests, _ = client([history_page()])
+    result = history(item, currency_evidence=evidence, session_closes={'2026-10-14': CLOSE_TIME})
+    row = result.rows[0]
+    assert row['volume'] == 123.45 and row['turnover'] == 100000
+    assert row['time_zone_unit_status'] == 'documented-minutes/runtime-unverified'
+    assert row['provider_finality_status'] == 'unverified'
+    assert row['raw_time_zone'] == -240 and row['raw_time_key'] == BAR_TIME and row['session_date'] == '2026-10-14'
+    assert row['currency'] == 'USD' and row['completed'] and row['known_at_ms'] == NOW
+    assert row['adjustment'] == 'unadjusted' and len(row['revision_vintage']) == 64
+    assert parse_qs(requests[0].query)['ktype'] == ['2']
+    coverage = contracts.history_coverage(result.rows, expected_sessions=['2026-10-14'], cutoff_ms=NOW, minimum=1)
+    assert coverage['status'] == 'complete'
+    assert contracts.history_coverage(result.rows, expected_sessions=['2026-10-14'], cutoff_ms=NOW)['status'] == 'insufficient'
+
+
+def test_history_without_currency_or_calendar_never_claims_training_ready():
+    item, _, _ = client([history_page()])
+    rows = history(item).rows
+    assert rows[0]['currency'] is None and rows[0]['completion_status'] == 'calendar-unverified'
+    assert contracts.history_coverage(rows, expected_sessions=None, cutoff_ms=NOW)['status'] == 'unverified'
+    assert contracts.history_coverage(rows, expected_sessions=['2026-10-14'], cutoff_ms=NOW, minimum=1)['status'] == 'insufficient'
+
+
+@pytest.mark.parametrize('change', [{'open': None}, {'high': 23}, {'low': 28}, {'close': 0}, {'volume': -1},
+    {'turnover': True}, {'date': 20260230}, {'time_zone': -300}, {'time_key': NOW + 1}, {'time_key': True}])
+def test_invalid_or_inconsistent_ohlc_dates_units_and_future_times_rejected(change):
+    item, _, _ = client([history_page([bar(**change)])])
+    with pytest.raises(RESTError):
+        history(item)
+
+
+def test_history_duplicate_dates_missing_precision_and_unknown_next_time():
+    item, _, _ = client([history_page([bar(), bar()])])
+    with pytest.raises(RESTError, match='duplicate-history-date'):
+        history(item)
+    item, _, _ = client([history_page(volume_precision=None)])
+    with pytest.raises(RESTError, match='volume-unit-unverified'):
+        history(item)
+    item, requests, _ = client([history_page(next_time=BAR_TIME)])
+    result = history(item)
+    assert result.status == 'success'
+    assert result.metadata['next_time_status'] == 'unverified-not-used'
+    assert result.metadata['windows'][0]['next_time_raw'] == BAR_TIME and len(requests) == 1
+
+
+def test_bounded_date_backfill_never_reinterprets_millisecond_cursor_as_date():
+    item, requests, _ = client([history_page([]), history_page([])], history_window_days=1, max_pages=2)
+    result = item.history('US.DEMO', start='2026-10-12', end='2026-10-14')
+    assert result.status == 'truncated' and result.reason == 'page-budget'
+    assert [parse_qs(request.query)['end'][0] for request in requests] == ['2026-10-14', '2026-10-13']
+    assert [parse_qs(request.query)['start'][0] for request in requests] == ['2026-10-14', '2026-10-13']
+
+
+def test_global_request_row_and_concurrent_caps():
+    item, requests, _ = client([screen_page()], max_requests=1)
+    screen(item)
+    with pytest.raises(RESTError, match='request-budget'):
+        screen(item)
+    assert len(requests) == 1
+    item, _, _ = client([screen_page([screen_row('US.A'), screen_row('US.B')])], max_rows=1)
+    with pytest.raises(RESTError, match='row-budget'):
+        screen(item)
+    item, requests, _ = client()
+    item._lock.acquire()
+    try:
+        with pytest.raises(RESTError, match='concurrent-request-forbidden'):
+            screen(item)
+    finally:
+        item._lock.release()
+    assert not requests
+
+
+@pytest.mark.parametrize('response,kind', [
+    (ReadResponse(429, b'fictional-private-provider-text', {'Retry-After': '7'}), 'rate-limited'),
+    (ReadResponse(503, b'fictional-private-provider-text'), 'upstream-failed'),
+    (ReadResponse(302, b'fictional-private-provider-text'), 'http-failed'),
+    (ReadResponse(200, b'{"data":0,"data":1}'), 'malformed-response'),
+    (envelope({}, ret_code=5), 'provider-failed')])
+def test_errors_sanitized_without_automatic_retry(response, kind):
+    item, requests, _ = client([response])
+    with pytest.raises(RESTError) as caught:
+        screen(item)
+    assert caught.value.kind == kind and len(requests) == 1
+    assert_private(caught.value)
+    if kind == 'rate-limited':
+        assert caught.value.retry_after == 7
+        with pytest.raises(RESTError, match='provider-stopped'):
+            screen(item)
+        assert len(requests) == 1
+
+
+def test_dependency_exception_and_credentials_do_not_escape_context():
+    item, requests, _ = client()
+    def fail(_):
+        raise RuntimeError('fictional-api-key fictional-private-provider-text')
+    item._transport = fail
+    with pytest.raises(RESTError) as caught:
+        screen(item)
+    assert_private(caught.value)
+    with pytest.raises(RESTError, match='live-not-authorized'):
+        provider.build_live_provider({}, clock_ms=lambda: NOW, nonce_factory=lambda: 'fixture', credential_loader=fail)
+
+
+def test_explicit_live_factory_reuses_injected_credentials_without_actual_access():
+    calls = []
+    def load(locator):
+        calls.append(locator)
+        return 'fictional-api-key', lambda _: b'fictional-signature'
+    item = provider.build_live_provider({'fictional': True}, clock_ms=lambda: NOW, nonce_factory=lambda: 'fixture',
+        allow_live=True, credential_loader=load, transport=lambda _: screen_page())
+    assert calls == [{'fictional': True}] and screen(item).status == 'success'
+
+
+HEADERS = {'X-Api-Key': 'fictional-api-key', 'Authorization': 'fictional-signature',
+           'X-Timestamp': str(NOW), 'X-Nonce': 'fixture', 'Content-Type': 'application/json'}
+
+
+@pytest.mark.parametrize('path,method', [('/api/v1.0/accounts/1/funds', 'GET'),
+    ('https://example.org/api/v1.0/quote/stock-screen', 'POST'), ('/api/v1.0/trade/orders', 'POST'),
+    ('/api/v1.0/quote/find-news', 'GET'), ('/api/v1.0/quote/HK.TEST/history-kline', 'GET')])
+def test_standalone_allowlist_rejects_accounts_orders_arbitrary_host_and_other_routes(path, method):
+    item, requests, signed = client()
+    with pytest.raises(RESTError, match='endpoint-forbidden'):
+        item._read(method, path)
+    assert not requests and not signed
+    with pytest.raises(LiveReadError):
+        provider.ResearchReadTransport._validate(ReadRequest(method, path, '', b'{}', HEADERS, 5))
+
+
+def test_old_allowlist_unchanged_and_new_transport_reuses_tls_no_redirect_guards():
+    request = ReadRequest('POST', provider.SCREEN, '', b'{}', HEADERS, 5)
+    with pytest.raises(LiveReadError):
+        SecureReadTransport._validate(request)
+    assert provider.ResearchReadTransport._validate(request) == HEADERS
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    context.check_hostname = False
+    transport = provider.ResearchReadTransport(context_factory=lambda: context)
+    with pytest.raises(LiveReadError, match='tls-required'):
+        transport(request)
+
+
+def test_issuer_registry_classifies_only_discovered_names_and_never_claims_listing():
+    result = provider.classify_discovered_etfs(['US.SOXL', 'US.IBB', 'US.UNLISTED'])
+    assert set(result) == {'US.SOXL', 'US.IBB', 'US.UNLISTED'}
+    assert result['US.SOXL']['signed_leverage'] == '3' and result['US.SOXL']['reset'] == 'daily'
+    assert result['US.SOXL']['listing_verified'] is False and not result['US.SOXL']['selection_eligible']
+    assert result['US.IBB']['benchmark_name'] == 'NYSE Biotechnology Index'
+    assert result['US.UNLISTED']['signed_leverage'] is None
+    assert provider.classify_discovered_etfs([]) == {}
+
+
+def test_config_example_and_capability_unknowns():
+    loaded = config.load_config(ROOT / 'scripts/stock-research/config.example.toml')
+    assert loaded == config.ProviderConfig()
+    with pytest.raises(ValueError):
+        config.ProviderConfig(max_requests=True)
+    with pytest.raises(ValueError):
+        config.ProviderConfig(timeout_seconds=float('inf'))
+    capabilities = provider.ResearchProvider.capabilities()
+    assert capabilities['rest_numeric_quota'] is None and capabilities['native_bullish_count'] is None
+    assert capabilities['entitlements'] == 'unverified'
+
+
+@pytest.mark.parametrize('stock_id', [True, '', 'issuer-123', -1, 1.5, '0', str(2**63)])
+def test_malformed_internal_security_id_rejected(stock_id):
+    row = {'code': 'US.DEMO', 'name': 'Fictional', 'stock_id': stock_id}
+    item, _, _ = client([envelope({'basic_list': [row]})])
+    with pytest.raises(RESTError, match='invalid-security-id'):
+        item.basicinfo(['US.DEMO'])
+
+
+def test_safe_history_backfill_uses_actual_oldest_date_and_detects_calendar_holes():
+    prior = bar(date=20261013, time_key=BAR_TIME - 86400000)
+    item, requests, _ = client([history_page(next_time=123), history_page([prior], next_time=999), history_page([])])
+    evidence = contracts.CurrencyEvidence('US.DEMO', 'USD', 'https://example.org/fictional-currency', NOW - 1)
+    result = item.history('US.DEMO', start='2026-10-12', end='2026-10-14', currency_evidence=evidence,
+        session_closes={'2026-10-14': CLOSE_TIME, '2026-10-13': CLOSE_TIME - 86400000})
+    assert [parse_qs(request.query)['end'][0] for request in requests] == ['2026-10-14', '2026-10-13', '2026-10-12']
+    assert [row['session_date'] for row in result.rows] == ['2026-10-13', '2026-10-14']
+    assert [window['next_time_raw'] for window in result.metadata['windows']][:2] == [123, 999]
+    coverage = contracts.history_coverage(result.rows, expected_sessions=['2026-10-12', '2026-10-13', '2026-10-14'],
+                                          cutoff_ms=NOW, minimum=1)
+    assert coverage['status'] == 'insufficient' and coverage['missing_sessions'] == ['2026-10-12']
+
+
+def test_bounded_three_year_date_bootstrap_progresses_with_nonterminal_next_time():
+    item, requests, _ = client([history_page([], next_time=123)] * 7, max_pages=7)
+    result = item.history('US.DEMO', start='2023-10-15', end='2026-10-14')
+    assert result.status == 'empty' and len(requests) == 7
+    ranges = [parse_qs(request.query) for request in requests]
+    for first, second in zip(ranges, ranges[1:]):
+        assert second['end'][0] < first['start'][0]
+    assert all(window['next_time_raw'] == 123 for window in result.metadata['windows'])
+    assert result.metadata['coverage'] == 'requires-actual-calendar-evidence'
+
+
+def test_global_history_timestamp_duplicates_rejected_across_backfill_pages():
+    stamp = BAR_TIME + 19 * 3600000
+    first = bar(date=20261015, time_key=stamp, time_zone=120)
+    second = bar(date=20261014, time_key=stamp, time_zone=-240)
+    item, _, _ = client([history_page([first]), history_page([second])])
+    with pytest.raises(RESTError, match='duplicate-history-date'):
+        item.history('US.DEMO', start='2026-10-14', end='2026-10-15')
+
+
+def test_raw_timezone_minus_four_is_never_silently_multiplied_by_sixty():
+    item, _, _ = client([history_page([bar(time_zone=-4)])])
+    result = history(item).rows[0]
+    assert result['raw_time_zone'] == -4
+    assert result['time_zone_unit_status'] == 'documented-minutes/runtime-unverified'
+    assert result['provider_finality_status'] == 'unverified'
+
+
+def test_default_is_small_bounded_and_explicit_large_override_validates():
+    assert config.ProviderConfig().max_requests == 128
+    assert config.ProviderConfig(max_requests=2048).max_requests == 2048
+    with pytest.raises(ValueError):
+        config.ProviderConfig(max_requests=2049)
+
+
+def test_daily_change_rate_discovery_request_sort_keeps_numeric_rate_unavailable():
+    query = {'cumulative_property': {'name': 3102, 'days': 1, 'period_average': False}}
+    row = screen_row();row['results'] = [{'unknown_rate_wrapper': {'ival': '5000'}}]
+    item, requests, _ = client([screen_page([row])])
+    batch = item.screen(retrieve_queries=[query], sort={'direction': 2, **query})
+    sent = json.loads(requests[0].body)
+    assert sent['retrieve_queries'] == [query] and sent['sort'] == {'direction': 2, **query}
+    result = batch.rows[0]['fields'][0]
+    assert result.value is None and result.raw_value is None and result.unit is None
+    assert result.reason == 'cumulative-response-shape-unverified'
+    for properties in [{'name': 3102, 'days': 20, 'period_average': False},
+                       {'name': 3102, 'days': 1, 'period_average': True}]:
+        with pytest.raises(RESTError, match='unsupported-change-rate-window'):
+            contracts.descriptor({'cumulative_property': properties})
+    with pytest.raises(RESTError, match='factor-family-mismatch'):
+        contracts.descriptor({'simple_property': {'name': 3102}})
