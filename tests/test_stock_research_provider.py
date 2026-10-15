@@ -547,6 +547,114 @@ def test_raw_mode_is_explicit_not_split_continuous_and_empty_metadata_valid():
     assert item.source_metadata('US.DEMO','owner-plate').status=='empty'
 
 
+def owner_plate(plate_type='INDUSTRY', **changes):
+    return {'plate_code':'US.FICTIONAL','plate_name':'Fictional industry',
+            'plate_type':plate_type,'name':'Fictional queried company',**changes}
+
+
+def test_owner_plate_mixed_types_preserve_rows_and_current_source_provenance():
+    # Authored public-shape regression, not copied provider rows: 38 supported + 2 SPECIAL.
+    rows=[owner_plate(('INDUSTRY','CONCEPT','OTHER')[i % 3],plate_code=f'US.FICTION{i}') for i in range(38)]
+    rows.extend([owner_plate('SPECIAL',plate_code='US.EXTRA1'),owner_plate('SPECIAL',plate_code='US.EXTRA2')])
+    response=envelope({'sectors':rows})
+    item,requests,_=client([response],max_requests=1)
+    batch=item.source_metadata('US.DEMO','owner-plate')
+    assert batch.status=='partial' and batch.reason=='unsupported-plate-types' and batch.pages==1
+    assert len(batch.rows)==40 and len(requests)==1 and item.budgets['rows_used']==40
+    assert [row['plate_type'] for row in batch.rows]==[row['plate_type'] for row in rows]
+    assert [row['plate_code'] for row in batch.rows]==[row['plate_code'] for row in rows]
+    assert [row['plate_type_status'] for row in batch.rows]==['supported']*38+['unsupported']*2
+    assert all(row['plate_name']=='Fictional industry' and row['name']=='Fictional queried company' for row in batch.rows)
+    assert batch.requested_at_ms==batch.retrieved_at_ms==NOW
+    assert batch.metadata=={'code':'US.DEMO','raw_payload_hash':hashlib.sha256(response.body).hexdigest(),
+        'known_at_ms':NOW,'effective_from':None,'effective_to':None,'classification':'raw-current-only',
+        'unsupported_type_counts':{'SPECIAL':2},'unsupported_type_rows':2}
+    assert all('sector_id' not in row and 'issuer_group_id' not in row for row in batch.rows)
+    assert requests[0].method=='GET' and requests[0].path=='/api/v1.0/quote/US.DEMO/owner-plate'
+    assert requests[0].query=='' and requests[0].body==b''
+
+
+@pytest.mark.parametrize('types,status,counts',[
+    (['INDUSTRY','CONCEPT','OTHER'],'success',{}),
+    (['FutureType','SPECIAL','FutureType','REGION'],'partial',{'FutureType':2,'REGION':1,'SPECIAL':1}),
+    ([], 'empty',{}),
+])
+def test_owner_plate_supported_unknown_only_and_empty_statuses(types,status,counts):
+    item,requests,_=client([envelope({'sectors':[owner_plate(value) for value in types]})])
+    batch=item.source_metadata('US.DEMO','owner-plate')
+    assert batch.status==status and batch.reason==('unsupported-plate-types' if counts else None)
+    assert batch.metadata['unsupported_type_counts']==counts
+    assert list(batch.metadata['unsupported_type_counts'])==sorted(counts)
+    assert batch.metadata['unsupported_type_rows']==sum(counts.values())
+    assert [row['plate_type'] for row in batch.rows]==types and len(requests)==1
+
+
+def test_owner_plate_unknown_diagnostics_are_bounded_by_row_and_type_limits():
+    types=[f'{i:03}'+('X'*125) for i in range(400)]
+    rows=[owner_plate(value,plate_code='C'*512,plate_name='N'*512) for value in types]
+    item,_,_=client([envelope({'sectors':rows})])
+    batch=item.source_metadata('US.DEMO','owner-plate')
+    assert batch.status=='partial' and len(batch.rows)==400
+    assert all(len(row['plate_type'])==128 and row['plate_type_status']=='unsupported' for row in batch.rows)
+    assert batch.metadata['unsupported_type_rows']==400
+    assert batch.metadata['unsupported_type_counts']=={value:1 for value in types}
+    assert len(json.dumps(batch.metadata).encode())<65536
+
+
+@pytest.mark.parametrize('bad',[0,1.5,True,False,None,'','\n','TYPE\x7f','TYPE\ud800','X'*129,{},[],'missing'])
+def test_owner_plate_malformed_type_is_not_coerced_or_retained(bad):
+    row=owner_plate(bad)
+    if bad=='missing':row.pop('plate_type')
+    item,requests,_=client([envelope({'sectors':[owner_plate(),row]})])
+    with pytest.raises(RESTError,match='invalid-industry-record') as error:
+        item.source_metadata('US.DEMO','owner-plate')
+    assert_private(error.value)
+    assert len(requests)==1
+
+
+@pytest.mark.parametrize('field',['plate_code','plate_name'])
+@pytest.mark.parametrize('bad',[None,False,'','\n','X'*513,'missing'])
+def test_owner_plate_structural_code_and_label_remain_strict(field,bad):
+    row=owner_plate('SPECIAL',**{field:bad})
+    if bad=='missing':row.pop(field)
+    # The queried-company name is deliberately present; it is never a plate-name fallback.
+    item,_,_=client([envelope({'sectors':[row]})])
+    with pytest.raises(RESTError,match='invalid-industry-record'):
+        item.source_metadata('US.DEMO','owner-plate')
+
+
+@pytest.mark.parametrize('data,expected',[
+    ({'sectors':[owner_plate()]*401},'invalid-page'),
+    ({'sectors':['not-a-record']},'invalid-page'),
+    ({'sectors':{}},'invalid-page'),
+    ({},'invalid-page'),
+    ([], 'malformed-response'),
+])
+def test_owner_plate_bad_list_shape_and_row_budget_remain_rejected(data,expected):
+    item,requests,_=client([envelope(data)])
+    with pytest.raises(RESTError,match=expected):item.source_metadata('US.DEMO','owner-plate')
+    assert len(requests)==1
+
+
+@pytest.mark.parametrize('plate_type',['SPECIAL','FutureType','REGION','CONCEPT','OTHER'])
+def test_owner_plate_non_industry_cannot_enter_reviewed_sector_resolution(plate_type):
+    universe=importlib.import_module('universe')
+    item,_,_=client([envelope({'sectors':[owner_plate(plate_type),owner_plate('INDUSTRY')]})])
+    batch=item.source_metadata('US.DEMO','owner-plate')
+    reviewed={'status':'verified','known_at_ms':NOW,'source_url':'https://example.test/fictional',
+              'source_hash':batch.metadata['raw_payload_hash'],'reviewer':'fictional-reviewer'}
+    evidence=reviewed|{'market':'US','taxonomy_id':'fictional-taxonomy','taxonomy_snapshot_hash':'a'*64,
+                       'industry_records':list(batch.rows[:1])}
+    mapping=reviewed|{'market':'US','vendor_taxonomy_id':'fictional-taxonomy',
+        'vendor_taxonomy_snapshot_hash':'a'*64,'industry_code':'US.FICTIONAL','sector_id':'fictional-sector',
+        'target_sector_taxonomy_id':'fictional-target','target_taxonomy_version':'v1','mapping_version':'v1'}
+    result=universe.resolve_sector(evidence,[mapping],NOW)
+    assert result=={'sector_id':None,'sector_mapping_status':'unmapped','reason':'no-industry-membership'}
+    # Exact INDUSTRY still resolves with reviewed evidence, even beside unsupported rows.
+    result=universe.resolve_sector(evidence|{'industry_records':list(batch.rows)},[mapping],NOW)
+    assert result['sector_id']=='fictional-sector' and result['sector_mapping_status']=='verified'
+
+
 def test_history_keeps_prior_pages_when_global_request_budget_stops_backfill():
     item,requests,_=client([history_page()],max_requests=1,history_window_days=1)
     result=item.history('US.DEMO',start='2026-10-13',end='2026-10-14')

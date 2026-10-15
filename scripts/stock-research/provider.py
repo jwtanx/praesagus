@@ -242,21 +242,31 @@ class ResearchProvider:
         rows = self._rows(payload['data'], key, 400)
         self._count_rows(len(rows))
         normalized = []
+        unsupported_types = {}
         for row in rows:
             if kind == 'owner-plate':
                 need(text(row.get('plate_code')) and text(row.get('plate_name'))
-                     and row.get('plate_type') in {'INDUSTRY', 'CONCEPT', 'OTHER'}, 'invalid-industry-record')
+                     and text(row.get('plate_type'), 128), 'invalid-industry-record')
                 value = {name: row.get(name) for name in ('plate_code', 'plate_name', 'plate_type', 'name')}
+                supported = row['plate_type'] in {'INDUSTRY', 'CONCEPT', 'OTHER'}
+                value['plate_type_status'] = 'supported' if supported else 'unsupported'
+                if not supported:
+                    unsupported_types[row['plate_type']] = unsupported_types.get(row['plate_type'], 0) + 1
             else:
                 need(text(row.get('name')) and isinstance(row.get('value'), str) and len(row['value']) <= 16384
                      and type(row.get('field_type')) is int and row['field_type'] in (0, 1, 2)
                      and ('attribute_type' not in row or integer(row['attribute_type'], 0, 10000)), 'invalid-profile-record')
                 value = {name: row.get(name) for name in ('name', 'value', 'field_type', 'attribute_type')}
             normalized.append(value)
-        return Batch(tuple(normalized), kind, 'success' if rows else 'empty', None, 1,
+        metadata = {'code': security_code, 'raw_payload_hash': vintage, 'known_at_ms': ended,
+                    'effective_from': None, 'effective_to': None, 'classification': 'raw-current-only'}
+        if kind == 'owner-plate':
+            metadata.update(unsupported_type_counts=dict(sorted(unsupported_types.items())),
+                            unsupported_type_rows=sum(unsupported_types.values()))
+        return Batch(tuple(normalized), kind, 'partial' if unsupported_types else 'success' if rows else 'empty',
+                     'unsupported-plate-types' if unsupported_types else None, 1,
                      requested_at_ms=started, retrieved_at_ms=ended,
-                     metadata={'code': security_code, 'raw_payload_hash': vintage, 'known_at_ms': ended,
-                               'effective_from': None, 'effective_to': None, 'classification': 'raw-current-only'})
+                     metadata=metadata)
 
     def industry_catalog(self):
         payload, started, ended, vintage = self._read('GET', INDUSTRY, [('market', 'US'), ('plate_class', 'INDUSTRY')])

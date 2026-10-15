@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-119",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-15",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-15/PRSG-119-stock-research-owner-plate-types.md",
+  "objective": "Preserve explicitly unsupported raw owner-plate types without blocking valid industry intake or inferring classification.",
+  "status": "review",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "63d17c706c27731309c2ca982404e9d37ebeb3ff",
+  "allowed_paths": [
+    "scripts/stock-research/provider.py",
+    "tests/test_stock_research_provider.py",
+    "plans/2026-10-15/PRSG-119-stock-research-owner-plate-types.md",
+    "plans/2026-10-15/PRSG-119.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/daily_report_projection.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-12/ui-ux-improvement-input.md",
+    "plans/2026-10-13/forecast-input-unblock.md",
+    "scripts/stock-research/inference.py",
+    "scripts/stock-research/model.py",
+    "scripts/stock-research/storage.py"
+  ],
+  "checks": [
+    {
+      "id": "provider-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_stock_research_provider.py",
+        "tests/test_stock_research_universe.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead complete2pathreview; independent173focusedpassed; owner173passed2.76s; malformed/unsupported/currentprovenance/downstreamexclusion covered."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Complete scoped diff, canonical metadata and delivery reviewed; actual provider/model readiness remains separate.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-119-D1",
+      "description": "Supported/unsupported/malformed memberships and downstream exclusion tested.",
+      "check_ids": [
+        "provider-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed/frozen literal-preserving fix; rawSPECIAL remainsunsupported; no actualreadiness claim."
+      ]
+    },
+    {
+      "id": "PRSG-119-D2",
+      "description": "Lead complete scope review and required delivery checks verified.",
+      "check_ids": [
+        "lead-review"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}
