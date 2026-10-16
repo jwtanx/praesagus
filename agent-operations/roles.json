@@ -5,8 +5,8 @@
     {
       "role": "Lead",
       "startup_prompt": "agent-operations/startup-prompts/lead.md",
-      "model": null,
-      "reasoning_effort": null,
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "low",
       "schedules": [
         "lead-daily-planning",
         "lead-coordination",
@@ -25,15 +25,15 @@
     {
       "role": "Engineer",
       "startup_prompt": "agent-operations/startup-prompts/engineer.md",
-      "model": null,
-      "reasoning_effort": null,
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "medium",
       "schedules": []
     },
     {
       "role": "AI Engineer",
       "startup_prompt": "agent-operations/startup-prompts/ai-engineer.md",
-      "model": null,
-      "reasoning_effort": null,
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "low",
       "schedules": []
     }
   ]

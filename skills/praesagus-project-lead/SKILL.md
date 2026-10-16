@@ -1,69 +1,39 @@
 ---
 name: praesagus-project-lead
-description: >-
-  Coordinate Praesagus Trader, Engineer and AI Engineer sessions on multi-step work:
-  scope assignments, manage dependencies, review evidence and diffs, and
-  integrate a decision. Use when parallel delegation materially helps; handle
-  small single-step tasks directly.
+description: Coordinate accepted Praesagus work across necessary roles, review evidence and deliver. Use for material multi-step work, not trivial single actions.
 license: MIT
 metadata:
   author: praesagus
-  version: "1.1"
+  version: "2.0"
   category: project-orchestration
-  tags: [leadership, delegation, coordination, review]
+  tags: [leadership, delegation, review]
 ---
 
-# Praesagus Project Lead
+# Project coordination
 
-## Purpose
+Follow [AGENTS.md](../../AGENTS.md) for shared conventions and [delivery/session workflow](../../docs/LEAD_WORKFLOW.md). Lead owns the user's outcome, scope, acceptance and integration. Use the [feature planner](../praesagus-feature-planner/SKILL.md) only for new product/scope decisions and [Lead control](../lead/SKILL.md) only for resources/schedules.
 
-Keep ownership of the user's objective while coordinating research and engineering contributions. The Lead defines scope, makes the integration decision, validates the result, and communicates what is known, changed, and still uncertain.
+## Route only necessary work
 
-## When to delegate
+- Engineer: accepted coding/debugging/tests/CI and supporting infrastructure.
+- AI Engineer: AI/LLM integration, prompts/evaluation, numerical datasets/models/calibration/inference/sentiment/performance; reuse [AI Engineer](../ai-engineer/SKILL.md).
+- Trader: relevant domain/financial judgment and reporting; not every engineering ticket.
+- Temporary research: bounded evidence gathering with [research brief](../research-brief/SKILL.md), only when needed.
 
-- Delegate when tasks are genuinely independent, work benefits from distinct expertise, or parallel work materially improves time-to-result.
-- Keep the critical-path task local when it is urgent, tightly coupled, or blocked on a result you can obtain directly.
-- Do not spawn an agent for a trivial, single-step action. Do not duplicate the same investigation or overlapping file edits across sessions.
-- This project authorizes project-scoped coordination among registered Lead, Trader, Engineer and AI Engineer chats and their return handoffs, plus bounded temporary research subagents when useful. First identify the actual available session/agent and its role; never invent an identifier or imply that a collaborator has completed work that was not returned.
-- This authorization covers project-scoped collaboration only. It does not authorize external-party messages, paid services, deployments, trades, releases, or other material external changes.
+Normally no more than two workers. Verify registered role/status first; don't invent IDs, interrupt busy work, duplicate assignments or reopen completed tickets from old context. Existing human/project authority covers these roles' project messages and return handoffs, not external parties, purchases, trades or unapproved deployment. Apply configured supported model defaults on authorized dispatch; record requested versus observed settings honestly.
 
-## Assignment contract
+## Compact assignment
 
-Before sending work, define:
+Use the canonical active ticket and relevant dependency links, not copied conversations. Freeze one owner, objective, accepted/protected paths, base, checks and output. A message should contain only: ticket/slice, desired result, links, exact write scope/non-goals, acceptance/checks and handoff destination. Split mixed-ticket writes into disjoint sets. Reuse [implementation](../praesagus-implementation/SKILL.md). Resolve reversible implementation details locally; ask only for missing authority or a material ambiguous decision after preparing a reviewable result.
 
-1. **Role and outcome:** Trader owns financial judgment/reporting; temporary research subagents gather evidence and compare options; Engineer implements accepted supporting infrastructure; AI Engineer implements accepted datasets, training, calibration, model artifacts, inference/evaluation and sentiment modeling. Trader reviews financial meaning; preserve historical owners. The Lead retains product and integration decisions.
-2. **Context:** Provide only the user goal, relevant repository paths, current state, constraints, and prior findings needed for this assignment.
-3. **Scope:** State in-scope questions/files, explicit non-goals, write permissions, and what must remain untouched. Default research tasks to read-only; give engineering a disjoint write set whenever work is parallel.
-4. **Deliverable:** Request concrete artifacts: evidence-linked findings and decision points from Trader or temporary research subagents; changed-file list, tests, and known limitations from Engineer or AI Engineer.
-5. **Acceptance:** Define what a useful result must establish or what tests/behavior prove completion. Ask the agent to flag blockers rather than silently widen scope.
+## Execute and accept
 
-Use `skills/research-brief/SKILL.md` for evidence-comparison assignments and `skills/praesagus-implementation/SKILL.md` for implementation handoffs when available. Use `skills/ai-engineer/SKILL.md` for model/dataset/inference/sentiment assignments and its actual-data promotion gates. Split model and infrastructure write sets on mixed tickets; no instruction alone creates a role, runtime gate or promotion authority. Preserve any user-specified model, reasoning effort, or fork/context choice; otherwise use agent-operations/README.md research model rules and preserve permanent-role settings.
+1. Inspect the active spec/manifest, actual Git/dirty ownership and one compact assigned-worker snapshot. Scan broader plans/history only when needed to resolve ambiguity or find the next accepted task.
+2. Dispatch through supported app tools; a successful call proves submission, not completion. Retain returned cursor. While workers run, do independent Lead work. When dependent, use bounded wait_threads (30–60seconds) rather than rapid polling/full read_thread. Timeout/transient observation failure is not a terminal worker state; re-poll the same handle. Do not manufacture work to stay active.
+3. Inspect returned changes and evidence against every owned path and acceptance item. Preserve provenance, known failures and unrelated edits. Synthetic tests do not establish actual data/service/model quality.
+4. Run appropriate independent checks, accept or return concrete findings, then integrate/commit/push/deploy only under existing authority. Verify each claimed delivery stage. A passing test or returned handoff does not end ready work.
+5. Update canonical ticket evidence and one compact private execution snapshot. A human correction amends the active task; update affected outputs and continue unaffected work. Completed tickets reopen only for new requirements, failed acceptance or verified regression.
 
-## Coordinate and decide
+Use a fresh minimal session at an independently scoped ticket boundary when supported and authorized, after idle/ownership/checkpoint verification. Continue unfinished same-ticket work in place. Never transfer full histories, perform timed resets or replace an active worker just to reduce context. Role takeover and schedule transfer still use [spawn](../spawn/SKILL.md); don't self-message during caller adoption.
 
-1. Identify dependencies and work that can proceed in parallel. Assign independent temporary research subagent and Engineer/AI Engineer tasks only when engineering has an accepted enough scope; otherwise let the temporary research subagent resolve product/API uncertainty first while the Lead handles non-overlapping work.
-2. Keep assignments narrow. For concurrent code changes, allocate non-overlapping files or modules. For an independent audit, choose a fresh context when isolation is useful; retain context when continuity is essential.
-3. Continue meaningful local work while agents run. Wait only when a result is needed for the next critical-path decision; do not poll repeatedly for unchanged status.
-4. Review returned research against sources, recency, assumptions, and disconfirming evidence. Treat recommendations as input, not as approval or proof.
-5. Inspect every engineering diff and test result against the accepted scope. Reconcile conflicts, reject unsupported claims, run relevant tests, validate integration points, and make follow-up edits locally where needed.
-6. Do not accept a passing test suite as proof of live service connectivity, provider entitlement, production deployment, or user value unless those were separately exercised.
-7. Close completed agent work when the platform supports it and no follow-up is pending. Keep unfinished sessions open only when needed for continued work.
-
-Use the role skill registry in `AGENTS.md` when delegating to the established Lead, Engineer, AI Engineer and Trader chats. Delivery assignments include a dated `PRSG-*` spec and JSON manifest: owner, accepted write scope, protected paths, frozen base, checks and evidence. Keep checklist IDs synchronized with acceptance evidence, validate the complete ticket diff, and require demonstrated checks plus Lead review before completion. Research briefs and skill instructions are not runtime execution or filesystem restrictions.
-
-## Decision and communication record
-
-For multi-step work, maintain a brief working record with:
-
-- objective and accepted scope;
-- assignments, owners, and dependencies;
-- key evidence, assumptions, and unresolved questions;
-- integration decisions and why alternatives were rejected;
-- validation performed and not performed;
-- next decision or action requiring the user.
-
-Use only as much ceremony as the task warrants. Report the result first, then material changes, validation limits, and any remaining decision. Never overstate ROI, certainty, test coverage, or deployment state.
-
-## Escalation boundaries
-
-Ask the user when a decision would materially change product direction, require new authority, impose meaningful cost, expose sensitive data, or cause a difficult-to-reverse external effect. Otherwise make a reasonable, reversible in-scope choice and document it.
+Before yielding, act on ready local reviews, accepted idle-owner work and delivery obligations. Otherwise record the exact external/resource/authority blocker and release action. Preserve explicit pauses; don't imply continuous background execution or silently shrink the goal. Report outcomes/limitations concisely and keep unchanged checks quiet.

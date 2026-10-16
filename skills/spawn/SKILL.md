@@ -4,7 +4,7 @@ description: Adopt the current Praesagus chat for one role, or create a fresh ch
 license: MIT
 metadata:
   author: praesagus
-  version: "1.3"
+  version: "1.5"
 ---
 
 # Adopt a replacement role
@@ -15,7 +15,7 @@ Read [agent operations](../../agent-operations/README.md), [role configuration](
 
 A normal single-role invocation adopts the current calling chat as the successor; it does not authorize creating another chat. An explicit human request for a fresh role chat instead authorizes one new local destination for that role: the caller coordinates and never becomes the successor. The selector's `--fresh` flag only describes this explicit mode; it cannot supply missing authorization. The human's invocation authorizes reading/applying the selected startup prompt and compact checkpoint, renaming the verified destination to the role, project-scoped checkpoint/bootstrap/release messages, moving their verified role schedules, renaming predecessors to `Role [YYYY-MM-DD]` (MYT replacement date) and archiving them after verified takeover. It does not authorize a live replacement merely because this skill is being authored/reviewed. Preserve unrelated chats, worktrees, schedules and human pauses. If multiple predecessors match or ownership is ambiguous, ask for identity rather than guess.
 
-Use the current chat with a summarized checkpoint plus the actual startup prompt; do not call create_thread or fork_thread for a normal single-role invocation. Resolve the predecessor separately and never retire the current destination. If source and destination are already the same registered role, reconcile/read the context and schedules without another transfer or archive. Preserve current Lead/Engineer/AI Engineer settings. Trader prefers gpt-6.1-sol/medium, but inability to inspect or select it must never block the takeover or assigned report work; preserve the current runtime setting and never claim an unverified setting. Do not create another Trader to force a model override.
+Use the current chat with a summarized checkpoint plus the actual startup prompt; do not call create_thread or fork_thread for a normal single-role invocation. Resolve the predecessor separately and never retire the current destination. If source and destination are already the same registered role, reconcile/read the context and schedules without another transfer or archive. Apply the human-authorized requested defaults from agent-operations/roles.json on supported fresh creation/dispatch; distinguish requested and observed settings. Adoption does not itself change the caller runtime. An unavailable preference must not block useful work; preserve an available supported setting and never claim it independently verified. Do not create another Trader to force a model override.
 
 For `all`, the invocation explicitly authorizes creating one fresh local chat per configured role with create_thread and renaming each to its exact configured role name (currently Lead, Trader, Engineer and AI Engineer). Call list_projects first and select the verified Praesagus project; use its local environment without a worktree or fork. The calling chat coordinates the transfer and does not adopt a role. Do not ask for a destination map or separate creation confirmation. Record each returned ID before creating the next chat; on retry reuse this transaction’s verified destinations instead of creating duplicates. Read the current registry first to avoid replacing a takeover completed in another chat. If the human explicitly supplies destinations instead, honor that map.
 

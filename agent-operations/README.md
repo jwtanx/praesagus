@@ -1,32 +1,24 @@
 # Agent operations
 
-The configured permanent team is Lead, Trader, Engineer and AI Engineer. Configuration is not evidence of a registered or released chat. Adopt the current human-started chat as a replacement with `$spawn lead`, `$spawn trader`, `$spawn engineer`, `$spawn ai-engineer` or `$spawn all`; `/spawn ROLE` is the equivalent natural-language request, not a registered slash command. Normal single-role invocation reuses this calling chat; it never opens an extra chat. An explicit fresh-role-chat request instead authorizes one new held local destination, with the caller coordinating. For all, the invocation authorizes a fresh local chat per configured role; the calling chat coordinates. Explicitly supplied existing destinations override this default. A request to omit predecessor context uses startup prompts, the human checkpoint and canonical evidence while retaining operational cutover checks. Read [the migration skill](../skills/spawn/SKILL.md). This folder contains instructions, not a running agent service.
+Configured roles and requested defaults: [roles.json](roles.json). Registration is separate: verified IDs, states, model observations and transfer receipts live privately under `/Users/jwtan/.codex/lead-state/`. Never commit those IDs, prompts, credentials or private context.
 
-| Role | Startup prompt | Model |
+| Role | Startup | Requested model |
 |---|---|---|
-| Lead | [lead.md](startup-prompts/lead.md) | Keep current setting unless human specifies |
-| Trader | [trader.md](startup-prompts/trader.md) | Preferred: gpt-6.1-sol, medium; report work proceeds on the current model if unavailable |
-| Engineer | [engineer.md](startup-prompts/engineer.md) | Keep current setting unless human specifies |
-| AI Engineer | [ai-engineer.md](startup-prompts/ai-engineer.md) | Keep current setting unless human specifies |
+| Lead | [lead.md](startup-prompts/lead.md) | gpt-6.1-sol / low |
+| Engineer | [engineer.md](startup-prompts/engineer.md) | gpt-6.1-sol / medium |
+| AI Engineer | [ai-engineer.md](startup-prompts/ai-engineer.md) | gpt-6.1-sol / low; medium for complex work |
+| Trader | [trader.md](startup-prompts/trader.md) | gpt-6.1-sol / medium |
 
-Use [roles.json](roles.json) as the configured role list for `all`. Temporary researchers are subagents, not permanent chats: long-context extraction/comparison uses gpt-6-luna with low reasoning; research needing stronger reasoning prefers gpt-6.1-sol with low reasoning. Trader report subagents prefer gpt-6.1-sol with low reasoning, but an unavailable model must not delay report generation: use an available supported model or perform the bounded evidence work directly. Keep financial judgment and final report acceptance with Trader; Lead owns project scope and delivery acceptance. Do not claim an unverified runtime setting.
+Verify support on the actual host before applying defaults on authorized creation/dispatch. A requested setting or successful submission is not independent runtime verification. An unavailable preference must not block useful work; use an available supported setting and disclose it. Bounded routine research may use gpt-6-luna/low; stronger research gpt-6.1-sol/low. Invoke only required roles, normally at most two workers. Preserve historical owners and unrelated Designer work.
 
-## AI Engineer ownership and bootstrap
+## Shared startup
 
-AI Engineer owns causal datasets, numerical and sentiment models, chronological training/evaluation, calibration, reproducible model artifacts, inference and resource profiling. Reuse [the AI Engineer skill](../skills/ai-engineer/SKILL.md) and shared implementation/evidence skills. Engineer supplies ingestion, storage, CLI and export infrastructure; Trader reviews financial labels, targets, decisions and interpretation; Lead freezes scope and accepts integration. Preserve historical ticket owners.
+Read AGENTS.md, this file, the explicitly assigned role prompt and the compact active-ticket checkpoint. Verify current role/checkout, accepted ticket scope and dirty ownership. No assignment means wait; don't replay old tickets or reporting. During takeover stay held until verified release; no duplicate schedules, predecessor edits or source retirement while busy. Project-scoped registered-role messages/return handoffs are authorized; external messages, paid access and trades require their own authority.
 
-AI Engineer has no default recurring schedule. An explicit fresh-chat request allows Lead to create it with the actual startup prompt, hold it until readiness, record verified identity in the private registry and release only its accepted scope. Do not create a chat merely by reading this configuration. Spawn aliases ai-engineer, ai_engineer and ai engineer resolve to canonical AI Engineer. All inventories, held readiness, retirement and release follow the entire configured/requested role set without a fixed count; unrelated Designer ownership remains untouched. No trained model, promoted model or runtime enforcement is supplied by these instructions.
+Independent tasks use fresh minimal context at safe verified boundaries when supported/authorized. Continue useful unfinished same-ticket work. Load only active ticket, necessary dependencies/files and durable decisions; no full histories, arbitrary time resets or automatic compaction requests. One private current snapshot links to canonical evidence; archive a prior snapshot before replacing it. See [workflow](../docs/LEAD_WORKFLOW.md) and existing [handoff templates](handoffs/README.md).
 
-## Handoff templates
+## Role replacement
 
-Use [compact handoff and private record templates](handoffs/README.md) for each replacement. Keep permanent project evidence in plans/manifests and private role/schedule continuity outside Git.
+Use [spawn](../skills/spawn/SKILL.md) for `$spawn`/`/spawn lead|trader|engineer|ai-engineer|all`. Normal single-role adoption reuses the caller; explicit fresh-role/all modes create held destinations with readiness/ownership/schedule verification. Respect no-predecessor-context requests and existing returned IDs on retry. Configuration/skill edits do not create a chat or perform a takeover. AI Engineer has no default schedule; aliases ai_engineer/ai engineer select that role.
 
-## Restart
-
-Read AGENTS.md, the selected startup prompt, the private transfer checkpoint, actual ticket specs/manifests and working-tree status. A successor remains held until the migration coordinator explicitly releases it. It must not create schedules or edit predecessor-owned work during that hold.
-
-Store verified active role IDs and per-role host/project/settings in `/Users/jwtan/.codex/lead-state/roles.json`; store private checkpoints/migration receipts under `/Users/jwtan/.codex/lead-state/transfers/`. Registry entries are pointers to verify against app tools, not proof of ownership. Preserve existing lead-state backups/context. Do not commit private summaries, schedule prompts, account data or chat IDs.
-
-Read [schedule definitions](schedules/README.md). Reconcile existing schedules and partial transfers before creating any. Preserve human-paused status; startup does not authorize resuming paused work. Human-started chats use the selected startup prompt and take over summarized context in place. Fresh manually created chats need an explicitly selected role and verified registration; never infer role from this repository alone.
-
-This delivery adds reusable instructions. Separate explicit role takeovers may already exist; inspect the private active registry and actual app state before any replacement. Legacy Researcher report ownership and Consultant-to-Trader responsibilities are transferred only when verified; historical tickets retain their original owners. These files do not initiate a takeover merely by being read.
+[Schedule definitions](schedules/README.md) describe existing workflows, not provisioned runtime. Preserve all human pauses and unrelated schedules. Human-started fresh roles must be explicitly selected and registered; never infer a role from repository access. These instructions do not implement a general agent service.

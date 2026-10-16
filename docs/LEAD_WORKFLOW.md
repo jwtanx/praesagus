@@ -1,38 +1,45 @@
-# Three-agent delivery and schedule overview
+# Four-role delivery workflow
 
-## Roles
+Shared safeguards/ticket conventions: [AGENTS.md](../AGENTS.md). Requested role models: [roles.json](../agent-operations/roles.json). Skills/configuration guide agents; they are not an autonomous runtime.
 
-| Chat | Responsibility | Reused skills |
+## Audit and disposition — 16 October 2026
+
+| Finding | Decision | Change |
 |---|---|---|
-| Lead | Prioritize, freeze scope, review evidence, integrate and deliver | lead, praesagus-project-lead, praesagus-feature-planner |
-| Engineer | Accepted bounded implementation and regression tests | praesagus-implementation |
-| Trader | Financial judgment, daily reports, market interpretation and engineering context | daily-market-brief, technical-trend-analysis, trading orchestrator |
+| Existing manifests, audit, validators, hooks, resource probe and verified app dispatch | KEEP | Reuse; no new registry/framework/database/dashboard |
+| Routing/startup/recovery/continuation repeated in many long documents | SIMPLIFY | Shared rules in AGENTS; selective short role startup and Lead skills |
+|6.9KBquarter-hour prompt and repeated all-team/history scans | SIMPLIFY | Short current-state/active-owner prompt; expand only for inconsistency or next accepted work |
+| Four overlapping current private notes and append-only repeated status | FIX | Back up originals; one compact execution snapshot, other notes become pointers |
+| Stale three-agent overview, null requested defaults and unconditional specialist loading | FIX | Four roles, verified supported IDs, requested effort defaults and relevant-only skills |
+| Duplicate current-state prose and stale-history redispatch | REMOVE from hot path | Retain archived evidence/history; never infer unfinished work from old narrative |
+| No exposed deterministic background dispatch/status-timer adapter | KEEP boundary | Existing heartbeat uses AI; don't claim a no-AI scheduler or replace it with private APIs/cron |
 
-The canonical registry and safeguards are in [AGENTS.md](../AGENTS.md). Skills are instructions, not an autonomous execution engine.
+The installed app exposes programmatic send_message_to_thread and bounded wait_threads; project submissions, completions and returned evidence have been observed. Local resource/ticket/Git checks are deterministic. Neither makes those app tools callable by an unattended shell daemon. Official [scheduled task](https://learn.chatgpt.com/docs/automations) and [SDK](https://learn.chatgpt.com/docs/codex-sdk) documentation describe separate capabilities; no new SDK/runtime is installed here.
 
-## Ticket workflow
+## Small working set
 
-Dated PRSG spec + harness manifest -> accepted owner/base/path/check contract -> disjoint delegation -> tests and evidence -> independent Lead review -> separate ticket commit -> verified push/deployment. Busy chats are not interrupted or given duplicate work. Git history generates the ticket audit; never manually edit its generated JSON. See [verification](TICKET_VERIFICATION.md) and [planning contract](../skills/praesagus-feature-planner/references/ticket-harness.md).
+At entry load the verified role, ONE compact current checkpoint, active canonical ticket and necessary dependencies/files. Read broader plans/Git history only when finding the next accepted item or resolving inconsistency. Detailed feature planning, finance, model or transfer skills load only for that task. Never reread full logs/large JSON or whole trees to retrieve one field; select bounded fields and exclude runtimes/venvs.
 
-## Approved schedules (Asia/Kuala_Lumpur)
+Canonical dated harness manifests are the ticket registry. Matching specs hold durable requirements/evidence; Git records delivery and the audit is derived. Private execution state holds active-ticket pointers, ownership, decisions, handles/cursors, blockers and next action, not copied checklists or a competing registry. Completed tickets remain complete unless a new requirement, failed acceptance or verified regression justifies reopening. Preserve IDs/history.
 
-- Lead coordination every15 minutes,09:00–05:45 next day (84 triggers).
-- Separate06:00 wrap-up: results, blockers and next-day direction choices (85 total triggers/day). No new implementation during wrap-up.
-- 06:15–08:45 inactive; app sleep/offline may delay or miss runs. A trigger is not a guarantee of execution or background continuity.
-- Trader's08:00 daily-report schedule (legacy Researcher ownership until transfer) is separate and must not be altered by Lead resource recovery.
+## Sessions and dispatch
 
-Lead-owned configurations and recovery prompts are stored privately in lead-state/schedules.md, not copied into public artifacts. Actual app-tool schedule settings are authoritative.
+Use requested defaults on authorized supported creation/dispatch: gpt-6.1-sol low for Lead/AI Engineer, medium for Engineer/Trader; AI may use medium for a documented complex task. Bounded routine research may use gpt-6-luna/low. Configured/requested/applied/observed settings are different evidence; don't claim runtime verification without observation.
 
-## Resource and recovery decisions
+Prefer fresh minimal context per independent Lead run/worker ticket at a safe boundary; continue unfinished useful same-ticket work. Never transfer whole conversations, reset by elapsed time, restart an active worker or create chats solely to reduce a counter. Fresh context in this app requires an explicitly authorized new session and verified [spawn](../skills/spawn/SKILL.md) cutover; a heartbeat reuses its target chat and cannot erase its history. No fresh sessions are silently created by these documents.
 
-Use fresh supported account-usage readings and pmset battery readings. At <=5% remaining in five-hour or weekly window, checkpoint proactively. At <=2%, save context/dirty ownership; commit and push reviewed tickets only; pause confirmed Lead schedules and arrange one verified wake after the latest reset of the constraining windows. Unknown reset means no guessed wake. Fresh readings at recovery are mandatory.
+Invoke only necessary roles, normally no more than two workers. A compact assignment links ticket/slice, exact scope/base/checks/output and handoff destination. Supporting specialists join only when their judgment affects acceptance. A successful dispatch is submission, not completion. Preserve one cursor and wait30–60seconds when dependent; don't poll unchanged snapshots rapidly or fetch full threads. Timeout/transient observation failure is not a terminal worker state. New user input amends active work; update affected artifacts and continue ready steps.
 
-At battery <=8%, save/read-back complete confirmed Lead schedule configurations before removal. Keep the private lead-schedules-backup.md until safe human /lead restoration verifies every restored configuration. Never remove Trader or other specialist schedules during Lead recovery. Battery safeguard takes precedence over usage recovery.
+Lead reviews returned paths/evidence, performs appropriate independent checks, then integrates/commits/pushes/deploys under existing authority. Passing tests are not service/source/model/publication proof. Continue the next ready accepted dependency in the same run; otherwise save an exact blocker and release action. No invented backlog/activity.
 
-The [Lead skill](../skills/lead/SKILL.md) contains operating instructions and the sanitized schema2 usage input. Its status script diagnoses battery and both five-hour/weekly windows; legacy five-hour input leaves weekly unknown. Missing reset does not erase a known low remaining percentage, and blocks recovery instead of guessing. Neither this document nor the script automatically changes app schedules. Live removal/restoration requires app-tool verification.
+## Schedules and resources
 
-## Credential onboarding
+Keep verified original Lead quarter-hours09:00–05:45 next day and06:00 report; Trader08:00 remains separate. All timesAsia/Kuala_Lumpur. Preserve human pauses and ownership. No06:15–08:45 coordination. Check active work/resources cheaply; reason only for ready decisions, exceptions, reviews or blockers. A quiet heartbeat still uses AI; no no-AI scheduling mode is verified. App sleep/offline/permissions can prevent or delay execution.
 
-[PRSG-35](../plans/2026-10-02/PRSG-35-moomoo-credential-runbook.md) tracks the deferred AppKey/public-key/encrypted-private-key/login-Keychain runbook. It is not yet implemented. Credential contents, account data and recovery context never enter Git or public Pages.
+Use [Lead control](../skills/lead/SKILL.md) and [resource recovery](../agent-operations/schedules/resource-recovery.md): fresh supported both-window usage and battery; checkpoint at<=5%, hardstop/recovery at<=2%, battery<=8% takes precedence. Exact private backups/readback precede mutations; only eligible original Lead schedules restore. Try exact direct one-time creation first; a tool-required suggestion remains pending, never active. No credit redemption without explicit authorization, duplicate wakes, silent pause reversal or restriction bypass.
 
-Restart and migration: [startup prompts](../agent-operations/README.md), [four schedule definitions](../agent-operations/schedules/README.md), [spawn skill](../skills/spawn/SKILL.md). Verified private registry replaces fixed chat IDs. Researcher is retired as a permanent role; each role can use bounded research subagents. Preserve historical ownership and paused schedules.
+## Verification and measurements
+
+Use existing [verification](TICKET_VERIFICATION.md), scoped validator, role-selection/resource tests and focused behavior regressions; commit/push hooks remain mandatory. Replay completed-ticket preservation, busy owner, returned result, user amendment, missing worker state and denied dispatch without inventing completion. Skill validation alone is insufficient.
+
+Compare UTF8instruction/prompt bytes before/after and count actual dispatch/status calls for this delivery. Byte reductions are not measured token/cost savings. Historical compaction frequency and reliable per-ticket model usage are unavailable in current exposed telemetry; report unavailable rather than estimate. No workflow claims model-quality or trading-performance improvement from instruction trimming.

@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-122",
+  "tags": {
+    "type": "refactor",
+    "modules": [
+      "skills",
+      "harness",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-16",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-16/PRSG-122-harness-optimization.md",
+  "objective": "Optimize existing four-role harness instructions, model defaults, context lifecycle and schedule overhead without replacing the runtime or ticket registry.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "1c992de8676203aa4d47bea275bbd86c894fcead",
+  "allowed_paths": [
+    "AGENTS.md",
+    "agent-operations/roles.json",
+    "agent-operations/README.md",
+    "agent-operations/startup-prompts/lead.md",
+    "agent-operations/startup-prompts/engineer.md",
+    "agent-operations/startup-prompts/ai-engineer.md",
+    "agent-operations/startup-prompts/trader.md",
+    "agent-operations/handoffs/README.md",
+    "agent-operations/schedules/lead-coordination.md",
+    "docs/LEAD_WORKFLOW.md",
+    "skills/lead/SKILL.md",
+    "skills/praesagus-project-lead/SKILL.md",
+    "skills/spawn/SKILL.md",
+    "skills/ai-engineer/SKILL.md",
+    "plans/2026-10-16/PRSG-122-harness-optimization.md",
+    "plans/2026-10-16/PRSG-122.harness.json",
+    "skills/spawn/references/transfer.md",
+    "agent-operations/handoffs/records.md",
+    "tests/test_ai_engineer_role.py"
+  ],
+  "protected_paths": [
+    "scripts/stock-research/",
+    "artifacts/",
+    "ingest/",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-14/PRSG-116-stock-research-sentiment.md",
+    "plans/2026-10-14/PRSG-116.harness.json"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_spawn_routing.py",
+        "tests/test_lead_status.py",
+        "tests/test_ticket_brief_quality.py",
+        "tests/test_ai_engineer_role.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "See matching spec Reviewed evidence; private exact operational backups retained outside Git."
+      ]
+    },
+    {
+      "id": "audit",
+      "kind": "manual",
+      "description": "Review classifications, model/config evidence, instruction/reference consistency, size deltas and no loss of ticket/forecast ownership.",
+      "status": "passed",
+      "evidence": [
+        "See matching spec Reviewed evidence; private exact operational backups retained outside Git."
+      ]
+    },
+    {
+      "id": "operations",
+      "kind": "manual",
+      "description": "Verify exact Lead schedule prompt readback, preserved statuses/targets/cadences, private backups and compact continuity; replay terminal/busy/completed/amendment/denied-dispatch cases.",
+      "status": "passed",
+      "evidence": [
+        "See matching spec Reviewed evidence; private exact operational backups retained outside Git."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-122-D1",
+      "description": "Audit classifications and concise configured defaults/contracts reviewed.",
+      "check_ids": [
+        "audit",
+        "focused"
+      ],
+      "status": "done",
+      "evidence": [
+        "Matching spec Reviewed evidence and required scoped delivery hooks."
+      ]
+    },
+    {
+      "id": "PRSG-122-D2",
+      "description": "Lead prompts/continuity compacted with safeguards and actual capability limits.",
+      "check_ids": [
+        "operations"
+      ],
+      "status": "done",
+      "evidence": [
+        "Matching spec Reviewed evidence and required scoped delivery hooks."
+      ]
+    },
+    {
+      "id": "PRSG-122-D3",
+      "description": "Regressions/references/behavioral evidence/measurements and scoped delivery verified.",
+      "check_ids": [
+        "focused",
+        "audit",
+        "operations"
+      ],
+      "status": "done",
+      "evidence": [
+        "Matching spec Reviewed evidence and required scoped delivery hooks."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "reviewer": "Lead",
+    "evidence": [
+      "Engineer independent read-only review; Lead focused 131 checks, scope/reference/hash and operational readbacks. Mandatory hook delivery remains required."
+    ]
+  }
+}

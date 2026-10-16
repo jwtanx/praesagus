@@ -18,7 +18,7 @@ def ticket():
     return json.loads((ROOT / 'plans/2026-10-01/PRSG-1.harness.json').read_text())
 
 
-def test_role_discovery_preserves_existing_configuration():
+def test_role_discovery_preserves_requested_defaults_and_schedules():
     config = json.loads((ROOT / 'agent-operations/roles.json').read_text())
     roles = config['roles']
     assert config['schema_version'] == 1
@@ -26,10 +26,10 @@ def test_role_discovery_preserves_existing_configuration():
     assert len({item['role'] for item in roles}) == len(roles) == 4
     by_role = {item['role']: item for item in roles}
     expected = {
-        'Lead': (None, None, ['lead-daily-planning', 'lead-coordination', 'resource-recovery']),
+        'Lead': ('gpt-6.1-sol', 'low', ['lead-daily-planning', 'lead-coordination', 'resource-recovery']),
         'Trader': ('gpt-6.1-sol', 'medium', ['trader-daily-report']),
-        'Engineer': (None, None, []),
-        'AI Engineer': (None, None, []),
+        'Engineer': ('gpt-6.1-sol', 'medium', []),
+        'AI Engineer': ('gpt-6.1-sol', 'low', []),
     }
     assert by_role.keys() == expected.keys()
     for role, (model, effort, schedules) in expected.items():

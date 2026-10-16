@@ -1,6 +1,6 @@
 # Compact handoff files
 
-Copy these templates into `/Users/jwtan/.codex/lead-state/` during an explicitly requested spawn; do not fill them with private state in the repository. The human-started current chat adopts its startup prompt plus a compact summary and links to canonical evidence, not a copy of full chat history. Aim for a few hundred words of narrative; preserve necessary dirty ownership and recovery detail even when longer.
+Copy these templates into `/Users/jwtan/.codex/lead-state/` during an explicitly requested spawn; do not fill them with private state in the repository. The human-started current chat adopts its startup prompt plus a compact summary and links to canonical evidence, not a copy of full chat history. Keep the current snapshot to active pointers, durable decisions, dirty ownership, worker handles/cursors, blocker and next action; normally a few hundred words. Archive the old snapshot before replacement. Do not append identical status to multiple current files or copy full logs/chat histories; keep immutable evidence by reference.
 
 | Template | Private destination | Purpose |
 |---|---|---|

@@ -4,18 +4,18 @@ description: Build and review Praesagus causal datasets, numerical or sentiment 
 license: MIT
 metadata:
   author: praesagus
-  version: "1.0"
+  version: "1.1"
   category: engineering
   tags: [models, datasets, validation, inference]
 ---
 
-# AI Engineer model delivery
+# AI Engineer delivery
 
 Use the canonical location when this skill is discovered through `.agents/skills/ai-engineer`. Read the assigned plan and manifest before editing. Role/skill discovery does not create a chat, schedule, trained model or runtime quality gate.
 
 ## Ownership and reusable instructions
 
-AI Engineer owns causal datasets, training, calibration, evaluation, saved model artifacts, inference, sentiment modeling and profiling. Engineer owns supporting collection/storage/CLI/export infrastructure; Trader reviews financial targets, calendars, leverage, costs and research interpretation; Lead freezes scope and accepts integration. Historical ticket ownership stays unchanged.
+AI Engineer owns AI/LLM integration, prompts, evaluation and performance, plus causal datasets, training, calibration, saved model artifacts, inference, sentiment modeling and profiling. For LLM/prompt work freeze attributable inputs, model/prompt versions, eval cases, quality/latency/cost checks and adoption authority; do not load numerical/financial details unless that task needs them. Engineer owns supporting collection/storage/CLI/export infrastructure; Trader reviews financial targets, calendars, leverage, costs and research interpretation; Lead freezes scope and accepts integration. Historical ticket ownership stays unchanged.
 
 Reuse [implementation delivery](../praesagus-implementation/SKILL.md) for scope, tests and handoff and the [shared evidence contract](../skill-template/SKILL.md) for provenance, decision-time information and financial risk. For market/trading decisions involve Trader using the [trading orchestrator](../praesagus-trading-orchestrator/SKILL.md); do not expand a numerical engineering task into trade execution. These instructions do not authorize paid access, credential inspection, provider calls, schedules or model promotion beyond the accepted assignment.
 
