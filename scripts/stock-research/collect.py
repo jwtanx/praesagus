@@ -150,11 +150,12 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
         if provider.config!=settings.provider:raise ValueError('provider-config-mismatch')
         cumulative=lambda name:{'cumulative_property':{'name':name,'days':1,'period_average':False}}
         retrieve=[{'simple_property':{'name':2201}},cumulative(3104),cumulative(3105),cumulative(3102)]
-        state['pools']={};state['discovery_records']={}
+        state['pools']={};state['discovery_records']={};state['screen_dispositions']={}
         for pool,factor,direction in [('winners',3102,2),('losers',3102,1),('volume',3105,2)]:
             result=invoke('screen',retrieve_queries=retrieve,sort={'direction':direction,**cumulative(factor)},page_limit=settings.discovery_pages)
             if result is None:statuses[pool]='request-failed';state['pools'][pool]=[];continue
             statuses[pool]=result.status
+            state['screen_dispositions'][pool]=result.metadata
             state['pools'][pool]=[row['code'] for row in result.rows]
             for row in result.rows:
                 stored={key:value for key,value in row.items() if key!='fields'}
@@ -259,6 +260,7 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
         candidates.append(candidate)
     selected=select_universe(candidates,state['pools'],discovery_status=statuses)
     selected['coverage']['collection_issues']=issues
+    selected['coverage']['screen_dispositions']=state.get('screen_dispositions',{})
     rows=[row for security in sorted(histories) for row in histories[security]]
     if len(rows)>MAX_HISTORY_ROWS:raise ValueError('cached-history-row-budget')
     generation.csv('history.csv',rows,HISTORY_COLUMNS)

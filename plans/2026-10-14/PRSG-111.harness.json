@@ -25,22 +25,16 @@
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "2961a216d777167119803999dcb5a965142ba02a",
+  "base_sha": "f10bbe4760ac80343cf6c945a32c319631ae674a",
   "allowed_paths": [
-    "scripts/stock-research/universe.py",
+    "scripts/stock-research/contracts.py",
+    "scripts/stock-research/provider.py",
     "scripts/stock-research/collect.py",
-    "scripts/stock-research/storage.py",
+    "scripts/stock-research/README.md",
+    "tests/test_stock_research_provider.py",
     "tests/test_stock_research_universe.py",
     "plans/2026-10-14/PRSG-111-stock-research-universe-ingestion.md",
-    "plans/2026-10-14/PRSG-111.harness.json",
-    "scripts/stock-research/config.py",
-    "scripts/stock-research/config.example.toml",
-    "scripts/stock-research/requirements.txt",
-    "scripts/stock-research/provider.py",
-    "scripts/stock-research/contracts.py",
-    "scripts/stock-research/API_CONTRACTS.md",
-    "scripts/stock-research/etf_metadata.csv",
-    "tests/test_stock_research_provider.py"
+    "plans/2026-10-14/PRSG-111.harness.json"
   ],
   "protected_paths": [
     "artifacts/",
@@ -85,6 +79,23 @@
       "evidence": [
         "Immutable exclusiveMYTgenerations/hashverifiedstate, oldforecastactualsretention, revisions/latecurrencyknown-time/equal-knownconflict, defaultoffline metadatareplay andchangedsecurityIDquarantine/fullbackfill, calendarhash/currentidentitysidecars andadjustmentvintage policy reviewed. No newlivecalls, benchmarkseeds, SQLitewriter, training or forecasts."
       ]
+    },
+    {
+      "id": "zero-price-regression",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_stock_research_provider.py",
+        "tests/test_stock_research_universe.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed final six-path source/tests, frozen hashes, exact optional filter contract against official indexed documentation and focused234passes; required full hooks follow. Actual filter acceptance, field USD convention and model/source quality remain separate."
+      ]
     }
   ],
   "acceptance": [
@@ -111,13 +122,23 @@
       "evidence": [
         "Lead independent implementation/fixture review accepted at2026-10-15T05:34:22.980487+00:00; realfull100selection/sourcecurrency/sector/issuerreadiness andmodelquality are not established."
       ]
+    },
+    {
+      "id": "PRSG-111-D3",
+      "description": "Actual observed nonpositive-price rows are excluded with explicit provenance without discarding valid peers or masking malformed contracts; exact documented optional price filters and raw pagination budgets are preserved.",
+      "check_ids": [
+        "zero-price-regression"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed final six-path source/tests, frozen hashes, exact optional filter contract against official indexed documentation and focused234passes; required full hooks follow. Actual filter acceptance, field USD convention and model/source quality remain separate."
+      ]
     }
   ],
   "review": {
     "status": "accepted",
     "evidence": [
-      "Complete14pathscopevalidated against2961a216; no unexpected changes exceptLead-owned112draft. Focused122pass2.64s; gitdiff--checkclean. Mandatory fullcommit/pushhooks willrunbeforedelivery. Actualcollection remainsunreleasedpendingseparateboundedreview; no account/order/providersecret access.",
-      "Final owner freeze verified; both late identity/availability regressions reviewed and independently replayed389passed2.83s. Working tree onlyLead112drafts afterimplementationcommit. No livecollection/deployment/strongmodel claims."
+      "Lead independent final six-file review,234focused checks and bounded actual failure receipt; priorD1/D2 acceptance preserved. No source/model/currency admission claimed."
     ]
   }
 }

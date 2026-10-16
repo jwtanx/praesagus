@@ -14,7 +14,7 @@ from urllib.parse import urlencode
 from connectors.moomoo_rest import (MAX_RESPONSE_BYTES, ReadRequest, ReadResponse, RESTError,
     _decode, _invoke, _retry_after, _text)
 from connectors.moomoo_rest_live import SecureReadTransport, LiveReadError
-from contracts import (Batch, ContractError, code, descriptor, history_coverage, integer, iso_date,
+from contracts import (Batch, ContractError, NonpositiveScreenPrice, code, descriptor, history_coverage, integer, iso_date,
                        need, normalize_bar, normalize_basic, normalize_snapshot, screen_field, text)
 from config import ProviderConfig
 
@@ -24,6 +24,17 @@ SNAPSHOT = '/api/v1.0/quote/snapshot'
 INDUSTRY = '/api/v1.0/quote/plate-list'
 META_RE = r'/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,63}/(?:owner-plate|company/profile)'
 POST_PATHS = frozenset({SCREEN, BASIC, SNAPSHOT})
+MAX_SCREEN_REJECTION_BYTES = 2 * 1024 * 1024
+
+
+def screen_queries_for_price_floor(floor=None):
+    """Exact documented presets, in reported-price units; not USD/eligibility proof."""
+    need(floor is None or type(floor) is int and floor in (1, 5), 'unsupported-screen-filter')
+    queries = [{'simple_field_query': {'simple_field': 1, 'screen_value_list': [2]}}]
+    if floor is not None:
+        queries.append({'simple_property_query': {'property': {'name': 2201},
+            'lower': {'value': floor * 1000, 'includes': True}}})
+    return queries
 
 
 def allowed_request(method, path):
@@ -157,19 +168,26 @@ class ResearchProvider:
         need(isinstance(sort, dict) and type(sort.get('direction')) is int and sort['direction'] in (1, 2)
              and len(sort) == 2, 'invalid-screen-query')
         descriptor({key: value for key, value in sort.items() if key != 'direction'})
-        us_filter = {'simple_field_query': {'simple_field': 1, 'screen_value_list': [2]}}
-        queries = [us_filter] if screen_queries is None else screen_queries
-        # Initial reviewed contract supports US market identity only; eligibility uses actual history later.
-        need(self._body(queries) == self._body([us_filter]), 'unsupported-screen-filter')
+        queries = screen_queries_for_price_floor() if screen_queries is None else screen_queries
+        # Default remains US-only. Only the reviewed inclusive reported-price presets
+        # are accepted; no arbitrary filters, portfolios or speculative floor changes.
+        need(self._body(queries) in [self._body(screen_queries_for_price_floor(floor))
+                                    for floor in (None, 1, 5)], 'unsupported-screen-filter')
         pages_allowed = self.config.max_pages if page_limit is None else page_limit
         need(integer(pages_allowed, 1, self.config.max_pages), 'invalid-page-budget')
         frozen = {'limit': self.config.screen_limit, 'retrieve_queries': retrieve_queries,
                   'screen_queries': queries, 'sort': sort}
         base = json.loads(self._body(frozen))
         seen, cursors, output = set(), set(), []
+        rejected, rejection_bytes = [], 2  # Serialized list brackets.
         cursor = None
         started = ended = None
         reported_total = None
+        def metadata(complete):
+            return {'total_reported': reported_total, 'budgets': self.budgets,
+                    'raw_rows_received': len(seen), 'accepted_rows': len(output),
+                    'rejected_row_count': len(rejected), 'rejected_rows': rejected,
+                    'pagination_complete': complete, 'screen_queries': base['screen_queries']}
         for page in range(1, pages_allowed + 1):
             request = dict(base)
             if cursor is not None:
@@ -193,21 +211,47 @@ class ResearchProvider:
                 seen.add(identity)
                 results = row.get('results')
                 need(isinstance(results, list) and len(results) == len(retrieve_queries), 'descriptor-mismatch')
-                values = tuple(screen_field(wrapper, query) for wrapper, query in zip(results, retrieve_queries))
+                values, excluded_fields = [], []
+                for index, (wrapper, query) in enumerate(zip(results, retrieve_queries)):
+                    try:
+                        values.append(screen_field(wrapper, query))
+                    except NonpositiveScreenPrice:
+                        # Do not skip remaining fields: malformed wire data in this
+                        # same row must still stop the request, not hide as exclusion.
+                        excluded_fields.append(index)
+                if excluded_fields:
+                    index = excluded_fields[0]
+                    result = results[index][next(iter(retrieve_queries[index])) + '_result']['res']
+                    value = result[{1: 'dval', 2: 'ival'}[result['result_type']]]
+                    raw_value = json.dumps(value, separators=(',', ':'), allow_nan=False).encode()
+                    rejection = {'code': identity, 'reason': 'nonpositive-screen-price',
+                        'screen_rank': len(seen), 'page': page, 'field_indices': excluded_fields,
+                        'result_type': result['result_type'], 'typed_value_type': type(value).__name__,
+                        'typed_value_sha256': hashlib.sha256(raw_value).hexdigest(),
+                        'source': 'moomoo-rest-screen', 'source_payload_hash': vintage,
+                        'retrieved_at_ms': ended, 'known_at_ms': ended}
+                    if type(value) in (int, float) or isinstance(value, str) and len(value) <= 128:
+                        rejection['typed_value'] = value
+                    rejection_bytes += len(json.dumps(rejection, separators=(',', ':')).encode()) + bool(rejected)
+                    need(rejection_bytes <= MAX_SCREEN_REJECTION_BYTES, 'screen-rejection-budget')
+                    rejected.append(rejection)
+                    continue
+                values = tuple(values)
                 output.append({'code': identity, 'name': row['name'], 'fields': values,
+                               'screen_rank': len(seen),
                                'retrieved_at_ms': ended, 'known_at_ms': ended, 'source': 'moomoo-rest-screen',
                                'revision_vintage': vintage})
-            need(len(output) <= reported_total, 'invalid-pagination')
+            need(len(seen) <= reported_total, 'invalid-pagination')
             if not more:
-                missing = len(output) != reported_total
-                return Batch(tuple(output), 'screen', 'partial' if missing else 'success' if output else 'empty',
-                             'reported-total-incomplete' if missing else None, page,
+                missing = len(seen) != reported_total
+                return Batch(tuple(output), 'screen', 'partial' if missing else 'success' if seen else 'empty',
+                             'reported-total-incomplete' if missing else 'screen-rows-excluded' if rejected else None, page,
                              requested_at_ms=started, retrieved_at_ms=ended,
-                             metadata={'total_reported': pagination['total'], 'budgets': self.budgets})
+                             metadata=metadata(not missing))
             cursors.add(next_key)
             cursor = next_key
         return Batch(tuple(output), 'screen', 'truncated', 'page-budget', pages_allowed,
-                     requested_at_ms=started, retrieved_at_ms=ended, metadata={'budgets': self.budgets})
+                     requested_at_ms=started, retrieved_at_ms=ended, metadata=metadata(False))
 
     def _codes(self, codes, path, row_key, normalizer):
         need(isinstance(codes, (list, tuple)) and 1 <= len(codes) <= 400, 'invalid-code-list')

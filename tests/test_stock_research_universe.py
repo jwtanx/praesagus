@@ -601,3 +601,56 @@ def test_invalid_collection_handle_rejects_before_provider(tmp_path):
 
 def test_entire_ignored_research_parent_is_allowed_without_creating_files():
     assert storage.output_parent(ROOT/'stock-research-data')==(ROOT/'stock-research-data').resolve()
+
+
+def test_screen_exclusions_persist_offline_and_never_seed_enrichment_or_history(tmp_path):
+    import provider
+    from connectors.moomoo_rest import ReadResponse
+    settings=config.CollectionConfig(state_parent=str(tmp_path))
+    requests=[]
+    def wire(request):
+        requests.append(request)
+        queries=json.loads(request.body)['retrieve_queries']
+        rows=[]
+        for identity in ('US.ZERO','US.DEMO'):
+            results=[]
+            for query in queries:
+                family,properties=next(iter(query.items()));echo=dict(properties)
+                if family=='cumulative_property':echo['period_average']=int(echo['period_average'])
+                value='0' if identity=='US.ZERO' and properties['name']==2201 else '25000'
+                results.append({family+'_result':{'property':echo,'res':{'result_type':2,'ival':value}}})
+            rows.append({'code':identity,'name':'Fictional','results':results})
+        return ReadResponse(200,json.dumps({'ret_code':0,'ret_msg':'fixture','data':{'items':rows},
+            'pagination':{'total':2,'has_more':False,'next_key':'-1'}}).encode())
+    real=provider.ResearchProvider(api_key='fictional-api-key',signer=lambda _:b'fictional-signature',transport=wire,
+        clock_ms=lambda:NOW,nonce_factory=lambda:'fixture-nonce',config=settings.provider)
+    class MixedProvider(FakeProvider):
+        def screen(self,**kwargs):
+            self.calls.append(('screen',kwargs));return real.screen(**kwargs)
+    fake=MixedProvider(settings)
+    folder=collect.run_collection(settings,provider=fake,metadata=metadata_for(),generated_at=STAMP,as_of_ms=NOW)
+    state=json.loads((folder/'state.json').read_text());coverage=json.loads((folder/'coverage.json').read_text())
+    dispositions=state['screen_dispositions']
+    assert coverage['screen_dispositions']==dispositions
+    assert set(dispositions)=={'winners','losers','volume'}
+    assert all(d['rejected_rows'][0]['code']=='US.ZERO' and d['raw_rows_received']==2
+               and d['accepted_rows']==1 and d['pagination_complete'] for d in dispositions.values())
+    assert all(pool==['US.DEMO'] for pool in state['pools'].values())
+    for call in fake.calls:
+        if call[0] in ('basicinfo','snapshots'):assert call[1]==['US.DEMO']
+        if call[0]=='history':assert call[1]=='US.DEMO'
+    assert all(json.loads(r.body)['screen_queries']==provider.screen_queries_for_price_floor() for r in requests)
+    original_state_bytes=(folder/'state.json').read_bytes()
+    offline=collect.run_collection(settings,offline=True,generated_at=STAMP+timedelta(seconds=1),as_of_ms=NOW+1000)
+    assert json.loads((offline/'coverage.json').read_text())['screen_dispositions']==dispositions
+    assert (folder/'state.json').read_bytes()==original_state_bytes
+
+
+def test_optional_main_price_filter_does_not_change_default_speculative_or_main_rules():
+    main=candidate('MAIN');spec=candidate('SPEC',turnover=6000000);spec['price']=2.
+    below=candidate('LOW',turnover=6000000);below['price']=.5
+    pools={'winners':['US.MAIN','US.SPEC','US.LOW'],'losers':[],'volume':[]}
+    result=universe.select_universe([main,spec,below],pools)
+    assert [r['code'] for r in result['main']]==['US.MAIN']
+    assert [r['code'] for r in result['speculative']]==['US.SPEC']
+    assert 'US.LOW' not in {r['code'] for r in result['main']+result['speculative']}

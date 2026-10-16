@@ -110,3 +110,15 @@ Offline ingestion and selection mechanics passed review. Actual admitted-univers
 ## Tradeoffs
 
 Conservative identity and metadata requirements can leave fewer names, while preventing false diversification and unsupported eligibility.
+
+## 16 October actual-source regression amendment
+
+Reopened for verified actual-source regression, preserving prior D1/D2 acceptance/history. Fresh bounded diagnostic at 21:22 MYT returned 10 rows; 8 well-typed price2201/result_type2/ival values were string `0`. The provider aborted the whole page; 0 normalized/admitted instruments. One actual request, 2.811 seconds, cleanup verified; original earlier response remains unavailable. Zero values establish unusable prices, not penny-stock/listing status.
+
+Frozen revision base `f10bbe4760ac80343cf6c945a32c319631ae674a`; Engineer owns contracts.py/provider.py/collect.py/README.md and two provider/universe tests; Lead owns these two ticket records. Use the six-path proposal reviewed 16 October: strict specialized nonpositive-price rejection after valid wire parsing; provider validates all other row fields before exclusion, bounded rejection provenance and raw-count/cursor budgets; persist dispositions into existing collection state/coverage. Allow only documented optional exact US+inclusive price-floor1/5 queries (raw1000/5000); defaults/speculative rules unchanged. No average-turnover proxy for required median, no guessed status filters, no broad malformed-data catch, no extra retries. Prior accepted PRSG-116 edits, model/report/ingest paths and unrelated dirty files protected. Work in the existing clean review checkout at the frozen base; do not reset the news checkout.
+
+Published price-filter contract reviewed from official REST screening and official available-tools catalog; actual filter behavior remains unverified until a separately bounded live run. Implementation/tests only are released here; no credentials/provider/history/fitting or model promotion. All changed paths require Lead review and narrow checks before required hooks/delivery.
+
+- [x] PRSG-111-D3: Actual observed nonpositive-price rows excluded with visible provenance, strict remaining validation, exact optional filters and truthful raw pagination budgets.
+
+Lead accepted D3 after independent final source/test/hash review and 234 focused checks. Exact optional filter JSON/scaling independently checked against official indexed screening/catalog documentation; direct page fetch timed out. Raw source traversal remains separate from candidate admission. No provider call occurred for this patch, and live filter acceptance/history currency/model quality remain unverified. Initial Engineer fixture failure and correction remain in private handoff evidence; no threshold changed. Required full commit/push hooks still apply.

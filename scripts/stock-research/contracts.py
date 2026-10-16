@@ -13,6 +13,10 @@ class ContractError(RESTError):
     pass
 
 
+class NonpositiveScreenPrice(ContractError):
+    """Valid numeric wire value, unusable as an instrument price; never normalized."""
+
+
 def need(condition, kind='invalid-contract'):
     if not condition:
         raise ContractError(kind)
@@ -135,9 +139,9 @@ def screen_field(wrapper, query):
     if unit is None:
         return FieldValue(None, value, None, 'unavailable', 'factor-unit-unverified')
     scaled = number / 1000 if name in {2201, 2301, 3105} else number
+    if name == 2201 and scaled <= 0:
+        raise NonpositiveScreenPrice('nonpositive-screen-price')
     need(scaled >= 0, 'invalid-typed-value')
-    if name == 2201:
-        need(scaled > 0, 'invalid-typed-value')
     if family == 'cumulative_property' and properties['period_average']:
         unit = 'average_' + unit
     return FieldValue(scaled, value, unit, 'available')

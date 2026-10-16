@@ -660,3 +660,139 @@ def test_history_keeps_prior_pages_when_global_request_budget_stops_backfill():
     result=item.history('US.DEMO',start='2026-10-13',end='2026-10-14')
     assert result.status=='partial' and result.reason=='request-budget' and len(result.rows)==1
     assert result.metadata['stopped_on_failure'] is True and len(requests)==1
+
+
+@pytest.mark.parametrize('value,tag', [('0',2),('-1',2),(0.0,1),(-1.0,1)])
+def test_nonpositive_price_stays_strict_but_only_its_instrument_is_excluded(value,tag):
+    bad=screen_row('US.ZERO',value,tag=tag)
+    with pytest.raises(contracts.NonpositiveScreenPrice) as caught:
+        contracts.screen_field(bad['results'][0],PRICE)
+    assert caught.value.kind=='nonpositive-screen-price'
+    item,requests,_=client([screen_page([bad,screen_row()])])
+    result=screen(item)
+    assert [r['code'] for r in result.rows]==['US.DEMO']
+    assert result.rows[0]['screen_rank']==2
+    assert result.status=='success' and result.reason=='screen-rows-excluded'
+    assert result.metadata['raw_rows_received']==2 and result.metadata['accepted_rows']==1
+    assert result.metadata['rejected_row_count']==1 and result.metadata['pagination_complete'] is True
+    rejected=result.metadata['rejected_rows'][0]
+    assert rejected['code']=='US.ZERO' and rejected['screen_rank']==1 and rejected['page']==1
+    assert rejected['reason']=='nonpositive-screen-price' and rejected['typed_value']==value
+    assert rejected['source_payload_hash']==result.rows[0]['revision_vintage']
+    assert rejected['known_at_ms']==rejected['retrieved_at_ms']==NOW
+    assert len(rejected['typed_value_sha256'])==64 and len(requests)==1
+
+
+def test_all_excluded_page_can_refill_within_existing_page_budget():
+    first=screen_page([screen_row('US.ZERO','0')],more=True,cursor='next',total=2)
+    second=screen_page([screen_row()],total=2)
+    item,requests,_=client([first,second])
+    result=screen(item)
+    assert result.status=='success' and result.pages==2 and len(requests)==2
+    assert result.metadata['raw_rows_received']==2 and result.metadata['accepted_rows']==1
+    assert result.rows[0]['screen_rank']==2 and result.metadata['pagination_complete']
+    item,requests,_=client([first],max_pages=1)
+    limited=screen(item)
+    assert limited.status=='truncated' and limited.reason=='page-budget' and not limited.rows
+    assert limited.metadata['raw_rows_received']==1 and not limited.metadata['pagination_complete']
+    assert len(requests)==1
+
+
+def test_complete_all_excluded_source_is_not_empty_source_or_missing_provider_rows():
+    item,_,_=client([screen_page([screen_row('US.ZERO','0')])])
+    result=screen(item)
+    assert result.status=='success' and not result.rows
+    assert result.reason=='screen-rows-excluded' and result.metadata['pagination_complete']
+    assert result.metadata['total_reported']==result.metadata['raw_rows_received']==1
+    assert result.metadata['accepted_rows']==0 and result.metadata['rejected_row_count']==1
+    item,_,_=client([screen_page([])])
+    empty=screen(item)
+    assert empty.status=='empty' and empty.metadata['raw_rows_received']==0
+    assert empty.metadata['rejected_row_count']==0
+
+
+@pytest.mark.parametrize('mutation', ['wrong-price-tag','bad-integer','bool-price','nonfinite-price',
+    'negative-volume','negative-turnover','wrong-later-descriptor','wrong-later-tag'])
+def test_nonpositive_row_never_hides_a_malformed_wire_field(mutation):
+    row=screen_row('US.ZERO','0')
+    factor=3105 if mutation=='negative-turnover' else 3104
+    query={'cumulative_property':{'name':factor,'days':1,'period_average':False}}
+    later={'cumulative_property_result':{'property':{'name':factor,'days':1,'period_average':0},
+        'res':{'result_type':2,'ival':'1000'}}}
+    row['results'].append(later)
+    price=row['results'][0]['simple_property_result']
+    if mutation=='wrong-price-tag':price['res']={'result_type':3,'sval':'0'}
+    elif mutation=='bad-integer':price['res']['ival']='0,000'
+    elif mutation=='bool-price':price['res']['ival']=False
+    elif mutation=='nonfinite-price':price['res']['ival']='9'*512
+    elif mutation in ('negative-volume','negative-turnover'):later['cumulative_property_result']['res']['ival']='-1'
+    elif mutation=='wrong-later-descriptor':later['cumulative_property_result']['property']['days']=2
+    elif mutation=='wrong-later-tag':later['cumulative_property_result']['res']={'result_type':3,'sval':'1000'}
+    item,requests,_=client([screen_page([row])])
+    with pytest.raises(RESTError) as caught:
+        item.screen(retrieve_queries=[PRICE,query],sort=SORT)
+    assert not isinstance(caught.value,contracts.NonpositiveScreenPrice)
+    assert len(requests)==1
+
+
+@pytest.mark.parametrize('case',['duplicate-excluded','raw-row-budget','changed-total','upstream'])
+def test_excluded_rows_preserve_duplicate_total_budget_and_first_failure_guards(case):
+    first=screen_page([screen_row('US.ZERO','0')],more=True,cursor='next',total=2)
+    second=screen_page([screen_row()],total=2)
+    options={}
+    if case=='duplicate-excluded':second=screen_page([screen_row('US.ZERO','0')],total=2)
+    elif case=='raw-row-budget':options['max_rows']=1
+    elif case=='changed-total':second=screen_page([screen_row()],total=3)
+    else:second=ReadResponse(429,b'fictional-private-provider-message')
+    item,requests,_=client([first,second],**options)
+    with pytest.raises(RESTError):screen(item)
+    assert len(requests)==2
+
+
+def test_rejection_receipts_have_explicit_size_cap_and_omit_long_raw_literals(monkeypatch):
+    item,_,_=client([screen_page([screen_row('US.ZERO','0'*512)])])
+    rejected=screen(item).metadata['rejected_rows'][0]
+    assert 'typed_value' not in rejected and rejected['typed_value_type']=='str'
+    monkeypatch.setattr(provider,'MAX_SCREEN_REJECTION_BYTES',1)
+    item,requests,_=client([screen_page([screen_row('US.ZERO','0')])])
+    with pytest.raises(RESTError) as caught:screen(item)
+    assert caught.value.kind=='screen-rejection-budget' and len(requests)==1
+
+
+@pytest.mark.parametrize('floor,raw_floor',[(1,1000),(5,5000)])
+def test_exact_optional_inclusive_price_floor_preserves_request_and_signing_bytes(floor,raw_floor):
+    queries=provider.screen_queries_for_price_floor(floor)
+    expected=[{'simple_field_query':{'simple_field':1,'screen_value_list':[2]}},
+        {'simple_property_query':{'property':{'name':2201},'lower':{'value':raw_floor,'includes':True}}}]
+    assert queries==expected
+    item,requests,signed=client([screen_page(more=True,cursor='opaque',total=2),screen_page([screen_row('US.OTHER')],total=2)])
+    item.screen(retrieve_queries=[PRICE],sort=SORT,screen_queries=queries)
+    bodies=[json.loads(r.body) for r in requests]
+    assert bodies[0]['screen_queries']==expected and bodies[1].pop('next_key')=='opaque'
+    assert bodies[0]==bodies[1]
+    assert signed==['\n'.join((str(NOW),'POST',provider.SCREEN,'',hashlib.sha256(r.body).hexdigest())).encode() for r in requests]
+    queries[1]['simple_property_query']['lower']['value']=999
+    assert provider.screen_queries_for_price_floor(floor)==expected
+
+
+@pytest.mark.parametrize('change',['missing-US','duplicate','wrong-market','arbitrary-property','wrong-floor','exclusive',
+    'bool-bound','float-bound','holdings','watchlist','average-turnover','extra-upper','reversed'])
+def test_only_three_exact_screen_query_presets_are_supported_before_signing(change):
+    queries=provider.screen_queries_for_price_floor(5)
+    price=queries[1]['simple_property_query']
+    if change=='missing-US':queries.pop(0)
+    elif change=='duplicate':queries.append(copy.deepcopy(queries[1]))
+    elif change=='wrong-market':queries[0]['simple_field_query']['screen_value_list']=[1]
+    elif change=='arbitrary-property':price['property']['name']=2301
+    elif change=='wrong-floor':price['lower']['value']=2000
+    elif change=='exclusive':price['lower']['includes']=False
+    elif change=='bool-bound':price['lower']['value']=True
+    elif change=='float-bound':price['lower']['value']=5000.0
+    elif change=='holdings':queries.append({'user_stock_list_mode':2})
+    elif change=='watchlist':queries.append({'watchlist_stock_ids':[1]})
+    elif change=='average-turnover':queries.append({'cumulative_property_query':{'property':{'name':3105,'days':20,'period_average':True},'lower':{'value':25000000000,'includes':True}}})
+    elif change=='extra-upper':price['upper']={'value':100000,'includes':True}
+    else:queries.reverse()
+    item,requests,signed=client([])
+    with pytest.raises(RESTError) as caught:item.screen(retrieve_queries=[PRICE],sort=SORT,screen_queries=queries)
+    assert caught.value.kind=='unsupported-screen-filter' and not requests and not signed
