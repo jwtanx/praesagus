@@ -4,7 +4,7 @@ description: Lead-only Praesagus backlog coordination, resource checks, schedule
 license: MIT
 metadata:
   author: praesagus
-  version: "1.7"
+  version: "1.8"
 ---
 
 # Lead control
@@ -57,7 +57,7 @@ The 06:00 companion is a daily project report, not another delegation run. Repor
 
 The human authorizes future Lead-owned checkpoint, backup, pause/removal, and safe restoration/recovery without repeat permission. Apply the resource, ownership, original-status and uniqueness checks below. This includes recovery from battery or usage stops; restore only after fresh safe readings and preserve unrelated schedules and human pauses. An explicit human resume may recover directly when an earlier wake anchor has passed; record that wake as expired instead of replaying it.
 
-Create an exact one-time reset wake automatically when the automation tool supports it. Standing authorization cannot bypass a tool-enforced confirmation: if anchored creation requires a suggestion/card, submit the exact suggestion once, record approval pending and report that limitation without requesting redundant permission. Never claim the card is active, approximate the anchor with a recurring rule, or create duplicate wakes. A later human approval/resume authorizes proceeding with supported actions after fresh safety checks.
+The human reaffirmed on 2026-10-16 that future recovery scheduling requires no further human confirmation. After the ownership, resource, backup and uniqueness checks, attempt the exact anchored one-time wake with automation_update mode=create first. Do not preemptively use suggested_create or ask again for permission. Verify the returned persisted schedule and exact next time before calling it active. Use a suggestion/card only if the tool explicitly rejects direct anchored creation and specifically requires that supported fallback; record it as pending, not active. If tool execution itself is denied (for example, approval is required while approval policy is never), stop that action and report the tool restriction; do not bypass it through shell edits, symlinks, another agent or repeated calls. Never approximate the anchor with a recurring rule or create duplicate wakes. At a later human resume, recheck resources and skip an expired wake rather than replaying it.
 
 ### Weekly window safeguard (human approved 2026-10-02)
 
@@ -69,7 +69,7 @@ Read [the three-agent workflow overview](../../docs/LEAD_WORKFLOW.md) when onboa
 
 At low usage, stop new work and preserve files. Request bounded collaborator checkpoints only if active and authorization permits; do not discard their edits. Save private `/Users/jwtan/.codex/lead-state/context.md` using apply_patch: current objective, revision, dirty ownership, ticket states, exact commands/results, pending reviews/decisions, collaborators/cursors and next safe step. Save is not commit acceptance: commit only independently reviewed changes ticket-by-ticket under existing authorization; otherwise retain uncommitted work and record it. Never reset/stash blindly or expose secrets.
 
-At <=2%: inventory and save all Lead schedule configs; pause recurring Lead work with the automation tool while preserving original statuses. Use the tool-reported reset epoch with the approved two-minute buffer, never assume now+5h. Create exactly one Lead heartbeat wake at reset+120 seconds, with count=1; inspect returned next time. Anchored schedules may require suggested_create/user confirmation: report pending approval, do not claim active or create a daily substitute. Reuse an existing matching wake, avoid duplicates. At wake, recheck battery and all limiting windows, read checkpoint, resume eligible prior schedules within their time guards, and pick up the recorded next step. Do not repeatedly reschedule when weekly limits or other blockers remain; ask the human. Sleep/offline app can delay or miss wakes; no guaranteed execution.
+At <=2%: inventory and save all Lead schedule configs; pause recurring Lead work with the automation tool while preserving original statuses. Use the tool-reported reset epoch with the approved two-minute buffer, never assume now+5h. Create exactly one Lead heartbeat wake at reset+120 seconds, with count=1; follow the direct-create-first procedure above and inspect the persisted next time. Reuse an existing matching wake, avoid duplicates. At wake, recheck battery and all limiting windows, read checkpoint, resume eligible prior schedules within their time guards, and pick up the recorded next step. Do not repeatedly reschedule when weekly limits or other blockers remain; report the concrete blocker. Sleep/offline app can delay or miss wakes; no guaranteed execution.
 
 ## Low battery save/remove and human restore
 

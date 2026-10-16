@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-121",
+  "tags": {
+    "type": "skill",
+    "modules": [
+      "skills"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-16",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-16/PRSG-121-direct-recovery-scheduling.md",
+  "objective": "Use standing recovery authorization with direct creation first and truthful tool-restriction handling.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "0e0c56c068fac1d4bb84bf2a7de23aa25509e2bb",
+  "allowed_paths": [
+    "skills/lead/SKILL.md",
+    "plans/2026-10-16/PRSG-121-direct-recovery-scheduling.md",
+    "plans/2026-10-16/PRSG-121.harness.json"
+  ],
+  "protected_paths": [
+    "scripts/stock-research/",
+    "ingest/daily_report_projection.py",
+    "artifacts/"
+  ],
+  "checks": [
+    {
+      "id": "skill-review",
+      "kind": "manual",
+      "description": "Review frontmatter/references and replay authorized, denied, fallback and expired-anchor cases.",
+      "status": "passed",
+      "evidence": [
+        "84 resource-status regressions passed in0.04s; metadata and local references verified; four authored behavior cases replayed; actual schedule/message permission denials observed. Direct future anchored creation not exercised."
+      ]
+    },
+    {
+      "id": "resource-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_lead_status.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "84 resource-status regressions passed in0.04s; metadata and local references verified; four authored behavior cases replayed; actual schedule/message permission denials observed. Direct future anchored creation not exercised."
+      ]
+    },
+    {
+      "id": "tool-delivery",
+      "kind": "manual",
+      "description": "Verify eligible schedule restoration and accepted peer delivery through supported tools. Currently rejected by approval-policy restriction.",
+      "status": "passed",
+      "evidence": [
+        "Human liftedpermissions16Oct; both originalLead schedules restoredACTIVE with exactlocalreadback; Engineer news and AIinterface assignments delivered through successful tools. Expiredanchor skipped."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-121-D1",
+      "description": "Direct-create-first skill guidance reviewed and resource regressions pass.",
+      "check_ids": [
+        "skill-review",
+        "resource-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "84 resource-status regressions passed in0.04s; metadata and local references verified; four authored behavior cases replayed; actual schedule/message permission denials observed. Direct future anchored creation not exercised."
+      ]
+    },
+    {
+      "id": "PRSG-121-D2",
+      "description": "Actual restoration and delegation delivered.",
+      "check_ids": [
+        "tool-delivery"
+      ],
+      "status": "done",
+      "evidence": [
+        "Human liftedpermissions16Oct; both originalLead schedules restoredACTIVE with exactlocalreadback; Engineer news and AIinterface assignments delivered through successful tools. Expiredanchor skipped."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewed narrowinstructiondiff, metadata/references,84resource tests and13brief tests. Actualnewwake creation nottested; no livewake readiness claimed."
+    ]
+  }
+}
