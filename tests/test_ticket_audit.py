@@ -415,3 +415,17 @@ def test_matching_leading_key_repetitions_normalize_title_only(repo,key,separato
 def test_title_normalization_preserves_nonleading_and_distinct_keys(value,expected):
     assert audit.normalize_title(value,'PRSG-29')==expected
     assert audit.normalize_title(expected,'PRSG-29')==expected
+
+
+def test_historical_lowercase_title_and_missing_context_remain_source_facts(repo):
+    path=write_ticket(repo,key='PRSG-109');meta=json.loads(path.read_text());md=repo/meta['spec_path']
+    md.write_text(md.read_text().replace('Fixture ticket','old api and csv title'))
+    first=commit(repo,'PRSG-109 Historical authored wording')
+    md.write_text(md.read_text().replace('old api and csv title','Authored API and CSV Title'))
+    second=commit(repo,'PRSG-109 Correct current source')
+    row=audit.build_audit(repo)['tickets'][0]
+    assert row['title']=='Authored API and CSV Title'
+    historical=audit.build_audit(repo,ref=first)['tickets'][0]
+    assert historical['title']=='old api and csv title'
+    assert row['history'][0]['commit']['sha']==first and row['history'][-1]['commit']['sha']==second
+    assert all(not field['text'] for field in historical['decision_context']['fields'].values())

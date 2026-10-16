@@ -4,7 +4,8 @@ cryptography>=50.0.2,<51
 
 # CPU-first dataset/calendar/numerical/workbook dependencies for accepted later stages.
 exchange_calendars>=4.13,<5
-numpy>=2,<3
+# Calendars require >=1.26.4; CI separately constrains the Poetry/PyArrow 12 ABI.
+numpy>=1.26.4,<3
 pandas>=2.2,<3
 scikit-learn>=1.4,<2
 openpyxl>=3.1,<4

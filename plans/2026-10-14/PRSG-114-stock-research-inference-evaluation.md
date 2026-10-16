@@ -1,4 +1,4 @@
-# PRSG-114 — stock research inference evaluation
+# PRSG-114 — Saved Model Inference and Forecast Evaluation
 
 Type: feature · Owner: AI Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
@@ -68,3 +68,23 @@ Available numerical forecasts with NO TRADE actions (for example missing require
 Lead independently reviewed all five implementation/test paths and the two records; final exact three-suite check passed116tests in7.03s (owner116/7.02s). Deterministic cases verify four windows, no fit calls, cutoff/model/identity/basis rejection, exact quantile conversions, gaps, immutable saved predictions, ended/pending/missing/revised actuals including exited names, intraday weighting and long-only ranking. Trader financial review informed the final ETF stock-group distinction, manager dedup correction, numeric NO TRADE visibility and full reference-to-next-week-end risk span; those fixes have focused regressions.
 
 Initial implementation base63d17c7 is retained in private scope history; review base advanced to delivered corrective dependency0fc637f without changing these five paths. Clean-checkout delivery isolates the accepted patch from concurrent PRSG-115 export support work. D1/D2 here accept implementation and fictional OHLC review regressions, not actual provider forecasts or model quality. PRSG-113 actual-data/strong-model/full hardware gates remain open; current research artifacts yield zero validated BUY/SELL candidates. Component-reader adoption for combined export runs remains a bounded integration follow-up after PRSG-115 storage API is reviewed. Mandatory hooks/push are separate delivery gates and their results are recorded only after execution.
+
+## Why the ticket is created?
+
+Generate four explicit forecast windows and score original saved predictions against later realized OHLC.
+
+## Approach
+
+Load trusted existing artifacts without retraining; save matched baselines, long-only decisions and append-only pending/missing/scored outcomes.
+
+## Choices
+
+Use the three-session decision horizon and diversity caps; keep unvalidated numerical research separate from qualified BUY/SELL candidates.
+
+## Findings
+
+Inference/evaluation mechanics passed deterministic review. No actual promoted strong model or prospective trading performance has been established.
+
+## Tradeoffs
+
+Missing costs, identities or validation can exclude candidates even when numerical forecasts remain available for research.

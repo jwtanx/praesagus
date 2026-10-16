@@ -1,4 +1,4 @@
-# PRSG-110 — stock research api contracts
+# PRSG-110 — Stock Research API Contracts
 
 Type: feature · Owner: Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
@@ -58,3 +58,23 @@ Lead independently reviewed the eight owned provider/config/contract/registry/do
 The reviewed implementation was committed and pushed as `c0c05d7`; mandatory full hooks passed2426tests/41existingwarnings (commit34.78s, push33.68s). Lead separately reviewed and replayed13private pilot controls, then accepted exactlyone supervised authenticated read-only pilot: **5requests,25returnedrows,5.394s,cleanupconfirmed**. The earlier reported23rows was corrected to25 (3screen+3basic+3snapshot+8history+8history); Lead reconciled the artifact hashes, counts and private permissions. No public raw/provider payloads or secrets are committed.
 
 The pilot established sample access to the four allowed endpoint families. It observed `cumulative_property_result`, integer period_average echo and typed integer-string factor results; the current decoder continues to withhold those unverified fields pending a scoped normalization follow-up. History raw time_zone=-4 is retained with runtime-unit/finality uncertainty; no silent conversion occurred. Native UI counts, rate base units, numeric REST quotas, broad entitlements, data rights and full history/point-in-time universe readiness remain unknown. D1/D2 are accepted as the bounded API contract/capability-assessment epic, not acceptance of ingestion100, strong forecasts or production model promotion. NextPRSG-111 owns ingestion and any explicitly frozen provider enrichment/decoder follow-up.
+
+## Why the ticket is created?
+
+Establish which documented Moomoo screening and enrichment fields this standalone tool can safely consume.
+
+## Approach
+
+Reuse secure signing and bounded read-only transport; validate pagination, typed identifiers, units, errors and capabilities with deterministic fixtures.
+
+## Choices
+
+Use REST screening rather than making OpenD mandatory; leave native UI bullish/bearish counts unavailable when methodology is unsupported.
+
+## Findings
+
+Implementation and a bounded five-request capability pilot were reviewed. The sample did not establish complete market coverage, currency evidence or native signal counts.
+
+## Tradeoffs
+
+Strict field and provenance checks expose unavailable data instead of guessing units or expanding provider operations silently.

@@ -1,4 +1,4 @@
-# PRSG-115 — stock research exports guide
+# PRSG-115 — Stock Research Exports and Run Guide
 
 Type: feature · Owner: Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
@@ -96,3 +96,23 @@ Lead independently reviewed full scoped implementation;135universe/data/export t
 The final output uses correct exchange windows and logarithmic terminal-return conversion, exact typed quote/security joins, blank unavailable numeric columns, literal long IDs/formula-looking text, explicit optional sentiment mode and one immutable shared generation. Nonempty fixture-model and missing-model runs exercise the real inference/export path with one collection and finalization; no silent training occurs. README covers private setup, explicit CSV/SQLite training, saved-model selection and offline replay. All13tab views and four-window price columns were visually reviewed, with a separate finalSummary rerender after its readable reasons/action legend update. Initial failed test-order evidence and the ignored-parent fixture correction remain in private receipts/history; final135passed10.36s. This closes export implementation/fictional workflow acceptance only. Actual-source bundles and ongoing real outcomes remain PRSG-109-D4; strong empirical model/hardware evidence remains PRSG-113-D2. No live calls, credentials, deployment or model promotion occurred.
 
 Delivery checkpoint56bd9d3 passed2700full tests/41existingwarnings58.39s and53.51s pre-push. A two-file defensive follow-up requires a non-null exact security binding for any available forecast; unavailable rows can retain null IDs. Lead inspected the exact guard/test delta and independently replayed the new missing-row-id rejection:1passed33deselected0.45s. Owner reported353six-file regressions16.79s before the guard and34export regressions8.48s after. No numerical, visual, provider or policy changes.
+
+## Why the ticket is created?
+
+Make the standalone workflow easy to run and its forecasts easy to inspect and sort.
+
+## Approach
+
+Share one immutable generation across collection, inference and export; write typed CSV views, a formatted workbook, fictional examples and a run guide.
+
+## Choices
+
+Provide both CSV datasets and XLSX because CSV cannot retain worksheet tabs, colors or frozen panes.
+
+## Findings
+
+Delivered at56bd9d3 and0eed1fb; final full checks passed2701 tests. The reviewed13-tab preview uses fictional prices and zero validated candidates.
+
+## Tradeoffs
+
+Wide machine-readable detail remains available while Summary stays compact; fictional output is not a substitute for a real validated model bundle.

@@ -1,4 +1,4 @@
-# PRSG-109 — Standalone Moomoo stock and ETF research scripts
+# PRSG-109 — Standalone Moomoo Stock and ETF Research Scripts
 
 ## 1. Goal and agreed scope
 
@@ -287,3 +287,23 @@ Reconstruct historical universe membership where evidence permits; if delisting,
 ## Plan-first evidence
 
 Lead read the updated user plan and preserved the requested default-free CLI, timestamped output folders, today low/high, AI Engineer epics, strong-model gates, ongoing scoring and local-first news research. Clarified the conflicting sentiment defaults: optional enrichment auto/skips failure; price-only numerical inference until benefit and compatibility are validated. No model has been trained or promoted, no new market-data request made and no scripts created by this planning commit.
+
+## Why the ticket is created?
+
+Provide an on-demand, diversified stock and ETF research workflow without requiring an LLM.
+
+## Approach
+
+Deliver discovery, causal datasets, explicit local training, saved-model inference, immutable evaluation and CSV/XLSX exports through dependency-ordered epics.
+
+## Choices
+
+Use pooled numerical quantile models and a transparent baseline; optional sentiment cannot replace price-only operation.
+
+## Findings
+
+Core collection, dataset, model, inference and export implementations are delivered. Actual-source coverage, strong-model validation and real forecast outcomes remain unfinished.
+
+## Tradeoffs
+
+Lightweight local execution reduces cost, but neither numeric output nor passing synthetic tests establishes forecast accuracy or profitability.

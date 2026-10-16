@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-120",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "harness",
+      "infra",
+      "docs"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-16",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-16/PRSG-120-ticket-brief-and-ci-regressions.md",
+  "objective": "Restore authored Title Case ticket briefs and complete sourced details; prevent regressions in pre-commit and fix CI environment.",
+  "status": "review",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "0eed1fb41410a229ebaf97e5bdcf6a77b62fd005",
+  "allowed_paths": [
+    "scripts/planning/build_ticket_audit.py",
+    "scripts/planning/check_ticket_briefs.py",
+    "tests/test_ticket_audit.py",
+    "tests/test_ticket_brief_quality.py",
+    "tests/test_test_hooks.py",
+    "tests/test_ci_dependencies.py",
+    ".githooks/run-tests",
+    ".github/workflows/ci.yml",
+    "docs/TEST_HOOKS.md",
+    "plans/2026-10-16/PRSG-120-ticket-brief-and-ci-regressions.md",
+    "plans/2026-10-16/PRSG-120.harness.json",
+    "plans/2026-10-15/PRSG-119-stock-research-owner-plate-types.md",
+    "plans/2026-10-14/PRSG-117-ai-engineer-role.md",
+    "plans/2026-10-14/PRSG-113-stock-research-training-validation.md",
+    "plans/2026-10-14/PRSG-114-stock-research-inference-evaluation.md",
+    "plans/2026-10-14/PRSG-115-stock-research-exports-guide.md",
+    "plans/2026-10-14/PRSG-111-stock-research-universe-ingestion.md",
+    "plans/2026-10-14/PRSG-112-stock-research-datasets.md",
+    "plans/2026-10-14/PRSG-110-stock-research-api-contracts.md",
+    "plans/2026-10-14/PRSG-109-stock-research-program.md",
+    "plans/2026-10-14/PRSG-118-ai-engineer-spawn-routing.md",
+    "plans/2026-10-14/PRSG-116-stock-research-sentiment.md",
+    "pyproject.toml",
+    "scripts/stock-research/requirements.txt"
+  ],
+  "protected_paths": [
+    "ingest/daily_report_projection.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "artifacts/daily-market-brief/"
+  ],
+  "checks": [
+    {
+      "id": "regressions",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_ticket_audit.py",
+        "tests/test_ticket_brief_quality.py",
+        "tests/test_test_hooks.py",
+        "tests/test_ci_dependencies.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently103focusedtests passed32.44s. Actual isolated pre-commit allows valid13tests and blocks lowercase/missing-context fixtures. Owner NumPy1.26.4/Arrow12 isolated stack pipcheck/importsmoke clean and122data/model/inference passed; actualremoteCIpending."
+      ]
+    },
+    {
+      "id": "delivery",
+      "kind": "manual",
+      "description": "Inspect generated actual brief title/context and new GitHubCI/Pages results",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-120-D1",
+      "description": "Brief source/display and negative pre-commit regressions verified",
+      "check_ids": [
+        "regressions",
+        "delivery"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-120-D2",
+      "description": "Reproduce CI setup failure, fix and verify new remote checks",
+      "check_ids": [
+        "regressions",
+        "delivery"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}

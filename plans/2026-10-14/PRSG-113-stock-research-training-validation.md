@@ -1,4 +1,4 @@
-# PRSG-113 — stock research training validation
+# PRSG-113 — Numerical Model Training and Validation
 
 Type: feature · Owner: AI Engineer · Priority: P1 · Effort: M (2–4 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
@@ -87,3 +87,23 @@ A supervised, source-hash-frozen representation-only probe allocated AND populat
 Versioned interfaces: `origin-array-v1`, `legacy-canonical-list-sha256-v1`, forecast shard schema2. Shards carry observed labels, exact available window/timestamps and class/leverage projection; freeze/input receipts retain source provenance. `iter_forecast_shards` verifies one bounded shard at a time. Trusted model loading verifies every artifact sequentially and retains only the same verified model/contract/freeze bytes needed for loading. No actual-data fit, provider/LLM call, automatic retraining or promotion occurred in this checkpoint.
 
 The reviewed runtime checkpoint was committed at75e9c14; its mandatory full hook passed2,551tests/41existingwarnings in43.85s. Two previously requested parity checks returned after that staged snapshot: the test-only follow-up verifies all four causal windows against accepted legacy preparation and identical CSV/read-onlySQLite/saved-generation CLI freeze hashes. Runtime files match the full-probe hashes unchanged; the final owner suite reported116passed8.96s. Lead independently replayed the two changed tests before the follow-up commit. This is additional regression coverage, not D2 acceptance.
+
+## Why the ticket is created?
+
+Train and save a small local numerical model while requiring independent out-of-sample evidence before promotion.
+
+## Approach
+
+Fit the historical-excursion baseline and nine pooled quantile estimators; preserve chronology, calibration, holdout, hashes and bounded resource accounting.
+
+## Choices
+
+Use shallow CPU-first histogram gradient boosting and exact compact arrays instead of paid model APIs or a large tuning search.
+
+## Findings
+
+Research implementation and representation-capacity fixtures are delivered. Strong actual-data performance, point-in-time provenance and full-machine acceptance remain open.
+
+## Tradeoffs
+
+Exact compact storage improves capacity but does not prove end-to-end memory, training time, forecast quality or profitable trading.

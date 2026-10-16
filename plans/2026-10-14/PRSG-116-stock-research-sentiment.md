@@ -1,4 +1,4 @@
-# PRSG-116 — stock research sentiment
+# PRSG-116 — Optional Stock Research Sentiment
 
 Type: feature · Owner: AI Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
@@ -30,3 +30,23 @@ Lead owns these ticket metadata files. Implementation owner changes for model wo
 ## Evidence
 
 Pending implementation and independent review; tests alone do not establish real data access or forecasting quality.
+
+## Why the ticket is created?
+
+Explore whether attributable numerical news sentiment can improve research while keeping the tool independent of LLM access.
+
+## Approach
+
+Plan cutoff-safe news caching, entity-specific tone, explicit missingness and local-first sentiment evaluation before numerical-model integration.
+
+## Choices
+
+Compare lexicon diagnostics and small TF-IDF/linear candidates first; keep price-only fallback until separate calibration and forecast-benefit evidence exists.
+
+## Findings
+
+The epic has not entered repository implementation. Private contract/source reviews and academic parsing mechanics do not establish calibrated sentiment or forecast benefit.
+
+## Tradeoffs
+
+News rights, polling permission, historical availability and multi-entity/ETF relevance can limit usable coverage; none may be replaced with neutral zeros.

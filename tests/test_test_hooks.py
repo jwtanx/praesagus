@@ -42,6 +42,8 @@ if sys.argv[1] == '-c':
     importlib.util.find_spec = (lambda name: None) if mode == 'pytest' else (lambda name: object())
     exec(sys.argv[2])
 elif sys.argv[1:] == ['-m', 'pytest', '-q']:
+    if os.environ.get('HOOK_FIXTURE_REAL_QUALITY') == '1':
+        sys.exit(subprocess.run([sys.executable, '-m', 'pytest', '-q', 'tests/test_ticket_brief_quality.py']).returncode)
     with open(os.environ['HOOK_FIXTURE_LOG'], 'a') as handle:
         handle.write(json.dumps({'test_git_env': {key: os.environ.get(key) for key in
             ('GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_PREFIX')}}) + '\\n')
@@ -193,3 +195,28 @@ def test_installer_preserves_existing_hooks(checkout, configured):
     assert hook.read_bytes() == before
     current = git(repo, 'config', '--get', 'core.hooksPath')
     assert current.stdout.strip() == ('custom-hooks' if configured else '')
+
+
+def test_actual_precommit_rejects_lowercase_and_missing_brief_context(checkout):
+    repo,_,env=checkout
+    for name in ['check_ticket_briefs.py','build_ticket_audit.py','validate_ticket.py']:
+        shutil.copy2(ROOT/'scripts/planning'/name,repo/'scripts/planning'/name)
+    (repo/'tests').mkdir()
+    shutil.copy2(ROOT/'tests/test_ticket_brief_quality.py',repo/'tests/test_ticket_brief_quality.py')
+    folder=repo/'plans/2026-10-16';folder.mkdir(parents=True)
+    path=folder/'PRSG-120-fixture.md'
+    (folder/'PRSG-120.harness.json').write_text(json.dumps({'ticket_key':'PRSG-120',
+        'spec_path':str(path.relative_to(repo)),'review':{'status':'pending'}}))
+    bodies='\n\n'.join('## '+name+'\n\nExplicit authored context.' for name in ['Objective','Approach','Choices','Findings','Tradeoffs'])
+    install(repo);env=hook_env(repo,env);env['HOOK_FIXTURE_REAL_QUALITY']='1'
+    cases=[('# PRSG-120 — lowercase api title\n\n'+bodies,'authored Title Case'),
+           ('# PRSG-120 — Authored API Title\n\n'+bodies.replace('## Choices\n\nExplicit authored context.',''),'missing decision context: choices')]
+    for text,reason in cases:
+        path.write_text(text);assert git(repo,'add',str(path.relative_to(repo))).returncode==0
+        result=git(repo,'commit','-qm','PRSG-120 Synthetic brief rejection',env=env)
+        assert result.returncode!=0 and reason in result.stdout+result.stderr
+        assert git(repo,'rev-parse','--verify','HEAD').returncode!=0
+    path.write_text('# PRSG-120 — Authored API Title\n\n'+bodies)
+    assert git(repo,'add',str(path.relative_to(repo))).returncode==0
+    result=git(repo,'commit','-qm','PRSG-120 Synthetic corrected brief',env=env)
+    assert result.returncode==0,result.stdout+result.stderr

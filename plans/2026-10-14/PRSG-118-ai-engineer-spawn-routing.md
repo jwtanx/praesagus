@@ -1,4 +1,4 @@
-# PRSG-118 — ai engineer spawn routing
+# PRSG-118 — AI Engineer Spawn Routing
 
 Type: feature · Owner: Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
@@ -41,3 +41,23 @@ Lead refrozen base `15ff7ccef9c7f5d2dc948c5e8296a701027df518` after accepted117;
 Lead independentlyran34focusedrouting/rolechecks; allpassed0.12s; reviewedreadonlyselector andall12guidance/test paths, config-drivenall+AIaliases+single/freshmodes withno mutations.
 
 Independent5behaviorcases passedincludingpartialAIreadinesshold, calleradoption/no-context, explicitfreshnewsession, idempotentEngineer anddisjointmixedrouting; skillmetadata/references valid. No liveall-transfer or runtime-enforcedrouter claimed.
+
+## Why the ticket is created?
+
+Route future specialist chat setup and accepted model work consistently to AI Engineer.
+
+## Approach
+
+Extend spawn aliases, role discovery and handoff instructions while retaining verified readiness and existing schedule ownership.
+
+## Choices
+
+Reuse the existing spawn workflow instead of creating another parallel role-registration mechanism.
+
+## Findings
+
+Routing regressions and the actual specialist bootstrap were reviewed; AI Engineer has no default recurring schedule.
+
+## Tradeoffs
+
+Aliases and instructions need operational verification; passing skill checks does not prove successful delivery or model performance.

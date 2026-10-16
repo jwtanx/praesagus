@@ -1,4 +1,4 @@
-# PRSG-111 — stock research universe ingestion
+# PRSG-111 — Dynamic Stock and ETF Universe Ingestion
 
 Type: feature · Owner: Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
@@ -90,3 +90,23 @@ Lead independently reviewed all14 ticket-owned paths and replayed **122 focused 
 Collection saves exclusive timestamped, hash-checked generations, canonical numeric histories and revisions, current-only identity bindings, calendar/version/schedule hashes and honest coverage. Missing older history resumes across bounded runs, exited forecast names remain actuals-only, and unknown financial/native signal data is retained as unavailable. The default history basis is forward split-adjusted excluding distributions, with explicit vintage/factor uncertainty. No new authenticated collection, full100-name selection, model training, numeric forecasts, workbook export or deployment was exercised by these checks. Provider field currency, reviewed sector/issuer input and historical point-in-time evidence remain explicit readiness limits. D1/D2 accept ingestion implementation and failure handling, not strong-model validation. Mandatory full hooks and commit/push evidence are recorded at delivery.
 
 Final handoff added physical provider-security deduplication (including ETF alias cap1) and maximum actual evidence availability, preventing earlier asserted known times from admitting later observations. Lead separately reviewed both additions and replayed **389 tests, passed in2.83s**, including124 collection/provider cases and265 existing REST/security regressions. Implementation commit `e1e6422` mandatory full hook passed **2471tests,41existingwarnings,37.60s**. Prior122 is an earlier review snapshot; no full-universe or model-quality claim follows from these checks.
+
+## Why the ticket is created?
+
+Discover liquid instruments independently of portfolio and reporting ticker lists while retaining historical observations.
+
+## Approach
+
+Select the target 80-stock/20-ETF universe with sector/exposure caps, a separate speculative panel and immutable versioned history.
+
+## Choices
+
+Refill overlaps from ranked pools; report quota shortfalls instead of relaxing eligibility or forcing ticker rotation.
+
+## Findings
+
+Offline ingestion and selection mechanics passed review. Actual admitted-universe readiness still depends on attributable currency, listing, issuer and sector evidence.
+
+## Tradeoffs
+
+Conservative identity and metadata requirements can leave fewer names, while preventing false diversification and unsupported eligibility.

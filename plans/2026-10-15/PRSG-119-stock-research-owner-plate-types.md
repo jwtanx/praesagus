@@ -1,4 +1,4 @@
-# PRSG-119 — preserve unsupported owner-plate types
+# PRSG-119 — Preserve Unsupported Moomoo Owner Plate Types
 
 Type: bug · Modules: financial-data, market-research · Owner: Engineer · Priority: P1 · Effort: XS (<0.5 person-day) · Impact: high — stops an irrelevant membership type from blocking industry-source intake.
 
@@ -39,3 +39,23 @@ Pending implementation and Lead review. Private actual diagnostic has40rows/two 
 Lead independently reviewed both code/test paths and froze the literal-preserving implementation; focused173tests passed (exact time in private execution receipt). Structural rejection and exact INDUSTRY-only reviewed sector resolution are unchanged. D2 delivery/hook evidence remains pending.
 
 Lead acceptance: implementation c79013f053c515e4d20e87f0265c3a51eeba2322 independently reviewed and pushed to exact remote main. Lead focused173passed2.63s; mandatory commit full2625passed41warnings46.31s and push2629passed41warnings45.34s. Full checks included concurrent PRSG-114 drafts; those counts do not establish PRSG-114 acceptance. No live replay or source/model readiness is claimed. This closure record has its own required hooks/delivery gates.
+
+## Why the ticket is created?
+
+Prevent one unknown provider plate-type enum from discarding an otherwise valid owner-plate response.
+
+## Approach
+
+Preserve bounded unknown raw strings as unsupported, retain supported rows and report explicit partial-response counts.
+
+## Choices
+
+Continue accepting INDUSTRY only for sector resolution; never relabel an unknown type as an industry.
+
+## Findings
+
+A separate one-request diagnostic observed SPECIAL rows; normalization regressions were reviewed and delivered. No post-fix live replay was claimed.
+
+## Tradeoffs
+
+Preserving unknown values improves observability while strict structural validation and conservative classification remain in place.

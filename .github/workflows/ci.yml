@@ -23,6 +23,11 @@ jobs:
         run: |
           python -m pip install poetry
           poetry install --no-interaction --no-ansi --no-root
+      - name: Install standalone research dependencies in the test interpreter
+        run: |
+          poetry run python -m pip install -r scripts/stock-research/requirements.txt "numpy>=1.26.4,<2"
+          poetry run python -m pip check
+          poetry run python -c "import numpy, pyarrow, pyarrow.parquet, pandas, sklearn, exchange_calendars, openpyxl; assert numpy.__version__.split('.')[0] == '1'"
       - name: Run tests
         run: poetry run python -m pytest -q
       - name: Replay ticket verification safety cases

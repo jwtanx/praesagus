@@ -1,4 +1,4 @@
-# PRSG-117 — ai engineer role
+# PRSG-117 — AI Engineer Role and Skill
 
 Type: feature · Owner: Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
@@ -46,3 +46,23 @@ Independent initial5 +revised3 behavioralreplays rejectedfuture/leakage/undersam
 ActualfreshhumanrequestedAIEngineer session created, appidentity/projectverified, startupreadiness andWAITINGrelease acknowledgments received; private registry/receipt recorded; no schedules or inheritedoldwork.
 
 Base refrozen to 3acd97b4e035cfbc576ff74dae766629019a6abf after the separate Lead program-metadata commit; role implementation bytes did not depend on any other code change.
+
+## Why the ticket is created?
+
+Give model, dataset, calibration and inference work a clearly owned specialist role.
+
+## Approach
+
+Define role configuration, startup and reusable skill guidance with provenance, leakage, reproducibility and promotion requirements.
+
+## Choices
+
+Separate AI Engineer model ownership from Engineer infrastructure and Trader financial interpretation.
+
+## Findings
+
+The role/skill implementation was reviewed and a separate AI Engineer chat was verified. Role configuration alone is not an executing agent runtime.
+
+## Tradeoffs
+
+Specialist instructions improve ownership clarity but do not enforce model safety or prove research quality by themselves.

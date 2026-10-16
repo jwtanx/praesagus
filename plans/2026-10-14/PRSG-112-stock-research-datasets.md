@@ -1,4 +1,4 @@
-# PRSG-112 — stock research datasets
+# PRSG-112 — Causal Stock Research Datasets
 
 Type: feature · Owner: AI Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — one bounded component of the accepted standalone program.
 
@@ -60,3 +60,23 @@ Lead reviewed the four new implementation/test files and exact six-path frozen s
 Readers preserve all29 canonical history columns and hash-checked generation sidecars, typed integer/decimal-string security identity, revisions, measured price/unit availability and explicit unknown provider finality/timezone. CSV and read-only SQLite paths share normalization and reject conflicts; SQLite canonical snapshot rows, rather than its main file alone, define the content receipt. Inputs/sidecars have aggregate budgets; histories are indexed per symbol and exchange sessions cached. Metadata provenance/timing, compatible class/leverage, benchmark availability and missingness remain explicit. A completed flag alone cannot admit price observations from before the exchange close.
 
 The approved retrospective feature policy preserves actual label availability and can leave historical folds empty after fresh backfill. Strict row availability alone is not proof of historical universe membership, mandates, delistings or adjustment factors. These implementation/fixture checks do not train a model, establish accuracy, demonstrate measured resource budgets, or satisfy PRSG-113 strong-model gates. No provider, credentials, LLM, Colab or model-promotion operations occurred.
+
+## Why the ticket is created?
+
+Create consistent training inputs whose features and realized labels respect actual information availability.
+
+## Approach
+
+Normalize CSV, read-only SQLite and saved generations; construct exchange-calendar extrema and terminal-return labels with chronological purging.
+
+## Choices
+
+Share one canonical OHLCV schema across readers and use explicit missingness rather than retrospective zero filling.
+
+## Findings
+
+Reader/calendar/label fixtures and CSV/SQLite parity were reviewed; a present-day history backfill still cannot prove historical universe membership.
+
+## Tradeoffs
+
+Availability purging may leave insufficient folds, which remains visible rather than creating a misleading historical validation.
