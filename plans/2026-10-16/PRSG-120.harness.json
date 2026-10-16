@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-16/PRSG-120-ticket-brief-and-ci-regressions.md",
   "objective": "Restore authored Title Case ticket briefs and complete sourced details; prevent regressions in pre-commit and fix CI environment.",
-  "status": "review",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -74,14 +74,17 @@
       "cwd": ".",
       "status": "passed",
       "evidence": [
-        "Lead independently103focusedtests passed32.44s. Actual isolated pre-commit allows valid13tests and blocks lowercase/missing-context fixtures. Owner NumPy1.26.4/Arrow12 isolated stack pipcheck/importsmoke clean and122data/model/inference passed; actualremoteCIpending."
+        "Lead verified CI38827862089 and Pages38827862342 SUCCESS for a240c5a via GitHub API; served exacthead/all12modern titles/all60contextfields nonempty, currentinconsistentnone; full117ticketDOM replay passed. Local103focused32.44s and2720full56.93scommit/56.83spush passed41existingwarnings. Originalremote traceback unavailable; offline missingimports reproducedexit2 and compatibility checks verified separately."
       ]
     },
     {
       "id": "delivery",
       "kind": "manual",
       "description": "Inspect generated actual brief title/context and new GitHubCI/Pages results",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead verified CI38827862089 and Pages38827862342 SUCCESS for a240c5a via GitHub API; served exacthead/all12modern titles/all60contextfields nonempty, currentinconsistentnone; full117ticketDOM replay passed. Local103focused32.44s and2720full56.93scommit/56.83spush passed41existingwarnings. Originalremote traceback unavailable; offline missingimports reproducedexit2 and compatibility checks verified separately."
+      ]
     }
   ],
   "acceptance": [
@@ -92,7 +95,10 @@
         "regressions",
         "delivery"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead verified CI38827862089 and Pages38827862342 SUCCESS for a240c5a via GitHub API; served exacthead/all12modern titles/all60contextfields nonempty, currentinconsistentnone; full117ticketDOM replay passed. Local103focused32.44s and2720full56.93scommit/56.83spush passed41existingwarnings. Originalremote traceback unavailable; offline missingimports reproducedexit2 and compatibility checks verified separately."
+      ]
     },
     {
       "id": "PRSG-120-D2",
@@ -101,10 +107,16 @@
         "regressions",
         "delivery"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead verified CI38827862089 and Pages38827862342 SUCCESS for a240c5a via GitHub API; served exacthead/all12modern titles/all60contextfields nonempty, currentinconsistentnone; full117ticketDOM replay passed. Local103focused32.44s and2720full56.93scommit/56.83spush passed41existingwarnings. Originalremote traceback unavailable; offline missingimports reproducedexit2 and compatibility checks verified separately."
+      ]
     }
   ],
   "review": {
-    "status": "pending"
+    "status": "accepted",
+    "evidence": [
+      "Lead verified CI38827862089 and Pages38827862342 SUCCESS for a240c5a via GitHub API; served exacthead/all12modern titles/all60contextfields nonempty, currentinconsistentnone; full117ticketDOM replay passed. Local103focused32.44s and2720full56.93scommit/56.83spush passed41existingwarnings. Originalremote traceback unavailable; offline missingimports reproducedexit2 and compatibility checks verified separately."
+    ]
   }
 }

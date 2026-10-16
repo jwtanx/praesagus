@@ -16,7 +16,7 @@ Preserve source-authored acronym spelling and original Git history. Prefer sourc
 
 ## Findings
 
-Lead verified recent headings and five-field context extraction and observed failing CI/successful Pages via GitHub API. Implementation and exact dependency failure reproduction remain pending; no successfulCI is claimed from localtests.
+The source brief regression is corrected and guarded by actual pre-commit rejection tests. Standalone research requirements were missing from the Poetry test environment; their compatible installation, dependency check and import smoke test now precede pytest. Lead independently verified the new CI and Pages runs successful for the implementation commit, and all12modern served briefs have complete context. The original failing traceback was inaccessible; isolated missing-import reproductions and the new successful run are separate evidence.
 
 ## Tradeoffs
 
@@ -28,8 +28,8 @@ Base 0eed1fb41410a229ebaf97e5bdcf6a77b62fd005. Engineer owns listed implementati
 
 ## When it's considered done
 
-- [ ] PRSG-120-D1: Current brief headings and all five detail categories are accurate/readable; pre-commit rejects regression fixtures and historical display remains unchanged.
-- [ ] PRSG-120-D2: CI setup failure reproduced and fixed; focused/full local checks and new GitHub CI/Pages run outcomes verified.
+- [x] PRSG-120-D1: Current brief headings and all five detail categories are accurate/readable; pre-commit rejects regression fixtures and historical display remains unchanged.
+- [x] PRSG-120-D2: CI setup failure reproduced and fixed; focused/full local checks and new GitHub CI/Pages run outcomes verified.
 
 ## Accepted Dependency Alignment
 
@@ -38,3 +38,7 @@ Lead extends only pyproject.toml and scripts/stock-research/requirements.txt for
 ## Implementation Review
 
 Lead independently passed103 focused audit/brief-quality/hook/CI tests in32.44s. The real pre-commit entrypoint was exercised in an isolated Git repository: a valid brief passes13 checks, while lowercase and missing-detail fixtures each exit1. The permanent hook regression additionally stages bad source and proves commits are blocked, then accepts corrected source. Current109–119briefs now have authored Title Case and all five populated effective dashboard fields; original history remains unchanged. CI installs standalone requirements into the Poetry interpreter, explicitly constrains its NumPy to1.26.4–<2, runs pipcheck and imports the Arrow/calendar/workbook/numerical stack before pytest. Standalone requirements retain NumPy2support with>=1.26.4,<3. Owner isolated compatibility and122numerical regression checks passed. Local source/test review is complete; actual new GitHubCI/Pages results and served dashboard remain pending, so the ticket is not complete.
+
+## Delivery Evidence
+
+Implementation a240c5adf7cf0dce26a1cc855f05ac137b8ad97c passed2720full checks/41existingwarnings in56.93s before commit and56.83s before push. Lead independently passed103 focused checks32.44s and the full117ticketDOM replay. Actual [CI run38827862089](https://github.com/jwtanx/praesagus/actions/runs/38827862089) and [Pages run38827862342](https://github.com/jwtanx/praesagus/actions/runs/38827862342) completed successfully for that exact commit. The served audit head matched; all12PRSG109–120titles preserve authored casing, all60detail fields are nonempty and no current ticket is inconsistent. Five unrelated primary working files retained their hashes. This closure only updates evidence/checklists; runtime, workflow and test bytes remain the verified implementation.
