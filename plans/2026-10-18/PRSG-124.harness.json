@@ -80,7 +80,11 @@
       "id": "actual",
       "kind": "manual",
       "description": "Verify source-admitted current fixed50 per-ticker numeric outputs, immutable issuance and actual publication; no fixture/model-quality substitution.",
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "19Oct2026: Lead independently verified six actual private next-close forecasts and immutable combined CSV/audit/manifest; 105newstockcloses plus21SPYcloses matched integrity-checked store, arithmetic/hashes/permissions checked. D3 remainspending:6/50private,0/50public, no strongmodel/intraday-extrema claim. All30US histories nowcollected100bars each; furtherfinancialadmission remainsinprogress. No raw/private account data or generated forecasts committed.",
+        "19Oct2026: Lead independently verified all30 actual US next-close private research forecasts in one immutable CSV/audit/manifest. All630close/hash/observation bindings and raw/cash20return arithmetic verified across cohorts. Private30/50, public0/50;20MY remain pending. Uncalibratedbaseline, not trainedwholewindow or predictiveperformance. Source financialreview retains operational/derived-date and nativeexchangeAXextract limitations; no private values/accountdata/generatedfiles committed."
+      ]
     }
   ],
   "acceptance": [
@@ -113,7 +117,11 @@
       "check_ids": [
         "actual"
       ],
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "19Oct2026: Lead independently verified six actual private next-close forecasts and immutable combined CSV/audit/manifest; 105newstockcloses plus21SPYcloses matched integrity-checked store, arithmetic/hashes/permissions checked. D3 remainspending:6/50private,0/50public, no strongmodel/intraday-extrema claim. All30US histories nowcollected100bars each; furtherfinancialadmission remainsinprogress. No raw/private account data or generated forecasts committed.",
+        "19Oct2026: Lead independently verified all30 actual US next-close private research forecasts in one immutable CSV/audit/manifest. All630close/hash/observation bindings and raw/cash20return arithmetic verified across cohorts. Private30/50, public0/50;20MY remain pending. Uncalibratedbaseline, not trainedwholewindow or predictiveperformance. Source financialreview retains operational/derived-date and nativeexchangeAXextract limitations; no private values/accountdata/generatedfiles committed."
+      ]
     }
   ],
   "review": {
