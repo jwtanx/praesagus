@@ -167,7 +167,7 @@ def normalization_for(job, version=None, *, current=False):
 def valid_diagnostic_structure(job, status, failure, stage, version, structure):
     eligible=job.get('kind')=='history' and status==200 and failure=='invalid-response' and version==4
     if not eligible:return structure is None
-    return (valid_structure(structure) and
+    return (valid_structure(structure,stage=stage) and
             (stage!='decode-screen' or structure['status']=='unavailable'))
 
 
@@ -259,7 +259,7 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
                     stage = error.diagnostic_stage if type(error) is MarketStoreError else None
                     diagnostic_stage = stage if type(stage) is str and stage in HISTORY_STAGES else 'unknown'
                     structure=error.diagnostic_structure if type(error) is MarketStoreError else None
-                    diagnostic_structure=structure if valid_structure(structure) else unavailable_structure()
+                    diagnostic_structure=structure if valid_structure(structure,stage=diagnostic_stage) else unavailable_structure()
                 raise
         captured = response
         return response
@@ -501,7 +501,10 @@ class DiagnosticReceipt:
             require(outcome.failure=='invalid-response' and type(outcome.diagnostic_stage) is str
                     and outcome.diagnostic_stage in HISTORY_STAGES)
             structure=outcome.diagnostic_structure if outcome.diagnostic_structure is not None else unavailable_structure()
-            require(valid_structure(structure) and (outcome.diagnostic_stage!='decode-screen' or structure['status']=='unavailable'))
+            require(valid_structure(structure,stage=outcome.diagnostic_stage)
+                    and (outcome.diagnostic_stage!='decode-screen' or structure['status']=='unavailable'))
+            require(structure['schema_version']!=2 or type(outcome.normalization_version) is int
+                    and outcome.normalization_version==4)
             failures.append(dict(diagnostic_stage=outcome.diagnostic_stage,structure=structure))
         require(len(failures)<=30)
         raw=(canonical(dict(schema_version=1,history_failures=failures))+'\n').encode()

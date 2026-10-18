@@ -946,3 +946,81 @@ def test_malaysia_candidate_does_not_expand_snapshot_or_plan_parameters(store):
     with pytest.raises(ValueError):c.validate_plan({'schema_version':1,'codes':['BMS.1155'],'news':[]})
     for extra in ({'num':99},{'start':'2026-10-01'},{'autype':1}):
         with pytest.raises(ValueError):c.job_request({'kind':'history','code':'BMS.1155','end':'2026-10-02',**extra})
+# PRSG-128 authored metadata hypothesis fixtures; no provider observation.
+def date_summary_reply():
+    row={'time_key':1790899200000-4*3600000,'date':20261002,'time_zone':8,'close':10}
+    return c.parse_reply(stage_worker(stage_history_response(row)),HISTORY)
+
+
+def test_date_summary_worker_parent_receipt_and_legacy_replay(store,receipt_parent):
+    parsed=date_summary_reply();structure=parsed.diagnostic_structure
+    assert parsed.failure=='invalid-response' and parsed.diagnostic_stage=='date-relation'
+    assert parsed.normalization_version==4 and parsed.response.body==b''
+    assert structure['schema_version']==2 and structure['date_relation_summary']==dict(
+        rows_examined=1,minutes_match=0,hours_only_match=1,neither_match=0,uncheckable=0)
+    outcome=c.collect(store,history_plan(),LOCATOR,run_id='synthetic-date-counts',
+        supervisor=lambda *a,**k:parsed,wall=wall_clock())[0]
+    assert outcome.status=='failed' and outcome.diagnostic_structure==structure
+    assert store.query('history',ING)==[] and not list(store.raw_dir.iterdir())
+    metadata=store.attempts(ING)[0]
+    assert metadata['raw_hash'] is None and 'diagnostic_structure' not in metadata
+    path=receipt_parent/'date-summary.json';receipt=c.DiagnosticReceipt(str(path))
+    try:receipt.write([outcome])
+    finally:receipt.close()
+    data=json.loads(path.read_text())
+    assert data==dict(schema_version=1,history_failures=[dict(diagnostic_stage='date-relation',structure=structure)])
+    assert path.stat().st_mode&0o777==0o600
+    for literal in ('1790899200000','20261002','SYNTHETIC-BODY-CANARY','synthetic-api-key',LOCATOR['directory']):
+        assert literal not in path.read_text()
+    # Existing frame3 with schema1, and older frame1/2 without structure, replay.
+    legacy={k:v for k,v in structure.items() if k!='date_relation_summary'};legacy['schema_version']=1
+    frame=c.encode_reply(HISTORY,ReadResponse(200,b''),OBS,'invalid-response',diagnostic_stage='date-relation',
+        frame_version=3,normalization_version=4,diagnostic_structure=legacy)
+    assert c.parse_reply(frame,HISTORY).diagnostic_structure==legacy
+    frame=c.encode_reply(HISTORY,ReadResponse(200,b''),OBS,'invalid-response',diagnostic_stage='date-relation')
+    assert c.parse_reply(frame,HISTORY).diagnostic_structure is None
+    header,_=unpack_stage_frame(frame);header['version']=1;header.pop('diagnostic_stage')
+    assert c.parse_reply(pack_stage_frame(header),HISTORY).diagnostic_stage is None
+
+
+@pytest.mark.parametrize('bad',['wrong-stage','decode-screen','legacy-normalization','bool','negative','over-limit',
+    'float','text','missing','extra','inconsistent','unavailable','schema1','body','status','failure'])
+def test_date_summary_forgery_rejected_by_frame_parent_and_receipt(store,receipt_parent,bad):
+    from copy import deepcopy
+    parsed=date_summary_reply();structure=deepcopy(parsed.diagnostic_structure)
+    stage='date-relation';version=4;status=200;failure='invalid-response';body=b''
+    summary=structure['date_relation_summary']
+    if bad=='wrong-stage':stage='metadata-invalid'
+    elif bad=='decode-screen':stage='decode-screen'
+    elif bad=='legacy-normalization':version=3
+    elif bad=='bool':summary['hours_only_match']=True
+    elif bad=='negative':summary['hours_only_match']=-1
+    elif bad=='over-limit':summary.update(rows_examined=371,hours_only_match=371)
+    elif bad=='float':summary['hours_only_match']=1.0
+    elif bad=='text':summary['hours_only_match']='PRIVATE-CANARY'
+    elif bad=='missing':summary.pop('neither_match')
+    elif bad=='extra':summary['PRIVATE-CANARY']=0
+    elif bad=='inconsistent':summary['rows_examined']=2
+    elif bad=='unavailable':structure['status']='unavailable'
+    elif bad=='schema1':structure['schema_version']=1
+    elif bad=='body':body=b'PRIVATE-CANARY'
+    elif bad=='status':status=429
+    elif bad=='failure':failure='transport'
+    header,_=unpack_stage_frame(stage_worker(stage_history_response(
+        {'time_key':1790899200000-4*3600000,'date':20261002,'time_zone':8,'close':10})))
+    header.update(diagnostic_structure=structure,diagnostic_stage=stage,normalization_version=version,
+                  status=status,failure=failure,body_size=len(body))
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header,body),HISTORY)
+    forged=c.WorkerReply(ReadResponse(status,body),OBS,failure,diagnostic_stage=stage,
+                         normalization_version=version,diagnostic_structure=structure)
+    outcome=c.collect(store,history_plan(),LOCATOR,run_id='synthetic-forged-date',
+        supervisor=lambda *a,**k:forged,wall=wall_clock())[0]
+    assert outcome.failure=='bad-frame' and outcome.diagnostic_structure is None and outcome.diagnostic_stage is None
+    # Receipt can only validate its own fields (no response body/status fields).
+    if bad not in ('body','status'):
+        forged=c.JobOutcome('synthetic','failed',None,failure,stage,version,structure)
+        path=receipt_parent/'forged.json';receipt=c.DiagnosticReceipt(str(path))
+        try:
+            with pytest.raises(ValueError):receipt.write([forged])
+        finally:receipt.close()
+        assert not path.exists()

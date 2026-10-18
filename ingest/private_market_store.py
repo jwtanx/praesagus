@@ -62,18 +62,28 @@ _STRUCTURE_FIELDS = {
 }
 _STRUCTURE_TYPES = frozenset({'absent','null','bool','int','float','string','array','object'})
 _ABSENT = object()
+_DATE_COUNTS = frozenset({'rows_examined','minutes_match','hours_only_match','neither_match','uncheckable'})
 
 
 def unavailable_structure():
     return {'schema_version':1,'status':'unavailable'}
 
 
-def valid_structure(value):
+def valid_structure(value, *, stage=None):
     """Closed static labels/types only; cannot carry arbitrary names or values."""
-    if type(value) is not dict or type(value.get('schema_version')) is not int or value['schema_version']!=1:
+    if type(value) is not dict or type(value.get('schema_version')) is not int or value['schema_version'] not in (1,2):
         return False
-    if value.get('status')=='unavailable':return set(value)=={'schema_version','status'}
-    if value.get('status')!='available' or set(value)!=({'schema_version','status'}|set(_STRUCTURE_FIELDS)):return False
+    v2=value['schema_version']==2
+    if v2:
+        if stage!='date-relation':return False
+        counts=value.get('date_relation_summary')
+        if type(counts) is not dict or set(counts)!=_DATE_COUNTS:return False
+        if any(type(n) is not int or not 0<=n<=370 for n in counts.values()):return False
+        if sum(n for k,n in counts.items() if k!='rows_examined')!=counts['rows_examined']:return False
+    if value.get('status')=='unavailable':return not v2 and set(value)=={'schema_version','status'}
+    keys={'schema_version','status'}|set(_STRUCTURE_FIELDS)
+    if v2:keys.add('date_relation_summary')
+    if value.get('status')!='available' or set(value)!=keys:return False
     for name,keys in _STRUCTURE_FIELDS.items():
         part=value[name]
         if type(part) is not dict or set(part)!={'type','fields','unexpected_fields'}:return False
@@ -92,7 +102,27 @@ def valid_structure(value):
     return True
 
 
-def history_structure(value):
+def _date_relation_summary(value):
+    """Count metadata hypotheses only; never normalize using the hours hypothesis."""
+    counts=dict.fromkeys(_DATE_COUNTS,0)
+    for row in value['data']['kline_list'][:370]:
+        counts['rows_examined']+=1
+        label='uncheckable'
+        try:
+            if type(row) is dict:
+                stamp,market_date,zone=(row.get(k) for k in ('time_key','date','time_zone'))
+                if (type(stamp) is int and 0<=stamp<=2**63-1 and type(market_date) is int
+                    and 19000101<=market_date<=21001231 and type(zone) is int and -720<=zone<=840):
+                    parsed=date.fromisoformat(f'{market_date//10000:04d}-{market_date//100%100:02d}-{market_date%100:02d}')
+                    minutes=date(1970,1,1)+timedelta(days=(stamp+zone*60000)//86400000)
+                    hours=date(1970,1,1)+timedelta(days=(stamp+zone*3600000)//86400000)
+                    label='minutes_match' if parsed==minutes else 'hours_only_match' if parsed==hours else 'neither_match'
+        except (ValueError,OverflowError):pass
+        counts[label]+=1
+    return counts
+
+
+def history_structure(value, *, stage=None):
     """Call only with already decoded/secret-screened JSON; no recursive projection."""
     def kind(v):
         if v is _ABSENT:return 'absent'
@@ -114,7 +144,9 @@ def history_structure(value):
         for name,keys in _STRUCTURE_FIELDS.items():
             expected=keys if name!='root' else ('ret_code','ret_msg','data','pagination','extra')
             result[name]=part(sections[name],keys,expected)
-        return result if valid_structure(result) else unavailable_structure()
+        if stage=='date-relation':
+            result.update(schema_version=2,date_relation_summary=_date_relation_summary(value))
+        return result if valid_structure(result,stage=stage) else unavailable_structure()
     except (ValueError,TypeError,KeyError,OverflowError):return unavailable_structure()
 
 
@@ -123,7 +155,8 @@ class MarketStoreError(ValueError):
     def __init__(self, category, *, diagnostic_stage=None, diagnostic_structure=None):
         self.diagnostic_stage = (diagnostic_stage if type(diagnostic_stage) is str
                                  and diagnostic_stage in HISTORY_STAGES else None)
-        self.diagnostic_structure = diagnostic_structure if valid_structure(diagnostic_structure) else None
+        self.diagnostic_structure = (diagnostic_structure if valid_structure(diagnostic_structure,stage=self.diagnostic_stage)
+                                     and (diagnostic_structure['schema_version']==1 or category=='invalid-response') else None)
         super().__init__(category)
 
 
@@ -291,7 +324,7 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
     def guard(condition, stage):
         if not condition:
             raise MarketStoreError('invalid-response', diagnostic_stage=stage if kind=='history' else None,
-                                   diagnostic_structure=(history_structure(value) if value is not _ABSENT else unavailable_structure())
+                                   diagnostic_structure=(history_structure(value,stage=stage) if value is not _ABSENT else unavailable_structure())
                                    if kind=='history' and version==4 else None) from None
     if kind == 'history':
         guard(isinstance(raw, bytes) and 0 < len(raw) <= MAX_RAW, 'decode-screen')

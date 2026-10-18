@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-128",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "financial-data",
+      "observability"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-18",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-18/PRSG-128-history-date-diagnostics.md",
+  "objective": "Add safe bounded date-relation diagnostic counts for actual Malaysia rejection without changing acceptance or retaining source values.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c43b777c7cc98d597ccb241a8fbbfa05a7e4104a",
+  "allowed_paths": [
+    "ingest/private_market_store.py",
+    "ingest/market_collector.py",
+    "tests/test_private_market_store.py",
+    "tests/test_market_collector.py",
+    "plans/2026-10-18/PRSG-128-history-date-diagnostics.md",
+    "plans/2026-10-18/PRSG-128.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "scripts/",
+    "ingest/forecast_scenario.py",
+    "ingest/report_forecast.py",
+    "tests/test_forecast_scenario.py",
+    "tests/test_private_forecast_csv.py",
+    "docs/PRIVATE_FORECAST_CSV.md"
+  ],
+  "checks": [
+    {
+      "id": "diagnostics",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_private_market_store.py",
+        "tests/test_market_collector.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independent4path source/rejection/stage/schema review; configured focusedtests539passed (exactelapsed recorded matchingMarkdown). Engineer539passed3.41s; initial538pass1fail from testplacement corrected preserving originalassertions. Count-only output retains no literal metadata/body; source acceptance unchanged. Required delivery hooks apply."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead verifies rejection unchanged, count-only diagnostic/no raw retention, strict stage/schema/legacy replay and required delivery hooks.",
+      "status": "passed",
+      "evidence": [
+        "Lead independent4path source/rejection/stage/schema review; configured focusedtests539passed (exactelapsed recorded matchingMarkdown). Engineer539passed3.41s; initial538pass1fail from testplacement corrected preserving originalassertions. Count-only output retains no literal metadata/body; source acceptance unchanged. Required delivery hooks apply."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-128-D1",
+      "description": "Safe count-only date diagnostics and legacy/rejection/privacy regressions pass.",
+      "check_ids": [
+        "diagnostics"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent4path source/rejection/stage/schema review; configured focusedtests539passed (exactelapsed recorded matchingMarkdown). Engineer539passed3.41s; initial538pass1fail from testplacement corrected preserving originalassertions. Count-only output retains no literal metadata/body; source acceptance unchanged. Required delivery hooks apply."
+      ]
+    },
+    {
+      "id": "PRSG-128-D2",
+      "description": "Lead independently accepts/delivers exact scope; no new provider release inferred.",
+      "check_ids": [
+        "diagnostics",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent4path source/rejection/stage/schema review; configured focusedtests539passed (exactelapsed recorded matchingMarkdown). Engineer539passed3.41s; initial538pass1fail from testplacement corrected preserving originalassertions. Count-only output retains no literal metadata/body; source acceptance unchanged. Required delivery hooks apply."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independent4path source/rejection/stage/schema review; configured focusedtests539passed (exactelapsed recorded matchingMarkdown). Engineer539passed3.41s; initial538pass1fail from testplacement corrected preserving originalassertions. Count-only output retains no literal metadata/body; source acceptance unchanged. Required delivery hooks apply."
+    ]
+  }
+}

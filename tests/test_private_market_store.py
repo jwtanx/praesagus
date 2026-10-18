@@ -925,3 +925,90 @@ def test_malaysia_raw_offset_is_not_reinterpreted_from_the_prefix(store):
     assert attempt.status=='success'
     record=store.query('history',ING)[0]['record']
     assert record['time_zone']==8 and 'currency' not in record and 'market_timezone' not in record
+
+
+# PRSG-128: fictional metadata only; the hours hypothesis never repairs a row.
+def date_summary_rows():
+    base=dict(time_key=STAMP-4*3600000,date=20261002,time_zone=8,close=10)
+    return [base,  # minutes = Oct 1, hours = Oct 2
+        {**base,'time_zone':0,'date':20261001},  # both match: count once as minutes
+        {**base,'time_zone':480},  # minutes match, hours differ
+        {**base,'date':20261003},  # neither interpretation
+        {**base,'time_key':True}, {**base,'time_zone':841},
+        {**base,'date':20260230}, {**base,'time_key':2**63-1},
+        {**base,'time_zone':'PRIVATE-METADATA-CANARY'}, False,
+        {**base,'time_key':-1}, {**base,'date':True}, {**base,'time_zone':True},
+        {**base,'date':18991231}, {**base,'time_zone':-721},
+        {**base,'time_key':1.0}, {**base,'date':21010101},
+        {'date':20261002,'time_zone':8}]
+
+
+def test_date_summary_counts_all_rows_without_values_or_acceptance(store):
+    from ingest import private_market_store as m
+    rows=date_summary_rows();raw=diagnostic_history_body(data={'kline_list':rows})
+    kind,query,_=m.request_meta(diagnostic_history_request())
+    with pytest.raises(MarketStoreError) as caught:m.normalized(raw,kind,query,version=4)
+    error=caught.value;structure=error.diagnostic_structure
+    assert str(error)=='invalid-response' and error.diagnostic_stage=='date-relation'
+    assert structure['schema_version']==2 and m.valid_structure(structure,stage='date-relation')
+    assert structure['date_relation_summary']==dict(rows_examined=len(rows),minutes_match=2,
+        hours_only_match=1,neither_match=1,uncheckable=len(rows)-4)
+    encoded=json.dumps(structure)
+    for literal in ('20261002',str(STAMP-4*3600000),'480','841','PRIVATE-METADATA-CANARY','SYNTHETIC-BODY-CANARY'):
+        assert literal not in encoded
+    # All historical normalization versions still reject exactly the same row.
+    for version in (1,2,3):
+        with pytest.raises(MarketStoreError) as old:m.normalized(raw,kind,query,version=version)
+        assert old.value.diagnostic_stage=='date-relation' and old.value.diagnostic_structure is None
+    attempt=ingest(store,req=diagnostic_history_request(),resp=ReadResponse(200,raw))
+    assert attempt.status=='failed' and attempt.raw_hash is None
+    assert not store.query('history',ING) and not list(store.raw_dir.iterdir())
+
+
+def test_date_summary_maximum_and_secret_screen():
+    from ingest import private_market_store as m
+    kind,query,_=m.request_meta(diagnostic_history_request());query={**query,'num':'370'}
+    rows=[date_summary_rows()[0]]*370
+    with pytest.raises(MarketStoreError) as caught:
+        m.normalized(diagnostic_history_body(data={'kline_list':rows}),kind,query,version=4)
+    assert caught.value.diagnostic_structure['date_relation_summary']==dict(rows_examined=370,
+        minutes_match=0,hours_only_match=370,neither_match=0,uncheckable=0)
+    with pytest.raises(MarketStoreError) as caught:
+        m.normalized(diagnostic_history_body(data={'kline_list':rows+[rows[0]]}),kind,query,version=4)
+    assert caught.value.diagnostic_stage=='history-rows' and caught.value.diagnostic_structure['schema_version']==1
+    for extra,secrets in (({'token':'PRIVATE-SECRET'},()),({'note':'PRIVATE-SECRET'},('PRIVATE-SECRET',))):
+        raw=diagnostic_history_body(data={'kline_list':[rows[0],extra]})
+        with pytest.raises(MarketStoreError) as caught:m.normalized(raw,kind,query,secrets,version=4)
+        assert caught.value.diagnostic_stage=='decode-screen'
+        assert caught.value.diagnostic_structure==m.unavailable_structure()
+
+
+def test_date_summary_closed_schema_and_controlled_error_binding():
+    from copy import deepcopy
+    from ingest import private_market_store as m
+    value=json.loads(diagnostic_history_body(date_summary_rows()[0]))
+    structure=m.history_structure(value,stage='date-relation')
+    assert not m.valid_structure(structure)  # schema2 always needs its stage
+    assert m.MarketStoreError('invalid-response',diagnostic_stage='date-relation',
+        diagnostic_structure=structure).diagnostic_structure==structure
+    for stage in m.HISTORY_STAGES-{'date-relation'}:
+        assert not m.valid_structure(structure,stage=stage)
+        assert m.MarketStoreError('invalid-response',diagnostic_stage=stage,
+            diagnostic_structure=structure).diagnostic_structure is None
+    assert m.MarketStoreError('other',diagnostic_stage='date-relation',diagnostic_structure=structure).diagnostic_structure is None
+    for change in ({'schema_version':True},{'status':'unavailable'},{'extra':'PRIVATE-CANARY'},
+                   {'date_relation_summary':None},{'schema_version':1}):
+        bad={**structure,**change};assert not m.valid_structure(bad,stage='date-relation')
+    for key in structure['date_relation_summary']:
+        for value in (True,-1,371,1.0,'PRIVATE-CANARY',None,[],{}):
+            bad=deepcopy(structure);bad['date_relation_summary'][key]=value
+            assert not m.valid_structure(bad,stage='date-relation')
+        bad=deepcopy(structure);bad['date_relation_summary'].pop(key)
+        assert not m.valid_structure(bad,stage='date-relation')
+    bad=deepcopy(structure);bad['date_relation_summary']['rows_examined']=2
+    assert not m.valid_structure(bad,stage='date-relation')
+    bad=deepcopy(structure);bad['date_relation_summary']['PRIVATE-CANARY']=0
+    assert not m.valid_structure(bad,stage='date-relation')
+    # Historical schema1 remains valid even at date-relation stage.
+    legacy=m.history_structure(json.loads(diagnostic_history_body(date_summary_rows()[0])))
+    assert m.valid_structure(legacy,stage='date-relation') and legacy['schema_version']==1
