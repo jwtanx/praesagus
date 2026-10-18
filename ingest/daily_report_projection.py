@@ -604,6 +604,7 @@ def project_report(store,template,universe,*,run_id,cutoff,expected_codes):
              and [{k:g[k] for k in ('key','label','emoji')} for g in config['groups']]==
                  [{k:g[k] for k in ('key','label','emoji')} for g in universe['groups']])
         frozen=parse_aware(cutoff)
+        # Quote projection cannot roll template narratives to another decision time.
         need(parse_aware(template['metadata']['as_of'])==frozen
              and template['metadata']['date']==frozen.astimezone(timezone(timedelta(hours=8))).date().isoformat())
         expected=['US.'+ticker for (market,ticker) in instruments if market=='US']

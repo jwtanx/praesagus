@@ -97,6 +97,37 @@ def test_missing_run_no_previous_quote_fallback(inputs):
     assert all('no_available_attempts' in r['data_gaps'] for r in result['forecasts'] if r['market']=='US')
 
 
+@pytest.mark.parametrize('as_of',[
+    '2026-10-02T07:59:59+08:00',  # Earlier instant, same MYT report date.
+    '2026-10-02T08:00:01+08:00',  # Future instant, same MYT report date.
+],ids=['past-template','future-template'])
+def test_same_day_template_cannot_be_retimestamped_before_store_selection(inputs,as_of):
+    store,template,universe,codes=inputs
+    template['metadata']['as_of']=as_of
+    template['forecasts'][0]['scenario']='Narrative frozen at the template decision time'
+    before=deepcopy(template)
+    calls=[]
+    class TrackedStore:
+        def select_snapshots(self,*args):
+            calls.append('select_snapshots')
+            return store.select_snapshots(*args)
+    with pytest.raises(MarketStoreError):
+        project_report(TrackedStore(),template,universe,run_id='synthetic',cutoff=CUTOFF,expected_codes=codes)
+    assert calls==[] and template==before
+
+
+def test_equivalent_timezone_cutoff_preserves_template_metadata_and_narrative(inputs):
+    template=inputs[1]
+    template['metadata']['as_of']='2026-10-02T08:00:00+08:00'
+    before=deepcopy(template)
+    result=project(inputs)
+    assert result['metadata']['as_of']==before['metadata']['as_of']
+    assert result['metadata']['date']==before['metadata']['date']
+    assert result['metadata']['quote_cutoff']==CUTOFF
+    assert result['forecasts'][0]['scenario']==before['forecasts'][0]['scenario']
+    assert template==before
+
+
 @pytest.mark.parametrize('price,previous,signal',[(11,10,'bullish'),(9,10,'bearish'),(10,10,'neutral')])
 def test_session_direction_uses_same_eligible_quote_snapshot(inputs,price,previous,signal):
     store,template,universe,codes=inputs

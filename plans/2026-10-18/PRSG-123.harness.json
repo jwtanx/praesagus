@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-123",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-18",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-18/PRSG-123-projection-cutoff-regression.md",
+  "objective": "Repair pending projection cutoff regression before committing, preserving the decision-time contract.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "c010988b1ceea7b8178732d9354c6a1f9f5174aa",
+  "allowed_paths": [
+    "ingest/daily_report_projection.py",
+    "tests/test_daily_report_projection.py",
+    "plans/2026-10-18/PRSG-123-projection-cutoff-regression.md",
+    "plans/2026-10-18/PRSG-123.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "scripts/stock-research/",
+    "tests/test_stock_research_news.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "plans/2026-10-14/PRSG-116.harness.json",
+    "plans/2026-10-14/PRSG-116-stock-research-sentiment.md"
+  ],
+  "checks": [
+    {
+      "id": "projection-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_daily_report_projection.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed final source/tests and exact hashes;59focused tests passed0.54s; original mismatch test unchanged. Mandatory full delivery hooks apply."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead exact diff/ownership/independent test review and required delivery hooks.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed final source/tests and exact hashes;59focused tests passed0.54s; original mismatch test unchanged. Mandatory full delivery hooks apply."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-123-D1",
+      "description": "Strict cutoff rejection and focused past/future template regressions pass without weakening existing checks.",
+      "check_ids": [
+        "projection-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed final source/tests and exact hashes;59focused tests passed0.54s; original mismatch test unchanged. Mandatory full delivery hooks apply."
+      ]
+    },
+    {
+      "id": "PRSG-123-D2",
+      "description": "Lead independently reviews exact source/tests, preserves unrelated work and delivers through mandatory hooks.",
+      "check_ids": [
+        "review",
+        "projection-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed final source/tests and exact hashes;59focused tests passed0.54s; original mismatch test unchanged. Mandatory full delivery hooks apply."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead exacttwofile/hash/59test independent review; originalunsafe pendingpatch preserved privately; delivery through mandatory hooks."
+    ]
+  }
+}
