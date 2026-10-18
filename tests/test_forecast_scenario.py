@@ -719,3 +719,130 @@ def test_generic_public_timebasis_rejects_cross_bound_row(field,value):
     mapped=f.apply_scenario_to_row(target,out,identity=identity)
     mapped['forecast_time_basis'][field]=value
     assert not f.validate_forecast_time_basis(mapped,cutoff)
+
+
+def private_case(kind='generic-my-cash', *, public_use='unknown'):
+    if kind.startswith('generic'):
+        e,a,issue,cutoff=generic_case(market='MY' if '-my-' in kind else 'US',cash=kind.endswith('cash'))
+    else:
+        e,a=cash_case() if kind=='legacy-cash' else make_case();issue,cutoff=ISSUE,CUTOFF
+    e['rights']['public_derived_forecast']=public_use
+    reseal(e,a);a['purpose']=f.PRIVATE_PURPOSE
+    return e,a,issue,cutoff
+
+
+def private_build(case):
+    e,a,issue,cutoff=case
+    return f.build_private_forecast_scenario(e,admission=a,issued_at=issue,report_cutoff=cutoff)
+
+
+@pytest.mark.parametrize('kind',['legacy-raw','legacy-cash','generic-us-raw','generic-us-cash','generic-my-raw','generic-my-cash'])
+def test_private_purpose_preserves_arithmetic_and_original_rights_without_public_fields(kind):
+    case=private_case(kind);e,a,issue,cutoff=case;before=deepcopy(case)
+    result=private_build(case)
+    assert result['status']=='generated' and result['purpose']==f.PRIVATE_PURPOSE
+    assert set(result)==f.PRIVATE_RESULT_KEYS and 'report_fields' not in result
+    assert set(result['estimates'])==f.PRIVATE_ESTIMATE_KEYS
+    assert set(result['provenance'])==f.PRIVATE_PROVENANCE_KEYS
+    assert case==before and result['classification']=='reviewed_real'
+    assert result['provenance']['rights']['public_derived_forecast']=='unknown'
+    assert result['provenance']['audit']['evidence_sha256']==sha(e)
+    assert result['provenance']['audit']['admission_sha256']==sha(a)
+    assert result['provenance']['audit']['method_sha256']==sha(e['method'])
+    public_e,public_a=deepcopy((e,a));public_e['rights']['public_derived_forecast']='permitted';public_a.pop('purpose');reseal(public_e,public_a)
+    public=f.build_forecast_scenario(public_e,admission=public_a,issued_at=issue,report_cutoff=cutoff)
+    assert public['status']=='generated'
+    for key in ('mu','sample_sd','point','low','high','baseline_point','baseline_low','baseline_high'):
+        assert result['estimates'][key]==public['private_audit'][key]
+    assert result['estimates']['display_point']==public['report_fields']['estimated_mid_case_value']
+    assert result['instrument']==e['instrument']
+    result['provenance']['rights']['history_collection']='changed'
+    result['instrument']['ticker']='changed'
+    assert case==before
+
+
+@pytest.mark.parametrize('field,value',[
+    ('history_collection','unknown'),('private_retention_research','unknown'),
+    ('history_collection',False),('private_retention_research','prohibited'),
+    ('public_derived_forecast',None),('public_derived_forecast',{}),
+])
+def test_private_usage_rights_fail_closed_without_fabrication(field,value):
+    e,a,issue,cutoff=private_case();e['rights'][field]=value;reseal(e,a)
+    result=private_build((e,a,issue,cutoff))
+    assert result['status']=='withheld' and 'rights' in result['reasons']
+    assert result['estimates'] is result['provenance'] is result['instrument'] is None
+    assert set(result)==f.PRIVATE_RESULT_KEYS and 'report_fields' not in result
+
+
+@pytest.mark.parametrize('public_use',['unknown','prohibited','not_permitted','permitted'])
+def test_private_does_not_change_public_usage_disposition(public_use):
+    e,a,issue,cutoff=private_case(public_use=public_use)
+    result=private_build((e,a,issue,cutoff))
+    assert result['status']=='generated' and result['provenance']['rights']['public_derived_forecast']==public_use
+    public_admission=deepcopy(a);public_admission.pop('purpose')
+    public=f.build_forecast_scenario(e,admission=public_admission,issued_at=issue,report_cutoff=cutoff)
+    assert (public['status']=='generated') is (public_use=='permitted')
+
+
+@pytest.mark.parametrize('mutation',['none','public-admission','wrong-purpose','purpose-bool','extra','bad-schema','hash','rights-hash','review','method','future','identity','actions'])
+def test_private_admission_and_all_shared_gates_remain_mandatory(mutation):
+    e,a,issue,cutoff=private_case()
+    if mutation=='none':a=None
+    elif mutation=='public-admission':a.pop('purpose')
+    elif mutation=='wrong-purpose':a['purpose']='public'
+    elif mutation=='purpose-bool':a['purpose']=True
+    elif mutation=='extra':a['extra']='no'
+    elif mutation=='bad-schema':a['schema_version']=True
+    elif mutation=='hash':a['evidence_sha256']='0'*64
+    elif mutation=='rights-hash':a['decisions']['rights']['contract_sha256']='0'*64
+    elif mutation=='review':a['reviewed_at']='2026-10-23T00:00:00Z'
+    elif mutation=='method':e['method']['observations']=19;reseal(e,a)
+    elif mutation=='future':e['bars'][-1]['known_at']='2026-10-23T00:00:00Z';reseal(e,a)
+    elif mutation=='identity':e['bars'][-1]['currency']='USD';reseal(e,a)
+    else:e['corporate_actions']['complete']=False;reseal(e,a)
+    result=private_build((e,a,issue,cutoff))
+    assert result['status']=='withheld' and result['estimates'] is None
+
+
+@pytest.mark.parametrize('evidence',[None,{},[],True,float('nan')])
+def test_private_malformed_inputs_return_closed_unavailable(evidence):
+    _,a,issue,cutoff=private_case()
+    result=private_build((evidence,a,issue,cutoff))
+    assert result['status']=='withheld' and result['reasons']==['schema']
+    assert set(result)==f.PRIVATE_RESULT_KEYS and 'report_fields' not in result
+
+
+def test_private_authored_fixture_is_never_described_as_real():
+    e,a,issue,cutoff=private_case();e['classification']='authored_fixture';reseal(e,a)
+    result=private_build((e,a,issue,cutoff))
+    assert result['classification']=='fixture_only'
+    assert result['provenance']['audit']['classification']=='fixture_only'
+
+
+@pytest.mark.parametrize('kind',['legacy-raw','legacy-cash','generic-us-raw','generic-us-cash','generic-my-raw','generic-my-cash'])
+def test_public_calculator_and_mapper_cannot_consume_private_contracts(kind):
+    e,a,issue,cutoff=private_case(kind,public_use='permitted')
+    # Even all-public permissions do not permit a private admission at a public API.
+    assert f.build_forecast_scenario(e,admission=a,issued_at=issue,report_cutoff=cutoff)['reasons']==['schema']
+    result=private_build((e,a,issue,cutoff));identity={k:e['instrument'][k] for k in f.ROW_IDENTITY}
+    target=row();target.update(identity)
+    with pytest.raises(f.ScenarioValidationError):f.apply_scenario_to_row(target,result,identity=identity)
+    with pytest.raises(TypeError):f.build_forecast_scenario(e,admission=a,issued_at=issue,report_cutoff=cutoff,private=True)
+
+
+def test_public_overlay_and_cli_do_not_generate_private_predictions(tmp_path,capsys):
+    # Load existing public workflow fixtures without altering their module/files.
+    spec=importlib.util.spec_from_file_location('private_boundary_public_cases',BASE/'tests/test_report_forecast.py')
+    public_cases=importlib.util.module_from_spec(spec);spec.loader.exec_module(public_cases)
+    e,a,_,_=private_case('legacy-raw');template,_,_=public_cases.normal_inputs()
+    output=public_cases.prepare(template,e,a)
+    assert output['status']=='withheld' and output['reasons']==['schema']
+    assert output['report']['forecasts'][0]['estimated_mid_case_value'] is None
+    private=tmp_path/'private';private.mkdir(mode=0o700)
+    argv=public_cases.arguments(private,mutate=lambda values:values.update(evidence=e,admission=a))
+    assert public_cases.cli.main(argv)==0
+    status=json.loads(capsys.readouterr().out)
+    assert status['status']=='withheld' and status['forecast_generated_count']==0
+    prepared=json.loads((private/'bundle'/'prepared-report.json').read_text())
+    assert all(value.get('estimated_mid_case_value') is None for value in prepared['forecasts'])
+    assert 'purpose' not in prepared

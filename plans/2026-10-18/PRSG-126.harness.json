@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-126",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-18",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-18/PRSG-126-private-research-scenarios.md",
+  "objective": "Separate private research numerical calculation from public-use admission while preserving all public and financial checks.",
+  "status": "complete",
+  "owner": "AI Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6f289ce7a730f43de05852b80cfb92dfd4b8306c",
+  "allowed_paths": [
+    "ingest/forecast_scenario.py",
+    "tests/test_forecast_scenario.py",
+    "plans/2026-10-18/PRSG-126-private-research-scenarios.md",
+    "plans/2026-10-18/PRSG-126.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/report_forecast.py",
+    "scripts/",
+    "connectors/",
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py"
+  ],
+  "checks": [
+    {
+      "id": "core",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_forecast_scenario.py",
+        "tests/test_report_forecast.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed exact core diff/private-public boundary and ran configured core+overlay regressions:338passed2.38s; AIreported338passed2.48s. No actualsource/privatepermission/CSV admission inferred. Required delivery hooks apply."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead verifies private/public separation, unchanged financial gates, scope and mandatory delivery hooks.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed exact core diff/private-public boundary and ran configured core+overlay regressions:338passed2.38s; AIreported338passed2.48s. No actualsource/privatepermission/CSV admission inferred. Required delivery hooks apply."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-126-D1",
+      "description": "Separate private-purpose API and shared numerical/financial checks pass regressions.",
+      "check_ids": [
+        "core"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed exact core diff/private-public boundary and ran configured core+overlay regressions:338passed2.38s; AIreported338passed2.48s. No actualsource/privatepermission/CSV admission inferred. Required delivery hooks apply."
+      ]
+    },
+    {
+      "id": "PRSG-126-D2",
+      "description": "Public paths reject private contracts; Lead independently reviews and delivers, actual-use permission remains pending.",
+      "check_ids": [
+        "core",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed exact core diff/private-public boundary and ran configured core+overlay regressions:338passed2.38s; AIreported338passed2.48s. No actualsource/privatepermission/CSV admission inferred. Required delivery hooks apply."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed exact core diff/private-public boundary and ran configured core+overlay regressions:338passed2.38s; AIreported338passed2.48s. No actualsource/privatepermission/CSV admission inferred. Required delivery hooks apply."
+    ]
+  }
+}

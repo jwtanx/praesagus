@@ -11,6 +11,12 @@ estimates displayed to 2 decimals HALF_UP, not exchange-tick projections.
 apply_scenario_to_row(..., identity={ticker,market,currency}) requires exact
 ROW_IDENTITY for generic results and non-SPY withholding; no identity argument
 retains legacy SPY semantics. Authored fixtures cannot map to public rows.
+
+build_private_forecast_scenario has the same arguments but requires exactly
+PRIVATE_ADMISSION keys and purpose=PRIVATE_PURPOSE. It checks collection and
+private retention rights, preserving the unmodified public-use disposition.
+Its closed PRIVATE_RESULT_KEYS output has no report_fields and cannot enter
+public mapping. No filesystem export or source-use approval is provided.
 """
 from copy import deepcopy
 from datetime import date, datetime, timezone
@@ -42,6 +48,12 @@ BAR = {'instrument_id','session_date','close_at','close','currency','unit','basi
 ACTIONS = {'instrument_id','source_url','source_sha256','known_at','coverage_start','coverage_end','complete','events'}
 RIGHTS = {'history_collection','private_retention_research','public_derived_forecast','evidence_reference','source_sha256','known_at'}
 ADMISSION = {'schema_version','classification','evidence_sha256','method_sha256','reviewed_at','reviewers','decisions'}
+PRIVATE_PURPOSE = 'private_research_only'
+PRIVATE_ADMISSION = ADMISSION | {'purpose'}
+PRIVATE_RESULT_KEYS = {'schema_version','purpose','status','reasons','classification','instrument','estimates','provenance'}
+PRIVATE_ESTIMATE_KEYS = {'direction','mu','sample_sd','point','low','high','baseline_point','baseline_low','baseline_high',
+                         'display_point','display_low','display_high','currency','display_rounding'}
+PRIVATE_PROVENANCE_KEYS = {'audit','source','rights','method','calendar','corporate_actions'}
 GATES = ('identity_units','calendar_window','bar_provenance','close_convention','basis_actions','rights','method')
 FIELDS = {'direction','direction_label','forecast_status','estimated_mid_case','estimated_range','estimated_mid_case_value',
           'range_low_value','range_high_value','forecast_as_of','target_date','forecast_model','forecast_observations',
@@ -160,8 +172,9 @@ def _bounded(value, *, max_depth=8):
     return True
 
 
-def _schema(e,a):
-    if type(e) is not dict or not _obj(e,EVIDENCE | {'narrative'} if e.get('schema_version')==3 else EVIDENCE) or not _obj(a,ADMISSION):return False
+def _schema(e,a, *, private=False):
+    if type(e) is not dict or not _obj(e,EVIDENCE | {'narrative'} if e.get('schema_version')==3 else EVIDENCE) or not _obj(a,PRIVATE_ADMISSION if private else ADMISSION):return False
+    if private and a['purpose']!=PRIVATE_PURPOSE:return False
     if e.get('schema_version')==3 and (not _obj(e['narrative'],NARRATIVE) or not all(_text(v) for v in e['narrative'].values())):return False
     for key,keys in (('instrument',INSTRUMENT),('source',SOURCE),('calendar',CALENDAR),('corporate_actions',ACTIONS),('rights',RIGHTS),('method',set(METHOD))):
         if not _obj(e[key],keys):return False
@@ -195,8 +208,36 @@ def build_forecast_scenario(evidence, *, admission, issued_at, report_cutoff):
     Review/authenticity/rights are external responsibilities; caller declarations
     and digests do not independently authenticate the provider or reviewers.
     """
+    return _build_forecast_scenario(evidence,admission=admission,issued_at=issued_at,report_cutoff=report_cutoff)
+
+
+def build_private_forecast_scenario(evidence, *, admission, issued_at, report_cutoff):
+    """Calculate only with a distinct reviewed private-purpose admission.
+
+    Same financial/time/hash gates as public scenarios; unknown public-use rights
+    are preserved, never replaced with permission. Review remains external.
+    Authored fixtures stay fixture_only. Results are not report-row contracts.
+    """
+    result=_build_forecast_scenario(evidence,admission=admission,issued_at=issued_at,
+                                    report_cutoff=report_cutoff,private=True)
+    output=dict(schema_version=1,purpose=PRIVATE_PURPOSE,status=result['status'],
+                reasons=deepcopy(result['reasons']),classification='unavailable',instrument=None,
+                estimates=None,provenance=None)
+    if result['status']!='generated':return output
+    audit=result['private_audit'];fields=result['report_fields']
+    estimates={key:audit[key] for key in ('mu','sample_sd','point','low','high','baseline_point','baseline_low','baseline_high')}
+    estimates.update(direction=fields['direction'],display_point=fields['estimated_mid_case_value'],
+        display_low=fields['range_low_value'],display_high=fields['range_high_value'],
+        currency=evidence['instrument']['currency'],display_rounding=evidence['method']['rounding'])
+    output.update(classification=audit['classification'],instrument=deepcopy(evidence['instrument']),estimates=estimates,
+                  provenance=dict(audit=deepcopy(audit),**{k:deepcopy(evidence[k]) for k in ('source','rights','method','calendar','corporate_actions')}))
+    return output
+
+
+def _build_forecast_scenario(evidence, *, admission, issued_at, report_cutoff, private=False):
+    """Shared reviewed calculation; purpose changes only admission and rights use."""
     if admission is None:return _unavailable(['admission_missing'])
-    if not all(_bounded(v) for v in (evidence,admission,issued_at,report_cutoff)) or not _schema(evidence,admission):
+    if not all(_bounded(v) for v in (evidence,admission,issued_at,report_cutoff)) or not _schema(evidence,admission,private=private):
         return _unavailable(['schema'])
     e,a=evidence,admission; reasons=set()
     generic=e['schema_version']==3
@@ -294,7 +335,9 @@ def build_forecast_scenario(evidence, *, admission, issued_at, report_cutoff):
                     cash_by_day[day]=amount
             return True
         check('basis_actions',actions)
-    check('rights',lambda: all(r[k]=='permitted' for k in ('history_collection','private_retention_research','public_derived_forecast'))
+    required_uses=('history_collection','private_retention_research') if private else ('history_collection','private_retention_research','public_derived_forecast')
+    check('rights',lambda: all(r[k]=='permitted' for k in required_uses)
+          and (not private or _text(r['public_derived_forecast']))
           and _text(r['evidence_reference']) and _sha(r['source_sha256']) and _time(r['known_at'])<=issue)
     check('method',lambda: m==method and all(type(m[k]) is type(v) for k,v in method.items()))
     if reasons:return _unavailable(sorted(reasons))
