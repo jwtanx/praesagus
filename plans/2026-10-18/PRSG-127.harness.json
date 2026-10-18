@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-127",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-18",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-18/PRSG-127-private-forecast-csv.md",
+  "objective": "Export admitted private-only per-instrument research scenarios to immutable local CSV/audit bundles.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6f289ce7a730f43de05852b80cfb92dfd4b8306c",
+  "allowed_paths": [
+    "scripts/daily-market-brief/prepare_private_forecast.py",
+    "tests/test_private_forecast_csv.py",
+    "docs/PRIVATE_FORECAST_CSV.md",
+    "plans/2026-10-18/PRSG-127-private-forecast-csv.md",
+    "plans/2026-10-18/PRSG-127.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/",
+    "connectors/",
+    "scripts/daily-market-brief/prepare_forecast_report.py",
+    "tests/test_forecast_scenario.py",
+    "tests/test_report_forecast.py"
+  ],
+  "checks": [
+    {
+      "id": "csv",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_private_forecast_csv.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently inspected exact3frozen source/test/guide hashes and ran export+core+publicoverlay:388passed2.91s. Engineerfocused50passed0.53s, finalexport+core275passed1.13s. Initial43pass7fail retained in handoff; Git-parent-self hole fixed without coregate weakening. No actualsource/admission/realCSV inferred. Mandatory delivery hooks apply."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead scope/diff/guide review, private/public separation and required delivery hooks.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently inspected exact3frozen source/test/guide hashes and ran export+core+publicoverlay:388passed2.91s. Engineerfocused50passed0.53s, finalexport+core275passed1.13s. Initial43pass7fail retained in handoff; Git-parent-self hole fixed without coregate weakening. No actualsource/admission/realCSV inferred. Mandatory delivery hooks apply."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-127-D1",
+      "description": "Bounded private singleton/batch CSV with immutable output and failure regressions passes.",
+      "check_ids": [
+        "csv"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently inspected exact3frozen source/test/guide hashes and ran export+core+publicoverlay:388passed2.91s. Engineerfocused50passed0.53s, finalexport+core275passed1.13s. Initial43pass7fail retained in handoff; Git-parent-self hole fixed without coregate weakening. No actualsource/admission/realCSV inferred. Mandatory delivery hooks apply."
+      ]
+    },
+    {
+      "id": "PRSG-127-D2",
+      "description": "Lead independently reviews/delivers mechanical export; actual source admission not inferred.",
+      "check_ids": [
+        "csv",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently inspected exact3frozen source/test/guide hashes and ran export+core+publicoverlay:388passed2.91s. Engineerfocused50passed0.53s, finalexport+core275passed1.13s. Initial43pass7fail retained in handoff; Git-parent-self hole fixed without coregate weakening. No actualsource/admission/realCSV inferred. Mandatory delivery hooks apply."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently inspected exact3frozen source/test/guide hashes and ran export+core+publicoverlay:388passed2.91s. Engineerfocused50passed0.53s, finalexport+core275passed1.13s. Initial43pass7fail retained in handoff; Git-parent-self hole fixed without coregate weakening. No actualsource/admission/realCSV inferred. Mandatory delivery hooks apply."
+    ]
+  }
+}
