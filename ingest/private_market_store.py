@@ -248,7 +248,8 @@ def request_meta(request):
              and all(isinstance(c, str) and re.fullmatch(r'US\.[A-Z][A-Z0-9.-]{0,59}', c) for c in codes)
              and len(set(codes)) == len(codes))
         return 'snapshot', {'codes': codes}, secrets
-    if request.method == 'GET' and re.fullmatch(r'/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,59}/history-kline', request.path):
+    if request.method == 'GET' and (re.fullmatch(r'/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,59}/history-kline', request.path)
+                                  or request.path == '/api/v1.0/quote/BMS.1155/history-kline'):
         need(not request.body)
         query = parse_qsl(request.query, keep_blank_values=True, strict_parsing=True)
         need(len(query) == len(dict(query)))
@@ -266,6 +267,8 @@ def request_meta(request):
             raise MarketStoreError('invalid-response') from None
         need(start is None or start<=end)
         code=request.path[len('/api/v1.0/quote/'):].removesuffix('/history-kline')
+        if code == 'BMS.1155':
+            need(request.query == f"end={filters['end']}&ktype=2&autype=0&num=100")
         check_secrets(filters, secrets)
         return 'history', {'code':code, **filters}, secrets
     need((request.method, request.path) == ('GET', '/api/v1.0/quote/find-news') and not request.body)
@@ -364,7 +367,9 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
         elif kind == 'history':
             guard({'date','time_key','time_zone'} <= set(row), 'metadata-missing')
             code=request['code'];stamp=row.get('time_key');market_date=row.get('date');zone=row.get('time_zone')
-            guard(code.startswith('US.') and type(stamp) is int and 0<=stamp<=2**63-1
+            candidate=(code=='BMS.1155' and request.get('ktype')=='2' and request.get('autype')=='0'
+                       and request.get('num')=='100' and 'start' not in request)
+            guard((code.startswith('US.') or candidate) and type(stamp) is int and 0<=stamp<=2**63-1
                  and type(market_date) is int and 19000101<=market_date<=21001231
                   and type(zone) is int and -720<=zone<=840, 'metadata-invalid')
             try:
@@ -528,6 +533,8 @@ class PrivateMarketStore:
                     'raw_hash': raw_hash, 'status': status, 'reason': reason, 'missing_codes': missing,
                     'unsupported_markets': {'MY': 'unattempted-unsupported'}, 'record_count': len(records),
                     'rights_status': 'unconfirmed', 'connector': 'moomoo-rest-capture', 'endpoint': request.path}
+            if kind=='history' and query['code']=='BMS.1155':
+                meta['unsupported_markets']={'MY':'other-instruments-unattempted-unsupported'}
             if kind in ('snapshot','history'):meta['normalization_version']=version
             attempt_id = digest(canonical(meta).encode())
             if raw is not None:self._archive(raw, raw_hash)

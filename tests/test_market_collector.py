@@ -909,3 +909,40 @@ def test_private_frame_structure_linkage_rejects_impossible_states(change):
         structure['root']['fields']={key:'absent' for key in structure['root']['fields']}
     if change=='code-flag':structure['root']['unexpected_fields']='absent'
     with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header),HISTORY)
+
+
+def test_exact_malaysia_history_plan_worker_store_roundtrip_without_new_capabilities(store):
+    job={'kind':'history','code':'BMS.1155','end':'2026-10-02'}
+    plan={'schema_version':1,'codes':[],'news':[],'history':[{'code':'BMS.1155','end':'2026-10-02'}]}
+    assert c.validate_plan(plan)==[job]
+    req=c.job_request(job)
+    assert req.path=='/api/v1.0/quote/BMS.1155/history-kline'
+    assert req.query=='end=2026-10-02&ktype=2&autype=0&num=100'
+    row={'time_key':1790870400000,'date':20261002,'time_zone':480,'close':12.5}
+    resp=ReadResponse(200,json.dumps({'ret_code':0,'ret_msg':'ok','data':{'kline_list':[row]}}).encode())
+    requests=[];signed=[]
+    def signer(value):signed.append(value);return b'synthetic-signature'
+    frame=c.execute_job(job,LOCATOR,credentials=lambda _:('synthetic-api-key',signer),
+        transport_factory=lambda:lambda request:(requests.append(request) or resp),clock=lambda:OBS)
+    parsed=c.parse_reply(frame,job)
+    assert parsed.failure is None and parsed.response.body==resp.body
+    assert len(requests)==len(signed)==1 and requests[0].query==req.query
+    outcome=c.collect(store,plan,LOCATOR,run_id='synthetic-my',supervisor=lambda *a,**k:parsed,wall=wall_clock())
+    assert len(outcome)==1 and outcome[0].failure is None
+    record=store.query('history',ING)[0]
+    assert record['record']['code']=='BMS.1155' and record['record']['time_zone']==480
+    assert record['record']['adjustment']==0 and 'currency' not in record['record']
+    assert store.raw(store.attempts(ING)[0]['raw_hash'])==resp.body
+
+
+@pytest.mark.parametrize('code',['MY.1155','BMS.1156','BMS.SYN','bms.1155','BMS.1155/../accounts'])
+def test_other_malaysia_codes_remain_rejected_before_worker_or_credentials(code,store):
+    plan={'schema_version':1,'codes':[],'news':[],'history':[{'code':code,'end':'2026-10-02'}]}
+    def forbidden(*a,**k):pytest.fail('invalid plan started worker')
+    with pytest.raises(ValueError):c.collect(store,plan,LOCATOR,run_id='synthetic-my',supervisor=forbidden)
+
+
+def test_malaysia_candidate_does_not_expand_snapshot_or_plan_parameters(store):
+    with pytest.raises(ValueError):c.validate_plan({'schema_version':1,'codes':['BMS.1155'],'news':[]})
+    for extra in ({'num':99},{'start':'2026-10-01'},{'autype':1}):
+        with pytest.raises(ValueError):c.job_request({'kind':'history','code':'BMS.1155','end':'2026-10-02',**extra})

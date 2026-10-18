@@ -865,3 +865,63 @@ def test_v4_history_only(kind):
     from ingest.private_market_store import normalized,request_meta
     actual,query,_=request_meta(request(kind))
     with pytest.raises(MarketStoreError):normalized(response(kind=kind).body,actual,query,version=4)
+
+
+def my_history_request(query='end=2026-10-02&ktype=2&autype=0&num=100',code='BMS.1155'):
+    return ReadRequest('GET',f'/api/v1.0/quote/{code}/history-kline',query,b'',{},1)
+
+
+@pytest.mark.parametrize('stamp,market_date',[(STAMP-8*3600000-1,20261001),(STAMP-8*3600000,20261002)])
+def test_exact_malaysia_candidate_keeps_raw_identity_offset_and_unconfirmed_admission(store,stamp,market_date):
+    row={'time_key':stamp,'date':market_date,'time_zone':480,'close':12.5}
+    resp=ReadResponse(200,json.dumps({'ret_code':0,'ret_msg':'ok','data':{'kline_list':[row]}}).encode())
+    attempt=ingest(store,req=my_history_request(),resp=resp)
+    assert attempt.status=='success'
+    record=store.query('history',ING)[0];meta=record['observation']
+    assert record['record']['code']=='BMS.1155' and record['record']['time_zone']==480
+    assert record['record']['adjustment']==0 and record['source_ms']==stamp
+    assert not {'currency','market_timezone','settled_at'}&record['record'].keys()
+    assert meta['rights_status']=='unconfirmed'
+    assert meta['unsupported_markets']=={'MY':'other-instruments-unattempted-unsupported'}
+    assert store.raw(attempt.raw_hash)==resp.body
+
+
+@pytest.mark.parametrize('code,query',[
+    ('BMS.1156','end=2026-10-02&ktype=2&autype=0&num=100'),
+    ('MY.1155','end=2026-10-02&ktype=2&autype=0&num=100'),
+    ('BMS.1155','end=2026-10-02&ktype=2&autype=1&num=100'),
+    ('BMS.1155','start=2026-10-01&end=2026-10-02&ktype=2&autype=0&num=100'),
+    ('BMS.1155','end=2026-10-02&ktype=2&autype=0&num=99'),
+    ('BMS.1155','%65nd=2026-10-02&ktype=2&autype=0&num=100'),
+    ('BMS.1155','end=2026-10-02&ktype=2&autype=0&num=100&num=100'),
+])
+def test_store_malaysia_route_is_literal_raw_end_only(code,query):
+    from ingest.private_market_store import request_meta
+    with pytest.raises(MarketStoreError):request_meta(my_history_request(query,code))
+
+
+@pytest.mark.parametrize('case',['date-mismatch','future-end','duplicate','nonfinite','secret','wrong-type'])
+def test_malaysia_history_invalid_response_has_no_raw_or_records(store,case):
+    row={'time_key':STAMP-8*3600000,'date':20261002,'time_zone':480,'close':12.5}
+    rows=[row]
+    if case=='date-mismatch':row['date']=20261001
+    elif case=='future-end':row.update(time_key=STAMP+2*86400000,date=20261004)
+    elif case=='duplicate':rows=[row,row]
+    elif case=='nonfinite':row['close']=float('inf')
+    elif case=='secret':row['account_id']='SYNTHETIC-CANARY'
+    else:row['close']=True
+    resp=ReadResponse(200,json.dumps({'ret_code':0,'ret_msg':'ok','data':{'kline_list':rows}}).encode())
+    attempt=ingest(store,req=my_history_request(),resp=resp)
+    assert attempt.status=='failed' and attempt.raw_hash is None
+    assert not store.query('history',ING) and not list(store.raw_dir.iterdir())
+
+
+def test_malaysia_raw_offset_is_not_reinterpreted_from_the_prefix(store):
+    # This date happens to agree with either literal offset. Date agreement is
+    # not evidence that a vendor meant hours rather than documented minutes.
+    row={'time_key':STAMP,'date':20261002,'time_zone':8,'close':12.5}
+    resp=ReadResponse(200,json.dumps({'ret_code':0,'ret_msg':'ok','data':{'kline_list':[row]}}).encode())
+    attempt=ingest(store,req=my_history_request(),resp=resp)
+    assert attempt.status=='success'
+    record=store.query('history',ING)[0]['record']
+    assert record['time_zone']==8 and 'currency' not in record and 'market_timezone' not in record

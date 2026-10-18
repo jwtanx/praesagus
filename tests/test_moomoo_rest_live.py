@@ -433,3 +433,39 @@ def test_history_invalid_route_query_rejected_before_connection(changes):
         transport(request(**values))
     assert factories == [] and c.calls == []
     assert_private(caught.value)
+
+
+def test_exact_malaysia_history_core_to_secure_transport_uses_existing_signature():
+    body=b'{"ret_code":0,"ret_msg":"ok","data":{"kline_list":[{"time_key":1790870400000,"date":20261002,"time_zone":480,"close":12.5}]}}'
+    transport,c,factories=harness(FakeResponse(body=body));signed=[]
+    def sign(value):signed.append(value);return b's'*64
+    core=MoomooRESTConnector(api_key='synthetic-key',signer=sign,transport=transport,
+        clock_ms=lambda:1790899200000,nonce_factory=lambda:'n')
+    result=core.history_kline('BMS.1155','2026-10-02')
+    path='/api/v1.0/quote/BMS.1155/history-kline';query='end=2026-10-02&ktype=2&autype=0&num=100'
+    assert signed==[f'1790899200000\nGET\n{path}\n{query}\n'.encode()]
+    assert c.calls[1][0]==('GET',path+'?'+query) and len(factories)==1 and c.closed
+    assert result.data[0]['time_zone']==480 and result.data[0]['close']==12.5
+
+
+@pytest.mark.parametrize('changes',[
+    {'path':'/api/v1.0/quote/BMS.1156/history-kline'}, {'path':'/api/v1.0/quote/MY.1155/history-kline'},
+    {'path':'/api/v1.0/quote/BMS.1155/history-kline/extra'}, {'path':'/api/v1.0/quote/BMS.1155/../accounts'},
+    {'method':'POST'}, {'body':b'x'},
+    *({'query':q} for q in [
+        'start=2026-10-01&end=2026-10-02&ktype=2&autype=0&num=100',
+        'end=2026-10-02&ktype=2&autype=1&num=100',
+        'end=2026-10-02&ktype=2&autype=2&num=100',
+        'end=2026-10-02&ktype=1&autype=0&num=100',
+        'end=2026-10-02&ktype=2&autype=0&num=99',
+        'end=2026-10-02&ktype=2&autype=0&num=100&num=100',
+        '%65nd=2026-10-02&ktype=2&autype=0&num=100',
+        'end=2026-02-30&ktype=2&autype=0&num=100',
+        'end=2026-10-02&ktype=2&autype=0&num=100&account_id=1'])
+])
+def test_exact_malaysia_history_secure_allowlist_fails_before_connect(changes):
+    transport,c,factories=harness()
+    values={'path':'/api/v1.0/quote/BMS.1155/history-kline','query':'end=2026-10-02&ktype=2&autype=0&num=100'}
+    values.update(changes)
+    with pytest.raises(live.LiveReadError,match='invalid-request'):transport(request(**values))
+    assert not factories and not c.calls

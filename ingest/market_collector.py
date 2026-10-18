@@ -52,7 +52,7 @@ def job_request(job):
             canonical({'code_list': job['codes']}).encode(), {}, 10)
     elif job.get('kind') == 'history':
         require(set(job) == {'kind','code','end'} and isinstance(job['code'],str)
-                and re.fullmatch(r'US\.[A-Z][A-Z0-9.-]*',job['code'])
+                and (re.fullmatch(r'US\.[A-Z][A-Z0-9.-]*',job['code']) or job['code']=='BMS.1155')
                 and isinstance(job['end'],str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}',job['end']))
         request = ReadRequest('GET',f"/api/v1.0/quote/{job['code']}/history-kline",
             urlencode([('end',job['end']),('ktype',2),('autype',0),('num',100)]),b'',{},10)

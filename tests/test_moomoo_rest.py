@@ -425,3 +425,46 @@ def test_malformed_transport_results(response):
     h.response = response
     with pytest.raises(RESTError, match="malformed-response"):
         h.client.search_news("x")
+
+
+@pytest.mark.parametrize('stamp,market_date',[(NOW-8*3600000-1,20261001),(NOW-8*3600000,20261002)])
+def test_exact_malaysia_candidate_raw_daily_request_preserves_supplied_offset(stamp,market_date):
+    row=kline(time_key=stamp,date=market_date,time_zone=480)
+    h=Harness(quote({'kline_list':[row],'volume_precision':0}))
+    result=h.client.history_kline('BMS.1155','2026-10-02')
+    r=h.requests[0]
+    assert (r.method,r.path,r.query,r.body)==('GET','/api/v1.0/quote/BMS.1155/history-kline',
+        'end=2026-10-02&ktype=2&autype=0&num=100',b'')
+    assert h.signed==[f'{NOW}\nGET\n{r.path}\n{r.query}\n'.encode()]
+    assert result.data==[row] and result.data[0]['time_zone']==480
+    assert 'currency' not in result.data[0]  # No MYR inference from route.
+
+
+@pytest.mark.parametrize('code,options',[
+    ('BMS.1156',{}),('MY.1155',{}),('BMS.SYN',{}),('bms.1155',{}),('BMS.1155/../accounts',{}),
+    ('BMS.1155',{'start':'2026-10-01'}),('BMS.1155',{'num':99}),('BMS.1155',{'num':True}),
+    ('BMS.1155',{'num':100.0}),('BMS.1155',{'autype':1}),('BMS.1155',{'autype':2}),
+    ('BMS.1155',{'autype':False}),('BMS.1155',{'ktype':1}),('BMS.1155',{'ktype':True}),
+])
+def test_malaysia_candidate_variants_fail_before_signing_or_transport(code,options):
+    h=Harness()
+    with pytest.raises(RESTError):h.client.history_kline(code,'2026-10-02',**options)
+    assert not h.requests and not h.signed
+
+
+@pytest.mark.parametrize('rows',[
+    [kline(time_zone=480,date=20261003)], [kline(time_zone=480,close=0)],
+    [kline(time_zone=480),kline(time_zone=480)], [kline(time_zone=480,time_key=2**63-1)],
+    [kline(time_zone=480,close=float('nan'))], [kline(time_zone=480,volume=-1)],
+    [kline(time_zone=480,date=20260230)], [kline(time_zone=900)],
+])
+def test_exact_malaysia_candidate_keeps_strict_bar_contract(rows):
+    h=Harness(quote({'kline_list':rows}))
+    with pytest.raises(RESTError,match='malformed-response'):h.client.history_kline('BMS.1155','2026-10-02')
+    assert len(h.requests)==1
+
+
+def test_exact_malaysia_candidate_does_not_enable_snapshot():
+    h=Harness()
+    with pytest.raises(RESTError):h.client.snapshot(['BMS.1155'])
+    assert not h.requests and not h.signed

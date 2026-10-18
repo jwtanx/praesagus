@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-125",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-18",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-18/PRSG-125-bounded-malaysia-history.md",
+  "objective": "Enable only documented BMS.1155 raw daily history through existing bounded private collection for approved forecast dependency.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6f289ce7a730f43de05852b80cfb92dfd4b8306c",
+  "allowed_paths": [
+    "ingest/market_collector.py",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_rest_live.py",
+    "ingest/private_market_store.py",
+    "tests/test_market_collector.py",
+    "tests/test_moomoo_rest.py",
+    "tests/test_moomoo_rest_live.py",
+    "tests/test_private_market_store.py",
+    "plans/2026-10-18/PRSG-125-bounded-malaysia-history.md",
+    "plans/2026-10-18/PRSG-125.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/forecast_scenario.py",
+    "ingest/report_forecast.py",
+    "scripts/daily-market-brief/",
+    "scripts/stock-research/"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_market_collector.py",
+        "tests/test_moomoo_rest.py",
+        "tests/test_moomoo_rest_live.py",
+        "tests/test_private_market_store.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independent8path diff/scope review and exactconfigured focusedtests:825passed3.43s; Engineer825passed3.63s. Officialoverview HTML explicitlyconfirms Malaysia/BMS/BMS.1155example. No provider request or source/entitlement admission inferred. Mandatory delivery hooks apply."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead exact diff/scope review and required commit/push hooks; no live-data/model admission inferred.",
+      "status": "passed",
+      "evidence": [
+        "Lead independent8path diff/scope review and exactconfigured focusedtests:825passed3.43s; Engineer825passed3.63s. Officialoverview HTML explicitlyconfirms Malaysia/BMS/BMS.1155example. No provider request or source/entitlement admission inferred. Mandatory delivery hooks apply."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-125-D1",
+      "description": "Exact raw daily candidate mechanics and rejection/legacy regressions pass.",
+      "check_ids": [
+        "focused"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent8path diff/scope review and exactconfigured focusedtests:825passed3.43s; Engineer825passed3.63s. Officialoverview HTML explicitlyconfirms Malaysia/BMS/BMS.1155example. No provider request or source/entitlement admission inferred. Mandatory delivery hooks apply."
+      ]
+    },
+    {
+      "id": "PRSG-125-D2",
+      "description": "Lead independently accepts and delivers exact scoped implementation.",
+      "check_ids": [
+        "focused",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent8path diff/scope review and exactconfigured focusedtests:825passed3.43s; Engineer825passed3.63s. Officialoverview HTML explicitlyconfirms Malaysia/BMS/BMS.1155example. No provider request or source/entitlement admission inferred. Mandatory delivery hooks apply."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independent8path diff/scope review and exactconfigured focusedtests:825passed3.43s; Engineer825passed3.63s. Officialoverview HTML explicitlyconfirms Malaysia/BMS/BMS.1155example. No provider request or source/entitlement admission inferred. Mandatory delivery hooks apply."
+    ]
+  }
+}

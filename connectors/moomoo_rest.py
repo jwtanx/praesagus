@@ -323,11 +323,13 @@ class MoomooRESTConnector:
 
     def history_kline(self, code: str, end: str, *, start: str | None = None,
                       num: int = 100, ktype: int = 2, autype: int = 0) -> ReadResult:
-        """Read bounded US daily K-lines; no account or order capability is used."""
-        _require(isinstance(code, str) and re.fullmatch(r"US\.[A-Z][A-Z0-9.-]*", code) is not None)
+        """Bounded US daily K-lines or exact BMS.1155 raw daily100 candidate."""
+        _require(isinstance(code, str) and (re.fullmatch(r"US\.[A-Z][A-Z0-9.-]*", code) is not None
+                                          or code == 'BMS.1155'))
         _require(_date(end) and (start is None or _date(start) and start <= end))
         _require(_integer(num, 1, 370) and _integer(ktype, 2, 2)
                  and _integer(autype, 0, 2))
+        _require(code != 'BMS.1155' or start is None and num == 100 and ktype == 2 and autype == 0)
         query = [("end", end), ("ktype", ktype), ("autype", autype), ("num", num)]
         if start is not None:
             query.insert(0, ("start", start))
