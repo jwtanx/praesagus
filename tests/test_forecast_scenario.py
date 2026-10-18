@@ -570,3 +570,152 @@ def test_financial_evidence_default_depth_not_expanded():
     e,a=make_case();a['depth_extension']=value
     assert not f._bounded(a) and f._bounded(a,max_depth=12)
     assert build((e,a))['reasons']==['schema']
+
+
+def generic_case(*, market='US', cash=False):
+    """Authored exact-instrument evidence; never actual source admission."""
+    e,a=cash_case() if cash else make_case()
+    e['schema_version']=a['schema_version']=3
+    e['method']=deepcopy(f.GENERIC_CASH_METHOD if cash else f.GENERIC_METHOD)
+    e['narrative']=dict(bull_case='Fictional facility expansion may support this issuer.',
+                        bear_case='Fictional issuer faces demand and funding risks.',
+                        invalidation='Withhold this issuer scenario if its admitted basis changes.')
+    i=e['instrument'];i.update(instrument_id='fixture-MY-shareclass' if market=='MY' else 'fixture-US-other',
+                              ticker='1155' if market=='MY' else 'OTHER',market=market,
+                              currency='MYR' if market=='MY' else 'USD',mic='XKLS' if market=='MY' else 'XNYS')
+    e['calendar']['mic']=i['mic'];e['corporate_actions']['instrument_id']=i['instrument_id']
+    for bar in e['bars']:bar.update(instrument_id=i['instrument_id'],currency=i['currency'])
+    for event in e['corporate_actions']['events']:event['currency']=i['currency']
+    issue,cutoff=ISSUE,CUTOFF
+    if market=='MY':
+        e['calendar']['timezone']='Asia/Kuala_Lumpur'
+        for session in e['calendar']['sessions']:session['regular_close_at']=session['session_date']+'T09:00:00Z'
+        for bar in e['bars']:
+            day=bar['session_date']
+            bar.update(close_at=day+'T09:00:00Z',settled_at=day+'T09:05:00Z',retrieved_at=day+'T09:10:00Z',
+                       ingested_at=day+'T09:15:00Z',known_at=day+'T09:20:00Z')
+        e['corporate_actions']['known_at']='2026-10-21T09:30:00Z'
+        a['reviewed_at']='2026-10-21T09:40:00Z'
+        if cash:
+            for event in e['corporate_actions']['events']:
+                for key in ('retrieved_at','ingested_at','known_at'):
+                    event[key]=event[key].replace('20:', '08:')
+        issue,cutoff='2026-10-21T10:00:00Z','2026-10-21T11:00:00Z'
+    return (*reseal(e,a),issue,cutoff)
+
+
+def generic_build(case):
+    e,a,issue,cutoff=case
+    return f.build_forecast_scenario(e,admission=a,issued_at=issue,report_cutoff=cutoff)
+
+
+@pytest.mark.parametrize('market,cash',[('US',False),('MY',False),('US',True),('MY',True)])
+def test_generic_exact_instrument_formula_display_mapping_and_time_basis(market,cash):
+    e,a,issue,cutoff=generic_case(market=market,cash=cash)
+    before=deepcopy((e,a));out=generic_build((e,a,issue,cutoff))
+    assert out['status']=='generated' and (e,a)==before
+    audit,fields=out['private_audit'],out['report_fields'];currency=e['instrument']['currency']
+    # Independent input-derived expected values, not predicted columns as labels.
+    amounts={event['effective_date']:event['amount'] for event in e['corporate_actions']['events']}
+    returns=[math.log(e['bars'][n]['close']+amounts.get(e['bars'][n]['session_date'],0))-math.log(e['bars'][n-1]['close']) for n in range(1,21)]
+    mu=math.fsum(returns)/20;sd=math.sqrt(math.fsum((v-mu)**2 for v in returns)/19)
+    assert audit['point']==pytest.approx(e['bars'][-1]['close']*math.exp(mu))
+    assert audit['low']==pytest.approx(e['bars'][-1]['close']*math.exp(mu-1.959964*sd))
+    assert fields['estimated_mid_case'].startswith(currency+' ')
+    assert audit['display_rounding']==f.DISPLAY_ROUNDING
+    assert 'not executable quotes' in fields['scenario']
+    assert fields['forecast_time_basis']['schema_version']==2
+    target=row();identity={k:e['instrument'][k] for k in f.ROW_IDENTITY};target.update(identity,country='my' if market=='MY' else 'us')
+    mapped=f.apply_scenario_to_row(target,out,identity=identity)
+    assert f.validate_forecast_time_basis(mapped,cutoff)
+    assert validator.compact_reference(mapped['forecast_basis'],f._time(cutoff))
+    data=compact_data(mapped,cutoff)
+    if market=='MY':data['collection'].update(missing_us=0,missing_my=5)
+    validator.validate_compact(Path('generic-authored-fixture.json'),data,f._time(cutoff))
+    assert mapped['forecast_basis']['bull_case']==e['narrative']['bull_case']
+    assert mapped['sources']==target['sources'] and mapped['public_snapshot']==target['public_snapshot']
+    with pytest.raises(f.ScenarioValidationError):f.apply_scenario_to_row(target,out)
+
+
+@pytest.mark.parametrize('mutate,reason',[
+    (lambda e:e['instrument'].update(currency='USD'),'bar_provenance'),
+    (lambda e:e['bars'][-1].update(instrument_id='another-shareclass'),'bar_provenance'),
+    (lambda e:e['bars'][-1].update(currency='USD'),'bar_provenance'),
+    (lambda e:e['calendar'].update(mic='XNYS'),'calendar_window'),
+    (lambda e:e['method'].update(rounding='exchange-tick-valid'),'method'),
+    (lambda e:e['rights'].update(public_derived_forecast='unknown'),'rights'),
+    (lambda e:e['corporate_actions'].update(complete=False),'basis_actions'),
+    (lambda e:e['bars'][-1].update(known_at='2026-10-22T10:00:00Z'),'admission_time'),
+])
+def test_generic_preserves_admission_identity_units_and_evidence_gates(mutate,reason):
+    e,a,issue,cutoff=generic_case(market='MY');mutate(e);reseal(e,a)
+    assert reason in generic_build((e,a,issue,cutoff))['reasons']
+
+
+@pytest.mark.parametrize('field,value',[('currency','USD'),('amount',None),('unit','issuer_functional_currency'),('kind','split'),('effective_date','2026-10-22')])
+def test_generic_cash_actions_are_exact_currency_and_basis(field,value):
+    e,a,issue,cutoff=generic_case(market='MY',cash=True)
+    e['corporate_actions']['events'][0][field]=value;reseal(e,a)
+    assert generic_build((e,a,issue,cutoff))['status']=='withheld'
+
+
+@pytest.mark.parametrize('section,key,value',[
+    ('private_audit','display_rounding','tick-valid'),
+    ('time','ticker','SPY'),('time','currency','USD'),('time','instrument_id','wrong-shareclass'),
+    ('instrument','ticker','SPY'),('instrument','mic','XNYS'),('instrument','mapping_version','another-version'),
+    ('instrument','unit','cents'),('instrument','source_url','http://invalid.test'),
+    ('instrument','effective_to','2026-10-21'),
+    ('fields','estimated_mid_case','USD 100.00'),('fields','estimated_mid_case_value',900),
+])
+def test_generic_mapper_refuses_cross_identity_or_result_tampering(section,key,value):
+    e,a,issue,cutoff=generic_case(market='MY');out=generic_build((e,a,issue,cutoff))
+    if section=='private_audit':out[section][key]=value
+    elif section=='time':out['report_fields']['forecast_time_basis'][key]=value
+    elif section=='instrument':out['private_audit']['instrument'][key]=value
+    else:out['report_fields'][key]=value
+    identity={k:e['instrument'][k] for k in f.ROW_IDENTITY};target=row();target.update(identity)
+    with pytest.raises(f.ScenarioValidationError):f.apply_scenario_to_row(target,out,identity=identity)
+
+
+def test_generic_withheld_requires_intended_identity_and_clears_numeric_fields():
+    e,a,issue,cutoff=generic_case(market='MY');e['corporate_actions']['complete']=False;reseal(e,a)
+    out=generic_build((e,a,issue,cutoff));identity={k:e['instrument'][k] for k in f.ROW_IDENTITY}
+    target=row();target.update(identity,estimated_mid_case_value=999,range_low_value=998,range_high_value=1000)
+    mapped=f.apply_scenario_to_row(target,out,identity=identity)
+    assert mapped['estimated_mid_case_value'] is None and mapped['range_low_value'] is None
+    with pytest.raises(f.ScenarioValidationError):f.apply_scenario_to_row(target,out)
+    with pytest.raises(f.ScenarioValidationError):f.apply_scenario_to_row(target,out,identity=dict(identity,ticker='OTHER'))
+
+
+def test_generic_closed_narrative_schema_and_authored_fixture_refusal():
+    e,a,issue,cutoff=generic_case();e['narrative']['extra']='not permitted';reseal(e,a)
+    assert generic_build((e,a,issue,cutoff))['reasons']==['schema']
+    e,a,issue,cutoff=generic_case();e['classification']='authored_fixture';reseal(e,a)
+    out=generic_build((e,a,issue,cutoff));assert out['status']=='generated'
+    identity={k:e['instrument'][k] for k in f.ROW_IDENTITY};target=row();target.update(identity)
+    with pytest.raises(f.ScenarioValidationError):f.apply_scenario_to_row(target,out,identity=identity)
+
+
+@pytest.mark.parametrize('drift,direction',[(-1e-10,'down'),(0,'flat'),(1e-10,'up')])
+def test_generic_direction_uses_continuous_value_not_display_or_tick(drift,direction):
+    e,a,issue,cutoff=generic_case(market='MY')
+    for n,bar in enumerate(e['bars']):bar['close']=10*math.exp(drift*n)
+    reseal(e,a);out=generic_build((e,a,issue,cutoff))
+    assert out['status']=='generated'
+    assert out['report_fields']['direction']==direction
+    assert out['report_fields']['estimated_mid_case']=='MYR 10.00'
+
+
+@pytest.mark.parametrize('market,currency',[('US','MYR'),('MY','USD'),('HK','HKD')])
+def test_generic_unknown_or_cross_currency_market_withheld(market,currency):
+    e,a,issue,cutoff=generic_case();e['instrument'].update(market=market,currency=currency);reseal(e,a)
+    assert 'identity_units' in generic_build((e,a,issue,cutoff))['reasons']
+
+
+@pytest.mark.parametrize('field,value',[('ticker','OTHER'),('market','US'),('currency','USD'),('display_rounding','tick-valid'),('schema_version',True)])
+def test_generic_public_timebasis_rejects_cross_bound_row(field,value):
+    e,a,issue,cutoff=generic_case(market='MY');out=generic_build((e,a,issue,cutoff))
+    identity={k:e['instrument'][k] for k in f.ROW_IDENTITY};target=row();target.update(identity)
+    mapped=f.apply_scenario_to_row(target,out,identity=identity)
+    mapped['forecast_time_basis'][field]=value
+    assert not f.validate_forecast_time_basis(mapped,cutoff)

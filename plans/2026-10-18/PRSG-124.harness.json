@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-124",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "harness"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-18",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-18/PRSG-124-daily-per-ticker-scenarios.md",
+  "objective": "Support exact per-ticker daily research scenarios and bounded preparation for fixed50 names, preserving legacy and evidence gates.",
+  "status": "in_progress",
+  "owner": "AI Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "f0182039fe2cc4ec8875943da41f878f84ac94c8",
+  "allowed_paths": [
+    "ingest/forecast_scenario.py",
+    "tests/test_forecast_scenario.py",
+    "ingest/report_forecast.py",
+    "scripts/daily-market-brief/prepare_forecast_report.py",
+    "tests/test_report_forecast.py",
+    "plans/2026-10-18/PRSG-124-daily-per-ticker-scenarios.md",
+    "plans/2026-10-18/PRSG-124.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/daily_report_projection.py",
+    "tests/test_daily_report_projection.py",
+    "tests/daily_report_viewer_checks.cjs",
+    "artifacts/",
+    "scripts/stock-research/",
+    "scripts/daily-market-brief/validate_report_json.py"
+  ],
+  "checks": [
+    {
+      "id": "core",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_forecast_scenario.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed exact frozen core diff and hashes; combined independent core/legacy overlay/ticket brief checks:274passed1.57s. See matching Markdown Lead review; fixtures only, actual0/50."
+      ]
+    },
+    {
+      "id": "overlay",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_report_forecast.py"
+      ],
+      "cwd": ".",
+      "status": "pending"
+    },
+    {
+      "id": "actual",
+      "kind": "manual",
+      "description": "Verify source-admitted current fixed50 per-ticker numeric outputs, immutable issuance and actual publication; no fixture/model-quality substitution.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-124-D1",
+      "description": "Generic raw/cash core, strict identity-safe results/mapping and legacy compatibility pass focused fixtures and Lead review.",
+      "check_ids": [
+        "core"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed exact frozen core diff and hashes; combined independent core/legacy overlay/ticket brief checks:274passed1.57s. See matching Markdown Lead review; fixtures only, actual0/50."
+      ]
+    },
+    {
+      "id": "PRSG-124-D2",
+      "description": "Bounded per-ticker batch overlay/CLI, distinct US/MY calendars, partial/missing/error behavior and immutable output/public validation pass focused review.",
+      "check_ids": [
+        "overlay",
+        "core"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-124-D3",
+      "description": "All50 actual ticker predictions have admitted current inputs and frozen numeric outputs; coverage/limitations and delivery independently verified.",
+      "check_ids": [
+        "actual"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending"
+  }
+}
