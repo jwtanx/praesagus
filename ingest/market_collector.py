@@ -21,7 +21,8 @@ from connectors.moomoo_rest import MoomooRESTConnector, ReadRequest, ReadRespons
 from connectors.moomoo_rest_live import (EncryptedEd25519Signer, SecureReadTransport,
                                         encrypted_pem, keychain_passphrase)
 from ingest.private_market_store import (MAX_RAW, REPO, PrivateMarketStore, canonical,
-    decode, normalized, parse_aware, private, request_meta, safe, MarketStoreError, HISTORY_STAGES, valid_structure, unavailable_structure)
+    decode, normalized, parse_aware, private, request_meta, safe, MarketStoreError, HISTORY_STAGES, valid_structure,
+    unavailable_structure, HOURS_DIALECT)
 
 MAX_INPUT = 65536
 MAX_HEADER = 4096
@@ -51,9 +52,11 @@ def job_request(job):
         request = ReadRequest('POST', '/api/v1.0/quote/snapshot', '',
             canonical({'code_list': job['codes']}).encode(), {}, 10)
     elif job.get('kind') == 'history':
-        require(set(job) == {'kind','code','end'} and isinstance(job['code'],str)
+        require(set(job) in ({'kind','code','end'},{'kind','code','end','normalization_dialect'}) and isinstance(job['code'],str)
                 and (re.fullmatch(r'US\.[A-Z][A-Z0-9.-]*',job['code']) or job['code']=='BMS.1155')
                 and isinstance(job['end'],str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}',job['end']))
+        require('normalization_dialect' not in job or job['code']=='BMS.1155'
+                and type(job['normalization_dialect']) is str and job['normalization_dialect']==HOURS_DIALECT)
         request = ReadRequest('GET',f"/api/v1.0/quote/{job['code']}/history-kline",
             urlencode([('end',job['end']),('ktype',2),('autype',0),('num',100)]),b'',{},10)
     else:
@@ -75,7 +78,7 @@ def validate_plan(plan):
     if plan['codes']:jobs.append({'kind': 'snapshot', 'codes': plan['codes']})
     history=plan.get('history',[])
     require(isinstance(history,list) and len(history)<=30
-            and all(isinstance(item,dict) and set(item)=={'code','end'} for item in history)
+            and all(isinstance(item,dict) and set(item) in ({'code','end'},{'code','end','normalization_dialect'}) for item in history)
             and len({item.get('code') for item in history})==len(history))
     for item in history:jobs.append({'kind':'history',**item})
     for query in plan['news']:
@@ -157,6 +160,12 @@ def valid_stage(job, status, failure, stage, *, legacy=False):
 
 
 def normalization_for(job, version=None, *, current=False):
+    if job.get('kind')=='history':job_request(job)
+    if 'normalization_dialect' in job:
+        require(job.get('kind')=='history')
+        if version is None:return 5
+        require(type(version) is int and version==5)
+        return version
     expected = (4 if current else 3) if job.get('kind')=='history' else 2 if job.get('kind')=='snapshot' else 1
     if version is None:return expected
     require(type(version) is int and (job.get('kind')=='history' and version in (3,4)
@@ -165,7 +174,7 @@ def normalization_for(job, version=None, *, current=False):
 
 
 def valid_diagnostic_structure(job, status, failure, stage, version, structure):
-    eligible=job.get('kind')=='history' and status==200 and failure=='invalid-response' and version==4
+    eligible=job.get('kind')=='history' and status==200 and failure=='invalid-response' and version in (4,5)
     if not eligible:return structure is None
     return (valid_structure(structure,stage=stage) and
             (stage!='decode-screen' or structure['status']=='unavailable'))
@@ -179,6 +188,7 @@ def encode_reply(job, response, observed_at, failure=None, retry_after=None, dia
     require(type(frame_version) is int and frame_version in (2,3))
     version=normalization_for(job,normalization_version,current=frame_version==3)
     require(frame_version!=2 or normalization_version is None and diagnostic_structure is None)
+    require('normalization_dialect' not in job or frame_version==3)
     require(frame_version!=3 or version==normalization_for(job,current=True))
     require(valid_diagnostic_structure(job,response.status,failure,diagnostic_stage,version,diagnostic_structure))
     header = {'version': frame_version, 'job_digest': job_digest(job), 'status': response.status,
@@ -202,6 +212,7 @@ def parse_reply(raw, job):
                  if header['version']==2 else keys | {'diagnostic_stage','normalization_version','diagnostic_structure'}))
     stage = header.get('diagnostic_stage')
     version=normalization_for(job,header.get('normalization_version'))
+    require('normalization_dialect' not in job or header['version']==3)
     structure=header.get('diagnostic_structure')
     require(header['version']!=3 or version==normalization_for(job,current=True)
             and header['normalization_version'] is not None)
@@ -218,7 +229,7 @@ def parse_reply(raw, job):
     if header['failure'] is None:
         require(header['status'] == 200)
         kind, query, _ = request_meta(job_request(job))
-        normalized(body, kind, query, version=version)
+        normalized(body, kind, query, version=version,normalization_dialect=job.get('normalization_dialect'))
     else:require(not body)
     return WorkerReply(ReadResponse(header['status'], body), header['observed_at'], header['failure'],
                        diagnostic_stage=stage,normalization_version=version,diagnostic_structure=structure)
@@ -252,7 +263,7 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
             kind, query, secrets = request_meta(request)
             try:
                 normalized(response.body, kind, query, (*secrets, key, locator['directory']),
-                           version=version)
+                           version=version,normalization_dialect=job.get('normalization_dialect'))
             except Exception as error:
                 screening_rejected = True
                 if kind == 'history':
@@ -268,7 +279,8 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
         client = MoomooRESTConnector(api_key=key, signer=signer, transport=capture,
             clock_ms=lambda: time.time_ns() // 1000000, nonce_factory=lambda: os.urandom(16).hex(), timeout=10)
         if job['kind'] == 'snapshot':client.snapshot(job['codes'])
-        elif job['kind']=='history':client.history_kline(job['code'],job['end'],num=100,ktype=2,autype=0)
+        elif job['kind']=='history':client.history_kline(job['code'],job['end'],num=100,ktype=2,autype=0,
+            **({'normalization_dialect':job['normalization_dialect']} if 'normalization_dialect' in job else {}))
         else:client.search_news(job['keyword'], size=job['size'], sort_type=2, lang=job['lang'])
     except RESTError as error:
         failure = {'timeout':'timeout', 'rate-limited':'rate-limited', 'upstream-failed':'upstream-failed',
@@ -422,6 +434,8 @@ def collect(store, plan, locator, *, run_id, supervisor=supervise, clock=time.mo
             stage_ok = valid_stage(job,status,reply.failure,reply.diagnostic_stage,legacy=True)
             try:
                 version=normalization_for(job,reply.normalization_version)
+                require('normalization_dialect' not in job or type(reply.normalization_version) is int
+                        and reply.normalization_version==5)
                 structure_ok=valid_diagnostic_structure(job,status,reply.failure,reply.diagnostic_stage,version,reply.diagnostic_structure)
             except Exception:structure_ok=False
             if (not response_ok or not failure_ok or not stage_ok or not structure_ok
@@ -443,7 +457,8 @@ def collect(store, plan, locator, *, run_id, supervisor=supervise, clock=time.mo
         response = reply.response or ReadResponse(0, b'')
         failed = False
         try:stored = store.ingest(job_request(job),response,run_id=run_id,observed_at=observed,ingested_at=ingested,
-                                 normalization_version=normalization_for(job,reply.normalization_version))
+                                 normalization_version=normalization_for(job,reply.normalization_version),
+                                 **({'normalization_dialect':job['normalization_dialect']} if 'normalization_dialect' in job else {}))
         except Exception:failed = True
         if failed:
             outcomes.append(JobOutcome(job_digest(job), 'not-persisted', None, 'storage-failed'));break
@@ -504,7 +519,7 @@ class DiagnosticReceipt:
             require(valid_structure(structure,stage=outcome.diagnostic_stage)
                     and (outcome.diagnostic_stage!='decode-screen' or structure['status']=='unavailable'))
             require(structure['schema_version']!=2 or type(outcome.normalization_version) is int
-                    and outcome.normalization_version==4)
+                    and outcome.normalization_version in (4,5))
             failures.append(dict(diagnostic_stage=outcome.diagnostic_stage,structure=structure))
         require(len(failures)<=30)
         raw=(canonical(dict(schema_version=1,history_failures=failures))+'\n').encode()

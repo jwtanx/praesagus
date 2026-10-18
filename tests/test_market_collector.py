@@ -1024,3 +1024,85 @@ def test_date_summary_forgery_rejected_by_frame_parent_and_receipt(store,receipt
             with pytest.raises(ValueError):receipt.write([forged])
         finally:receipt.close()
         assert not path.exists()
+
+
+def hours_job():
+    return dict(kind='history',code='BMS.1155',end='2026-10-02',normalization_dialect=c.HOURS_DIALECT)
+
+
+def hours_plan():
+    job=hours_job();return dict(schema_version=1,codes=[],news=[],history=[{k:v for k,v in job.items() if k!='kind'}])
+
+
+def hours_response():
+    return stage_history_response(dict(time_key=1790899200000-4*3600000,date=20261002,time_zone=8,close=12.5))
+
+
+def test_hours_job_plan_request_worker_parent_replay_no_public_effects(store):
+    job=hours_job();plain={k:v for k,v in job.items() if k!='normalization_dialect'}
+    assert c.validate_plan(hours_plan())==[job] and c.job_digest(job)!=c.job_digest(plain)
+    assert c.job_request(job)==c.job_request(plain)  # No provider bytes or credential/signing changes.
+    frame=stage_worker(hours_response(),job);header,body=unpack_stage_frame(frame)
+    assert header['version']==3 and header['normalization_version']==5 and header['job_digest']==c.job_digest(job)
+    assert body==hours_response().body and header['failure'] is None
+    parsed=c.parse_reply(frame,job)
+    with pytest.raises(ValueError):c.parse_reply(frame,plain)
+    plain_reply=c.parse_reply(stage_worker(hours_response(),plain),plain)
+    assert plain_reply.failure=='invalid-response' and plain_reply.diagnostic_stage=='date-relation'
+    outcome=c.collect(store,hours_plan(),LOCATOR,run_id='synthetic-hours',supervisor=lambda *a,**k:parsed,wall=wall_clock())[0]
+    assert outcome.status=='success' and outcome.normalization_version==5
+    entry=store.query('history',ING)[0]
+    assert entry['record']['time_zone']==8 and entry['record']['effective_offset_minutes']==480
+    assert entry['record']['unit_basis']=='operator_selected_hypothesis_not_vendor_confirmed'
+    assert entry['observation']['normalization_version']==5
+
+
+@pytest.mark.parametrize('token',[None,True,'unknown',{},[]])
+@pytest.mark.parametrize('code',['BMS.1155','US.SYN','BMS.1156'])
+def test_hours_unknown_or_cross_market_token_rejected_before_worker(token,code):
+    job={**hours_job(),'normalization_dialect':token,'code':code}
+    with pytest.raises(ValueError):c.job_request(job)
+    plan=hours_plan();plan['history'][0]={k:v for k,v in job.items() if k!='kind'}
+    with pytest.raises(ValueError):c.validate_plan(plan)
+
+
+def test_hours_valid_token_cross_market_and_wrong_request_reject():
+    for code in ('US.SYN','BMS.1156','MY.1155'):
+        with pytest.raises(ValueError):c.job_request({**hours_job(),'code':code})
+    for change in ({'num':100},{'autype':1},{'start':'2026-10-01'}):
+        with pytest.raises(ValueError):c.job_request({**hours_job(),**change})
+
+
+@pytest.mark.parametrize('version',[None,True,3,4])
+def test_hours_frame_and_injected_parent_reject_missing_or_downgraded_version(store,version):
+    job=hours_job();header,body=unpack_stage_frame(stage_worker(hours_response(),job))
+    header['normalization_version']=version
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header,body),job)
+    injected=c.WorkerReply(ReadResponse(200,body),OBS,None,normalization_version=version)
+    outcome=c.collect(store,hours_plan(),LOCATOR,run_id='synthetic-bypass',supervisor=lambda *a,**k:injected,wall=wall_clock())[0]
+    assert outcome.failure=='bad-frame' and not store.query('history',ING) and not list(store.raw_dir.iterdir())
+
+
+@pytest.mark.parametrize('version',[1,2])
+def test_hours_job_rejects_legacy_frames_and_encoding(version):
+    job=hours_job();header,body=unpack_stage_frame(stage_worker(hours_response(),job))
+    header['version']=version;header.pop('normalization_version');header.pop('diagnostic_structure')
+    if version==1:header.pop('diagnostic_stage')
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header,body),job)
+    with pytest.raises(ValueError):c.encode_reply(job,hours_response(),OBS,frame_version=2)
+
+
+def test_hours_failures_keep_count_only_diagnostic_and_secret_screen(receipt_parent):
+    job=hours_job();response=stage_history_response(dict(time_key=1790899200000-4*3600000,date=20261001,time_zone=8,close=12.5))
+    parsed=c.parse_reply(stage_worker(response,job),job)
+    assert parsed.failure=='invalid-response' and parsed.response.body==b'' and parsed.normalization_version==5
+    assert parsed.diagnostic_structure['date_relation_summary']==dict(rows_examined=1,minutes_match=1,
+        hours_only_match=0,neither_match=0,uncheckable=0)
+    outcome=c.JobOutcome('synthetic','failed',None,parsed.failure,parsed.diagnostic_stage,5,parsed.diagnostic_structure)
+    path=receipt_parent/'hours-failure.json';receipt=c.DiagnosticReceipt(str(path))
+    try:receipt.write([outcome])
+    finally:receipt.close()
+    assert json.loads(path.read_text())['history_failures'][0]['structure']==parsed.diagnostic_structure
+    secret=stage_history_response(token='synthetic-api-key')
+    parsed=c.parse_reply(stage_worker(secret,job),job)
+    assert parsed.diagnostic_stage=='decode-screen' and parsed.diagnostic_structure==c.unavailable_structure()

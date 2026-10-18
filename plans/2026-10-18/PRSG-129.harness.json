@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-129",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-18",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-18/PRSG-129-explicit-malaysia-history-dialect.md",
+  "objective": "Support an explicit version-bound BMS1155 research hours hypothesis without changing default/legacy semantics or asserting source admission.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "f0a201b07bb45874c00c5193a796cdbd848ad813",
+  "allowed_paths": [
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py",
+    "tests/test_market_collector.py",
+    "tests/test_private_market_store.py",
+    "plans/2026-10-18/PRSG-129-explicit-malaysia-history-dialect.md",
+    "plans/2026-10-18/PRSG-129.harness.json",
+    "connectors/moomoo_rest.py",
+    "tests/test_moomoo_rest.py"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "artifacts/",
+    "ingest/forecast_scenario.py",
+    "ingest/report_forecast.py",
+    "tests/test_forecast_scenario.py",
+    "tests/test_private_forecast_csv.py",
+    "connectors/moomoo_rest_live.py"
+  ],
+  "checks": [
+    {
+      "id": "dialect",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_market_collector.py",
+        "tests/test_private_market_store.py",
+        "tests/test_moomoo_rest.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independent six-path source/explicitdialect/version/hash/default/replay review and configured tests:793passed3.49s. Engineer793passed3.51s. Initial587pass2fail and connector-scope amendment retained; no data/source permission/model admission inferred. Mandatory delivery hooks apply."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead verifies default/legacy rejection unchanged, explicit inference/version/hash context and no source admission; required delivery hooks.",
+      "status": "passed",
+      "evidence": [
+        "Lead independent six-path source/explicitdialect/version/hash/default/replay review and configured tests:793passed3.49s. Engineer793passed3.51s. Initial587pass2fail and connector-scope amendment retained; no data/source permission/model admission inferred. Mandatory delivery hooks apply."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-129-D1",
+      "description": "Explicit dialect/version5 and immutable replay work with unchanged default/legacy semantics.",
+      "check_ids": [
+        "dialect"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent six-path source/explicitdialect/version/hash/default/replay review and configured tests:793passed3.49s. Engineer793passed3.51s. Initial587pass2fail and connector-scope amendment retained; no data/source permission/model admission inferred. Mandatory delivery hooks apply."
+      ]
+    },
+    {
+      "id": "PRSG-129-D2",
+      "description": "Negative/bypass/privacy cases pass and Lead independently reviews/delivers; actual source release remains pending.",
+      "check_ids": [
+        "dialect",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent six-path source/explicitdialect/version/hash/default/replay review and configured tests:793passed3.49s. Engineer793passed3.51s. Initial587pass2fail and connector-scope amendment retained; no data/source permission/model admission inferred. Mandatory delivery hooks apply."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independent six-path source/explicitdialect/version/hash/default/replay review and configured tests:793passed3.49s. Engineer793passed3.51s. Initial587pass2fail and connector-scope amendment retained; no data/source permission/model admission inferred. Mandatory delivery hooks apply."
+    ]
+  }
+}

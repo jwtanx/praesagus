@@ -1012,3 +1012,99 @@ def test_date_summary_closed_schema_and_controlled_error_binding():
     # Historical schema1 remains valid even at date-relation stage.
     legacy=m.history_structure(json.loads(diagnostic_history_body(date_summary_rows()[0])))
     assert m.valid_structure(legacy,stage='date-relation') and legacy['schema_version']==1
+
+
+# PRSG-129: explicit local research dialect, fictional data only.
+def hours_row(zone=8):
+    from datetime import date,timedelta
+    stamp=STAMP-4*3600000
+    day=date(1970,1,1)+timedelta(days=(stamp+zone*3600000)//86400000)
+    return dict(time_key=stamp,date=int(day.strftime('%Y%m%d')),time_zone=zone,close=12.5)
+
+
+@pytest.mark.parametrize('zone',[-12,-1,0,1,8,14])
+def test_explicit_hours_store_preserves_raw_metadata_and_integrity_replay(store,zone):
+    from ingest import private_market_store as m
+    row=hours_row(zone);resp=ReadResponse(200,diagnostic_history_body(row))
+    req=my_history_request();kind,query,_=m.request_meta(req)
+    records=m.normalized(resp.body,kind,query,version=5,normalization_dialect=m.HOURS_DIALECT)
+    attempt=store.ingest(req,resp,run_id='synthetic-hours',observed_at=OBS,ingested_at=ING,
+        origin='synthetic',normalization_version=5,normalization_dialect=m.HOURS_DIALECT)
+    assert attempt.status=='success' and store.raw(attempt.raw_hash)==resp.body
+    entry=store.query('history',ING)[0];record=entry['record'];meta=entry['observation']
+    assert (record['time_key'],record['raw_date'],record['time_zone'])==(row['time_key'],row['date'],zone)
+    assert record['effective_offset_minutes']==zone*60 and record['raw_time_zone_unit']=='hours_hypothesis'
+    assert record['normalization_dialect']==meta['normalization_dialect']==m.HOURS_DIALECT
+    assert record['unit_basis']==meta['unit_basis']==m.HOURS_BASIS
+    assert record['inference_quality']==meta['inference_quality']==m.HOURS_QUALITY
+    assert m.HOURS_QUALITY in entry['quality'] and meta['normalization_version']==5
+    assert 'currency' not in record and 'market_timezone' not in record and meta['rights_status']=='unconfirmed'
+    assert records[0][1]==m.canonical(record)
+    # A missing token never selects hours, including the ambiguous both-match case.
+    if zone==8:
+        for version in (3,4):
+            with pytest.raises(MarketStoreError) as caught:m.normalized(resp.body,kind,query,version=version)
+            assert caught.value.diagnostic_stage=='date-relation'
+    elif zone==0:
+        legacy=json.loads(m.normalized(resp.body,kind,query,version=4)[0][1])
+        assert 'normalization_dialect' not in legacy and 'effective_offset_minutes' not in legacy
+
+
+@pytest.mark.parametrize('bad',['bool','fraction','low','high','overflow','invalid-date','future','duplicate',
+    'negative-price','bool-price','nonfinite','secret','minute-only'])
+def test_hours_rejection_never_falls_back_or_archives(store,bad):
+    from ingest import private_market_store as m
+    row=hours_row();rows=[row]
+    if bad=='bool':row['time_zone']=True
+    elif bad=='fraction':row['time_zone']=8.0
+    elif bad=='low':row['time_zone']=-13
+    elif bad=='high':row['time_zone']=15
+    elif bad=='overflow':row['time_key']=2**63-1
+    elif bad=='invalid-date':row['date']=20260230
+    elif bad=='future':row.update(time_key=STAMP+3*86400000,date=20261005)
+    elif bad=='duplicate':rows.append(dict(row))
+    elif bad=='negative-price':row['close']=-1
+    elif bad=='bool-price':row['close']=True
+    elif bad=='nonfinite':row['close']=float('inf')
+    elif bad=='secret':row['token']='PRIVATE-CANARY'
+    elif bad=='minute-only':row['date']=20261001
+    resp=ReadResponse(200,diagnostic_history_body(data={'kline_list':rows}))
+    attempt=store.ingest(my_history_request(),resp,run_id='synthetic-bad-hours',observed_at=OBS,ingested_at=ING,
+        origin='synthetic',normalization_version=5,normalization_dialect=m.HOURS_DIALECT)
+    assert attempt.status=='failed' and attempt.raw_hash is None
+    assert not store.query('history',ING) and not list(store.raw_dir.iterdir())
+    if bad=='minute-only':
+        kind,query,_=m.request_meta(my_history_request())
+        assert m.normalized(resp.body,kind,query,version=4)
+        with pytest.raises(MarketStoreError) as caught:
+            m.normalized(resp.body,kind,query,version=5,normalization_dialect=m.HOURS_DIALECT)
+        assert caught.value.diagnostic_stage=='date-relation'
+        assert caught.value.diagnostic_structure['date_relation_summary']['minutes_match']==1
+
+
+@pytest.mark.parametrize('version,dialect,us',[(5,None,False),(4,'bms1155_hours_hypothesis_v1',False),
+    (3,'bms1155_hours_hypothesis_v1',False),(5,'unknown',False),(5,True,False),
+    (5,'bms1155_hours_hypothesis_v1',True)])
+def test_hours_store_and_normalizer_require_exact_context(store,version,dialect,us):
+    from ingest import private_market_store as m
+    req=diagnostic_history_request() if us else my_history_request();kind,query,_=m.request_meta(req)
+    resp=ReadResponse(200,diagnostic_history_body(hours_row()))
+    with pytest.raises(MarketStoreError):m.normalized(resp.body,kind,query,version=version,normalization_dialect=dialect)
+    with pytest.raises(MarketStoreError):store.ingest(req,resp,run_id='synthetic-context',observed_at=OBS,ingested_at=ING,
+        normalization_version=version,normalization_dialect=dialect)
+    assert not store.attempts(ING) and not list(store.raw_dir.iterdir())
+
+
+def test_hours_store_rehashed_context_substitution_still_fails_replay(store):
+    from ingest import private_market_store as m
+    raw=diagnostic_history_body(hours_row())
+    attempt=store.ingest(my_history_request(),ReadResponse(200,raw),run_id='synthetic-hash',observed_at=OBS,ingested_at=ING,
+        normalization_version=5,normalization_dialect=m.HOURS_DIALECT)
+    meta=store.attempts(ING)[0]
+    for key,value in [('normalization_dialect','unknown'),('unit_basis','verified'),
+                      ('raw_time_zone_unit','minutes'),('effective_offset_rule','identity'),
+                      ('inference_quality','confirmed'),('normalization_version',4)]:
+        changed={**meta,key:value};fake=dict(id=m.digest(m.canonical(changed).encode()),metadata=json.dumps(changed),
+            known_ms=changed['known_ms'],run_id=changed['run_id'],kind=changed['kind'])
+        with pytest.raises(MarketStoreError):store._meta(fake)
+    assert store.query('history',ING)[0]['record']['time_zone']==8 and attempt.raw_hash

@@ -19,6 +19,9 @@ from connectors.moomoo_rest import ReadRequest, ReadResponse, RESTError
 APP_ID = 0x50524D36
 SCHEMA_VERSION = 1
 MAX_RAW = 2 * 1024 * 1024
+HOURS_DIALECT = 'bms1155_hours_hypothesis_v1'
+HOURS_BASIS = 'operator_selected_hypothesis_not_vendor_confirmed'
+HOURS_QUALITY = 'timezone_unit_inferred_not_vendor_confirmed'
 REPO = Path(__file__).resolve().parents[1]
 SECRET_KEYS = {'authorization', 'x-api-key', 'api_key', 'apikey', 'appkey', 'appkeyid',
                'signature', 'nonce', 'password', 'passphrase', 'private_key', 'token',
@@ -318,14 +321,24 @@ def request_meta(request):
     return 'news', filters, secrets
 
 
-def normalized(raw, kind, request, secrets=(), *, version=2):
-    need(type(version) is int and version in (1,2,3,4) and (version!=4 or kind=='history'), 'invalid-response')
+def dialect_context(kind, request, version, dialect):
+    """A separate local declaration; never part of provider request bytes."""
+    need((version==5) == (dialect is not None), 'invalid-response')
+    if version==5:
+        need(kind=='history' and type(dialect) is str and dialect==HOURS_DIALECT
+             and set(request)=={'code','end','ktype','autype','num'} and request['code']=='BMS.1155'
+             and request['ktype']=='2' and request['autype']=='0' and request['num']=='100', 'invalid-response')
+
+
+def normalized(raw, kind, request, secrets=(), *, version=2, normalization_dialect=None):
+    need(type(version) is int and version in (1,2,3,4,5) and (version not in (4,5) or kind=='history'), 'invalid-response')
+    dialect_context(kind,request,version,normalization_dialect)
     value=_ABSENT
     def guard(condition, stage):
         if not condition:
             raise MarketStoreError('invalid-response', diagnostic_stage=stage if kind=='history' else None,
                                    diagnostic_structure=(history_structure(value,stage=stage) if value is not _ABSENT else unavailable_structure())
-                                   if kind=='history' and version==4 else None) from None
+                                   if kind=='history' and version in (4,5) else None) from None
     if kind == 'history':
         guard(isinstance(raw, bytes) and 0 < len(raw) <= MAX_RAW, 'decode-screen')
         rejected = False
@@ -336,7 +349,7 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
     if kind == 'history':
         guard(isinstance(value, dict), 'envelope-root-type')
         guard(({'ret_code','ret_msg','data'} <= set(value) <= {'ret_code','ret_msg','data','pagination','extra'})
-              if version==4 else set(value)=={'ret_code','ret_msg','data'}, 'envelope-root-fields')
+              if version in (4,5) else set(value)=={'ret_code','ret_msg','data'}, 'envelope-root-fields')
         guard(type(value['ret_code']) is int, 'envelope-ret-code-type')
         guard(isinstance(value['ret_msg'], str), 'envelope-ret-msg-type')
     else:
@@ -355,7 +368,7 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
               'envelope-next-time')
         guard('volume_precision' not in rows or type(rows['volume_precision']) is int
               and 0<=rows['volume_precision']<=18, 'envelope-volume-precision')
-        if version==4:
+        if version in (4,5):
             if 'pagination' in value:
                 page=value['pagination']
                 guard(type(page) is dict and {'has_more'}<=set(page)<={'has_more','total'}
@@ -405,10 +418,12 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
             guard((code.startswith('US.') or candidate) and type(stamp) is int and 0<=stamp<=2**63-1
                  and type(market_date) is int and 19000101<=market_date<=21001231
                   and type(zone) is int and -720<=zone<=840, 'metadata-invalid')
+            if version==5:guard(-12<=zone<=14,'metadata-invalid')
+            effective_offset=zone*60 if version==5 else zone
             try:
                 parsed=date.fromisoformat(f'{market_date//10000:04d}-{market_date//100%100:02d}-{market_date%100:02d}')
                 # Use explicit offset and integer milliseconds, never inferred timezone.
-                local_date=date(1970,1,1)+timedelta(days=(stamp+zone*60000)//86400000)
+                local_date=date(1970,1,1)+timedelta(days=(stamp+effective_offset*60000)//86400000)
             except (ValueError,OverflowError):
                 guard(False,'metadata-invalid')
             guard(parsed==local_date, 'date-relation')
@@ -422,6 +437,10 @@ def normalized(raw, kind, request, secrets=(), *, version=2):
             payload={'provider':'moomoo-rest','code':code,'date':parsed.isoformat(),
                      'time_key':stamp,'time_zone':zone,'close':close,
                      'endpoint':'history-kline','adjustment':int(request['autype'])}
+            if version==5:
+                payload.update(raw_date=market_date,normalization_dialect=HOURS_DIALECT,unit_basis=HOURS_BASIS,
+                    raw_time_zone_unit='hours_hypothesis',effective_offset_minutes=effective_offset,
+                    inference_quality=HOURS_QUALITY)
             identity=['moomoo-rest',code,stamp]
         else:
             key = row.get('news_id');need(text(key) and key not in seen, 'invalid-response');seen.add(key)
@@ -528,7 +547,8 @@ class PrivateMarketStore:
         try:os.fsync(fd)
         finally:os.close(fd)
 
-    def ingest(self, request, response, *, run_id, observed_at, ingested_at, origin='trusted-capture', normalization_version=None):
+    def ingest(self, request, response, *, run_id, observed_at, ingested_at, origin='trusted-capture', normalization_version=None,
+               normalization_dialect=None):
         def append():
             need(origin in ('synthetic', 'trusted-capture'))
             need(isinstance(run_id, str) and re.fullmatch(r'[A-Za-z0-9_-]{1,128}', run_id))
@@ -540,7 +560,8 @@ class PrivateMarketStore:
                  and (response.status == 0 or 100 <= response.status <= 599))
             version=normalization_version if normalization_version is not None else 2 if kind=='snapshot' else 4 if kind=='history' else 1
             need(type(version) is int and (kind=='snapshot' and version in (1,2)
-                 or kind=='history' and version in (3,4) or kind=='news' and version==1))
+                 or kind=='history' and version in (3,4,5) or kind=='news' and version==1))
+            dialect_context(kind,query,version,normalization_dialect)
             records, raw_hash, raw = [], None, None
             reason = None
             if response.status != 200:
@@ -549,7 +570,8 @@ class PrivateMarketStore:
                 valid = False
                 try:
                     need(isinstance(response.body, bytes) and 0 < len(response.body) <= MAX_RAW)
-                    records = normalized(response.body, kind, query, secrets, version=version)
+                    records = normalized(response.body, kind, query, secrets, version=version,
+                                         normalization_dialect=normalization_dialect)
                     valid = True
                 except Exception:
                     pass
@@ -569,6 +591,10 @@ class PrivateMarketStore:
             if kind=='history' and query['code']=='BMS.1155':
                 meta['unsupported_markets']={'MY':'other-instruments-unattempted-unsupported'}
             if kind in ('snapshot','history'):meta['normalization_version']=version
+            if version==5:
+                meta.update(normalization_dialect=HOURS_DIALECT,unit_basis=HOURS_BASIS,
+                    raw_time_zone_unit='hours_hypothesis',effective_offset_rule='raw_time_zone_times_60',
+                    inference_quality=HOURS_QUALITY)
             attempt_id = digest(canonical(meta).encode())
             if raw is not None:self._archive(raw, raw_hash)
             with self._connection() as db:
@@ -595,10 +621,16 @@ class PrivateMarketStore:
              and meta['observed_ms'] == aware_ms(meta['observed_at'], True) and meta['ingested_ms'] == aware_ms(meta['ingested_at'], True)
              and meta['run_id'] == row['run_id'] and meta['kind'] == row['kind'], 'database-integrity-failed')
         version=meta.get('normalization_version',1)
-        need(type(version) is int and version in (1,2,3,4)
+        need(type(version) is int and version in (1,2,3,4,5)
              and (meta['kind']=='snapshot' and version in (1,2)
-                  or meta['kind']=='history' and version in (3,4)
+                  or meta['kind']=='history' and version in (3,4,5)
                   or meta['kind']=='news' and version==1), 'database-integrity-failed')
+        dialect_context(meta['kind'],meta['query'],version,meta.get('normalization_dialect'))
+        labels=dict(normalization_dialect=HOURS_DIALECT,unit_basis=HOURS_BASIS,
+                    raw_time_zone_unit='hours_hypothesis',effective_offset_rule='raw_time_zone_times_60',
+                    inference_quality=HOURS_QUALITY)
+        need(all(meta.get(k)==v for k,v in labels.items()) if version==5
+             else not set(labels)&set(meta), 'database-integrity-failed')
         return meta
 
     def attempts(self, cutoff, *, limit=1000):
@@ -629,13 +661,15 @@ class PrivateMarketStore:
                     meta = self._meta({'id': row['aid'], 'run_id': row['run_id'], 'kind': row['akind'], 'known_ms': row['known_ms'], 'metadata': row['metadata']})
                     need(row['semantic_hash'] == digest(row['payload'].encode()), 'database-integrity-failed')
                     record = json.loads(row['payload'])
-                    exact = normalized(self.raw(meta['raw_hash']), kind, meta['query'], version=meta.get('normalization_version',1))
+                    exact = normalized(self.raw(meta['raw_hash']), kind, meta['query'], version=meta.get('normalization_version',1),
+                                       normalization_dialect=meta.get('normalization_dialect'))
                     need(0 <= row['ordinal'] < len(exact) and exact[row['ordinal']] == (row['identity'], row['payload'], row['source_ms']), 'database-integrity-failed')
                     quality = (['availability_unknown'] if kind == 'news' else
                                ['currency_unknown', 'session_unknown', 'adjustment_unknown', 'point_observation_not_bar'] if kind == 'snapshot' else
                                ['corporate_action_adjustment_none','current_session_excluded_by_projection'])
                     if row['source_ms'] is None:quality.append('source_time_unknown')
                     elif row['source_ms'] > aware_ms(meta['observed_at']):quality.append('source_time_after_observation')
+                    if meta.get('normalization_version')==5:quality.append(HOURS_QUALITY)
                     if kind == 'snapshot' and record['price'] == 0:quality.append('price_unusable')
                     result.append({'record': record, 'revision': row['revision'], 'semantic_hash': row['semantic_hash'],
                                    'observation': meta, 'quality': quality, 'view': mode, 'source_ms': row['source_ms'],

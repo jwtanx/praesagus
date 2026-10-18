@@ -322,7 +322,8 @@ class MoomooRESTConnector:
         return self._result(rows, start, end, "snapshot", unit="milliseconds", missing=missing)
 
     def history_kline(self, code: str, end: str, *, start: str | None = None,
-                      num: int = 100, ktype: int = 2, autype: int = 0) -> ReadResult:
+                      num: int = 100, ktype: int = 2, autype: int = 0,
+                      normalization_dialect: str | None = None) -> ReadResult:
         """Bounded US daily K-lines or exact BMS.1155 raw daily100 candidate."""
         _require(isinstance(code, str) and (re.fullmatch(r"US\.[A-Z][A-Z0-9.-]*", code) is not None
                                           or code == 'BMS.1155'))
@@ -330,6 +331,8 @@ class MoomooRESTConnector:
         _require(_integer(num, 1, 370) and _integer(ktype, 2, 2)
                  and _integer(autype, 0, 2))
         _require(code != 'BMS.1155' or start is None and num == 100 and ktype == 2 and autype == 0)
+        _require(normalization_dialect is None or type(normalization_dialect) is str
+                 and normalization_dialect == 'bms1155_hours_hypothesis_v1' and code == 'BMS.1155')
         query = [("end", end), ("ktype", ktype), ("autype", autype), ("num", num)]
         if start is not None:
             query.insert(0, ("start", start))
@@ -346,10 +349,13 @@ class MoomooRESTConnector:
             _require(_integer(stamp, 0, 2**63 - 1)
                      and _integer(market_date, 19000101, 21001231)
                      and type(zone) is int and -720 <= zone <= 840, "malformed-response")
+            if normalization_dialect is not None:
+                _require(-12 <= zone <= 14, "malformed-response")
+            effective_offset = zone * 60 if normalization_dialect is not None else zone
             try:
                 parsed = date.fromisoformat(f"{market_date // 10000:04d}-{market_date // 100 % 100:02d}-{market_date % 100:02d}")
                 # Integer day arithmetic preserves the supplied millisecond boundary.
-                local_date = date(1970, 1, 1) + timedelta(days=(stamp + zone * 60000) // 86400000)
+                local_date = date(1970, 1, 1) + timedelta(days=(stamp + effective_offset * 60000) // 86400000)
             except (ValueError, OverflowError):
                 raise RESTError("malformed-response") from None
             _require(parsed == local_date, "malformed-response")

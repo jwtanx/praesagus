@@ -452,6 +452,44 @@ def test_malaysia_candidate_variants_fail_before_signing_or_transport(code,optio
     assert not h.requests and not h.signed
 
 
+# PRSG-129: declared hours hypothesis only; raw rows and signed HTTP unchanged.
+@pytest.mark.parametrize('zone',[-12,-1,0,1,8,14])
+def test_explicit_hours_dialect_preserves_rows_request_and_signature(zone):
+    from datetime import date,timedelta
+    stamp=NOW-4*3600000
+    day=date(1970,1,1)+timedelta(days=(stamp+zone*3600000)//86400000)
+    row=kline(time_key=stamp,date=int(day.strftime('%Y%m%d')),time_zone=zone)
+    h=Harness(quote({'kline_list':[row]}))
+    result=h.client.history_kline('BMS.1155','2026-10-02',normalization_dialect='bms1155_hours_hypothesis_v1')
+    assert result.data==[row] and result.data[0]['time_zone']==zone
+    request=h.requests[0]
+    assert request.query=='end=2026-10-02&ktype=2&autype=0&num=100'
+    assert h.signed==[f'{NOW}\nGET\n{request.path}\n{request.query}\n'.encode()]
+    default=Harness(quote({'kline_list':[row]}))
+    if zone==8:
+        with pytest.raises(RESTError,match='malformed-response'):default.client.history_kline('BMS.1155','2026-10-02')
+    elif zone==0:assert default.client.history_kline('BMS.1155','2026-10-02').data==[row]
+
+
+@pytest.mark.parametrize('code,dialect',[('US.AAPL','bms1155_hours_hypothesis_v1'),
+    ('BMS.1156','bms1155_hours_hypothesis_v1'),('BMS.1155','unknown'),('BMS.1155',True),
+    ('BMS.1155',[]),('BMS.1155',{})])
+def test_hours_dialect_invalid_context_before_signing(code,dialect):
+    h=Harness()
+    with pytest.raises(RESTError):h.client.history_kline(code,'2026-10-02',normalization_dialect=dialect)
+    assert not h.requests and not h.signed
+
+
+@pytest.mark.parametrize('change',[{'time_zone':-13},{'time_zone':15},{'time_zone':True},{'time_zone':8.0},
+    {'time_key':2**63-1},{'date':20260230},{'date':20261001},{'close':True},{'close':-1},
+    {'volume':-1},{'open':float('nan')},{'high':True},{'time_key':NOW+3*86400000,'date':20261005}])
+def test_hours_dialect_keeps_metadata_date_and_auxiliary_rejections(change):
+    row=kline(time_key=NOW-4*3600000,date=20261002,time_zone=8,**{})
+    row.update(change);h=Harness(quote({'kline_list':[row]}))
+    with pytest.raises(RESTError,match='malformed-response'):
+        h.client.history_kline('BMS.1155','2026-10-02',normalization_dialect='bms1155_hours_hypothesis_v1')
+
+
 @pytest.mark.parametrize('rows',[
     [kline(time_zone=480,date=20261003)], [kline(time_zone=480,close=0)],
     [kline(time_zone=480),kline(time_zone=480)], [kline(time_zone=480,time_key=2**63-1)],
