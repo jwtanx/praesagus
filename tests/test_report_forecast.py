@@ -440,3 +440,231 @@ def test_deeper_template_retains_existing_value_size_and_privacy_guards(private,
     summary=json.loads(capsys.readouterr().out)
     assert summary==dict(status='failed',reason='report-validation-failed' if bad=='private-field' else 'private-input-invalid')
     assert not (private/'bundle').exists()
+
+
+# PRSG-124 generic per-ticker batch; all inputs remain fictional reviewed-real-shaped.
+from ingest.report_forecast import prepare_report_forecasts, BATCH_INPUT_GAPS
+
+
+def generic_packet(ticker='FIX0X1',market='US',cash=False):
+    e,a,_,_=cases.generic_case(market=market,cash=cash)
+    e['instrument']['ticker']=ticker
+    identity='authored-'+market+'-'+ticker
+    e['instrument']['instrument_id']=identity;e['corporate_actions']['instrument_id']=identity
+    for bar in e['bars']:bar['instrument_id']=identity
+    return cases.reseal(e,a)
+
+
+def batch_item(ticker='FIX0X1',market='US',cash=False):
+    e,a=generic_packet(ticker,market,cash)
+    return dict(ticker=ticker,market=market,currency='USD' if market=='US' else 'MYR',evidence=e,admission=a)
+
+
+def batch_prepare(template=None,items=None,**kwargs):
+    return prepare_report_forecasts(normal_inputs()[0] if template is None else template,
+        batch=dict(schema_version=1,items=[] if items is None else items),issued_at=ISSUE,report_cutoff=CUTOFF,
+        template_reviewed=True,**kwargs)
+
+
+def mixed_inputs():
+    template,universe,calendar=normal_inputs()
+    for target in (template['forecasts'][2],universe['groups'][0]['instruments'][2]):
+        target.update(ticker='1155',market='MY',currency='MYR',country='my')
+    template['collection'].update(missing_us=49,missing_my=1)
+    return template,universe,calendar
+
+
+def batch_arguments(private,items=None,template_inputs=None):
+    template,universe,calendar=normal_inputs() if template_inputs is None else template_inputs
+    argv=[]
+    for name,value in dict(template=template,universe=universe,calendar=calendar,
+                           batch=dict(schema_version=1,items=[] if items is None else items)).items():
+        argv+=['--'+name,put(private/(name+'.json'),value)]
+    return argv+['--issued-at',ISSUE,'--cutoff',CUTOFF,'--template-reviewed','--output-directory',str(private/'bundle')]
+
+
+def test_batch_distinct_us_my_raw_cash_reference_calendars_public_validation(private,capsys):
+    inputs=mixed_inputs();template,universe,calendar=inputs
+    items=[batch_item(),batch_item('1155','MY',cash=True)]
+    before=deepcopy((template,items));result=batch_prepare(template,items)
+    assert (template,items)==before and result['status']=='partial'
+    assert result['counts']==dict(intended=50,provided=2,generated=2,withheld=48,missing_entries=48,
+                                 missing_pairs=48,missing_evidence=48,missing_admission=48)
+    us,my=result['report']['forecasts'][1:3]
+    assert us['forecast_status']==my['forecast_status']=='available'
+    assert us['forecast_time_basis']['schema_version']==my['forecast_time_basis']['schema_version']==2
+    assert us['forecast_time_basis']['ticker']=='FIX0X1' and my['forecast_time_basis']['ticker']=='1155'
+    assert us['forecast_time_basis']['venue_timezone']=='America/New_York'
+    assert my['forecast_time_basis']['venue_timezone']=='Asia/Kuala_Lumpur'
+    assert us['forecast_time_basis']['target_close_at']!=my['forecast_time_basis']['target_close_at']
+    assert 'not executable' in us['scenario'] and 'not executable' in my['scenario']
+    assert us['forecast_basis']['bull_case']==items[0]['evidence']['narrative']['bull_case']
+    assert result['report']['collection']['verified_forecast_reference_count']==2
+    cli.validate_prepared(result['report'],universe,calendar,private)
+    argv=batch_arguments(private,items,inputs);assert cli.main(argv)==0
+    summary=json.loads(capsys.readouterr().out)
+    assert summary['status']=='prepared' and summary['forecast_generated_count']==2 and summary['counts']==result['counts']
+    assert json.loads((private/'bundle/audit.json').read_text())==result['audit']
+
+
+def test_batch_all_fifty_have_separate_identity_audits_and_counts(private):
+    template,universe,calendar=normal_inputs()
+    items=[batch_item(row['ticker']) for row in template['forecasts']]
+    result=batch_prepare(template,items)
+    assert result['status']=='generated' and result['counts']['generated']==50
+    assert result['counts']['withheld']==result['counts']['missing_entries']==0
+    assert len(result['audit']['rows'])==50
+    assert {a['ticker'] for a in result['audit']['rows']}=={r['ticker'] for r in template['forecasts']}
+    assert all(a['private_audit']['instrument']['ticker']==a['ticker'] for a in result['audit']['rows'])
+    cli.validate_prepared(result['report'],universe,calendar,private)
+
+
+@pytest.mark.parametrize('missing',['entry','evidence','admission','both'])
+def test_batch_missing_pair_has_row_reason_and_never_reuses_previous_numbers(missing):
+    template=normal_inputs()[0];item=batch_item()
+    old=f.build_forecast_scenario(item['evidence'],admission=item['admission'],issued_at=ISSUE,report_cutoff=CUTOFF)
+    target=template['forecasts'][1];target.update(old['report_fields']);before=deepcopy(target)
+    if missing in ('evidence','both'):item['evidence']=None
+    if missing in ('admission','both'):item['admission']=None
+    result=batch_prepare(template,[] if missing=='entry' else [item])
+    row=result['report']['forecasts'][1];audit=result['audit']['rows'][1]
+    assert row['forecast_status']=='unavailable' and row['direction']=='unknown'
+    assert all(row[k] is None for k in ('estimated_mid_case_value','range_low_value','range_high_value',
+        'forecast_basis','forecast_time_basis','forecast_as_of','target_date','forecast_observations'))
+    assert row['sources']==before['sources'] and row['current_price']==before['current_price']
+    assert template['forecasts'][1]==before
+    expected=['batch_entry_missing'] if missing=='entry' else ['evidence_missing','admission_missing'] if missing=='both' else [missing+'_missing']
+    assert audit['input_reasons']==expected and audit['core_reasons']==['admission_missing']
+    assert all(BATCH_INPUT_GAPS[r] in row['data_gaps'] for r in expected)
+
+
+@pytest.mark.parametrize('bad',['duplicate','unknown','cross-currency','cross-evidence','cross-admission','item-extra',
+    'item-missing','wrapper-extra','wrapper-version-bool','too-many','duplicate-template','malformed-evidence'])
+def test_batch_fatal_identity_shape_and_duplicate_errors_precede_calculation(private,capsys,monkeypatch,bad):
+    template=normal_inputs()[0];item=batch_item();batch=dict(schema_version=1,items=[item])
+    if bad=='duplicate':batch['items'].append(deepcopy(item))
+    elif bad=='unknown':item['ticker']='UNKNOWN'
+    elif bad=='cross-currency':item['currency']='MYR'
+    elif bad=='cross-evidence':item['evidence']['instrument']['ticker']='SPY';cases.reseal(item['evidence'],item['admission'])
+    elif bad=='cross-admission':item['admission']=batch_item('SPY')['admission']
+    elif bad=='item-extra':item['PRIVATE-CANARY']='private'
+    elif bad=='item-missing':item.pop('admission')
+    elif bad=='wrapper-extra':batch['extra']=True
+    elif bad=='wrapper-version-bool':batch['schema_version']=True
+    elif bad=='too-many':batch['items']=[item]*51
+    elif bad=='duplicate-template':template['forecasts'][2]=deepcopy(template['forecasts'][1])
+    elif bad=='malformed-evidence':item['evidence']=[]
+    module=sys.modules[prepare_report_forecasts.__module__]
+    def forbidden(*args,**kwargs):raise AssertionError('fatal preflight must precede core calculation')
+    monkeypatch.setattr(module,'build_forecast_scenario',forbidden)
+    with pytest.raises(ReportForecastError,match='^report-forecast-invalid-input$'):
+        prepare_report_forecasts(template,batch=batch,issued_at=ISSUE,report_cutoff=CUTOFF,template_reviewed=True)
+    argv=batch_arguments(private);put(private/'template.json',template);put(private/'batch.json',batch)
+    assert cli.main(argv)==1
+    summary=json.loads(capsys.readouterr().out)
+    assert summary==dict(status='failed',reason='preparation-invalid') and not (private/'bundle').exists()
+    assert 'CANARY' not in json.dumps(summary)
+
+
+@pytest.mark.parametrize('option',['--evidence','--admission'])
+def test_batch_legacy_options_are_exclusive_before_any_input_read(private,capsys,monkeypatch,option):
+    argv=batch_arguments(private)+[option,'/PRIVATE-CANARY/never-read']
+    monkeypatch.setattr(cli,'read_private_json',lambda *a,**k:pytest.fail('no input read'))
+    assert cli.main(argv)==1
+    assert json.loads(capsys.readouterr().out)==dict(status='failed',reason='arguments-invalid')
+
+
+@pytest.mark.parametrize('bad',['oversized','depth13','nan','duplicate-json','symlink','mode'])
+def test_batch_cli_bounds_privacy_and_no_write(private,capsys,bad):
+    argv=batch_arguments(private);path=private/'batch.json'
+    if bad=='oversized':path.write_bytes(b'x'*(cli.MAX_JSON+1))
+    elif bad=='depth13':path.write_text(json.dumps(dict(schema_version=1,items=[],extra=at_depth(12))))
+    elif bad=='nan':path.write_text('{"schema_version":1,"items":[],"x":NaN}')
+    elif bad=='duplicate-json':path.write_text('{"schema_version":1,"items":[],"items":[]}')
+    elif bad=='symlink':path.unlink();path.symlink_to(private/'template.json')
+    else:path.chmod(0o644)
+    assert cli.main(argv)==1
+    assert json.loads(capsys.readouterr().out)==dict(status='failed',reason='private-input-invalid')
+    assert not (private/'bundle').exists()
+
+
+def test_batch_helper_byte_budget_and_cli_depth12_only(private,monkeypatch):
+    batch=dict(schema_version=1,items=[batch_item()]);module=sys.modules[prepare_report_forecasts.__module__]
+    monkeypatch.setattr(module,'BATCH_MAX_BYTES',len(json.dumps(batch,separators=(',',':')).encode())-1)
+    with pytest.raises(ReportForecastError):
+        prepare_report_forecasts(normal_inputs()[0],batch=batch,issued_at=ISSUE,report_cutoff=CUTOFF,template_reviewed=True)
+    path=private/'depth.json';put(path,dict(x=at_depth(11)))
+    assert cli.read_private_json(str(path),max_depth=12)==dict(x=at_depth(11))
+    with pytest.raises(ValueError):cli.read_private_json(str(path))
+
+
+def test_batch_preserves_sources_quotes_gaps_sections_and_rolls_back_failed_write(private,capsys,monkeypatch):
+    template,universe,calendar=normal_inputs();items=[batch_item()]
+    template['forecasts'][1].update(current_price='USD 100',current_price_value=100,quote_status='observed',price_as_of=ISSUE)
+    template['collection'].update(observed_us=1,missing_us=49)
+    before=deepcopy(template);result=batch_prepare(template,items)
+    assert template==before and result['report']['sections']==before['sections']
+    for original,mapped in zip(before['forecasts'],result['report']['forecasts']):
+        assert mapped['sources']==original['sources'] and mapped['current_price']==original['current_price']
+        assert all(g in mapped['data_gaps'] for g in original['data_gaps'])
+    argv=batch_arguments(private,items,(template,universe,calendar))
+    original_write=cli._write_file
+    def fail(fd,name,value):
+        if name=='prepared-report.json':raise OSError('PRIVATE-CANARY')
+        return original_write(fd,name,value)
+    monkeypatch.setattr(cli,'_write_file',fail)
+    assert cli.main(argv)==1
+    assert json.loads(capsys.readouterr().out)==dict(status='failed',reason='private-write-failed')
+    assert not (private/'bundle').exists()
+
+
+def test_batch_gate_failure_withholds_only_its_intended_instrument():
+    first=batch_item();second=batch_item('FIX0X2')
+    second['evidence']['rights']['public_derived_forecast']=False;cases.reseal(second['evidence'],second['admission'])
+    result=batch_prepare(items=[first,second])
+    assert result['counts']['generated']==1 and result['audit']['rows'][1]['status']=='generated'
+    assert result['audit']['rows'][2]['status']=='withheld' and 'rights' in result['audit']['rows'][2]['reasons']
+    assert result['report']['forecasts'][2]['estimated_mid_case_value'] is None
+
+
+def test_empty_batch_cli_withholds_all_rows_and_clears_last_old_forecast(private,capsys):
+    template,universe,calendar=normal_inputs();last=template['forecasts'][-1]
+    item=batch_item(last['ticker'])
+    last.update(f.build_forecast_scenario(item['evidence'],admission=item['admission'],issued_at=ISSUE,
+                                         report_cutoff=CUTOFF)['report_fields'])
+    argv=batch_arguments(private,[],(template,universe,calendar))
+    assert cli.main(argv)==0
+    summary=json.loads(capsys.readouterr().out)
+    assert summary['status']=='withheld' and summary['forecast_generated_count']==0
+    assert summary['counts']['missing_entries']==summary['counts']['missing_pairs']==50
+    report=json.loads((private/'bundle/prepared-report.json').read_text())
+    assert all(row['estimated_mid_case_value'] is None and row['forecast_time_basis'] is None for row in report['forecasts'])
+    assert len(json.loads((private/'bundle/audit.json').read_text())['rows'])==50
+
+
+def test_real_batch_cli_subprocess_uses_frozen_generic_identity(private):
+    argv=batch_arguments(private,[batch_item()])
+    result=subprocess.run([sys.executable,str(BASE/'scripts/daily-market-brief/prepare_forecast_report.py'),*argv],
+        capture_output=True,text=True,timeout=10)
+    assert result.returncode==0 and result.stderr=='' and str(private) not in result.stdout
+    summary=json.loads(result.stdout)
+    assert summary['forecast_generated_count']==1 and summary['counts']['withheld']==49
+    row=json.loads((private/'bundle/prepared-report.json').read_text())['forecasts'][1]
+    assert row['forecast_time_basis']['ticker']==row['ticker']=='FIX0X1'
+
+
+@pytest.mark.parametrize('market',['US','MY'])
+def test_generic_batch_row_reaches_existing_viewer_guard(private,market):
+    node=shutil.which('node')
+    if not node:pytest.skip('Node unavailable for existing viewer guard')
+    inputs=mixed_inputs();item=batch_item('1155','MY') if market=='MY' else batch_item()
+    result=batch_prepare(inputs[0],[item]);row=result['report']['forecasts'][2 if market=='MY' else 1]
+    js="""const fs=require('fs'),vm=require('vm');
+const html=fs.readFileSync(process.argv[1],'utf8');
+const a=html.indexOf('function predictionState('),b=html.indexOf('function targetTiming(',a);
+const context={};vm.createContext(context);vm.runInContext(html.slice(a,b),context);
+process.stdout.write(JSON.stringify(context.predictionState(JSON.parse(process.argv[2]))));"""
+    output=subprocess.run([node,'-e',js,str(BASE/'artifacts/daily-market-brief/index.html'),json.dumps(row)],
+        capture_output=True,text=True,timeout=5,check=True)
+    assert json.loads(output.stdout)==dict(direction=row['direction'],target=row['estimated_mid_case'],
+        range=row['estimated_range'],reason=None)

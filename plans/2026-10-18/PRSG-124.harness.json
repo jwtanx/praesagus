@@ -71,7 +71,10 @@
         "tests/test_report_forecast.py"
       ],
       "cwd": ".",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed final frozen overlay/CLI diff and handoff hashes; combined overlay/core/projection355passed2.69s. Engineer113focusedpassed1.89s. Actual source-admitted coverage remains0/50; D3pending."
+      ]
     },
     {
       "id": "actual",
@@ -99,7 +102,10 @@
         "overlay",
         "core"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed final frozen overlay/CLI diff and handoff hashes; combined overlay/core/projection355passed2.69s. Engineer113focusedpassed1.89s. Actual source-admitted coverage remains0/50; D3pending."
+      ]
     },
     {
       "id": "PRSG-124-D3",

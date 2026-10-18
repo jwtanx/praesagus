@@ -31,9 +31,11 @@ Implementation base f0182039fe2cc4ec8875943da41f878f84ac94c8. AI Engineer exclus
 ## When it's considered done
 
 - [x] PRSG-124-D1: Generic raw/cash core, strict identity-safe results/mapping and legacy compatibility pass focused fixtures and Lead review.
-- [ ] PRSG-124-D2: Bounded per-ticker batch overlay/CLI, distinct US/MY calendars, partial/missing/error behavior and immutable output/public validation pass focused review.
+- [x] PRSG-124-D2: Bounded per-ticker batch overlay/CLI, distinct US/MY calendars, partial/missing/error behavior and immutable output/public validation pass focused review.
 - [ ] PRSG-124-D3: All50 actual ticker predictions have admitted current inputs and frozen numeric outputs; coverage/limitations and delivery independently verified. Fixtures or0/50 do not satisfy this item.
 
 ## Lead review — 18 October
 
 D1 accepted after independent inspection of both frozen core files and a combined core/legacy-overlay/ticket-brief run: 274 passed in 1.57s. Core SHA256 515ec709e72b5174694e82a7e5591579aadf215c080054d414fa1e32c65efc22; tests ec8c5367e0bba63533a105e125be0e536edecaf754ba767b3081b8d5411fbf43. This check ran in primary before the new overlay handoff and establishes fixture compatibility only. D2 remains under Engineer implementation; D3 actual coverage remains 0/50. No model promotion or actual source admission is inferred.
+
+D1 integrated as 1f6a47f; mandatory commit gate 2,937 passed, 41 warnings in 56.82s. D2 accepted after independent frozen three-file review and combined overlay/core/projection checks: 355 passed in 2.69s. Frozen handoff hashes: overlay 8da93734648833a96f6141f3e09d2f624fb9ff6b2cab0a5be7af9bc984ee347b; CLI 36640da3d92d89cba3af09700fb195722af199a410dc68434ee78b0195dacca6; tests 4de7475c73609a7621cd1a1891cc85df1f4c6f858b6965b0c28c6bd1b3eba56f. Missing rows clear previous numbers; duplicate/unknown/cross-bound batches reject; legacy flow remains covered. D3 remains pending: one actual SPY capture succeeded with 100 bars and all 21 required sessions, but source admission and actual numeric issuance remain unfulfilled.

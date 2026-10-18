@@ -11,7 +11,8 @@ import tempfile
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from ingest.forecast_scenario import _bounded
-from ingest.report_forecast import prepare_report_forecast, validator, REPORT_TEMPLATE_MAX_DEPTH
+from ingest.report_forecast import (prepare_report_forecast, prepare_report_forecasts, validator,
+                                    REPORT_TEMPLATE_MAX_DEPTH)
 
 MAX_JSON = 2 * 1024 * 1024
 FORBIDDEN = {'public', 'www', 'htdocs', 'artifacts', 'dist'}
@@ -154,29 +155,40 @@ def main(argv=None):
         for name in ('template', 'universe', 'calendar', 'issued-at', 'cutoff', 'output-directory'):
             parser.add_argument('--' + name, required=True)
         parser.add_argument('--evidence'); parser.add_argument('--admission')
+        parser.add_argument('--batch')
         parser.add_argument('--template-reviewed', action='store_true')
         args = parser.parse_args(argv)
-        if bool(args.evidence) != bool(args.admission):
+        if ((args.batch is not None and (args.evidence is not None or args.admission is not None))
+                or bool(args.evidence) != bool(args.admission)):
             raise PreparationCLIError('arguments-invalid')
         stage = 'private-input-invalid'
         template, universe, calendar = (read_private_json(getattr(args,name),max_depth=REPORT_TEMPLATE_MAX_DEPTH if name=='template' else 8)
                                        for name in ('template','universe','calendar'))
         evidence = read_private_json(args.evidence) if args.evidence else None
         admission = read_private_json(args.admission) if args.admission else None
+        batch = read_private_json(args.batch,max_depth=12) if args.batch is not None else None
         output = _path(args.output_directory)
         fd = _directory(output.parent); os.close(fd)
         if output.exists() or output.is_symlink():
             raise PreparationCLIError('output-exists')
         stage = 'preparation-invalid'
-        result = prepare_report_forecast(template, evidence=evidence, admission=admission,
-                                         issued_at=args.issued_at, report_cutoff=args.cutoff,
-                                         template_reviewed=args.template_reviewed)
+        if args.batch is not None:
+            result=prepare_report_forecasts(template,batch=batch,issued_at=args.issued_at,
+                report_cutoff=args.cutoff,template_reviewed=args.template_reviewed)
+        else:
+            result = prepare_report_forecast(template, evidence=evidence, admission=admission,
+                                             issued_at=args.issued_at, report_cutoff=args.cutoff,
+                                             template_reviewed=args.template_reviewed)
         stage = 'report-validation-failed'
         validate_prepared(result['report'], universe, calendar, output.parent)
         stage = 'private-write-failed'
         write_bundle(output, result)
-        print(json.dumps(dict(status='prepared' if result['status']=='generated' else 'withheld',
-                              reasons=result['reasons'], forecast_generated_count=int(result['status']=='generated'))))
+        if args.batch is not None:
+            print(json.dumps(dict(status='prepared' if result['counts']['generated'] else 'withheld',
+                reasons=result['reasons'],forecast_generated_count=result['counts']['generated'],counts=result['counts'])))
+        else:
+            print(json.dumps(dict(status='prepared' if result['status']=='generated' else 'withheld',
+                                  reasons=result['reasons'], forecast_generated_count=int(result['status']=='generated'))))
         return 0
     except (OSError, ValueError, TypeError, KeyError, OverflowError, RecursionError, RuntimeError):
         # Never interpolate paths, provider/user values or underlying exceptions.
