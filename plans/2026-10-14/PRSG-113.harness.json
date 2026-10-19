@@ -68,7 +68,8 @@
       "description": "Baseline/quantile train/save/reload, no random temporal validation and reproducibility tested.",
       "status": "passed",
       "evidence": [
-        "Lead complete7pathreview:fixed9HGB+conditionedvolbaseline, training-onlyactivefeatureselection, explicitfit/calibrateavailability/cutoffandnorefit, purgedsplitwalk-forward/holdout reports/commondatebootstrap, privateexclusiveartifact andSAMEverifiedbytesreload/runtimepolicy compatibility; CLIhelp/missing/fictionalCSVfreeze checks. 8additionalindependentfrozengatecases passed."
+        "Lead complete7pathreview:fixed9HGB+conditionedvolbaseline, training-onlyactivefeatureselection, explicitfit/calibrateavailability/cutoffandnorefit, purgedsplitwalk-forward/holdout reports/commondatebootstrap, privateexclusiveartifact andSAMEverifiedbytesreload/runtimepolicy compatibility; CLIhelp/missing/fictionalCSVfreeze checks. 8additionalindependentfrozengatecases passed.",
+        "19Oct2026 actual unvalidated research fit:754SPYsessions,703origins/2802windows; exact typed source identity and actual known/retrieved provenance independently bound. Frozen9HistGradientBoostingRegressors/40iterations saved and trusted-reloaded with exact dependency/contract hashes. Present fit5.286558s; supervised wall7.031s, max sampled aggregate RSS182943744bytes, process-lifetime model peak179945472bytes,1thread. Both historical folds have train0/calibration0 and insufficient-empty-purged-fold; noOOSscores/calibration/PIT/untouched-holdout/strong-model acceptance. Current-vintage adjustment consistency is a disclosed scoped inference, not factor reconciliation. Shape/NaN/crossing checks are mechanics only. D2 remains pending; this one-symbol result is not the full110-name resource benchmark. Private data/model artifacts are not committed."
       ]
     },
     {
@@ -77,7 +78,8 @@
       "description": "Actual-data walk-forward/untouched holdout passes frozen strong-model gates and measured hardware budgets.",
       "status": "pending",
       "evidence": [
-        "BLOCKED: no actualPITmembership/delistings/origin-vintage evidence, acceptedactualforecastquality orfullshape8GBhardwareprofile. 250000preparedrecordlimit isbelow100\u2013110names x3\u20135years x4windows; no silenttruncation orstrong-modelacceptance."
+        "BLOCKED: no actualPITmembership/delistings/origin-vintage evidence, acceptedactualforecastquality orfullshape8GBhardwareprofile. 250000preparedrecordlimit isbelow100\u2013110names x3\u20135years x4windows; no silenttruncation orstrong-modelacceptance.",
+        "19Oct2026 actual unvalidated research fit:754SPYsessions,703origins/2802windows; exact typed source identity and actual known/retrieved provenance independently bound. Frozen9HistGradientBoostingRegressors/40iterations saved and trusted-reloaded with exact dependency/contract hashes. Present fit5.286558s; supervised wall7.031s, max sampled aggregate RSS182943744bytes, process-lifetime model peak179945472bytes,1thread. Both historical folds have train0/calibration0 and insufficient-empty-purged-fold; noOOSscores/calibration/PIT/untouched-holdout/strong-model acceptance. Current-vintage adjustment consistency is a disclosed scoped inference, not factor reconciliation. Shape/NaN/crossing checks are mechanics only. D2 remains pending; this one-symbol result is not the full110-name resource benchmark. Private data/model artifacts are not committed."
       ]
     },
     {
@@ -114,7 +116,8 @@
       ],
       "status": "pending",
       "evidence": [
-        "D2remainsblockedonactual-datachronologicalevidence/stronggates/full-sizeboundedlayout+profile; no productionpromotion."
+        "D2remainsblockedonactual-datachronologicalevidence/stronggates/full-sizeboundedlayout+profile; no productionpromotion.",
+        "19Oct2026 actual unvalidated research fit:754SPYsessions,703origins/2802windows; exact typed source identity and actual known/retrieved provenance independently bound. Frozen9HistGradientBoostingRegressors/40iterations saved and trusted-reloaded with exact dependency/contract hashes. Present fit5.286558s; supervised wall7.031s, max sampled aggregate RSS182943744bytes, process-lifetime model peak179945472bytes,1thread. Both historical folds have train0/calibration0 and insufficient-empty-purged-fold; noOOSscores/calibration/PIT/untouched-holdout/strong-model acceptance. Current-vintage adjustment consistency is a disclosed scoped inference, not factor reconciliation. Shape/NaN/crossing checks are mechanics only. D2 remains pending; this one-symbol result is not the full110-name resource benchmark. Private data/model artifacts are not committed."
       ]
     }
   ],

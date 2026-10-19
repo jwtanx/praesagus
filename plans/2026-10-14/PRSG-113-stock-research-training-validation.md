@@ -107,3 +107,7 @@ Research implementation and representation-capacity fixtures are delivered. Stro
 ## Tradeoffs
 
 Exact compact storage improves capacity but does not prove end-to-end memory, training time, forecast quality or profitable trading.
+
+## Actual progress — 19 October
+
+19Oct2026 actual unvalidated research fit:754SPYsessions,703origins/2802windows; exact typed source identity and actual known/retrieved provenance independently bound. Frozen9HistGradientBoostingRegressors/40iterations saved and trusted-reloaded with exact dependency/contract hashes. Present fit5.286558s; supervised wall7.031s, max sampled aggregate RSS182943744bytes, process-lifetime model peak179945472bytes,1thread. Both historical folds have train0/calibration0 and insufficient-empty-purged-fold; noOOSscores/calibration/PIT/untouched-holdout/strong-model acceptance. Current-vintage adjustment consistency is a disclosed scoped inference, not factor reconciliation. Shape/NaN/crossing checks are mechanics only. D2 remains pending; this one-symbol result is not the full110-name resource benchmark. Private data/model artifacts are not committed.

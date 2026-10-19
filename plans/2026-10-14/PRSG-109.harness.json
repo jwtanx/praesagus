@@ -75,19 +75,28 @@
       "id": "implementation",
       "kind": "manual",
       "description": "Accepted child epic implementations, tests, docs and Lead review.",
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "19Oct2026 actual progress: 35 independently verified private next-close forecasts across30US/5MY and a50-row CSV with15explicit withheld rows. These are separate uncalibrated daily baselines; originalMYtargets have elapsed and no refreshed forecast is implied. A separately reviewed SPY research dataset has754actualsessions/2802preparedwindows; one supervised current-vintage researchfit saved/reloaded9estimators. Full80stock20ETF universe, strong-model validation, trained whole-window production output and subsequent realized scoring remain unfinished. The18:00MYT target was missed; do not relax gates."
+      ]
     },
     {
       "id": "strong-model",
       "kind": "manual",
       "description": "Actual-data strong-model validation and resource gates, without substituting synthetic proof.",
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "19Oct2026 actual progress: 35 independently verified private next-close forecasts across30US/5MY and a50-row CSV with15explicit withheld rows. These are separate uncalibrated daily baselines; originalMYtargets have elapsed and no refreshed forecast is implied. A separately reviewed SPY research dataset has754actualsessions/2802preparedwindows; one supervised current-vintage researchfit saved/reloaded9estimators. Full80stock20ETF universe, strong-model validation, trained whole-window production output and subsequent realized scoring remain unfinished. The18:00MYT target was missed; do not relax gates."
+      ]
     },
     {
       "id": "real-output",
       "kind": "manual",
       "description": "Actual bundle and subsequent immutable forecast/realized-OHLC scoring.",
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "19Oct2026 actual progress: 35 independently verified private next-close forecasts across30US/5MY and a50-row CSV with15explicit withheld rows. These are separate uncalibrated daily baselines; originalMYtargets have elapsed and no refreshed forecast is implied. A separately reviewed SPY research dataset has754actualsessions/2802preparedwindows; one supervised current-vintage researchfit saved/reloaded9estimators. Full80stock20ETF universe, strong-model validation, trained whole-window production output and subsequent realized scoring remain unfinished. The18:00MYT target was missed; do not relax gates."
+      ]
     }
   ],
   "acceptance": [
@@ -108,7 +117,10 @@
       "check_ids": [
         "implementation"
       ],
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "19Oct2026 actual progress: 35 independently verified private next-close forecasts across30US/5MY and a50-row CSV with15explicit withheld rows. These are separate uncalibrated daily baselines; originalMYtargets have elapsed and no refreshed forecast is implied. A separately reviewed SPY research dataset has754actualsessions/2802preparedwindows; one supervised current-vintage researchfit saved/reloaded9estimators. Full80stock20ETF universe, strong-model validation, trained whole-window production output and subsequent realized scoring remain unfinished. The18:00MYT target was missed; do not relax gates."
+      ]
     },
     {
       "id": "PRSG-109-D3",
@@ -116,7 +128,10 @@
       "check_ids": [
         "strong-model"
       ],
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "19Oct2026 actual progress: 35 independently verified private next-close forecasts across30US/5MY and a50-row CSV with15explicit withheld rows. These are separate uncalibrated daily baselines; originalMYtargets have elapsed and no refreshed forecast is implied. A separately reviewed SPY research dataset has754actualsessions/2802preparedwindows; one supervised current-vintage researchfit saved/reloaded9estimators. Full80stock20ETF universe, strong-model validation, trained whole-window production output and subsequent realized scoring remain unfinished. The18:00MYT target was missed; do not relax gates."
+      ]
     },
     {
       "id": "PRSG-109-D4",
@@ -124,7 +139,10 @@
       "check_ids": [
         "real-output"
       ],
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "19Oct2026 actual progress: 35 independently verified private next-close forecasts across30US/5MY and a50-row CSV with15explicit withheld rows. These are separate uncalibrated daily baselines; originalMYtargets have elapsed and no refreshed forecast is implied. A separately reviewed SPY research dataset has754actualsessions/2802preparedwindows; one supervised current-vintage researchfit saved/reloaded9estimators. Full80stock20ETF universe, strong-model validation, trained whole-window production output and subsequent realized scoring remain unfinished. The18:00MYT target was missed; do not relax gates."
+      ]
     }
   ],
   "review": {

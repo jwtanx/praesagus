@@ -307,3 +307,7 @@ Core collection, dataset, model, inference and export implementations are delive
 ## Tradeoffs
 
 Lightweight local execution reduces cost, but neither numeric output nor passing synthetic tests establishes forecast accuracy or profitability.
+
+## Actual progress — 19 October
+
+19Oct2026 actual progress: 35 independently verified private next-close forecasts across30US/5MY and a50-row CSV with15explicit withheld rows. These are separate uncalibrated daily baselines; originalMYtargets have elapsed and no refreshed forecast is implied. A separately reviewed SPY research dataset has754actualsessions/2802preparedwindows; one supervised current-vintage researchfit saved/reloaded9estimators. Full80stock20ETF universe, strong-model validation, trained whole-window production output and subsequent realized scoring remain unfinished. The18:00MYT target was missed; do not relax gates.
