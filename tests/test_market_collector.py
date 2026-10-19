@@ -1106,3 +1106,98 @@ def test_hours_failures_keep_count_only_diagnostic_and_secret_screen(receipt_par
     secret=stage_history_response(token='synthetic-api-key')
     parsed=c.parse_reply(stage_worker(secret,job),job)
     assert parsed.diagnostic_stage=='decode-screen' and parsed.diagnostic_structure==c.unavailable_structure()
+
+
+FIXED_MY20 = ('0820EA','0800EA','1155','1023','0277','0259','0166','0097','5225','5878',
+              '4707','3689','5296','4715','6033','5681','5246','3816','1961','5285')
+
+
+def fixed20_job(symbol='1023'):
+    return dict(kind='history',code='BMS.'+symbol,end='2026-10-02',normalization_dialect='bms_fixed20_hours_hypothesis_v1')
+
+
+def fixed20_plan(job):return dict(schema_version=1,codes=[],news=[],history=[{k:v for k,v in job.items() if k!='kind'}])
+
+
+@pytest.mark.parametrize('symbol',FIXED_MY20)
+def test_fixed20_closed_job_worker_parent_store_replay(store,symbol):
+    job=fixed20_job(symbol);assert c.validate_plan(fixed20_plan(job))==[job]
+    assert c.normalization_for(job,current=True)==6
+    frame=stage_worker(hours_response(),job);header,body=unpack_stage_frame(frame)
+    assert header['version']==3 and header['normalization_version']==6 and header['job_digest']==c.job_digest(job)
+    reply=c.parse_reply(frame,job);assert reply.failure is None and reply.response.body==hours_response().body
+    outcome=c.collect(store,fixed20_plan(job),LOCATOR,run_id='fictional-fixed20',supervisor=lambda *a,**k:reply,wall=wall_clock())[0]
+    assert outcome.status=='success' and outcome.normalization_version==6
+    entry=store.query('history',ING)[0]
+    assert entry['record']['code']=='BMS.'+symbol and entry['record']['time_zone']==8
+    assert entry['record']['effective_offset_minutes']==480 and entry['observation']['normalization_version']==6
+    assert entry['record']['normalization_dialect']=='bms_fixed20_hours_hypothesis_v1'
+    assert entry['record']['unit_basis']=='operator_selected_hypothesis_not_vendor_confirmed'
+    assert 'currency' not in entry['record'] and entry['observation']['rights_status']=='unconfirmed'
+
+
+@pytest.mark.parametrize('bad',['missing','old','unknown','US','unsupported','case','padded','alias','extra'])
+def test_fixed20_invalid_scope_rejects_before_credential_capability(bad):
+    job=fixed20_job();calls=[]
+    if bad=='missing':job.pop('normalization_dialect')
+    elif bad=='old':job['normalization_dialect']=c.HOURS_DIALECT
+    elif bad=='unknown':job['normalization_dialect']='unknown'
+    elif bad=='US':job['code']='US.SYN'
+    elif bad=='unsupported':job['code']='BMS.1156'
+    elif bad=='case':job['code']='BMS.0800ea'
+    elif bad=='padded':job['code']=' BMS.1023'
+    elif bad=='alias':job['code']='BMS.01023'
+    else:job['extra']=True
+    def forbidden(*a,**k):calls.append(True);pytest.fail('must reject before capability')
+    with pytest.raises(ValueError):c.execute_job(job,LOCATOR,credentials=forbidden,transport_factory=forbidden)
+    assert not calls
+
+
+@pytest.mark.parametrize('bad',['v5','v4','none','bool','old-token','other-code','old-frame1','old-frame2'])
+def test_fixed20_cross_context_frame_and_parent_substitution_rejected(store,bad):
+    job=fixed20_job();header,body=unpack_stage_frame(stage_worker(hours_response(),job))
+    if bad in ('v5','v4','none','bool'):
+        version={'v5':5,'v4':4,'none':None,'bool':True}[bad];header['normalization_version']=version
+        reply=c.WorkerReply(ReadResponse(200,body),OBS,None,normalization_version=version)
+        outcome=c.collect(store,fixed20_plan(job),LOCATOR,run_id='fictional-downgrade',supervisor=lambda *a,**k:reply,wall=wall_clock())[0]
+        assert outcome.failure=='bad-frame' and not store.query('history',ING)
+    elif bad=='old-token':
+        job=hours_job()  # Different token and code cannot reuse the v6 digest/body.
+    elif bad=='other-code':job=fixed20_job('0277')
+    else:
+        header['version']=1 if bad=='old-frame1' else 2
+        header.pop('normalization_version');header.pop('diagnostic_structure')
+        if header['version']==1:header.pop('diagnostic_stage')
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header,body),job)
+
+
+def test_fixed20_versions5_and6_cannot_substitute_even_for1155():
+    new=fixed20_job('1155');old=hours_job()
+    assert c.job_request(new)==c.job_request(old) and c.job_digest(new)!=c.job_digest(old)
+    for job,version in ((new,5),(old,6)):
+        with pytest.raises(ValueError):c.normalization_for(job,version)
+    frame=stage_worker(hours_response(),new)
+    with pytest.raises(ValueError):c.parse_reply(frame,old)
+
+
+@pytest.mark.parametrize('secret',[False,True])
+def test_fixed20_worker_failure_frame_and_private_receipt_remain_count_only(receipt_parent,secret):
+    job=fixed20_job()
+    row=dict(time_key=1790899200000-4*3600000,date=20261001,time_zone=8,close=12.5)
+    response=stage_history_response(row,**({'token':'synthetic-api-key'} if secret else {}))
+    frame=stage_worker(response,job);reply=c.parse_reply(frame,job)
+    assert reply.normalization_version==6 and reply.failure=='invalid-response' and reply.response.body==b''
+    if secret:
+        assert reply.diagnostic_stage=='decode-screen' and reply.diagnostic_structure==c.unavailable_structure()
+    else:
+        assert reply.diagnostic_stage=='date-relation'
+        assert reply.diagnostic_structure['date_relation_summary']==dict(rows_examined=1,minutes_match=1,
+            hours_only_match=0,neither_match=0,uncheckable=0)
+    outcome=c.JobOutcome('fictional','failed',None,reply.failure,reply.diagnostic_stage,6,reply.diagnostic_structure)
+    path=receipt_parent/'fixed20.json';receipt=c.DiagnosticReceipt(str(path))
+    try:receipt.write([outcome])
+    finally:receipt.close()
+    text=path.read_text()
+    assert json.loads(text)['history_failures'][0]['structure']==reply.diagnostic_structure
+    for literal in ('synthetic-api-key','SYNTHETIC-BODY-CANARY','20261001','1790899200000'):
+        assert literal not in text

@@ -14,7 +14,7 @@ import subprocess
 import time
 from typing import Callable
 
-from connectors.moomoo_rest import MAX_RESPONSE_BYTES, ReadRequest, ReadResponse, RESTError
+from connectors.moomoo_rest import MAX_RESPONSE_BYTES, ReadRequest, ReadResponse, RESTError, BMS_FIXED20_CODES
 
 HOSTNAME = "webapi.moomoo.com"
 SERVICE = "praesagus.moomoo.private-key-passphrase"
@@ -185,7 +185,7 @@ class SecureReadTransport:
         history = (request.method == "GET" and isinstance(request.path, str)
                    and (re.fullmatch(r"/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,63}/history-kline",
                                      request.path) is not None
-                        or request.path == '/api/v1.0/quote/BMS.1155/history-kline'))
+                        or request.path in {f'/api/v1.0/quote/{code}/history-kline' for code in BMS_FIXED20_CODES}))
         _need(history or (request.method, request.path) in (
             ("GET", "/api/v1.0/quote/find-news"), ("POST", "/api/v1.0/quote/snapshot")), "invalid-request")
         _need(isinstance(request.query, str) and len(request.query) <= 8192
@@ -209,7 +209,7 @@ class SecureReadTransport:
                   and query["ktype"] == "2" and query["autype"] in {"0", "1", "2"}
                   and 1 <= int(query["num"]) <= 370 and str(int(query["num"])) == query["num"],
                   "invalid-request")
-            if request.path == '/api/v1.0/quote/BMS.1155/history-kline':
+            if request.path in {f'/api/v1.0/quote/{code}/history-kline' for code in BMS_FIXED20_CODES}:
                 _need(request.query == f"end={query['end']}&ktype=2&autype=0&num=100", "invalid-request")
         _need(isinstance(request.body, bytes) and len(request.body) <= 32768
               and (not request.body if request.method == "GET" else bool(request.body) and not request.query),

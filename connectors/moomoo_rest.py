@@ -15,6 +15,10 @@ from urllib.parse import urlencode
 
 HOST = "https://webapi.moomoo.com"
 MAX_RESPONSE_BYTES = 2 * 1024 * 1024
+BMS_FIXED20_CODES = frozenset('BMS.' + code for code in (
+    '0820EA','0800EA','1155','1023','0277','0259','0166','0097','5225','5878',
+    '4707','3689','5296','4715','6033','5681','5246','3816','1961','5285'))
+BMS_FIXED20_HOURS_DIALECT = 'bms_fixed20_hours_hypothesis_v1'
 
 
 class RESTError(RuntimeError):
@@ -324,15 +328,17 @@ class MoomooRESTConnector:
     def history_kline(self, code: str, end: str, *, start: str | None = None,
                       num: int = 100, ktype: int = 2, autype: int = 0,
                       normalization_dialect: str | None = None) -> ReadResult:
-        """Bounded US daily K-lines or exact BMS.1155 raw daily100 candidate."""
+        """Bounded US daily bars or explicitly scoped fixed Malaysia candidates."""
         _require(isinstance(code, str) and (re.fullmatch(r"US\.[A-Z][A-Z0-9.-]*", code) is not None
-                                          or code == 'BMS.1155'))
+                                          or code in BMS_FIXED20_CODES))
         _require(_date(end) and (start is None or _date(start) and start <= end))
         _require(_integer(num, 1, 370) and _integer(ktype, 2, 2)
                  and _integer(autype, 0, 2))
-        _require(code != 'BMS.1155' or start is None and num == 100 and ktype == 2 and autype == 0)
+        _require(code not in BMS_FIXED20_CODES or start is None and num == 100 and ktype == 2 and autype == 0)
         _require(normalization_dialect is None or type(normalization_dialect) is str
-                 and normalization_dialect == 'bms1155_hours_hypothesis_v1' and code == 'BMS.1155')
+                 and (normalization_dialect == 'bms1155_hours_hypothesis_v1' and code == 'BMS.1155'
+                      or normalization_dialect == BMS_FIXED20_HOURS_DIALECT and code in BMS_FIXED20_CODES))
+        _require(code not in BMS_FIXED20_CODES-{'BMS.1155'} or normalization_dialect == BMS_FIXED20_HOURS_DIALECT)
         query = [("end", end), ("ktype", ktype), ("autype", autype), ("num", num)]
         if start is not None:
             query.insert(0, ("start", start))

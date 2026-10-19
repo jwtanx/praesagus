@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-130",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-19",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-19/PRSG-130-fixed-malaysia-history-candidates.md",
+  "objective": "Support exact fixed20MY rawdaily100 candidates under explicit version6 research-hours dialect without altering existing default/legacy semantics or implying source admission.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6272eff3d1805722730b58f14325492a82bcaa12",
+  "allowed_paths": [
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py",
+    "connectors/moomoo_rest.py",
+    "tests/test_market_collector.py",
+    "tests/test_private_market_store.py",
+    "tests/test_moomoo_rest.py",
+    "plans/2026-10-19/PRSG-130-fixed-malaysia-history-candidates.md",
+    "plans/2026-10-19/PRSG-130.harness.json",
+    "connectors/moomoo_rest_live.py",
+    "tests/test_moomoo_rest_live.py"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "artifacts/",
+    "ingest/forecast_scenario.py",
+    "ingest/report_forecast.py",
+    "scripts/stock-research/"
+  ],
+  "checks": [
+    {
+      "id": "regression",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_market_collector.py",
+        "tests/test_private_market_store.py",
+        "tests/test_moomoo_rest.py",
+        "tests/test_moomoo_rest_live.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed8frozenpaths and exactclosed20/version6/old1155norm5/USlegacy/digest/frame/parent/rawreplay/privacy behavior. Securetransportdiff limitedimport+route/queryguards, signing/TLS/credentials/deadlines unchanged. Independent1096passed4.00s; Engineer1096passed4.11s, no initialfailures. Frozenpatch4939ddc3dd8663640c219e09b12e5854c0fccea984a599332432040acf6a972a. Actualprovider/sourcefinancialadmission remainsseparate; mandatorydeliveryhooks runatcommit/push."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead scope/default/legacy/newexactcodes/versionbinding/privacy review and mandatory delivery hooks; no actualprovider evidence inferred.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed8frozenpaths and exactclosed20/version6/old1155norm5/USlegacy/digest/frame/parent/rawreplay/privacy behavior. Securetransportdiff limitedimport+route/queryguards, signing/TLS/credentials/deadlines unchanged. Independent1096passed4.00s; Engineer1096passed4.11s, no initialfailures. Frozenpatch4939ddc3dd8663640c219e09b12e5854c0fccea984a599332432040acf6a972a. Actualprovider/sourcefinancialadmission remainsseparate; mandatorydeliveryhooks runatcommit/push."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-130-D1",
+      "description": "All20exact candidates/version6 mechanics and legacycompatibility pass.",
+      "check_ids": [
+        "regression"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed8frozenpaths and exactclosed20/version6/old1155norm5/USlegacy/digest/frame/parent/rawreplay/privacy behavior. Securetransportdiff limitedimport+route/queryguards, signing/TLS/credentials/deadlines unchanged. Independent1096passed4.00s; Engineer1096passed4.11s, no initialfailures. Frozenpatch4939ddc3dd8663640c219e09b12e5854c0fccea984a599332432040acf6a972a. Actualprovider/sourcefinancialadmission remainsseparate; mandatorydeliveryhooks runatcommit/push."
+      ]
+    },
+    {
+      "id": "PRSG-130-D2",
+      "description": "Unsupported/downgrade/crossjob/malformed/privacy rejections pass.",
+      "check_ids": [
+        "regression"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed8frozenpaths and exactclosed20/version6/old1155norm5/USlegacy/digest/frame/parent/rawreplay/privacy behavior. Securetransportdiff limitedimport+route/queryguards, signing/TLS/credentials/deadlines unchanged. Independent1096passed4.00s; Engineer1096passed4.11s, no initialfailures. Frozenpatch4939ddc3dd8663640c219e09b12e5854c0fccea984a599332432040acf6a972a. Actualprovider/sourcefinancialadmission remainsseparate; mandatorydeliveryhooks runatcommit/push."
+      ]
+    },
+    {
+      "id": "PRSG-130-D3",
+      "description": "Lead independently reviews/checks/delivers while retaining source/model gates.",
+      "check_ids": [
+        "regression",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed8frozenpaths and exactclosed20/version6/old1155norm5/USlegacy/digest/frame/parent/rawreplay/privacy behavior. Securetransportdiff limitedimport+route/queryguards, signing/TLS/credentials/deadlines unchanged. Independent1096passed4.00s; Engineer1096passed4.11s, no initialfailures. Frozenpatch4939ddc3dd8663640c219e09b12e5854c0fccea984a599332432040acf6a972a. Actualprovider/sourcefinancialadmission remainsseparate; mandatorydeliveryhooks runatcommit/push."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed8frozenpaths and exactclosed20/version6/old1155norm5/USlegacy/digest/frame/parent/rawreplay/privacy behavior. Securetransportdiff limitedimport+route/queryguards, signing/TLS/credentials/deadlines unchanged. Independent1096passed4.00s; Engineer1096passed4.11s, no initialfailures. Frozenpatch4939ddc3dd8663640c219e09b12e5854c0fccea984a599332432040acf6a972a. Actualprovider/sourcefinancialadmission remainsseparate; mandatorydeliveryhooks runatcommit/push."
+    ]
+  }
+}

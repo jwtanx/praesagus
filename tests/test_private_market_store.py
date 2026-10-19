@@ -1108,3 +1108,81 @@ def test_hours_store_rehashed_context_substitution_still_fails_replay(store):
             known_ms=changed['known_ms'],run_id=changed['run_id'],kind=changed['kind'])
         with pytest.raises(MarketStoreError):store._meta(fake)
     assert store.query('history',ING)[0]['record']['time_zone']==8 and attempt.raw_hash
+
+
+FIXED_MY20 = ('0820EA','0800EA','1155','1023','0277','0259','0166','0097','5225','5878',
+              '4707','3689','5296','4715','6033','5681','5246','3816','1961','5285')
+FIXED_MY_TOKEN = 'bms_fixed20_hours_hypothesis_v1'
+
+
+@pytest.mark.parametrize('symbol',FIXED_MY20)
+def test_fixed20_request_context_pure_normalization_and_store_replay(store,symbol):
+    from ingest import private_market_store as m
+    req=my_history_request(code='BMS.'+symbol)
+    kind,query,_=m.request_meta(req,normalization_dialect=FIXED_MY_TOKEN)
+    raw=diagnostic_history_body(hours_row())
+    expected=m.normalized(raw,kind,query,version=6,normalization_dialect=FIXED_MY_TOKEN)
+    attempt=store.ingest(req,ReadResponse(200,raw),run_id='fictional-fixed20',observed_at=OBS,ingested_at=ING,
+        origin='synthetic',normalization_version=6,normalization_dialect=FIXED_MY_TOKEN)
+    assert attempt.status=='success' and store.raw(attempt.raw_hash)==raw
+    entry=store.query('history',ING)[0];record=entry['record']
+    assert expected[0][1]==m.canonical(record) and record['code']=='BMS.'+symbol
+    assert record['raw_date']==20261002 and record['time_zone']==8 and record['effective_offset_minutes']==480
+    assert record['normalization_dialect']==entry['observation']['normalization_dialect']==FIXED_MY_TOKEN
+    assert m.HOURS_QUALITY in entry['quality'] and entry['observation']['normalization_version']==6
+    assert not {'currency','market_timezone'}&set(record)
+    if symbol!='1155':
+        with pytest.raises(MarketStoreError):m.request_meta(req)
+        with pytest.raises(MarketStoreError):m.normalized(raw,kind,query,version=4)
+
+
+@pytest.mark.parametrize('version,token',[(6,None),(6,'bms1155_hours_hypothesis_v1'),(5,FIXED_MY_TOKEN),
+    (4,FIXED_MY_TOKEN),(6,'unknown'),(6,True)])
+def test_fixed20_missing_old_or_cross_version_context_rejects_without_retention(store,version,token):
+    from ingest import private_market_store as m
+    req=my_history_request(code='BMS.1023');raw=diagnostic_history_body(hours_row())
+    with pytest.raises(MarketStoreError):store.ingest(req,ReadResponse(200,raw),run_id='fictional-context',
+        observed_at=OBS,ingested_at=ING,normalization_version=version,normalization_dialect=token)
+    assert not store.attempts(ING) and not list(store.raw_dir.iterdir())
+
+
+@pytest.mark.parametrize('bad',['date','future','duplicate','secret','price','overflow','zone','minute-only','too-many'])
+def test_fixed20_invalid_rows_keep_bounded_rejection_and_count_diagnostics(store,bad):
+    from ingest import private_market_store as m
+    row=hours_row();rows=[row]
+    if bad=='date':row['date']=20260230
+    elif bad=='future':row.update(time_key=STAMP+3*86400000,date=20261005)
+    elif bad=='duplicate':rows.append(dict(row))
+    elif bad=='secret':row['token']='FICTIONAL-SECRET'
+    elif bad=='price':row['close']=float('nan')
+    elif bad=='overflow':row['time_key']=2**63-1
+    elif bad=='zone':row['time_zone']=15
+    elif bad=='minute-only':row['date']=20261001
+    else:rows=[dict(row) for _ in range(101)]
+    raw=diagnostic_history_body(data={'kline_list':rows});req=my_history_request(code='BMS.1023')
+    attempt=store.ingest(req,ReadResponse(200,raw),run_id='fictional-invalid',observed_at=OBS,ingested_at=ING,
+        normalization_version=6,normalization_dialect=FIXED_MY_TOKEN)
+    assert attempt.status=='failed' and attempt.raw_hash is None
+    assert not store.query('history',ING) and not list(store.raw_dir.iterdir())
+    if bad=='minute-only':
+        kind,query,_=m.request_meta(req,normalization_dialect=FIXED_MY_TOKEN)
+        with pytest.raises(MarketStoreError) as caught:m.normalized(raw,kind,query,version=6,normalization_dialect=FIXED_MY_TOKEN)
+        assert caught.value.diagnostic_stage=='date-relation'
+        assert caught.value.diagnostic_structure['date_relation_summary']['minutes_match']==1
+
+
+def test_fixed20_metadata_query_code_substitution_fails_raw_replay(store):
+    from ingest import private_market_store as m
+    raw=diagnostic_history_body(hours_row())
+    attempt=store.ingest(my_history_request(code='BMS.1023'),ReadResponse(200,raw),run_id='fictional-tamper',
+        observed_at=OBS,ingested_at=ING,normalization_version=6,normalization_dialect=FIXED_MY_TOKEN)
+    meta=store.attempts(ING)[0];meta['query']['code']='BMS.0277'
+    meta['endpoint']='/api/v1.0/quote/BMS.0277/history-kline'
+    encoded=m.canonical(meta);newid=m.digest(encoded.encode())
+    # Adversarial fixture deliberately bypasses SQLite immutable triggers to test
+    # read-time replay, rather than relying only on a mismatching metadata hash.
+    with sqlite3.connect(store.database) as db:
+        db.execute('DROP TRIGGER attempts_update');db.execute('DROP TRIGGER observations_update')
+        db.execute('UPDATE attempts SET id=?,metadata=? WHERE id=?',(newid,encoded,attempt.attempt_id))
+        db.execute('UPDATE observations SET attempt_id=? WHERE attempt_id=?',(newid,attempt.attempt_id))
+    with pytest.raises(MarketStoreError):store.query('history',ING)

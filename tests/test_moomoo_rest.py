@@ -490,6 +490,40 @@ def test_hours_dialect_keeps_metadata_date_and_auxiliary_rejections(change):
         h.client.history_kline('BMS.1155','2026-10-02',normalization_dialect='bms1155_hours_hypothesis_v1')
 
 
+FIXED_MY20 = ('0820EA','0800EA','1155','1023','0277','0259','0166','0097','5225','5878',
+              '4707','3689','5296','4715','6033','5681','5246','3816','1961','5285')
+FIXED_MY_TOKEN = 'bms_fixed20_hours_hypothesis_v1'
+
+
+@pytest.mark.parametrize('symbol',FIXED_MY20)
+def test_fixed20_exact_connector_preserves_signed_request_and_raw_hours(symbol):
+    from connectors.moomoo_rest import BMS_FIXED20_CODES,BMS_FIXED20_HOURS_DIALECT
+    assert type(BMS_FIXED20_CODES) is frozenset and BMS_FIXED20_CODES==frozenset('BMS.'+s for s in FIXED_MY20)
+    assert BMS_FIXED20_HOURS_DIALECT==FIXED_MY_TOKEN
+    row=kline(time_key=NOW-4*3600000,date=20261002,time_zone=8)
+    h=Harness(quote({'kline_list':[row]}));code='BMS.'+symbol
+    assert h.client.history_kline(code,'2026-10-02',normalization_dialect=FIXED_MY_TOKEN).data==[row]
+    req=h.requests[0];assert req.path==f'/api/v1.0/quote/{code}/history-kline'
+    assert req.query=='end=2026-10-02&ktype=2&autype=0&num=100'
+    assert h.signed==[f'{NOW}\nGET\n{req.path}\n{req.query}\n'.encode()]
+
+
+@pytest.mark.parametrize('code',['BMS.1156','BMS.0820','BMS.820EA','BMS.0800ea','bms.1023',' BMS.1023',
+    'BMS.1023 ','BMS.01023','MY.1023','US.1023','BMS.1023/extra','BMS.1023%00','BMS.10230'])
+def test_fixed20_aliases_rejected_before_signing(code):
+    h=Harness()
+    with pytest.raises(RESTError):h.client.history_kline(code,'2026-10-02',normalization_dialect=FIXED_MY_TOKEN)
+    assert h.requests==h.signed==[]
+
+
+@pytest.mark.parametrize('symbol',[s for s in FIXED_MY20 if s!='1155'])
+@pytest.mark.parametrize('token',[None,'bms1155_hours_hypothesis_v1'])
+def test_other19_require_new_token_before_signing(symbol,token):
+    h=Harness()
+    with pytest.raises(RESTError):h.client.history_kline('BMS.'+symbol,'2026-10-02',normalization_dialect=token)
+    assert h.requests==h.signed==[]
+
+
 @pytest.mark.parametrize('rows',[
     [kline(time_zone=480,date=20261003)], [kline(time_zone=480,close=0)],
     [kline(time_zone=480),kline(time_zone=480)], [kline(time_zone=480,time_key=2**63-1)],

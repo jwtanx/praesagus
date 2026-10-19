@@ -22,7 +22,7 @@ from connectors.moomoo_rest_live import (EncryptedEd25519Signer, SecureReadTrans
                                         encrypted_pem, keychain_passphrase)
 from ingest.private_market_store import (MAX_RAW, REPO, PrivateMarketStore, canonical,
     decode, normalized, parse_aware, private, request_meta, safe, MarketStoreError, HISTORY_STAGES, valid_structure,
-    unavailable_structure, HOURS_DIALECT)
+    unavailable_structure, HOURS_DIALECT, BMS_FIXED20_CODES, BMS_FIXED20_HOURS_DIALECT)
 
 MAX_INPUT = 65536
 MAX_HEADER = 4096
@@ -53,10 +53,13 @@ def job_request(job):
             canonical({'code_list': job['codes']}).encode(), {}, 10)
     elif job.get('kind') == 'history':
         require(set(job) in ({'kind','code','end'},{'kind','code','end','normalization_dialect'}) and isinstance(job['code'],str)
-                and (re.fullmatch(r'US\.[A-Z][A-Z0-9.-]*',job['code']) or job['code']=='BMS.1155')
+                and (re.fullmatch(r'US\.[A-Z][A-Z0-9.-]*',job['code']) or job['code'] in BMS_FIXED20_CODES)
                 and isinstance(job['end'],str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}',job['end']))
-        require('normalization_dialect' not in job or job['code']=='BMS.1155'
-                and type(job['normalization_dialect']) is str and job['normalization_dialect']==HOURS_DIALECT)
+        require('normalization_dialect' not in job or type(job['normalization_dialect']) is str
+                and (job['code']=='BMS.1155' and job['normalization_dialect']==HOURS_DIALECT
+                     or job['code'] in BMS_FIXED20_CODES and job['normalization_dialect']==BMS_FIXED20_HOURS_DIALECT))
+        require(job['code'] not in BMS_FIXED20_CODES-{'BMS.1155'}
+                or job.get('normalization_dialect')==BMS_FIXED20_HOURS_DIALECT)
         request = ReadRequest('GET',f"/api/v1.0/quote/{job['code']}/history-kline",
             urlencode([('end',job['end']),('ktype',2),('autype',0),('num',100)]),b'',{},10)
     else:
@@ -64,7 +67,7 @@ def job_request(job):
                 and type(job['size']) is int and isinstance(job['keyword'], str))
         request = ReadRequest('GET', '/api/v1.0/quote/find-news',
             urlencode([('symbol', job['keyword']), ('size', job['size']), ('sort_type', 2), ('lang', job['lang'])]), b'', {}, 10)
-    request_meta(request)
+    request_meta(request,normalization_dialect=job.get('normalization_dialect'))
     return request
 
 
@@ -163,8 +166,9 @@ def normalization_for(job, version=None, *, current=False):
     if job.get('kind')=='history':job_request(job)
     if 'normalization_dialect' in job:
         require(job.get('kind')=='history')
-        if version is None:return 5
-        require(type(version) is int and version==5)
+        expected=6 if job['normalization_dialect']==BMS_FIXED20_HOURS_DIALECT else 5
+        if version is None:return expected
+        require(type(version) is int and version==expected)
         return version
     expected = (4 if current else 3) if job.get('kind')=='history' else 2 if job.get('kind')=='snapshot' else 1
     if version is None:return expected
@@ -174,7 +178,7 @@ def normalization_for(job, version=None, *, current=False):
 
 
 def valid_diagnostic_structure(job, status, failure, stage, version, structure):
-    eligible=job.get('kind')=='history' and status==200 and failure=='invalid-response' and version in (4,5)
+    eligible=job.get('kind')=='history' and status==200 and failure=='invalid-response' and version in (4,5,6)
     if not eligible:return structure is None
     return (valid_structure(structure,stage=stage) and
             (stage!='decode-screen' or structure['status']=='unavailable'))
@@ -228,7 +232,7 @@ def parse_reply(raw, job):
     body = raw[4+size:]
     if header['failure'] is None:
         require(header['status'] == 200)
-        kind, query, _ = request_meta(job_request(job))
+        kind, query, _ = request_meta(job_request(job),normalization_dialect=job.get('normalization_dialect'))
         normalized(body, kind, query, version=version,normalization_dialect=job.get('normalization_dialect'))
     else:require(not body)
     return WorkerReply(ReadResponse(header['status'], body), header['observed_at'], header['failure'],
@@ -260,7 +264,7 @@ def execute_job(job, locator, *, credentials=load_credentials, transport_factory
         observed = clock();parse_aware(observed)
         captured = ReadResponse(response.status, b'')
         if response.status == 200:
-            kind, query, secrets = request_meta(request)
+            kind, query, secrets = request_meta(request,normalization_dialect=job.get('normalization_dialect'))
             try:
                 normalized(response.body, kind, query, (*secrets, key, locator['directory']),
                            version=version,normalization_dialect=job.get('normalization_dialect'))
@@ -435,7 +439,7 @@ def collect(store, plan, locator, *, run_id, supervisor=supervise, clock=time.mo
             try:
                 version=normalization_for(job,reply.normalization_version)
                 require('normalization_dialect' not in job or type(reply.normalization_version) is int
-                        and reply.normalization_version==5)
+                        and reply.normalization_version==normalization_for(job,current=True))
                 structure_ok=valid_diagnostic_structure(job,status,reply.failure,reply.diagnostic_stage,version,reply.diagnostic_structure)
             except Exception:structure_ok=False
             if (not response_ok or not failure_ok or not stage_ok or not structure_ok
@@ -519,7 +523,7 @@ class DiagnosticReceipt:
             require(valid_structure(structure,stage=outcome.diagnostic_stage)
                     and (outcome.diagnostic_stage!='decode-screen' or structure['status']=='unavailable'))
             require(structure['schema_version']!=2 or type(outcome.normalization_version) is int
-                    and outcome.normalization_version in (4,5))
+                    and outcome.normalization_version in (4,5,6))
             failures.append(dict(diagnostic_stage=outcome.diagnostic_stage,structure=structure))
         require(len(failures)<=30)
         raw=(canonical(dict(schema_version=1,history_failures=failures))+'\n').encode()
