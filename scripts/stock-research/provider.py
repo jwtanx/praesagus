@@ -1,6 +1,6 @@
 """Standalone bounded REST research reads. All external capabilities are injected."""
 from dataclasses import replace
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 import base64
 import csv
 import hashlib
@@ -25,6 +25,7 @@ INDUSTRY = '/api/v1.0/quote/plate-list'
 META_RE = r'/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,63}/(?:owner-plate|company/profile)'
 POST_PATHS = frozenset({SCREEN, BASIC, SNAPSHOT})
 MAX_SCREEN_REJECTION_BYTES = 2 * 1024 * 1024
+MAX_SNAPSHOT_REJECTION_BYTES = 256 * 1024
 
 
 def screen_queries_for_price_floor(floor=None):
@@ -262,14 +263,44 @@ class ResearchProvider:
         returned = set()
         output = []
         self._count_rows(len(rows))
-        for row in rows:
+        # Identity failures remain batch-fatal, even after a numerically bad row.
+        if path == SNAPSHOT:
+            for row in rows:
+                identity = code(row.get('code'))
+                need(identity in wanted and identity not in returned, 'unrequested-or-duplicate-code')
+                returned.add(identity)
+                stamp = row.get('update_time')
+                need(integer(stamp) and stamp <= ended, 'invalid-source-time')
+                need(iso_date(row.get('data_date')) <= datetime.fromtimestamp(ended/1000,timezone.utc).date(), 'invalid-source-date')
+                for flag in ('suspension','equity_valid','trust_valid'):
+                    need(flag not in row or type(row[flag]) is bool, 'invalid-snapshot')
+        rejected, rejection_bytes = [], 2
+        for ordinal, row in enumerate(rows):
             identity = code(row.get('code'))
-            need(identity in wanted and identity not in returned, 'unrequested-or-duplicate-code')
-            returned.add(identity)
-            output.append(normalizer(row, ended) | {'revision_vintage': vintage})
+            if path != SNAPSHOT:
+                need(identity in wanted and identity not in returned, 'unrequested-or-duplicate-code')
+                returned.add(identity)
+            try:
+                normalized = normalizer(row, ended)
+            except ContractError as error:
+                if path != SNAPSHOT or error.kind != 'invalid-numeric-field':
+                    raise
+                evidence = dict(code=identity, ordinal=ordinal, reason='invalid-numeric-field',
+                    source='moomoo-rest-snapshot', source_payload_hash=vintage,
+                    row_sha256=hashlib.sha256(json.dumps(row,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest(),
+                    requested_at_ms=started,retrieved_at_ms=ended,known_at_ms=ended)
+                rejection_bytes += len(json.dumps(evidence,separators=(',',':')).encode()) + bool(rejected)
+                need(rejection_bytes <= MAX_SNAPSHOT_REJECTION_BYTES, 'snapshot-rejection-budget')
+                rejected.append(evidence)
+                continue
+            output.append(normalized | {'revision_vintage': vintage})
         missing = tuple(value for value in wanted if value not in returned)
-        return Batch(tuple(output), path.rsplit('/', 1)[-1], 'partial' if missing else 'success',
-                     'requested-codes-missing' if missing else None, 1, missing, started, ended)
+        metadata = (dict(schema_version=1,raw_rows_received=len(rows),accepted_rows=len(output),
+            rejected_row_count=len(rejected),rejected_rows=rejected,missing_row_count=len(missing),
+            requested_codes_count=len(wanted),source_payload_hash=vintage) if path==SNAPSHOT else {})
+        return Batch(tuple(output), path.rsplit('/', 1)[-1], 'partial' if missing or rejected else 'success',
+                     'snapshot-rows-rejected' if rejected else 'requested-codes-missing' if missing else None,
+                     1, missing, started, ended, metadata)
 
     def basicinfo(self, codes):
         return self._codes(codes, BASIC, 'basic_list', normalize_basic)

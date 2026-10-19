@@ -150,7 +150,7 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
         if provider.config!=settings.provider:raise ValueError('provider-config-mismatch')
         cumulative=lambda name:{'cumulative_property':{'name':name,'days':1,'period_average':False}}
         retrieve=[{'simple_property':{'name':2201}},cumulative(3104),cumulative(3105),cumulative(3102)]
-        state['pools']={};state['discovery_records']={};state['screen_dispositions']={}
+        state['pools']={};state['discovery_records']={};state['screen_dispositions']={};state['snapshot_dispositions']={}
         for pool,factor,direction in [('winners',3102,2),('losers',3102,1),('volume',3105,2)]:
             result=invoke('screen',retrieve_queries=retrieve,sort={'direction':direction,**cumulative(factor)},page_limit=settings.discovery_pages)
             if result is None:statuses[pool]='request-failed';state['pools'][pool]=[];continue
@@ -176,6 +176,14 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
                     if key=='identities':state['identity_current_status'].update({security:'request-failed' for security in chunk})
                     continue
                 fresh={row['code']:row for row in result.rows}
+                if key=='quotes':
+                    state['snapshot_dispositions'][sha(canonical(chunk))]=result.metadata
+                    rejected=result.metadata.get('rejected_rows',[])
+                    for security in set(result.missing_codes)|{row['code'] for row in rejected}:
+                        state['quotes'].pop(security,None)
+                    if rejected:
+                        issues.append({'stage':'snapshots','category':'snapshot-rows-rejected',
+                                       'rejected_row_count':len(rejected)})
                 if key=='identities':
                     for security,identity in fresh.items():
                         prior=state[key].get(security)
@@ -261,6 +269,7 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
     selected=select_universe(candidates,state['pools'],discovery_status=statuses)
     selected['coverage']['collection_issues']=issues
     selected['coverage']['screen_dispositions']=state.get('screen_dispositions',{})
+    selected['coverage']['snapshot_dispositions']=state.get('snapshot_dispositions',{})
     rows=[row for security in sorted(histories) for row in histories[security]]
     if len(rows)>MAX_HISTORY_ROWS:raise ValueError('cached-history-row-budget')
     generation.csv('history.csv',rows,HISTORY_COLUMNS)

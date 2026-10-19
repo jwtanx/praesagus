@@ -200,6 +200,40 @@ class FakeProvider:
     def capabilities(self):return {'live':'fictional-not-tested'}
 
 
+@pytest.mark.parametrize('missing',[False,True])
+def test_snapshot_dispositions_survive_export_and_clear_only_current_rejected_cache(tmp_path,missing):
+    settings=config.CollectionConfig(state_parent=str(tmp_path))
+    class Seed(FakeProvider):
+        def screen(self,**kwargs):
+            batch=super().screen(**kwargs)
+            return replace(batch,rows=batch.rows+({**batch.rows[0],'code':'US.KEEP'},))
+    first=collect.run_collection(settings,provider=Seed(settings),metadata=metadata_for(),generated_at=STAMP,as_of_ms=NOW)
+    before=(first/'state.json').read_bytes()
+    class Reject(FakeProvider):
+        def snapshots(self,codes):
+            self.calls.append(('snapshots',list(codes)))
+            rejected=[] if missing else [dict(code='US.DEMO',ordinal=0,reason='invalid-numeric-field',
+                source='moomoo-rest-snapshot',source_payload_hash='a'*64,row_sha256='b'*64,
+                requested_at_ms=NOW+1000,retrieved_at_ms=NOW+1000,known_at_ms=NOW+1000)]
+            meta=dict(schema_version=1,raw_rows_received=0 if missing else 1,accepted_rows=0,
+                rejected_row_count=len(rejected),rejected_rows=rejected,missing_row_count=int(missing),
+                requested_codes_count=1,source_payload_hash='a'*64)
+            return Batch((),'snapshot','partial','requested-codes-missing' if missing else 'snapshot-rows-rejected',
+                1,('US.DEMO',) if missing else (),NOW+1000,NOW+1000,meta)
+    second=collect.run_collection(settings,provider=Reject(settings),metadata=metadata_for(),
+        generated_at=STAMP+timedelta(seconds=1),as_of_ms=NOW+2000)
+    state=json.loads((second/'state.json').read_text());coverage=json.loads((second/'coverage.json').read_text())
+    assert 'US.DEMO' not in state['quotes'] and 'US.KEEP' in state['quotes']
+    assert state['snapshot_dispositions']==coverage['snapshot_dispositions']
+    disposition=next(iter(coverage['snapshot_dispositions'].values()))
+    assert disposition['rejected_row_count']==int(not missing) and disposition['missing_row_count']==int(missing)
+    if not missing:assert any(i['category']=='snapshot-rows-rejected' for i in coverage['collection_issues'])
+    assert (first/'state.json').read_bytes()==before
+    third=collect.run_collection(settings,offline=True,metadata=metadata_for(),
+        generated_at=STAMP+timedelta(seconds=2),as_of_ms=NOW+4000)
+    assert json.loads((third/'coverage.json').read_text())['snapshot_dispositions']==coverage['snapshot_dispositions']
+
+
 def test_incremental_collection_and_prior_forecast_actuals_are_retained_outside_discovery(tmp_path):
     settings=config.CollectionConfig(state_parent=str(tmp_path));fake=FakeProvider(settings)
     first=collect.run_collection(settings,provider=fake,metadata=metadata_for(),generated_at=STAMP,as_of_ms=NOW)

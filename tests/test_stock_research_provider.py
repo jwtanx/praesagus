@@ -246,8 +246,76 @@ def test_snapshot_units_and_native_counts_stay_separate_from_patterns():
                                   {'volume': float('nan')}, {'equity_valid': 1}, {'data_date': '2026-11-01'}])
 def test_snapshot_future_malformed_and_invalid_flags(change):
     item, _, _ = client([envelope({'snapshot_list': [snapshot(**change)]})])
+    if 'last_price' in change:
+        batch=item.snapshots(['US.DEMO'])
+        assert batch.status=='partial' and not batch.rows
+        assert batch.metadata['rejected_row_count']==1 and batch.reason=='snapshot-rows-rejected'
+        return
     with pytest.raises(RESTError):
         item.snapshots(['US.DEMO'])
+
+
+@pytest.mark.parametrize('field',['open_price','high_price','low_price','last_price','prev_close_price'])
+@pytest.mark.parametrize('bad',[0,-1,True,'invalid'])
+def test_numeric_snapshot_row_quarantine_keeps_healthy_and_absent_distinct(field,bad):
+    rows=[snapshot(code='US.GOOD'),snapshot(code='US.BAD',**{field:bad})]
+    item,requests,signatures=client([envelope({'snapshot_list':rows})])
+    batch=item.snapshots(['US.GOOD','US.BAD','US.ABSENT'])
+    assert [r['code'] for r in batch.rows]==['US.GOOD'] and batch.missing_codes==('US.ABSENT',)
+    assert batch.status=='partial' and batch.reason=='snapshot-rows-rejected'
+    meta=batch.metadata
+    assert (meta['raw_rows_received'],meta['accepted_rows'],meta['rejected_row_count'],meta['missing_row_count'])==(2,1,1,1)
+    evidence=meta['rejected_rows'][0]
+    assert set(evidence)=={'code','ordinal','reason','source','source_payload_hash','row_sha256','requested_at_ms','retrieved_at_ms','known_at_ms'}
+    assert evidence['code']=='US.BAD' and evidence['ordinal']==1 and evidence['reason']=='invalid-numeric-field'
+    assert evidence['source_payload_hash']==batch.rows[0]['revision_vintage'] and evidence['known_at_ms']==NOW
+    assert evidence['row_sha256']==hashlib.sha256(json.dumps(rows[1],sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    assert len(requests)==len(signatures)==1 and item.budgets['rows_used']==2
+
+
+@pytest.mark.parametrize('fatal',[{'suspension':1},{'equity_valid':'yes'},{'trust_valid':None},
+    {'update_time':NOW+1},{'data_date':'2026-11-01'}])
+def test_bad_numeric_row_cannot_hide_same_row_non_numeric_fatal_error(fatal):
+    item,_,_=client([envelope({'snapshot_list':[snapshot(open_price=0,**fatal)]})])
+    with pytest.raises(RESTError):item.snapshots(['US.DEMO'])
+
+
+@pytest.mark.parametrize('later',[snapshot(code='US.BAD'),snapshot(code='US.UNREQUESTED')])
+def test_bad_numeric_row_cannot_hide_later_identity_failure(later):
+    item,_,_=client([envelope({'snapshot_list':[snapshot(code='US.BAD',open_price=0),later]})])
+    with pytest.raises(RESTError,match='unrequested-or-duplicate-code'):item.snapshots(['US.BAD','US.GOOD'])
+
+
+def test_all_rejected_vs_absent_and_rejection_byte_limit(monkeypatch):
+    item,_,_=client([envelope({'snapshot_list':[snapshot(open_price=0,high_price=0)]})])
+    batch=item.snapshots(['US.DEMO'])
+    assert not batch.rows and not batch.missing_codes and batch.metadata['rejected_row_count']==1
+    item,_,_=client([envelope({'snapshot_list':[]})]);batch=item.snapshots(['US.DEMO'])
+    assert batch.missing_codes==('US.DEMO',) and batch.metadata['rejected_row_count']==0
+    monkeypatch.setattr(provider,'MAX_SNAPSHOT_REJECTION_BYTES',2)
+    item,_,_=client([envelope({'snapshot_list':[snapshot(open_price=0)]})])
+    with pytest.raises(RESTError,match='snapshot-rejection-budget'):item.snapshots(['US.DEMO'])
+
+
+def test_full300_rows_count_rejections_once_and_accept_missing_optional_signed_values():
+    rows=[snapshot(code='US.F'+str(i),open_price=0 if i%50==0 else None,pe_ratio=-3) for i in range(300)]
+    item,_,_=client([envelope({'snapshot_list':rows})],max_rows=300)
+    batch=item.snapshots([r['code'] for r in rows])
+    assert len(batch.rows)==294 and batch.metadata['raw_rows_received']==300 and batch.metadata['rejected_row_count']==6
+    assert all(r['financial_metrics']['pe_ratio']['value']==-3 for r in batch.rows)
+
+
+@pytest.mark.parametrize('position',[0,1,2])
+def test_snapshot_bad_row_position_does_not_change_healthy_rows(position):
+    rows=[snapshot(code='US.F'+str(i)) for i in range(3)];rows[position]['high_price']=0
+    item,_,_=client([envelope({'snapshot_list':rows})]);batch=item.snapshots([r['code'] for r in rows])
+    assert [r['code'] for r in batch.rows]==[r['code'] for i,r in enumerate(rows) if i!=position]
+    assert batch.metadata['rejected_rows'][0]['ordinal']==position
+
+
+def test_snapshot_bad_numeric_does_not_hide_later_fatal_source_error():
+    item,_,_=client([envelope({'snapshot_list':[snapshot(code='US.BAD',open_price=0),snapshot(code='US.LATER',update_time=NOW+1)]})])
+    with pytest.raises(RESTError,match='invalid-source-time'):item.snapshots(['US.BAD','US.LATER'])
 
 
 def test_complete_ohlc_raw_timezone_provenance_and_explicit_currency_calendar():
