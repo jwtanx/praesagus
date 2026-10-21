@@ -32,6 +32,28 @@ The first online collection discovers names from market screens; portfolios, rep
 
 Actual eligibility needs reviewed listing/security, sector crosswalk, issuer/ETF, currency-by-endpoint-field and comparable adjustment evidence. A US prefix alone does not establish USD; a website/name does not establish issuer or sector identity. Provider classifications are current observations, not historical membership. Currency, timezone units, provider finality and adjustment vintages must retain their limitations. Do not fabricate metadata to fill selection quotas. Canonical `history.csv` remains the training schema; predicted prices never enter historical OHLC columns.
 
+## Optional Independent ETF Directory Cohort
+
+An optional **reviewed local pair** of official NasdaqTrader symbol directories can enumerate a separate `etf_directory` cohort. This does not download files, add a provider filter or seed discovery from the 49-name classification registry. Without this option, the existing three stock pools, speculative rules and compatibility hash are unchanged.
+
+```toml
+[collection]
+etf_directory_manifest = "/absolute/private/directory-pair.json"
+etf_directory_candidates_per_run = 40
+```
+
+Use this in the existing private collection config alongside its provider settings, then invoke the existing `collect.py --config /absolute/private/config.toml` command. Directory input alone does not authorize an online run or supply credentials. `--offline` performs no provider/credential work, still validates the local pair at its cutoff, and does not advance the enrichment cursor.
+
+The manifest and both source files must be regular owner-only0600/0400 files under owner0700 parents outside Git/public paths, without symlink components. The exact schema is documented in [API_CONTRACTS.md](API_CONTRACTS.md#local-official-directory-pair-contract). Both official files must be complete, nonempty, hash/byte-bound, with the expected headers and creation footer. Actual retrieval must be no more than24hours old at cutoff, inclusive; retrieval and known times cannot be future or reversed. Preserve the footer verbatim with unknown timezone. A later import or review never makes an old capture fresh. Reviewer/source declarations and hashes do not independently authenticate a source or grant use rights.
+
+All ETF=Y/TestIssue=N rows are enumerated first. Simple, unambiguous symbols map exactly to `US.<same-symbol>`; punctuation/namespace differences need explicit reviewed aliases, and duplicate/conflicting listings stay UNKNOWN. No root matching or first-match choice is used. Each candidate retains its source URL/hash, file/row, original retrieval/known times and alias review. Membership first-seen records the collection observation, not historical membership inferred from a footer.
+
+Enrichment visits a deterministic lexicographic slice, default40 and maximum400, independent of the stock `max_candidates`. This is a work queue, **not selection of the first20 or an activity ranking**. Original stock/retained-forecast work runs first; the directory slice uses only the remaining shared provider request/row/timeout budgets. There is no extra quota. Partial or interrupted work stays pending for a later explicit run; source absence is retained visibly. The checkpoint binds the complete pair, manifest/aliases and slice option. Changed bindings create a new compatibility generation rather than reusing stale membership; old outputs remain immutable. An unchanged complete walk may be refreshed in later bounded runs.
+
+Coverage/state retain the complete enumeration, rejected aliases, checkpoint, pending/unvisited/completed counts and separate origin. Directory-only nonfund/unverified candidates cannot enter company or speculative stock selection; genuine overlaps retain both origins without duplicate enrichment. Current cached field observations retain their actual timestamps within the compatible pair; a stale pair fails even offline. Shortfalls and partially explored cohorts remain explicit.
+
+An ETF flag is not fund admission. Existing typed identity, listing/status, comparable USD fields,252-session/latest20 coverage, median20 turnover>=25M, price>=5, issuer mandate/leverage/reset, exposure-family cap and12/2/2/2/1/1 quotas remain unchanged. The registry classifies only discovered names; an unregistered fund remains unverified. Current-only enumeration does not establish historical membership, a ready100-name universe, source rights or model quality. All acceptance evidence for this optional importer is offline and fictional until a separate reviewed live-source release.
+
 ## Explicit training and saved models
 
 ```sh

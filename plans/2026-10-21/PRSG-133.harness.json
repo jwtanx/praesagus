@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-133",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-21",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-21/PRSG-133-independent-etf-discovery.md",
+  "objective": "Add optional complete-pair ETF discovery with exact aliases and a hash-bound enrichment queue of 40 candidates per run (maximum 400), preserving stock pools and financial gates.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "075d22167811e073b8afaca634229cb60b80d56b",
+  "allowed_paths": [
+    "scripts/stock-research/etf_directory.py",
+    "scripts/stock-research/collect.py",
+    "scripts/stock-research/config.py",
+    "scripts/stock-research/README.md",
+    "scripts/stock-research/API_CONTRACTS.md",
+    "tests/test_stock_research_etf_directory.py",
+    "plans/2026-10-21/PRSG-133-independent-etf-discovery.md",
+    "plans/2026-10-21/PRSG-133.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "ingest/",
+    "scripts/stock-research/provider.py",
+    "scripts/stock-research/universe.py",
+    "scripts/stock-research/etf_metadata.csv",
+    "plans/2026-10-14/PRSG-111.harness.json",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_stock_research_etf_directory.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Engineer exact configured focused command:49passed1.39s. Final combined importer/provider/universe/exports command352passed12.15s; earlier38/1.28s,307/4.00s and344/12.38s are preliminary passing evidence. No provider/network/credential work.",
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+      ]
+    },
+    {
+      "id": "scope",
+      "kind": "manual",
+      "description": "Lead validates complete changed path set and preserved default/financial policies.",
+      "status": "passed",
+      "evidence": [
+        "Engineer complete eight-path validate_ticket.py and brief quality/whitespace checks passed. Protected provider/universe/registry/111/public unchanged; unrelated baseline files excluded. Independent Lead scope acceptance remains pending.",
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent Lead review and required commit/push hooks; no live admission implied.",
+      "status": "passed",
+      "evidence": [
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-133-D1",
+      "description": "Complete optional paired-directory parser and source lineage.",
+      "check_ids": [
+        "focused",
+        "scope",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+      ]
+    },
+    {
+      "id": "PRSG-133-D2",
+      "description": "Separate bounded ETF cohort and resume compatibility/default stock preservation.",
+      "check_ids": [
+        "focused",
+        "scope",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+      ]
+    },
+    {
+      "id": "PRSG-133-D3",
+      "description": "Meaningful offline rejection/budget/default regression evidence.",
+      "check_ids": [
+        "focused",
+        "scope",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+      ]
+    },
+    {
+      "id": "PRSG-133-D4",
+      "description": "Independent Lead acceptance and delivery evidence.",
+      "check_ids": [
+        "focused",
+        "scope",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+    ]
+  }
+}

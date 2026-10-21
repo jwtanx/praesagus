@@ -20,11 +20,42 @@ from provider import build_live_provider, classify_discovered_etfs
 from storage import (Generation, HISTORY_COLUMNS, MAX_HISTORY_ROWS, StorageError, canonical,
                      forecast_symbols, latest_state, merge_history, sha, output_parent, COMPONENT_REQUIRED)
 from universe import build_candidate, reviewed, select_universe
+from etf_directory import load_pair, POOL as ETF_DIRECTORY_POOL
 
 
-def compatibility(settings):
-    return sha(canonical({'state_schema':1,'history_schema':1,'calendar':settings.calendar,
-                          'adjustment':settings.provider.autype,'universe_policy':1}))
+def compatibility(settings, directory=None):
+    value={'state_schema':1,'history_schema':1,'calendar':settings.calendar,
+           'adjustment':settings.provider.autype,'universe_policy':1}
+    if settings.etf_directory_manifest:
+        directory=directory if directory is not None else load_pair(settings.etf_directory_manifest)
+        value['etf_directory']={'binding':directory['binding_sha256'],
+                               'candidates_per_run':settings.etf_directory_candidates_per_run}
+    return sha(canonical(value))
+
+
+def directory_slice(directory, previous, limit):
+    """A deterministic work queue over complete enumeration, not a selection ranking."""
+    codes=list(directory['candidates'])
+    checkpoint=previous if previous is not None else {'binding':directory['binding_sha256'],'limit':limit,
+                                                    'next_index':0,'pending':[],'completed':[]}
+    allowed=set(codes)
+    def valid_codes(value):
+        return (isinstance(value,list) and len(value)<=len(codes)
+                and all(isinstance(security,str) and security in allowed for security in value)
+                and len(value)==len(set(value)))
+    if (not isinstance(checkpoint,dict) or set(checkpoint)!={'binding','limit','next_index','pending','completed'}
+            or checkpoint.get('binding')!=directory['binding_sha256']
+            or type(checkpoint.get('limit')) is not int or checkpoint['limit']!=limit
+            or type(checkpoint.get('next_index')) is not int or not 0<=checkpoint['next_index']<=len(codes)
+            or any(not valid_codes(checkpoint.get(key)) for key in ('pending','completed'))
+            or len(checkpoint['pending'])>limit):
+        raise ValueError('etf-directory-checkpoint-invalid')
+    selected=list(checkpoint['pending']);cursor=checkpoint['next_index']
+    if cursor==len(codes) and not selected:cursor=0  # A new explicit run may refresh another bounded pass.
+    while cursor<len(codes) and len(selected)<limit:
+        security=codes[cursor];cursor+=1
+        if security not in selected:selected.append(security)
+    return selected,dict(checkpoint,next_index=cursor)
 
 
 def completed_sessions(cutoff_ms,years=3):
@@ -97,7 +128,8 @@ def run_collection(settings,*,provider=None,metadata=None,offline=False,generate
     if not isinstance(settings,CollectionConfig):raise ValueError('invalid-collection-config')
     initial=as_of_ms if as_of_ms is not None else clock_ms()
     if not integer(initial,1):raise ValueError('invalid-cutoff')
-    generation=Generation(settings.state_parent,generated_at=generated_at,compatibility_id=compatibility(settings),as_of_ms=initial)
+    directory=load_pair(settings.etf_directory_manifest,cutoff_ms=initial) if settings.etf_directory_manifest else None
+    generation=Generation(settings.state_parent,generated_at=generated_at,compatibility_id=compatibility(settings,directory),as_of_ms=initial)
     result=collect_into(settings,generation=generation,provider=provider,metadata=metadata,offline=offline,
         as_of_ms=as_of_ms,clock_ms=clock_ms,session_provider=session_provider,write_selection_csv=True)
     return generation.finish(**result.manifest_metadata)
@@ -112,7 +144,8 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
     if generated_at is not None and generated_at.isoformat()!=generation.manifest['generated_at']:raise ValueError('generation-time-mismatch')
     initial=as_of_ms if as_of_ms is not None else generation.manifest.get('as_of_ms')
     if not integer(initial,1):raise ValueError('invalid-cutoff')
-    policy=compatibility(settings)
+    directory=load_pair(settings.etf_directory_manifest,cutoff_ms=initial) if settings.etf_directory_manifest else None
+    policy=compatibility(settings,directory)
     if generation.parent!=output_parent(settings.state_parent) or generation.manifest.get('compatibility_id')!=policy or generation.manifest.get('as_of_ms')!=initial:
         raise ValueError('generation-parent-policy-cutoff-mismatch')
     if generation.manifest.get('kind') not in {'stock-research-run','stock-research-collection'}:raise ValueError('collection-generation-kind')
@@ -135,6 +168,14 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
     sessions,closes=session_provider(initial,settings.history_years)
     if len(sessions)<252:raise ValueError('calendar-history-too-short')
     issues=[];statuses={};fatal=False
+    directory_codes=[];directory_checkpoint=None;directory_progress={}
+    if directory is not None:
+        saved_directory=state.get('etf_directory',{})
+        if not isinstance(saved_directory,dict):raise ValueError('etf-directory-checkpoint-invalid')
+        previous_checkpoint=saved_directory.get('checkpoint')
+        directory_codes,directory_checkpoint=directory_slice(directory,previous_checkpoint,
+                                                           settings.etf_directory_candidates_per_run)
+        directory_progress={security:set() for security in directory_codes}
     def invoke(method,*args,**kwargs):
         nonlocal fatal
         if fatal:return None
@@ -168,72 +209,114 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
         if len(current)<len(discovered):issues.append({'stage':'discovery','category':'candidate-budget-truncated'})
         # Old forecast names are retained for actuals only; they never seed discovery/selection.
         tracked=sorted(retained)+[security for security in current if security not in retained]
-        for start in range(0,len(tracked),400):
-            chunk=tracked[start:start+400]
-            for method,key in [('basicinfo','identities'),('snapshots','quotes')]:
-                result=invoke(method,chunk)
-                if result is None:
-                    if key=='identities':state['identity_current_status'].update({security:'request-failed' for security in chunk})
-                    continue
-                fresh={row['code']:row for row in result.rows}
-                if key=='quotes':
-                    state['snapshot_dispositions'][sha(canonical(chunk))]=result.metadata
-                    rejected=result.metadata.get('rejected_rows',[])
-                    for security in set(result.missing_codes)|{row['code'] for row in rejected}:
-                        state['quotes'].pop(security,None)
-                    if rejected:
-                        issues.append({'stage':'snapshots','category':'snapshot-rows-rejected',
-                                       'rejected_row_count':len(rejected)})
-                if key=='identities':
-                    for security,identity in fresh.items():
-                        prior=state[key].get(security)
-                        if prior and (type(prior.get('stock_id')) is not type(identity.get('stock_id')) or prior.get('stock_id')!=identity.get('stock_id')):
-                            transition={'old_stock_id':prior.get('stock_id'),'new_stock_id':identity.get('stock_id'),
-                                'known_at_ms':identity.get('known_at_ms') or result.retrieved_at_ms or initial,
-                                'status':'history-binding-unverified'}
-                            state['identity_quarantine'][security]=transition
-                            histories[security]=[];state['basis_versions'].pop(security,None)
-                            issues.append({'stage':'identity','code':security,'category':'security-id-changed-history-quarantined'})
-                state[key].update(fresh)
-                if key=='identities':state['identity_current_status'].update({security:'fresh' if security in fresh else 'missing' for security in chunk})
-                if result.missing_codes:issues.append({'stage':method,'category':'requested-codes-missing','codes':list(result.missing_codes)})
-        if settings.metadata_enabled:
-            taxonomy=invoke('industry_catalog')
-            if taxonomy is not None:state['taxonomy']={'rows':list(taxonomy.rows),'metadata':taxonomy.metadata}
-        # Prefer missing/old histories so bounded repeated runs advance without forced ticker rotation.
-        tracked.sort(key=lambda security:(security not in retained,len(histories.get(security,[])),security))
-        for security in tracked:
-            if fatal:break
-            cached=histories.get(security,[])
-            basis=metadata.get('comparison_evidence',{}).get(security,{})
-            token=basis.get('adjustment_vintage_id') if reviewed(basis,initial) else None
-            if token is not None and token!=state['basis_versions'].get(security):
-                if cached:issues.append({'stage':'history','code':security,'category':'adjustment-vintage-requires-full-backfill'})
-                cached=[];histories[security]=[];state['basis_versions'][security]=token
-            start=sessions[0];end=sessions[-1]
-            if cached:
-                cached_dates={row['session_date'] for row in cached}
-                missing=[day for day in sessions if day not in cached_dates]
-                recent_start=sessions[max(0,len(sessions)-settings.revision_sessions)]
-                start=missing[0] if missing else recent_start
-                end=missing[-1] if missing else sessions[-1]
-            result=invoke('history',security,start=start,end=end,session_closes=closes)
-            if result is not None:
-                incoming=apply_field_currency(result.rows,metadata.get('currency_evidence',{}).get(security,{}),as_of_ms or clock_ms(),state['identities'].get(security))
-                merged,changed=merge_history(cached,incoming)
-                total_rows=sum(len(rows) for key,rows in histories.items() if key!=security)+len(merged)
-                if total_rows>MAX_HISTORY_ROWS:
-                    fatal=True;issues.append({'stage':'history','category':'cached-history-row-budget'});break
-                histories[security]=merged;revisions.extend(changed)
-                state['history_status'][security]={'status':result.status,'reason':result.reason,'metadata':result.metadata}
-                if result.metadata.get('stopped_on_failure'):
-                    fatal=True;issues.append({'stage':'history','category':result.reason})
-            if settings.metadata_enabled and not fatal:
-                for kind in ['owner-plate','company/profile']:
-                    result=invoke('source_metadata',security,kind)
-                    if result is not None:state['raw_metadata'].setdefault(security,{})[kind]={'rows':list(result.rows),'metadata':result.metadata}
+        def enrich(tracked, directory_only=False):
+            nonlocal fatal
+            for start in range(0,len(tracked),400):
+                chunk=tracked[start:start+400]
+                for method,key in [('basicinfo','identities'),('snapshots','quotes')]:
+                    result=invoke(method,chunk)
+                    if result is None:
+                        if key=='identities':state['identity_current_status'].update({security:'request-failed' for security in chunk})
+                        continue
+                    fresh={row['code']:row for row in result.rows}
+                    for security in chunk:
+                        if security in directory_progress:
+                            directory_progress[security].add('basic' if key=='identities' else 'snapshot')
+                    if key=='quotes':
+                        state['snapshot_dispositions'][sha(canonical(chunk))]=result.metadata
+                        rejected=result.metadata.get('rejected_rows',[])
+                        for security in set(result.missing_codes)|{row['code'] for row in rejected}:
+                            state['quotes'].pop(security,None)
+                        if rejected:
+                            issues.append({'stage':'snapshots','category':'snapshot-rows-rejected',
+                                           'rejected_row_count':len(rejected)})
+                    if key=='identities':
+                        for security,identity in fresh.items():
+                            prior=state[key].get(security)
+                            if prior and (type(prior.get('stock_id')) is not type(identity.get('stock_id')) or prior.get('stock_id')!=identity.get('stock_id')):
+                                transition={'old_stock_id':prior.get('stock_id'),'new_stock_id':identity.get('stock_id'),
+                                    'known_at_ms':identity.get('known_at_ms') or result.retrieved_at_ms or initial,
+                                    'status':'history-binding-unverified'}
+                                state['identity_quarantine'][security]=transition
+                                histories[security]=[];state['basis_versions'].pop(security,None)
+                                issues.append({'stage':'identity','code':security,'category':'security-id-changed-history-quarantined'})
+                    state[key].update(fresh)
+                    if key=='identities':state['identity_current_status'].update({security:'fresh' if security in fresh else 'missing' for security in chunk})
+                    if result.missing_codes:issues.append({'stage':method,'category':'requested-codes-missing','codes':list(result.missing_codes)})
+            if settings.metadata_enabled and not directory_only:
+                taxonomy=invoke('industry_catalog')
+                if taxonomy is not None:state['taxonomy']={'rows':list(taxonomy.rows),'metadata':taxonomy.metadata}
+            # Prefer missing/old histories so bounded repeated runs advance without forced ticker rotation.
+            tracked.sort(key=lambda security:(security not in retained,len(histories.get(security,[])),security))
+            for security in tracked:
+                if fatal:break
+                if directory_only and state['identity_current_status'].get(security)=='missing':
+                    directory_progress[security].add('history')
+                    continue  # Missing exact provider identity is a visible terminal observation, not an invented bar.
+                cached=histories.get(security,[])
+                basis=metadata.get('comparison_evidence',{}).get(security,{})
+                token=basis.get('adjustment_vintage_id') if reviewed(basis,initial) else None
+                if token is not None and token!=state['basis_versions'].get(security):
+                    if cached:issues.append({'stage':'history','code':security,'category':'adjustment-vintage-requires-full-backfill'})
+                    cached=[];histories[security]=[];state['basis_versions'][security]=token
+                start=sessions[0];end=sessions[-1]
+                if cached:
+                    cached_dates={row['session_date'] for row in cached}
+                    missing=[day for day in sessions if day not in cached_dates]
+                    recent_start=sessions[max(0,len(sessions)-settings.revision_sessions)]
+                    start=missing[0] if missing else recent_start
+                    end=missing[-1] if missing else sessions[-1]
+                result=invoke('history',security,start=start,end=end,session_closes=closes)
+                if result is not None:
+                    incoming=apply_field_currency(result.rows,metadata.get('currency_evidence',{}).get(security,{}),as_of_ms or clock_ms(),state['identities'].get(security))
+                    merged,changed=merge_history(cached,incoming)
+                    total_rows=sum(len(rows) for key,rows in histories.items() if key!=security)+len(merged)
+                    if total_rows>MAX_HISTORY_ROWS:
+                        fatal=True;issues.append({'stage':'history','category':'cached-history-row-budget'});break
+                    histories[security]=merged;revisions.extend(changed)
+                    state['history_status'][security]={'status':result.status,'reason':result.reason,'metadata':result.metadata}
+                    if (security in directory_progress and result.status in ('success','empty','successful-empty','all-missing')
+                            and not result.metadata.get('stopped_on_failure')):
+                        directory_progress[security].add('history')
+                    if result.metadata.get('stopped_on_failure'):
+                        fatal=True;issues.append({'stage':'history','category':result.reason})
+                if settings.metadata_enabled and not fatal:
+                    for kind in ['owner-plate','company/profile']:
+                        result=invoke('source_metadata',security,kind)
+                        if result is not None:state['raw_metadata'].setdefault(security,{})[kind]={'rows':list(result.rows),'metadata':result.metadata}
+        enrich(tracked)
+        if directory is not None:
+            state['pools'][ETF_DIRECTORY_POOL]=list(directory['candidates'])
+            # Directory work is additional only after the original stock/actuals work;
+            # all calls still use the same provider and shared budgets/first-failure guard.
+            extra=[security for security in directory_codes if security not in tracked]
+            if extra and not fatal:enrich(extra, directory_only=True)
     cutoff=as_of_ms if as_of_ms is not None else clock_ms()
     if not integer(cutoff,initial):raise ValueError('collection-clock-order')
+    if directory is not None:
+        final_directory=load_pair(settings.etf_directory_manifest,cutoff_ms=cutoff)
+        if final_directory['binding_sha256']!=directory['binding_sha256']:
+            raise ValueError('etf-directory-source-changed')
+        state['pools'][ETF_DIRECTORY_POOL]=list(directory['candidates'])
+        for security in directory['candidates']:
+            state['membership_first_seen_ms'].setdefault(security,initial)
+        if offline:
+            directory_checkpoint=state.get('etf_directory',{}).get('checkpoint') or {
+                'binding':directory['binding_sha256'],'limit':settings.etf_directory_candidates_per_run,
+                'next_index':0,'pending':[],'completed':[]}
+        else:
+            completed={security for security,steps in directory_progress.items()
+                       if steps=={'basic','snapshot','history'}}
+            directory_checkpoint['completed']=sorted(set(directory_checkpoint['completed'])|completed)
+            directory_checkpoint['pending']=[security for security in directory_codes if security not in completed]
+        unvisited=len(directory['candidates'])-directory_checkpoint['next_index']
+        state['etf_directory']={'source':directory,'checkpoint':directory_checkpoint,
+                               'unvisited_count':unvisited,'pending_count':len(directory_checkpoint['pending'])}
+        statuses[ETF_DIRECTORY_POOL]=('offline-cached' if offline else
+            'partial' if unvisited or directory_checkpoint['pending'] or directory['rejections'] else 'success')
+        if unvisited or directory_checkpoint['pending']:
+            issues.append({'stage':ETF_DIRECTORY_POOL,'category':'enrichment-incomplete',
+                           'unvisited_count':unvisited,'pending_count':len(directory_checkpoint['pending'])})
     # Re-evaluate completion at the decision cutoff, without asserting provider finality/offset units.
     sessions,closes=session_provider(cutoff,settings.history_years)
     for rows in histories.values():
@@ -243,13 +326,17 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
             row['completion_status']='completed' if row['completed'] else 'calendar-unverified-or-incomplete'
     discovered=set().union(*(set(rows) for rows in state['pools'].values())) if state['pools'] else set()
     classified=classify_discovered_etfs(sorted(discovered))
-    candidates=[]
+    candidates=[];directory_nonfunds={}
+    stock_discovered=set().union(*(set(state['pools'].get(key,[])) for key in ('winners','losers','volume')))
     for security in sorted(discovered):
         identity=state['identities'].get(security)
         if identity is None:
             issues.append({'stage':'identity','category':'identity-unavailable','code':security});continue
         candidate=build_candidate(identity,histories.get(security,[]),required_sessions=sessions,cutoff_ms=cutoff,
                                   metadata=metadata,etf=classified.get(security))
+        if directory is not None and security not in stock_discovered and candidate['asset_type']!='ETF':
+            directory_nonfunds[security]='directory-candidate-not-verified-fund'
+            continue  # Never leak a directory-only listing into company or speculative stock selection.
         if not offline and state['identity_current_status'].get(security)!='fresh':
             candidate['listing_verified']=False;candidate['reasons'].append('current-identity-coverage-missing')
         transition=state['identity_quarantine'].get(security)
@@ -270,6 +357,14 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
     selected['coverage']['collection_issues']=issues
     selected['coverage']['screen_dispositions']=state.get('screen_dispositions',{})
     selected['coverage']['snapshot_dispositions']=state.get('snapshot_dispositions',{})
+    if directory is not None:
+        selected['coverage']['etf_directory']={
+            'origin':ETF_DIRECTORY_POOL,'binding_sha256':directory['binding_sha256'],
+            'enumerated_candidates':len(directory['candidates']),'rejections':directory['rejections'],
+            'unvisited_count':state['etf_directory']['unvisited_count'],
+            'pending_count':state['etf_directory']['pending_count'],
+            'completed_count':len(directory_checkpoint['completed']),
+            'nonfund_or_unverified':directory_nonfunds,'current_only':True,'admission':False}
     rows=[row for security in sorted(histories) for row in histories[security]]
     if len(rows)>MAX_HISTORY_ROWS:raise ValueError('cached-history-row-budget')
     generation.csv('history.csv',rows,HISTORY_COLUMNS)
@@ -309,6 +404,10 @@ def collect_into(settings,*,generation,provider=None,metadata=None,offline=False
         'metadata_input':metadata,'adjustment_policy':finish_metadata['adjustment_policy'],'as_of_ms':cutoff,
         'historical_membership':finish_metadata['history_interpretation'],
         'open_generation_artifacts':dict(generation.manifest['artifacts'])}
+    if directory is not None:
+        finish_metadata['etf_directory_binding']=directory['binding_sha256']
+        receipt['etf_directory']={'binding_sha256':directory['binding_sha256'],
+                                  'checkpoint':directory_checkpoint,'current_only':True,'admission':False}
     return CollectionResult(generation,selected,state,rows,receipt,finish_metadata)
 
 

@@ -99,7 +99,57 @@ Canonical OHLC is forward split-adjusted excluding distributions by default (aut
 
 Future prediction manifests schema1/kind=stock-research-prediction declare pending_forecast_symbols, or forecast_symbols when pending is absent. Collection retains these names for actuals after they leave discovery, without changing original forecasts. No scoring, SQLite writer, benchmark seed list or historical leverage guesses are supplied. Benchmark inputs need a separately declared mapping in the dataset stage.
 
-## Manual configuration and test boundary
+## Local Official Directory Pair Contract
+
+`collection.etf_directory_manifest` optionally names a local private JSON manifest; `etf_directory_candidates_per_run` defaults to40 and accepts1..400. No new REST route or download is added. The manifest has exactly these schema1 keys:
+
+```json
+{
+  "schema_version": 1,
+  "current_only": true,
+  "reviewed_by": "Reviewer reference",
+  "files": [
+    {
+      "kind": "nasdaqlisted",
+      "path": "/absolute/private/nasdaqlisted.txt",
+      "source_url": "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt",
+      "bytes": 12345,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "retrieved_at": "2026-10-21T04:00:00Z",
+      "known_at": "2026-10-21T04:00:01Z",
+      "complete": true
+    },
+    {
+      "kind": "otherlisted",
+      "path": "/absolute/private/otherlisted.txt",
+      "source_url": "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt",
+      "bytes": 23456,
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "retrieved_at": "2026-10-21T04:00:02Z",
+      "known_at": "2026-10-21T04:00:03Z",
+      "complete": true
+    }
+  ],
+  "symbol_aliases": []
+}
+```
+
+The byte counts, hashes and times above are syntax placeholders, not source evidence. Use actual complete captures and reviewed source-use authority. Require exactly one of each kind/official URL, each<=2MiB/20000data rows; manifest<=1MiB. All files are owner0600/0400, parent0700, outside Git/public paths and opened without following any symlink component. Require `retrieved_at <= known_at <= cutoff` and `cutoff - retrieved_at <= 24hours` for both files. Unknown timezone, future, stale, duplicate JSON keys, incomplete pair, row-width/flag/header/footer/hash/size failures reject before provider work. Final validation catches a changed pair during a run and does not finalize membership.
+
+Exact pipe-delimited headers, in order:
+
+- nasdaqlisted: `Symbol|Security Name|Market Category|Test Issue|Financial Status|Round Lot Size|ETF|NextShares`
+- otherlisted: `ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol`
+
+The last row must be the creation footer with the same field count and empty trailing fields. Accept its documented date/time syntax, preserve its text and leave timezone unknown. Header/footer/hash completeness checks validate the supplied complete-pair declaration; they do not authenticate the publisher or prove no remote records were omitted.
+
+Enumerate only ETF=Y/TestIssue=N candidates from the complete pair. Alias collisions across **all** rows, including nonfund/test rows, and duplicate provider targets are UNKNOWN. Simple uppercase alphanumeric listed symbols map exactly; otherwise an entry in `symbol_aliases` must contain exactly `kind`, `symbol`, `provider_code`, `source_url` and `reviewed_by`. The listed symbol must actually occur; the provider code must satisfy the existing US code syntax. The explicit mapping does not override a collision or create a candidate absent from the files. Aliases are reviewed declarations, not automatically authenticated mappings.
+
+Pair/manifest/alias content and slice limit bind collection compatibility. A separate `etf_directory` pool/state source retains URL/hash/row/original timestamps/alias lineage; pending work resumes only under that binding. Enrichment remains behind original stock work and the same provider budgets. It uses the existing basicinfo/snapshot/history methods without financial policy changes. Default configuration produces no directory pool. Directory-only candidates enter ETF selection only through the existing verified classifier/gates, never stock/speculative selection; missing classification remains unavailable. Current input/cached observation times are preserved, not retimestamped. Source first-seen cannot establish past membership.
+
+This local interface does not implement an ETF-only Moomoo filter, a live fetcher or source admission. [Official directory definitions](https://www.nasdaqtrader.com/trader.aspx?id=symboldirdefs) define listing flags; issuer/equity mandate, leverage/reset, USD basis, rights and all existing eligibility/selection quotas remain separate.
+
+## Existing Manual Configuration and Test Boundary
 
 `python scripts/stock-research/collect.py --offline --state-dir /absolute/private/data` reads compatible local state only and creates an explicit partial empty generation if absent. It never loads credentials/providers. Normal manual online invocation requires an explicit private0600 locator reference outside the repository, set by collection.credential_locator_file or PRSG_MOOMOO_CREDENTIAL_LOCATOR; it has no baked actual directory/AppKey name. The existing secure loader validates the referenced credential directory/key when an approved online run actually executes. No credentials or locator values belong in repository configuration. During PRSG-111 development only injected fake providers and offline entrypoints were executed; no new authenticated collector run was released.
 

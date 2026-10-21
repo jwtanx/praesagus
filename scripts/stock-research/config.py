@@ -53,6 +53,8 @@ class CollectionConfig:
     discovery_pages: int = 1
     max_candidates: int = 900
     metadata_enabled: bool = False
+    etf_directory_manifest: str = ''
+    etf_directory_candidates_per_run: int = 40
 
     def __post_init__(self):
         if not isinstance(self.provider, ProviderConfig) or self.calendar != 'XNYS':
@@ -62,6 +64,8 @@ class CollectionConfig:
                 raise ValueError('invalid collection configuration: ' + name)
         if type(self.metadata_enabled) is not bool or not isinstance(self.state_parent, str) or not self.state_parent or not isinstance(self.metadata_file, str) or not isinstance(self.credential_locator_file, str):
             raise ValueError('invalid collection paths/metadata option')
+        if not isinstance(self.etf_directory_manifest, str) or type(self.etf_directory_candidates_per_run) is not int or not 1 <= self.etf_directory_candidates_per_run <= 400:
+            raise ValueError('invalid ETF directory configuration')
 
 
 def load_collection_config(path=None):
