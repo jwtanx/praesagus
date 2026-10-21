@@ -92,6 +92,65 @@ def test_complete_pair_lineage_full_enumeration_and_footer_timezone_unknown(tmp_
     assert result['source_authenticity'] == 'reviewed-declaration-not-independently-authenticated'
 
 
+@pytest.mark.parametrize('kind,footer', [
+    ('otherlisted', 'File Creation Time: 1021202603:03||||||'),
+    ('otherlisted', 'File Creation Time: 1021202603:03|||||||'),
+    ('nasdaqlisted', 'File Creation Time: 1021202603:03|||||||'),
+])
+def test_publisher_footer_variants_preserve_exact_text_and_unknown_timezone(tmp_path, kind, footer):
+    # Literal seven-field otherlisted footer observed in the retained official capture;
+    # data rows and manifest are fictional and do not assert historical membership.
+    path, value = make_pair(tmp_path)
+    index = 0 if kind == 'nasdaqlisted' else 1
+    source = Path(value['files'][index]['path'])
+    lines = source.read_text().splitlines()
+    source.write_text('\n'.join(lines[:-1] + [footer]) + '\n')
+    rehash(path, value, index)
+    result = directory.load_pair(str(path), cutoff_ms=NOW)
+    assert list(result['candidates']) == ['US.XLC', 'US.XLY']
+    assert result['sources'][kind]['footer'] == footer
+    assert result['sources'][kind]['footer_timezone'] is None
+    assert result['sources'][kind]['sha256'] == value['files'][index]['sha256']
+    assert result['admission'] is False
+
+
+@pytest.mark.parametrize('kind,width', [
+    (kind, width) for kind in ('nasdaqlisted', 'otherlisted')
+    for width in range(1, 11) if width not in ((7, 8) if kind == 'otherlisted' else (8,))
+])
+def test_footer_rejects_every_other_field_count(tmp_path, kind, width):
+    path, value = make_pair(tmp_path)
+    index = 0 if kind == 'nasdaqlisted' else 1
+    source = Path(value['files'][index]['path'])
+    lines = source.read_text().splitlines()
+    footer = 'File Creation Time: 1021202603:03' + '|' * (width - 1)
+    source.write_text('\n'.join(lines[:-1] + [footer]) + '\n')
+    rehash(path, value, index)
+    with pytest.raises(ValueError, match='^etf-directory-invalid-input$'):
+        directory.load_pair(str(path), cutoff_ms=NOW)
+
+
+@pytest.mark.parametrize('kind,width', [('otherlisted', 7), ('otherlisted', 8), ('nasdaqlisted', 8)])
+@pytest.mark.parametrize('change', ['first-trailing-content', 'last-trailing-content',
+                                  'invalid-date', 'invalid-time', 'bad-prefix', 'control'])
+def test_accepted_footer_width_still_rejects_malformed_content(tmp_path, kind, width, change):
+    path, value = make_pair(tmp_path)
+    index = 0 if kind == 'nasdaqlisted' else 1
+    source = Path(value['files'][index]['path'])
+    lines = source.read_text().splitlines()
+    fields = ['File Creation Time: 1021202603:03'] + [''] * (width - 1)
+    if change == 'first-trailing-content': fields[1] = 'unexpected'
+    if change == 'last-trailing-content': fields[-1] = 'unexpected'
+    if change == 'invalid-date': fields[0] = 'File Creation Time: 0230202603:03'
+    if change == 'invalid-time': fields[0] = 'File Creation Time: 1021202624:03'
+    if change == 'bad-prefix': fields[0] = 'Creation Time: 1021202603:03'
+    if change == 'control': fields[1] = '\t'
+    source.write_text('\n'.join(lines[:-1] + ['|'.join(fields)]) + '\n')
+    rehash(path, value, index)
+    with pytest.raises(ValueError, match='^etf-directory-invalid-input$'):
+        directory.load_pair(str(path), cutoff_ms=NOW)
+
+
 @pytest.mark.parametrize('change', ['missing', 'duplicate-kind', 'URL', 'incomplete', 'header', 'footer',
     'truncated', 'hash', 'bytes', 'empty', 'bad-row', 'flag', 'oversized', 'extra-manifest-key', 'naive-time'])
 def test_pair_manifest_and_content_rejections_are_sanitized(tmp_path, change):

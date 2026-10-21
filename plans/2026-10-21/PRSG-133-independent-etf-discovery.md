@@ -68,3 +68,17 @@ Unrelated baseline .DS_Store and the already dirty trader-daily-report schedule/
 ## Lead Acceptance
 
 Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery.
+
+## Verified Publisher Footer Regression
+
+21Oct17:17MYT actualfirstofficialpaircapture: otherlistedheader8fields/footer7fieldswithalltrailingempty; currentimporter raises etf-directory-footer. VerifiedregressionreopensD1/D3/D4 only; prior352/3508evidence retained. Acceptonlyexplicit7or8otherlistedfooter;nasdaqlisted8unchanged;date/empty/control/hash/completenessguards retained. Source packet remains private under lead-state/standalone100-etf-discovery-20261021/official-pair-091656. New frozen repair is limited to importer, new regression test, API contract text and this spec/manifest within existing accepted paths. No new capture, provider call, thresholds or other selection behavior. Engineer repairs explicit observed variants; Lead independently reimports retained pair and runs checks before delivery.
+
+## Engineer Footer Repair — Pending Lead Reimport And Review
+
+The literal retained publisher footer `File Creation Time: 1021202603:03||||||` first reproduced the rejection (1 failed, 37 passed, 49 deselected in0.51s). The repair explicitly accepts only seven/eight otherlisted footer fields; nasdaqlisted still requires eight, and both headers/data rows remain eight. Empty trailing fields, valid date/time, control-character, hash/bytes, complete-pair and source-time checks remain intact. Three valid-format cases preserve exact footer/hash lineage and unknown timezone; 35 malformed width/content/date/time/prefix/control cases reject.
+
+Exact configured focused importer command:87passed1.59s. Combined importer/provider/universe/exports:390passed12.33s. These are fictional offline fixtures containing the literal observed footer, not an actual source import or financial admission. No network/provider calls, credentials, immutable capture edits, threshold changes, commit or push by Engineer. Lead independently reimports the retained pair, accepts the five-path repair diff and runs delivery hooks. D2 remains historically done per the accepted reopen decision; its shared pending review checks currently make the manifest validator reject until Lead independently restores those checks. Prior352/3508 results remain historical evidence.
+
+## Footer Repair Lead Acceptance
+
+Lead independently reviewed narrow5pathfooterrepair and literalnegativefixtures;390relevanttests passed12.13s; preservedactualofficialpairimports5769candidates0rejectionswithunchangedhashes/times. Not financialadmission/liveproviderreadiness. Priorredwitness/recordvalidatorfailure retained; sharedreviewchecks nowindependentlypassed.

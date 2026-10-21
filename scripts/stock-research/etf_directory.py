@@ -141,7 +141,10 @@ def _load(value, cutoff_ms):
         need(3 <= len(lines) <= MAX_FILE_ROWS + 2 and tuple(lines[0].split('|')) == header, 'header-or-count')
         footer = lines[-1]
         parts = footer.split('|')
-        need(len(parts) == len(header) and not any(parts[1:])
+        # otherlisted is published with either seven or eight footer fields;
+        # its header/data rows and the nasdaqlisted footer still require eight.
+        footer_widths = (7, 8) if kind == 'otherlisted' else (8,)
+        need(len(parts) in footer_widths and not any(parts[1:])
              and re.fullmatch(r'File Creation Time: [0-9]{10}:?[0-9]{2}', parts[0]), 'footer')
         # Validate the date/time syntax while deliberately leaving its timezone unknown.
         datetime.strptime(parts[0].split(': ', 1)[1].replace(':', ''), '%m%d%Y%H%M')

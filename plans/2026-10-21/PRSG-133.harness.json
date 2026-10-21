@@ -24,7 +24,7 @@
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "075d22167811e073b8afaca634229cb60b80d56b",
+  "base_sha": "868343b71c1f5123f0d8542277516c6c019265f8",
   "allowed_paths": [
     "scripts/stock-research/etf_directory.py",
     "scripts/stock-research/collect.py",
@@ -60,7 +60,10 @@
       "status": "passed",
       "evidence": [
         "Engineer exact configured focused command:49passed1.39s. Final combined importer/provider/universe/exports command352passed12.15s; earlier38/1.28s,307/4.00s and344/12.38s are preliminary passing evidence. No provider/network/credential work.",
-        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery.",
+        "21Oct17:17MYT actualfirstofficialpaircapture: otherlistedheader8fields/footer7fieldswithalltrailingempty; currentimporter raises etf-directory-footer. VerifiedregressionreopensD1/D3/D4 only; prior352/3508evidence retained. Acceptonlyexplicit7or8otherlistedfooter;nasdaqlisted8unchanged;date/empty/control/hash/completenessguards retained.",
+        "Engineer footer repair: exact configured importer suite87passed1.59s; combined importer/provider/universe/exports390passed12.33s. Literal seven-field publisher footer reproduced before fix:1failed37passed49deselected0.51s; after fix bothotherlisted7/8 andnasdaq8 retaintext/timezoneunknown;35malformedwidth/content/date/time/prefix/controlcasesreject. No livecalls or source mutation. Independent retained-pair reimport/review/hooks remain Lead-owned.",
+        "Lead independently reviewed narrow5pathfooterrepair and literalnegativefixtures;390relevanttests passed12.13s; preservedactualofficialpairimports5769candidates0rejectionswithunchangedhashes/times. Not financialadmission/liveproviderreadiness. Priorredwitness/recordvalidatorfailure retained; sharedreviewchecks nowindependentlypassed."
       ]
     },
     {
@@ -70,7 +73,9 @@
       "status": "passed",
       "evidence": [
         "Engineer complete eight-path validate_ticket.py and brief quality/whitespace checks passed. Protected provider/universe/registry/111/public unchanged; unrelated baseline files excluded. Independent Lead scope acceptance remains pending.",
-        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery.",
+        "21Oct17:17MYT actualfirstofficialpaircapture: otherlistedheader8fields/footer7fieldswithalltrailingempty; currentimporter raises etf-directory-footer. VerifiedregressionreopensD1/D3/D4 only; prior352/3508evidence retained. Acceptonlyexplicit7or8otherlistedfooter;nasdaqlisted8unchanged;date/empty/control/hash/completenessguards retained.",
+        "Lead independently reviewed narrow5pathfooterrepair and literalnegativefixtures;390relevanttests passed12.13s; preservedactualofficialpairimports5769candidates0rejectionswithunchangedhashes/times. Not financialadmission/liveproviderreadiness. Priorredwitness/recordvalidatorfailure retained; sharedreviewchecks nowindependentlypassed."
       ]
     },
     {
@@ -79,7 +84,9 @@
       "description": "Independent Lead review and required commit/push hooks; no live admission implied.",
       "status": "passed",
       "evidence": [
-        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery.",
+        "21Oct17:17MYT actualfirstofficialpaircapture: otherlistedheader8fields/footer7fieldswithalltrailingempty; currentimporter raises etf-directory-footer. VerifiedregressionreopensD1/D3/D4 only; prior352/3508evidence retained. Acceptonlyexplicit7or8otherlistedfooter;nasdaqlisted8unchanged;date/empty/control/hash/completenessguards retained.",
+        "Lead independently reviewed narrow5pathfooterrepair and literalnegativefixtures;390relevanttests passed12.13s; preservedactualofficialpairimports5769candidates0rejectionswithunchangedhashes/times. Not financialadmission/liveproviderreadiness. Priorredwitness/recordvalidatorfailure retained; sharedreviewchecks nowindependentlypassed."
       ]
     }
   ],
@@ -94,7 +101,9 @@
       ],
       "status": "done",
       "evidence": [
-        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery.",
+        "21Oct17:17MYT actualfirstofficialpaircapture: otherlistedheader8fields/footer7fieldswithalltrailingempty; currentimporter raises etf-directory-footer. VerifiedregressionreopensD1/D3/D4 only; prior352/3508evidence retained. Acceptonlyexplicit7or8otherlistedfooter;nasdaqlisted8unchanged;date/empty/control/hash/completenessguards retained.",
+        "Lead independently reviewed narrow5pathfooterrepair and literalnegativefixtures;390relevanttests passed12.13s; preservedactualofficialpairimports5769candidates0rejectionswithunchangedhashes/times. Not financialadmission/liveproviderreadiness. Priorredwitness/recordvalidatorfailure retained; sharedreviewchecks nowindependentlypassed."
       ]
     },
     {
@@ -107,7 +116,8 @@
       ],
       "status": "done",
       "evidence": [
-        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery.",
+        "Lead independently reviewed narrow5pathfooterrepair and literalnegativefixtures;390relevanttests passed12.13s; preservedactualofficialpairimports5769candidates0rejectionswithunchangedhashes/times. Not financialadmission/liveproviderreadiness. Priorredwitness/recordvalidatorfailure retained; sharedreviewchecks nowindependentlypassed."
       ]
     },
     {
@@ -120,7 +130,9 @@
       ],
       "status": "done",
       "evidence": [
-        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery.",
+        "21Oct17:17MYT actualfirstofficialpaircapture: otherlistedheader8fields/footer7fieldswithalltrailingempty; currentimporter raises etf-directory-footer. VerifiedregressionreopensD1/D3/D4 only; prior352/3508evidence retained. Acceptonlyexplicit7or8otherlistedfooter;nasdaqlisted8unchanged;date/empty/control/hash/completenessguards retained.",
+        "Lead independently reviewed narrow5pathfooterrepair and literalnegativefixtures;390relevanttests passed12.13s; preservedactualofficialpairimports5769candidates0rejectionswithunchangedhashes/times. Not financialadmission/liveproviderreadiness. Priorredwitness/recordvalidatorfailure retained; sharedreviewchecks nowindependentlypassed."
       ]
     },
     {
@@ -133,14 +145,18 @@
       ],
       "status": "done",
       "evidence": [
-        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+        "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery.",
+        "21Oct17:17MYT actualfirstofficialpaircapture: otherlistedheader8fields/footer7fieldswithalltrailingempty; currentimporter raises etf-directory-footer. VerifiedregressionreopensD1/D3/D4 only; prior352/3508evidence retained. Acceptonlyexplicit7or8otherlistedfooter;nasdaqlisted8unchanged;date/empty/control/hash/completenessguards retained.",
+        "Lead independently reviewed narrow5pathfooterrepair and literalnegativefixtures;390relevanttests passed12.13s; preservedactualofficialpairimports5769candidates0rejectionswithunchangedhashes/times. Not financialadmission/liveproviderreadiness. Priorredwitness/recordvalidatorfailure retained; sharedreviewchecks nowindependentlypassed."
       ]
     }
   ],
   "review": {
     "status": "accepted",
     "evidence": [
-      "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery."
+      "Lead independent eight-path hash/full diff review accepted;352 focused importer/provider/universe/exports tests passed12.28s. Private fixtures only;no actualsource/provideradmission. CompleteGitpathinventory excludes4unrelateddirtyfiles. Requiredhooks run at delivery.",
+      "21Oct17:17MYT actualfirstofficialpaircapture: otherlistedheader8fields/footer7fieldswithalltrailingempty; currentimporter raises etf-directory-footer. VerifiedregressionreopensD1/D3/D4 only; prior352/3508evidence retained. Acceptonlyexplicit7or8otherlistedfooter;nasdaqlisted8unchanged;date/empty/control/hash/completenessguards retained.",
+      "Lead independently reviewed narrow5pathfooterrepair and literalnegativefixtures;390relevanttests passed12.13s; preservedactualofficialpairimports5769candidates0rejectionswithunchangedhashes/times. Not financialadmission/liveproviderreadiness. Priorredwitness/recordvalidatorfailure retained; sharedreviewchecks nowindependentlypassed."
     ]
   }
 }
