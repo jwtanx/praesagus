@@ -27,7 +27,7 @@ Do not change stored historical forecasts, invent technical values, or carry an 
 
 - [x] PRSG-76-D1: Chip arrows and colors follow the first available trend evidence in the documented priority, while missing data remains explicit.
 - [x] PRSG-76-D2: Forecast rows use green, red, and yellow direction styling; saved 2026-09-30 ranges are reachable and clearly historical.
-- [ ] PRSG-76-D3: Viewer regression, both report validations, scope validation, diff review, and independent Lead review pass.
+- [x] PRSG-76-D3: Viewer regression, both report validations, scope validation, diff review, and independent Lead review pass.
 
 ## Delivery evidence
 
@@ -35,4 +35,8 @@ Do not change stored historical forecasts, invent technical values, or carry an 
 - `python3 scripts/daily-market-brief/validate_report_json.py --date 2026-10-07 --public` — passed; the report was not changed by this ticket.
 - `python3 scripts/daily-market-brief/validate_report_json.py --date 2026-09-30` — passed; the archived report and its estimates were not changed.
 - `python3 scripts/planning/validate_ticket.py plans/2026-10-08/PRSG-76.harness.json` with all five changed paths — passed; `git diff --check` — passed.
-- Independent Lead review remains pending.
+- Lead review on 2026-10-09 MYT: Reviewed the PRSG-76 commit `93da9925f238b63d53b29673624de062323b00cd` against the accepted five-path scope. Trend chips prioritize historical SMA, then timestamped quote direction, then saved forecast direction; titles disclose the selected basis and source/retrieval timing, and missing evidence remains an em dash. Forecast direction uses explicit up/down/flat styling, and newer reports link to the unchanged Sep 30 archive while labeling its estimates historical. The implementation commit touches exactly the five allowed paths; `git diff --check` is clean. Existing manifest evidence records the viewer regression, both report validations, and ticket-scope validation as passed. No report JSON or archived forecast was changed by PRSG-76.
+
+## Reconciled acceptance — 14 October 2026 MYT
+
+2026-10-14 MYT: replacement Lead independently re-reviewed exact93da992 five-path implementation and unmergedb3bb163 acceptance metadata. Replayed clean historical93da992: node daily_report_viewer_checks.cjs and Oct7public/Sep30 report validators all passed. Ticket changes preserve both reportJSONs. Acceptance is historical; quote/SMA proxy chip behavior later superseded byPRSG-88, compact forecast presentation byPRSG-89/96. No current viewer/report/method changes and no predictive or live-access claim. The original acceptance commit `b3bb163` remained outside main; this metadata-only reconciliation records accepted historical delivery in the canonical audit while retaining later behavior and history.
