@@ -7,7 +7,7 @@ description: >-
 license: MIT
 metadata:
   author: praesagus
-  version: "2.5"
+  version: "2.7"
   category: market-research
   tags: [daily-brief, catalysts, news, provenance, market-research]
 ---
@@ -58,7 +58,43 @@ Use a concise brief with:
 
 ## Daily market brief artifact
 
-For new daily/week-ahead briefs, author `artifacts/daily-market-brief/YYYY-MM-DD.json` using shared `index.html`, schema version 3 and structured data only (no HTML). Required sections are `outlook`, `top10`, `swing`, `etfs`, `news`, `trends`, `score`; `top10` is a legacy identifier, not a requirement to publish ten stocks. Include timezone-aware metadata/as_of, summary, watchlist_config, forecasts and footer. Calendar content belongs only in the shared monthly ledger; daily JSON has `calendar_ref: ../financial-calendar/YYYY-MM.json`, not inline events or sections.calendar. Update reports.json with the new date/label/latest. Preserve earlier schema-2 snapshots and their original universe; the viewer supports them without rewriting historical forecasts. Keep markup, filters, navigation and mobile behavior in the shared HTML.
+### Human publication gate — 21 October 2026
+
+The human requires useful numeric coverage before posting the daily report.
+The human revised the minimum from 80% to 70% on 21 October 2026.
+Continue the 08:00 MYT collection, analysis and outcome review privately, but
+publish only when **at least 35 of the fixed 50 tickers (70%) have both**:
+
+- a finite positive current price with eligible source, session and actual
+  observation/availability time; missing, stale or unsupported prices do not count;
+- a supported finite positive prediction price and ordered numeric range, with
+  recorded direction, target date/horizon, confidence, frozen reference and method,
+  and the source/use admission required for the intended public delivery.
+
+Count the intersection on the same ticker, not separate quote/forecast totals.
+Keep all 50 constituents in the denominator; never remove difficult names, count
+Unrated/null rows, carry expired targets forward, invent inputs or waive rights to
+reach 70%. Prefer complete coverage. Verify the qualifying rows actually render
+their current price and numeric prediction in the existing colored direction chip,
+with the correct recorded date/horizon and accessible details.
+
+Below 35 qualifying rows, keep the edition outside the public artifacts tree,
+do not add it to reports.json or move latest, and do not commit, push, deploy or
+post the incomplete report. Preserve prior published editions. Continue only
+authorized intake/source remedies and forecast follow-through; do not send a
+routine ticker-only report or repeated unchanged blocker notification. For a
+scheduled heartbeat with unchanged insufficient coverage, use DONT_NOTIFY.
+Record matured-forecast blockers and next recheck timing privately while an
+edition is withheld; notify only a meaningful change or required human action.
+
+After the final eligible edition write, the existing public compact validator
+must still pass, followed by the explicit paired-coverage and rendered-chip checks
+above. A structural validator pass alone does not authorize posting: the current
+validator permits missing data and does not mechanically enforce this 70% gate.
+This human publication restriction supersedes older instructions to publish with
+available/zero numeric coverage; missing evidence remains honest in private work.
+
+For eligible daily/week-ahead editions that pass the human publication gate, author `artifacts/daily-market-brief/YYYY-MM-DD.json` using shared `index.html`, schema version 3 and structured data only (no HTML). Required sections are `outlook`, `top10`, `swing`, `etfs`, `news`, `trends`, `score`; `top10` is a legacy identifier, not a requirement to publish ten stocks. Include timezone-aware metadata/as_of, summary, watchlist_config, forecasts and footer. Calendar content belongs only in the shared monthly ledger; daily JSON has `calendar_ref: ../financial-calendar/YYYY-MM.json`, not inline events or sections.calendar. Update reports.json with the eligible date/label/latest only. Preserve earlier schema-2 snapshots and their original universe; the viewer supports them without rewriting historical forecasts. Keep markup, filters, navigation and mobile behavior in the shared HTML.
 
 Use the October 8 report's concise reading format for new reports: set `metadata.presentation_profile` to `compact-v1` and read [the compact report contract](references/compact-report.md) before authoring or revising one. Show one general prediction chip per ticker combining its recorded direction, target price and range, with the recorded target date/horizon visible alongside. Expansion holds evidence confidence/reason, frozen forecast basis, method, source links and missing inputs. Keep observed prices and the full audit accessible. Use general public wording without provider branding, including expanded details and link labels; retain raw provider/source fields and real URL destinations unchanged. The shared viewer applies the single-chip presentation to legacy reports without rewriting their JSON. Presentation must never create or promote a forecast.
 

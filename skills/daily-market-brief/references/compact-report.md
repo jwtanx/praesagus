@@ -106,7 +106,16 @@ python3 scripts/daily-market-brief/validate_report_json.py --date YYYY-MM-DD --p
 
 Failure stops delivery, commit and publication. Correct the issue and rerun the
 same committed validator; do not invent forecasts to make coverage look complete.
-Zero/partial input coverage with explicit gaps and Unrated/null targets is valid.
+Zero/partial input coverage with explicit gaps and Unrated/null targets can be
+structurally valid, but is not sufficient permission to publish. The human's
+21 October 2026 gate requires at least 35 of the fixed 50 tickers to have both an
+eligible current numeric price and an admitted supported numeric prediction/range,
+rendered with the colored direction chip and recorded target date/horizon. Count
+the same-row intersection, with missing/stale/expired/unsupported rows excluded.
+Below 35, retain the edition privately outside public artifacts; do not update the
+public index/latest or post it. Preserve existing published history. See the
+skill's human publication gate for the complete requirements. The existing
+validator checks structure/support but does not enforce that coverage threshold.
 Normal validation also enforces a present compact profile; `--compact` ensures
 the selected new report cannot accidentally omit it. Historical archive checks
 continue through normal public validation without rewriting earlier reports.
