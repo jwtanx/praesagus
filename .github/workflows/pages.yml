@@ -19,6 +19,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       contents: read
+      actions: read
       pages: write
       id-token: write
     runs-on: ubuntu-latest
@@ -29,6 +30,31 @@ jobs:
           fetch-depth: 0
       - name: Validate daily report JSON
         run: python3 scripts/daily-market-brief/validate_report_json.py
+      - name: Resolve last successful deployment baseline
+        id: publication-baseline
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.rest.actions.listWorkflowRuns({
+              ...context.repo, workflow_id: 'pages.yml', branch: 'main',
+              status: 'success', per_page: 100
+            });
+            const runs = data.workflow_runs.filter(run =>
+              ['push', 'workflow_dispatch'].includes(run.event) && run.conclusion === 'success');
+            runs.sort((a, b) => b.run_number - a.run_number);
+            if (!runs.length && data.workflow_runs.length) {
+              throw new Error('Cannot establish successful Pages deployment baseline');
+            }
+            core.setOutput('sha', runs.length ? runs[0].head_sha : '0'.repeat(40));
+      - name: Enforce publication eligibility for changed editions
+        env:
+          PUBLICATION_EVIDENCE_DIR: ${{ vars.PUBLICATION_EVIDENCE_DIR }}
+          PUBLICATION_DEPLOYMENT_BASE: ${{ steps.publication-baseline.outputs.sha }}
+        run: |
+          python3 scripts/daily-market-brief/publication_gate.py --github-event \
+            --deployment-base "$PUBLICATION_DEPLOYMENT_BASE" \
+            --publication-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --publication-evidence-dir "$PUBLICATION_EVIDENCE_DIR"
       - name: Build committed ticket audit
         run: python3 scripts/planning/build_ticket_audit.py
       - name: Configure Pages

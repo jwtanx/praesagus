@@ -368,7 +368,14 @@ def main():
     ap.add_argument('--date',help='validate one YYYY-MM-DD report')
     ap.add_argument('--public',action='store_true',help='reject private structures before publication')
     ap.add_argument('--compact',action='store_true',help='require and validate the compact-v1 presentation profile')
+    ap.add_argument('--publication',action='store_true',help='also enforce the fixed 35/50 publication gate for --date')
+    ap.add_argument('--publication-at',help='actual aware UTC publication cutoff; required with --publication')
+    ap.add_argument('--publication-evidence-dir',type=Path,help='external private staged evidence directory')
     a=ap.parse_args();root=a.reports_dir
+    if a.publication and (not a.date or not a.publication_at or a.reports_dir!=Path('artifacts/daily-market-brief')):
+        fail(root,'--publication requires --date, --publication-at and the repository report directory')
+    if not a.publication and (a.publication_at or a.publication_evidence_dir):
+        fail(root,'publication arguments require --publication')
     universe_json=read_json(a.universe)
     universe_keys,universe_map=validate_universe(a.universe,universe_json)
     effective_from=universe_json['effective_from']
@@ -405,6 +412,12 @@ def main():
     idx=root/'reports.json'
     validate_index(idx,read_json(idx),file_names)
     print(f'OK {idx}: {len(read_json(idx)["reports"])} report dates indexed')
+    if a.publication:
+        from publication_gate import main as publication_main
+        arguments=['--date',a.date,'--publication-at',a.publication_at]
+        if a.publication_evidence_dir:
+            arguments+=['--publication-evidence-dir',str(a.publication_evidence_dir)]
+        publication_main(arguments)
 if __name__=='__main__':
     try:main()
     except ValueError as exc:print(f'ERROR: {exc}',file=sys.stderr);sys.exit(1)

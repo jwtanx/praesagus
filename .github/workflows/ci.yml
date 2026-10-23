@@ -19,6 +19,13 @@ jobs:
           python-version: '3.11'
       - name: Validate daily market brief JSON
         run: python3 scripts/daily-market-brief/validate_report_json.py
+      - name: Enforce publication eligibility for changed editions
+        env:
+          PUBLICATION_EVIDENCE_DIR: ${{ vars.PUBLICATION_EVIDENCE_DIR }}
+        run: |
+          python3 scripts/daily-market-brief/publication_gate.py --github-event \
+            --publication-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --publication-evidence-dir "$PUBLICATION_EVIDENCE_DIR"
       - name: Install Poetry and dependencies
         run: |
           python -m pip install poetry

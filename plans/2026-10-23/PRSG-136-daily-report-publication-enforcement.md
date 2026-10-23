@@ -8,7 +8,7 @@ Implement the existing human publication policy mechanically for new/modified da
 
 ## Scope And Dependencies
 
-Depends on134 policy and existing report schema/allowlisted public projection. Write only the manifest's nine exact paths. Do not edit archived report JSON, forecast methods, source observations, public-use rights, skills, provider adapters or UI markup. Base40f0cee; unrelated .DS_Store remains protected. Lead accepts this bounded implementation under23OctMVP authority; start after the highest-priority124 operational handoff or when its external dependency blocks independent work.
+Depends on134 policy and existing report schema/allowlisted public projection. Write only the manifest's nine exact paths. Do not edit archived report JSON, forecast methods, source observations, public-use rights, skills, provider adapters or UI markup. Planning base40f0cee; Lead froze implementation basef8270e67e2ad448838a7b0d8e1628d6747fa7878 after the operational handoff. Unrelated .DS_Store remains protected. Lead accepts this bounded implementation under23OctMVP authority; start after the highest-priority124 operational handoff or when its external dependency blocks independent work.
 
 ## Approach
 
@@ -24,7 +24,11 @@ Prefer a small reusable publication predicate and explicit changed-edition integ
 
 ## Findings
 
-Baseline validator accepts null numeric fields when explicit gaps/statuses exist; CLI currently offers --public/--compact structural checks. Both CI and Pages invoke structural validation without35/50 enforcement. Current policy/reference already requires paired coverage; no claim of35 qualifying public rows exists.
+The baseline structural validator permits explicit gaps. The new publication gate separately binds exact report bytes and row identities to full existing public forecast evidence/admission/result mappings and current-session quote evidence. Source links, availability, target expiry and existing display rights are checked at actual publication time. Private staged inputs remain outside Git/public output.
+
+Lead resolved the admission interface by retaining existing rights restrictions: MY and unsupported providers fail closed. With30 US and20 MY fixed identities,35 actual eligible public pairs are currently unattainable; the implementation deliberately rejects them. A fictional set-arithmetic boundary test does not establish a real public-positive report. Full evidence staging and source permission remain separate prerequisites, not provisioned here.
+
+CI uses push/PR Git evidence; Pages uses the last successful deployment SHA so a failed report cannot ride a later unrelated push. Initial/manual delivery checks latest, preserving unchanged archives. Git and YAML regressions exercise selection and ordering; remote Actions metadata access/deployment is not claimed verified.
 
 ## Tradeoffs
 
@@ -32,11 +36,19 @@ Fail-closed publication can block deployment of an insufficient changed report. 
 
 ## When It Is Considered Done
 
-- [ ] PRSG-136-D1: Explicit actual-cutoff publication validation enforces35/50 eligible same-row pairs, fixed identities and source/public-use/time rules.
-- [ ] PRSG-136-D2: Boundary34/35, disjoint pairs, expired/private-only/stale/future/malformed rows and unchanged archive regressions pass.
-- [ ] PRSG-136-D3: CI/Pages changed-edition/index advancement path invokes the guard and preserves archive structural validation.
+- [x] PRSG-136-D1: Explicit actual-cutoff publication validation enforces35/50 eligible same-row pairs, fixed identities and source/public-use/time rules.
+- [x] PRSG-136-D2: Boundary34/35, disjoint pairs, expired/private-only/stale/future/malformed rows and unchanged archive regressions pass.
+- [x] PRSG-136-D3: CI/Pages changed-edition/index advancement path invokes the guard and preserves archive structural validation.
 - [ ] PRSG-136-D4: Lead independent review, docs, mandatory checks and actual delivery evidence accepted.
 
 ## Validation
 
 Engineer runs focused tests/test_daily_report_publication.py and tests/test_daily_report.py plus existing report structural validator/archive and workflow checks; records exact commands/results including failures. Lead independently replays relevant positives/rejections and inspects complete Git scope, including new/deleted/rename endpoints. Required commit/push hooks remain binding. No report or source/model promotion is part of this ticket.
+
+## Implementation Evidence
+
+2026-10-23: configured Python `-m pytest -q -p no:cacheprovider tests/test_daily_report_publication.py tests/test_daily_report.py` passed192 tests in1.58s. The original187-test draft run passed before final source-link and deployment-baseline additions. `python3 scripts/daily-market-brief/validate_report_json.py` passed all21 dated archives plus index. `git diff --check` and current brief quality validation passed. The gate, staging schema and explicit current source limits are documented in `docs/DAILY_REPORT_PUBLICATION.md`.
+
+D1-D3 reflect implementation and local evidence. D4 remains pending independent Lead review and integration; local tests do not prove rendered UI, successful remote CI/Pages, source authenticity, forecast performance or public rights.
+
+Final local gate: `PYTHONDONTWRITEBYTECODE=1 .githooks/run-tests` passed3602 tests with41 dependency deprecation warnings in75.83s. Complete Git diff discovery (tracked changes plus new files) found eight authorized ticket paths; no renames/deletions. `scripts/planning/validate_ticket.py` accepted every ticket path, with unrelated baseline `.DS_Store` accounted separately. No reports, source observations, rights contracts or forecast methods were edited.
