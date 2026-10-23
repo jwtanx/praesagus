@@ -56,13 +56,20 @@
       "id": "run",
       "kind": "manual",
       "description": "Actual current private bundle/manual command, immutable edition-aware outcomes and explicit source gaps accepted.",
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "23Oct actual current50-row private edition issued19:09MYT:29USgenerated21withheld0demo. PGtargetcashhold,5expiredMYtargets and15unsupported names retained. Current>=35 gate remains unpassed.",
+        "21Oct immutable postnoon35 matured outcomes separately accepted after Trader comparability and Lead ID/hash/arithmetic review:12/35direction hits,34/35range hits; prior65accepted outcomes excluded. Operational-close/private source qualifications retained; not calibrated model validation."
+      ]
     },
     {
       "id": "publication",
       "kind": "manual",
       "description": "Conditional publication enforcement and source-use disposition independently verified.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "23Oct: PRSG136 complete; implementation32c20f9 and acceptance5802752 independently reviewed/committed/pushed. Exactimplementation CI39944383041 and Pages39944383007 completed/success. Existing rights permit at most30US public identities; actual35/50 public gate remains unmet, private delivery retained."
+      ]
     },
     {
       "id": "release",
@@ -90,7 +97,11 @@
       "check_ids": [
         "run"
       ],
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "23Oct actual current50-row private edition issued19:09MYT:29USgenerated21withheld0demo. PGtargetcashhold,5expiredMYtargets and15unsupported names retained. Current>=35 gate remains unpassed.",
+        "21Oct immutable postnoon35 matured outcomes separately accepted after Trader comparability and Lead ID/hash/arithmetic review:12/35direction hits,34/35range hits; prior65accepted outcomes excluded. Operational-close/private source qualifications retained; not calibrated model validation."
+      ]
     },
     {
       "id": "PRSG-135-D3",
@@ -98,7 +109,10 @@
       "check_ids": [
         "publication"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "23Oct: PRSG136 complete; implementation32c20f9 and acceptance5802752 independently reviewed/committed/pushed. Exactimplementation CI39944383041 and Pages39944383007 completed/success. Existing rights permit at most30US public identities; actual35/50 public gate remains unmet, private delivery retained."
+      ]
     },
     {
       "id": "PRSG-135-D4",

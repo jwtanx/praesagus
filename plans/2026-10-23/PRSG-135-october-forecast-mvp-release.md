@@ -41,7 +41,7 @@ A repeatable private MVP can be delivered without claiming profitable or validat
 
 - [x] PRSG-135-D1: Dependency-ordered queue, owners, deadline and MVP/full-program distinction accepted.
 - [ ] PRSG-135-D2: Current private fixed50-row bundle targets35 supported forecasts with exact withheld rows and attributable matured outcomes; reproducible command delivered; full50 stays open until proved.
-- [ ] PRSG-135-D3: Publication enforcement and conditional35/50 public-use gate verified; insufficient editions remain private.
+- [x] PRSG-135-D3: Publication enforcement and conditional35/50 public-use gate verified; insufficient editions remain private.
 - [ ] PRSG-135-D4: Independent end-to-end acceptance/checks/delivery evidence and unfinished parent obligations recorded by31Oct.
 
 ## Validation And Delivery
@@ -59,3 +59,11 @@ Lead checks canonical status/checklist consistency, full changed path scope and 
 ## Execution Resumed
 
 23Oct permissions restored under directhumanreactivation: existingLead15-minuteID restoredACTIVE andexacttarget/rule readbackverified. ActualEngineer124supportingprepare andTrader124financialsource renewal messages nowdelivered successfully; priorblockedattempts retained. No providerrelease/completion claimed.
+
+## Verified 23 October Progress
+
+PRSG136 enforcement is complete and pushed (`32c20f9`, acceptance `5802752`); exact implementation CI39944383041 and Pages39944383007 passed. Existing source rights leave35/50 public eligibility unmet; delivery remains private, with no rights promotion.
+
+The actual19:09MYT private edition contains50 unique rows:29US forecasts and21 withheld (PGtargetcashhold,5expiredMYtargets,15unsupported names),0demo. D2 remains pending because current35-numeric coverage is not met. The separately issued21October postnoon35 outcomes were reviewed and scored without regenerating forecasts or repeating65previous outcomes:12/35 direction hits and34/35 terminal-range hits. This small operational-close edition does not establish calibration or strategy performance.
+
+Next: complete bounded0097/4707 source follow-ups, resolve remaining MY basis/history gaps and recompute fresh venue/reference/target eligibility before any subsequent forecast edition. Full50/full100/strong-model obligations remain open.
