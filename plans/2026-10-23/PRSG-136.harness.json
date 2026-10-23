@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-136",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "market-research",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-23",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-23/PRSG-136-daily-report-publication-enforcement.md",
+  "objective": "Enforce human35-of-fixed50 same-row current public price and supported prediction gate before newly changed report publication.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "40f0ceee70c5ca08b16b80275386274e8342258b",
+  "allowed_paths": [
+    "scripts/daily-market-brief/validate_report_json.py",
+    "scripts/daily-market-brief/publication_gate.py",
+    "tests/test_daily_report_publication.py",
+    "tests/test_daily_report.py",
+    ".github/workflows/ci.yml",
+    ".github/workflows/pages.yml",
+    "docs/DAILY_REPORT_PUBLICATION.md",
+    "plans/2026-10-23/PRSG-136-daily-report-publication-enforcement.md",
+    "plans/2026-10-23/PRSG-136.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    "agent-operations/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "gate",
+      "kind": "manual",
+      "description": "Enforce human35-of-fixed50 same-row current public price and supported prediction gate before newly changed report publication.",
+      "status": "pending"
+    },
+    {
+      "id": "regressions",
+      "kind": "manual",
+      "description": "Meaningful boundary/freshness/rights/identity/render-separation and unchanged archive regressions pass.",
+      "status": "pending"
+    },
+    {
+      "id": "integration",
+      "kind": "manual",
+      "description": "CI/Pages publication path invokes the gate for newly added/modified editions or index advancement without retroactive archive reclassification.",
+      "status": "pending"
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead independent diff/scope/check review and mandatory delivery checks pass.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-136-D1",
+      "description": "Explicit publication validation rejects fewer than35 eligible paired rows and any denominator tampering, stale/expired/private-only/unsupported rows; frozen actual publication cutoff required.",
+      "check_ids": [
+        "gate"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-136-D2",
+      "description": "Boundary35/34, disjoint intersection, malformed/future/stale times, expired target, missing public admission and archive-preservation regressions pass.",
+      "check_ids": [
+        "regressions"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-136-D3",
+      "description": "Existing CI/Pages prevent a newly changed insufficient edition or index/latest advancement while unchanged historical reports retain structural validation; no fabricated numeric data or new public-use grants.",
+      "check_ids": [
+        "integration"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-136-D4",
+      "description": "Lead reviews actual integration path, user-facing errors and docs; commit/push/CI evidence recorded without claiming rendered UI or forecast performance.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "Human23Oct authorizes tickets, priority delegation and31OctMVP; implementation/source/model gates retained."
+    ]
+  }
+}
