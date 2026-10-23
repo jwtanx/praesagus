@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-135",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "market-research",
+      "harness",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-23",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-23/PRSG-135-october-forecast-mvp-release.md",
+  "objective": "Coordinate and verify a reproducible manual forecast MVP by31October2026 MYT, reusing existing tickets without duplicating or relaxing acceptance.",
+  "status": "in_progress",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "40f0ceee70c5ca08b16b80275386274e8342258b",
+  "allowed_paths": [
+    "plans/2026-10-23/forecast-mvp-queue.md",
+    "plans/2026-10-23/PRSG-135-october-forecast-mvp-release.md",
+    "plans/2026-10-23/PRSG-135.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "scripts/",
+    "tests/",
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "ingest/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "scope",
+      "kind": "manual",
+      "description": "Coordinate and verify a reproducible manual forecast MVP by31October2026 MYT, reusing existing tickets without duplicating or relaxing acceptance.",
+      "status": "passed",
+      "evidence": [
+        "23Oct Lead enumerated canonical109\u2013134; reused109/113/124/116, created only135releasecoordination and136missingruntimegate. Both manifests/fullplannedpathscopes valid;13briefqualitytests passed0.09s; complete newqueue/spec reviewed. Engineerhighestpriority124supportingprepare andTraderfinancialdependency dispatch BOTH explicitly rejected byapp approvalgate: requires approval butpolicynever. No worker message delivered; queued ownership only, no completion/providerrelease claimed.",
+        "23Oct permissions restored under directhumanreactivation: existingLead15-minuteID restoredACTIVE andexacttarget/rule readbackverified. ActualEngineer124supportingprepare andTrader124financialsource renewal messages nowdelivered successfully; priorblockedattempts retained. No providerrelease/completion claimed."
+      ]
+    },
+    {
+      "id": "run",
+      "kind": "manual",
+      "description": "Actual current private bundle/manual command, immutable edition-aware outcomes and explicit source gaps accepted.",
+      "status": "pending"
+    },
+    {
+      "id": "publication",
+      "kind": "manual",
+      "description": "Conditional publication enforcement and source-use disposition independently verified.",
+      "status": "pending"
+    },
+    {
+      "id": "release",
+      "kind": "manual",
+      "description": "Independent end-to-end acceptance, focused/full required checks, commit/push/CI and delivery evidence verified.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-135-D1",
+      "description": "Dependency-ordered queue, owners,31Octdeadline and MVP/full-program distinction accepted.",
+      "check_ids": [
+        "scope"
+      ],
+      "status": "done",
+      "evidence": [
+        "23Oct Lead enumerated canonical109\u2013134; reused109/113/124/116, created only135releasecoordination and136missingruntimegate. Both manifests/fullplannedpathscopes valid;13briefqualitytests passed0.09s; complete newqueue/spec reviewed. Engineerhighestpriority124supportingprepare andTraderfinancialdependency dispatch BOTH explicitly rejected byapp approvalgate: requires approval butpolicynever. No worker message delivered; queued ownership only, no completion/providerrelease claimed.",
+        "23Oct permissions restored under directhumanreactivation: existingLead15-minuteID restoredACTIVE andexacttarget/rule readbackverified. ActualEngineer124supportingprepare andTrader124financialsource renewal messages nowdelivered successfully; priorblockedattempts retained. No providerrelease/completion claimed."
+      ]
+    },
+    {
+      "id": "PRSG-135-D2",
+      "description": "Current private fixed50-row bundle targets at least35 supported numeric forecasts, exact withheld rows and separately attributable matured outcomes; reproducible command delivered. Full50 target remains PRSG124-D3 open until all50 pass.",
+      "check_ids": [
+        "run"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-135-D3",
+      "description": "PRSG136 publication enforcement verified; publish only if35/50 same-row public-use eligible/current predictions and quotes pass; otherwise retain private and record public blocker.",
+      "check_ids": [
+        "publication"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-135-D4",
+      "description": "31Oct acceptance packet identifies actual delivery, reproducibility, failures, pending full100/strong-model obligations and next action; never close parent gates from MVP mechanics.",
+      "check_ids": [
+        "release"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "Human23Oct authorizes tickets, priority delegation and31OctMVP; implementation/source/model gates retained."
+    ]
+  }
+}
