@@ -39,7 +39,7 @@ Fail-closed publication can block deployment of an insufficient changed report. 
 - [x] PRSG-136-D1: Explicit actual-cutoff publication validation enforces35/50 eligible same-row pairs, fixed identities and source/public-use/time rules.
 - [x] PRSG-136-D2: Boundary34/35, disjoint pairs, expired/private-only/stale/future/malformed rows and unchanged archive regressions pass.
 - [x] PRSG-136-D3: CI/Pages changed-edition/index advancement path invokes the guard and preserves archive structural validation.
-- [ ] PRSG-136-D4: Lead independent review, docs, mandatory checks and actual delivery evidence accepted.
+- [x] PRSG-136-D4: Lead independent review, docs, mandatory checks and actual delivery evidence accepted.
 
 ## Validation
 
@@ -52,3 +52,7 @@ Engineer runs focused tests/test_daily_report_publication.py and tests/test_dail
 D1-D3 reflect implementation and local evidence. D4 remains pending independent Lead review and integration; local tests do not prove rendered UI, successful remote CI/Pages, source authenticity, forecast performance or public rights.
 
 Final local gate: `PYTHONDONTWRITEBYTECODE=1 .githooks/run-tests` passed3602 tests with41 dependency deprecation warnings in75.83s. Complete Git diff discovery (tracked changes plus new files) found eight authorized ticket paths; no renames/deletions. `scripts/planning/validate_ticket.py` accepted every ticket path, with unrelated baseline `.DS_Store` accounted separately. No reports, source observations, rights contracts or forecast methods were edited.
+
+## Lead Acceptance
+
+2026-10-23: Lead accepted D4 after independent192-test replay, frozen eight-path diff/hash review, implementation commit/push `32c20f9`, and both mandatory3602-test hooks (41 dependency warnings). Exact-SHA [CI39944383041](https://github.com/jwtanx/praesagus/actions/runs/39944383041) and [Pages39944383007](https://github.com/jwtanx/praesagus/actions/runs/39944383007) completed successfully, independently verified through GitHub REST. Publication enforcement is complete; source staging and actual35/50 public eligibility remain unprovisioned/unmet. No source permission or predictive-performance promotion is implied.

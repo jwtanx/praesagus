@@ -20,7 +20,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-23/PRSG-136-daily-report-publication-enforcement.md",
   "objective": "Enforce human35-of-fixed50 same-row current public price and supported prediction gate before newly changed report publication.",
-  "status": "review",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -84,7 +84,11 @@
       "id": "review",
       "kind": "manual",
       "description": "Lead independent diff/scope/check review and mandatory delivery checks pass.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "Lead independent code/workflow/docs/complete scope and frozen8filehash review accepted; focused192passed1.60s. Implementation32c20f9a974611760887b7c9bde57109ba06a143 committed/pushed; commit hook3602passed41warnings67.11s; push hook3602passed41warnings63.17s; exactremoteverified.",
+        "Lead independently verified GitHub CI39944383041 completed/success and Pages39944383007 completed/success for exactimplementationSHA; https://github.com/jwtanx/praesagus/actions/runs/39944383041 ; https://github.com/jwtanx/praesagus/actions/runs/39944383007 . No actual35publiccoverage/source-rights/model-performance claim."
+      ]
     }
   ],
   "acceptance": [
@@ -130,13 +134,18 @@
       "check_ids": [
         "review"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "Lead independent code/workflow/docs/complete scope and frozen8filehash review accepted; focused192passed1.60s. Implementation32c20f9a974611760887b7c9bde57109ba06a143 committed/pushed; commit hook3602passed41warnings67.11s; push hook3602passed41warnings63.17s; exactremoteverified.",
+        "Lead independently verified GitHub CI39944383041 completed/success and Pages39944383007 completed/success for exactimplementationSHA; https://github.com/jwtanx/praesagus/actions/runs/39944383041 ; https://github.com/jwtanx/praesagus/actions/runs/39944383007 . No actual35publiccoverage/source-rights/model-performance claim."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
+    "status": "accepted",
     "evidence": [
-      "Human23Oct authorizes tickets, priority delegation and31OctMVP; implementation/source/model gates retained."
+      "Lead independent code/workflow/docs/complete scope and frozen8filehash review accepted; focused192passed1.60s. Implementation32c20f9a974611760887b7c9bde57109ba06a143 committed/pushed; commit hook3602passed41warnings67.11s; push hook3602passed41warnings63.17s; exactremoteverified.",
+      "Lead independently verified GitHub CI39944383041 completed/success and Pages39944383007 completed/success for exactimplementationSHA; https://github.com/jwtanx/praesagus/actions/runs/39944383041 ; https://github.com/jwtanx/praesagus/actions/runs/39944383007 . No actual35publiccoverage/source-rights/model-performance claim."
     ]
   }
 }
