@@ -31,9 +31,9 @@ Use a small frozen worked-case table: zero cash; eligible known ordinary target 
 ## When It Is Considered Done
 
 - [x] PRSG-137-D1: Existing rejection, exact financial trigger and source-date/estimand distinctions documented from implementation and retained evidence.
-- [ ] PRSG-137-D2: Three viable options compared or rejected with equations, assumptions and frozen authored cases; no implementation or accuracy claim.
-- [ ] PRSG-137-D3: Trader independently reviews financial semantics and exact admission/rejection conditions; differences and unresolved questions retained.
-- [ ] PRSG-137-D4: Lead accepts a decision-ready brief, explicit next implementation boundary and required human method-promotion decision; original MVP/full-program gates stay open.
+- [x] PRSG-137-D2: Three viable options compared or rejected with equations, assumptions and frozen authored cases; no implementation or accuracy claim.
+- [x] PRSG-137-D3: Trader independently reviews financial semantics and exact admission/rejection conditions; differences and unresolved questions retained.
+- [x] PRSG-137-D4: Lead accepts a decision-ready brief, explicit next implementation boundary and required human method-promotion decision; original MVP/full-program gates stay open.
 
 ## Acceptance And Promotion Boundary
 
@@ -48,3 +48,9 @@ Measured outcome is a reproducible design decision with all worked-case outcomes
 24 October: Lead inspected the existing historical-cash log-return calculation and explicit target-session rejection. Trader independently confirmed that the retained CAT event intersects26October under the qualified ordinary-business-record convention, while PG23October can only conditionally enter the historical window after fresh data checks. The financial recommendation favors retaining a terminal raw-price estimand and considering an explicitly qualified cum-entitlement-wealth/terminal-cash translation; it does not approve a formula, code, source admission or promotion. AI Engineer comparison and final independent financial review remain pending.
 
 Retaining abstention preserves the current financial contract but cannot remedy this coverage bottleneck. A terminal-cash transformation is transparent about the ex-cash price but needs explicit receivable-value and tail assumptions; an escrowed-reference approximation preserves positive lognormal support at the cost of a different cash-growth assumption. Neither mathematical convenience nor a 35-row target resolves the missing method and source decisions.
+
+## Final Design Review — 24 October 2026
+
+24Oct Lead independently reviewed brief SHA76ec2811, preserved19 authored cases plus immutable C05v2addendum SHAd38a7cf4, Trader conditional design concurrence SHA74548974 and final manifest SHA4c721bdb. Active decision remains abstention; shifted-lognormal wealth minus positive cash has negative implicit fulltail, so candidate is finite unvalidated levels only. No implementation/tests executed/model promotion/CAT release; human method review and separately accepted implementation scope required.
+
+Option 2 translates terminal wealth levels by subtracting one gross receivable at par; this approximation is not a coherent positive full-price distribution or calibrated interval. Option 3 is not algebraically equivalent. The C05 addendum explicitly withholds multiple target events under initial scope and separates future aggregation algebra. Original frozen inputs remain unchanged. Receipt/hash checks passed; authored cases are expectations, not executed regression tests or performance evidence. Source/date/rights admission and the original MVP/full-program obligations remain open.

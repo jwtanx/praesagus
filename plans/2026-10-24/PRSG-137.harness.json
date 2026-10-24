@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-24/PRSG-137-target-session-cash-method-design.md",
   "objective": "Decide within45minutes whether/how known target-session ordinary cash can enter a separately versioned private terminal-price method; design only, no implementation or promotion.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "AI Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -56,19 +56,28 @@
       "id": "design",
       "kind": "manual",
       "description": "Equations, options and authored rejection cases reviewed with explicit assumptions.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "24Oct Lead independently reviewed brief SHA76ec2811, preserved19 authored cases plus immutable C05v2addendum SHAd38a7cf4, Trader conditional design concurrence SHA74548974 and final manifest SHA4c721bdb. Active decision remains abstention; shifted-lognormal wealth minus positive cash has negative implicit fulltail, so candidate is finite unvalidated levels only. No implementation/tests executed/model promotion/CAT release; human method review and separately accepted implementation scope required."
+      ]
     },
     {
       "id": "financial",
       "kind": "manual",
       "description": "Independent Trader semantics and source admission conditions reviewed.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "24Oct Lead independently reviewed brief SHA76ec2811, preserved19 authored cases plus immutable C05v2addendum SHAd38a7cf4, Trader conditional design concurrence SHA74548974 and final manifest SHA4c721bdb. Active decision remains abstention; shifted-lognormal wealth minus positive cash has negative implicit fulltail, so candidate is finite unvalidated levels only. No implementation/tests executed/model promotion/CAT release; human method review and separately accepted implementation scope required."
+      ]
     },
     {
       "id": "decision",
       "kind": "manual",
       "description": "Lead accepted decision brief and explicit human promotion boundary; no code or promotion.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "24Oct Lead independently reviewed brief SHA76ec2811, preserved19 authored cases plus immutable C05v2addendum SHAd38a7cf4, Trader conditional design concurrence SHA74548974 and final manifest SHA4c721bdb. Active decision remains abstention; shifted-lognormal wealth minus positive cash has negative implicit fulltail, so candidate is finite unvalidated levels only. No implementation/tests executed/model promotion/CAT release; human method review and separately accepted implementation scope required."
+      ]
     }
   ],
   "acceptance": [
@@ -89,7 +98,10 @@
       "check_ids": [
         "design"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "24Oct Lead independently reviewed brief SHA76ec2811, preserved19 authored cases plus immutable C05v2addendum SHAd38a7cf4, Trader conditional design concurrence SHA74548974 and final manifest SHA4c721bdb. Active decision remains abstention; shifted-lognormal wealth minus positive cash has negative implicit fulltail, so candidate is finite unvalidated levels only. No implementation/tests executed/model promotion/CAT release; human method review and separately accepted implementation scope required."
+      ]
     },
     {
       "id": "PRSG-137-D3",
@@ -97,7 +109,10 @@
       "check_ids": [
         "financial"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "24Oct Lead independently reviewed brief SHA76ec2811, preserved19 authored cases plus immutable C05v2addendum SHAd38a7cf4, Trader conditional design concurrence SHA74548974 and final manifest SHA4c721bdb. Active decision remains abstention; shifted-lognormal wealth minus positive cash has negative implicit fulltail, so candidate is finite unvalidated levels only. No implementation/tests executed/model promotion/CAT release; human method review and separately accepted implementation scope required."
+      ]
     },
     {
       "id": "PRSG-137-D4",
@@ -105,13 +120,16 @@
       "check_ids": [
         "decision"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "24Oct Lead independently reviewed brief SHA76ec2811, preserved19 authored cases plus immutable C05v2addendum SHAd38a7cf4, Trader conditional design concurrence SHA74548974 and final manifest SHA4c721bdb. Active decision remains abstention; shifted-lognormal wealth minus positive cash has negative implicit fulltail, so candidate is finite unvalidated levels only. No implementation/tests executed/model promotion/CAT release; human method review and separately accepted implementation scope required."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
+    "status": "accepted",
     "evidence": [
-      "Existing human persistent fixed50/MVP authority covers this supporting design spike only. Implementation/model-promotion authority is not implied."
+      "24Oct Lead independently reviewed brief SHA76ec2811, preserved19 authored cases plus immutable C05v2addendum SHAd38a7cf4, Trader conditional design concurrence SHA74548974 and final manifest SHA4c721bdb. Active decision remains abstention; shifted-lognormal wealth minus positive cash has negative implicit fulltail, so candidate is finite unvalidated levels only. No implementation/tests executed/model promotion/CAT release; human method review and separately accepted implementation scope required."
     ]
   }
 }
