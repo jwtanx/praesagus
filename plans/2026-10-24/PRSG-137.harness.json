@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-137",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.25
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-24",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-24/PRSG-137-target-session-cash-method-design.md",
+  "objective": "Decide within45minutes whether/how known target-session ordinary cash can enter a separately versioned private terminal-price method; design only, no implementation or promotion.",
+  "status": "in_progress",
+  "owner": "AI Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "d67c840550be011015eeb631301456067d1285f8",
+  "allowed_paths": [
+    "plans/2026-10-24/PRSG-137-target-session-cash-method-design.md",
+    "plans/2026-10-24/PRSG-137.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "scripts/",
+    "tests/",
+    "artifacts/",
+    "backend/",
+    "frontend/",
+    "connectors/",
+    "skills/",
+    "agent-operations/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "baseline",
+      "kind": "manual",
+      "description": "Existing rejection and retained financial trigger/estimand reviewed.",
+      "status": "passed",
+      "evidence": [
+        "24Oct Lead inspected ingest/forecast_scenario.py: historical gross-cash return calculation exists; basis_actions rejects target-date cash. Trader independently identifies CAT next26Oct target cash as held, PG23Oct event now conditionally historical. Source exdate-inference/knowns/units/private-rights qualifications retained; no production defect or source admission implied."
+      ]
+    },
+    {
+      "id": "design",
+      "kind": "manual",
+      "description": "Equations, options and authored rejection cases reviewed with explicit assumptions.",
+      "status": "pending"
+    },
+    {
+      "id": "financial",
+      "kind": "manual",
+      "description": "Independent Trader semantics and source admission conditions reviewed.",
+      "status": "pending"
+    },
+    {
+      "id": "decision",
+      "kind": "manual",
+      "description": "Lead accepted decision brief and explicit human promotion boundary; no code or promotion.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-137-D1",
+      "description": "Existing rejection and retained financial trigger/estimand reviewed.",
+      "check_ids": [
+        "baseline"
+      ],
+      "status": "done",
+      "evidence": [
+        "24Oct Lead inspected ingest/forecast_scenario.py: historical gross-cash return calculation exists; basis_actions rejects target-date cash. Trader independently identifies CAT next26Oct target cash as held, PG23Oct event now conditionally historical. Source exdate-inference/knowns/units/private-rights qualifications retained; no production defect or source admission implied."
+      ]
+    },
+    {
+      "id": "PRSG-137-D2",
+      "description": "Equations, options and authored rejection cases reviewed with explicit assumptions.",
+      "check_ids": [
+        "design"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-137-D3",
+      "description": "Independent Trader semantics and source admission conditions reviewed.",
+      "check_ids": [
+        "financial"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "PRSG-137-D4",
+      "description": "Lead accepted decision brief and explicit human promotion boundary; no code or promotion.",
+      "check_ids": [
+        "decision"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "Existing human persistent fixed50/MVP authority covers this supporting design spike only. Implementation/model-promotion authority is not implied."
+    ]
+  }
+}
