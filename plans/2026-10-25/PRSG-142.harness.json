@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-142",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend",
+      "harness"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.3
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-10-25",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-25/PRSG-142-compact-ticket-pagination.md",
+  "objective": "ReplaceunboundedticketpagebuttonswithDesignerreviewedcompactaccessiblepagerandcommitfix.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "cd5529107b43634ea011facbc2edbd172c4327b0",
+  "allowed_paths": [
+    "plans/2026-10-25/PRSG-142-compact-ticket-pagination.md",
+    "plans/2026-10-25/PRSG-142.harness.json",
+    "artifacts/tickets/index.html",
+    "tests/ticket_dashboard_checks.cjs"
+  ],
+  "protected_paths": [
+    "artifacts/tickets/audit.json",
+    "artifacts/daily-market-brief/",
+    "ingest/",
+    "scripts/",
+    "frontend/",
+    "connectors/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "design",
+      "kind": "manual",
+      "description": "Designer boundeddesktop/mobile and accessibilitydesign independently accepted.",
+      "status": "passed",
+      "evidence": [
+        "25Oct Designer explicit design handoff accepted: fixedPrevious/PageCofT/Next+labelledGoform,4actionablecontrolsmax,desktop1row/mobile2rows,44pxtargets,focusedcurrentstatus/invalidinputerror. Leadimplementedexact2source/testpaths. nodetests/ticket_dashboard_checks.cjs PASSED existingdashboard+2/5/27/100/1000pagecases,width390/768/1440,invalidjump/range/scientificnotation/trimmeddigits,topbottomsync/focus/filterreset/CSV. Realbrowser1440/768one46pxrow,390/320two104pxrows/no pageroverflow;Enter25,invalid101unchangedanderrorfocus,Go100Nextdisabled,return25verified. Nativezoom/screenreaderhardware nottested. Private100pagefixture screenshotsreviewed;notactualauditdata."
+      ]
+    },
+    {
+      "id": "dom",
+      "kind": "command",
+      "description": "ExistingdashboardandlargecompactpagerDOMregressionspass.",
+      "argv": [
+        "node",
+        "tests/ticket_dashboard_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "25Oct Designer explicit design handoff accepted: fixedPrevious/PageCofT/Next+labelledGoform,4actionablecontrolsmax,desktop1row/mobile2rows,44pxtargets,focusedcurrentstatus/invalidinputerror. Leadimplementedexact2source/testpaths. nodetests/ticket_dashboard_checks.cjs PASSED existingdashboard+2/5/27/100/1000pagecases,width390/768/1440,invalidjump/range/scientificnotation/trimmeddigits,topbottomsync/focus/filterreset/CSV. Realbrowser1440/768one46pxrow,390/320two104pxrows/no pageroverflow;Enter25,invalid101unchangedanderrorfocus,Go100Nextdisabled,return25verified. Nativezoom/screenreaderhardware nottested. Private100pagefixture screenshotsreviewed;notactualauditdata."
+      ]
+    },
+    {
+      "id": "delivery",
+      "kind": "manual",
+      "description": "Desktop/mobilevisualreview,scopeanduserrequestedcommitwithhooks verified.",
+      "status": "passed",
+      "evidence": [
+        "25Oct Designer finalvisualACCEPT implementeddesktop/mobile100pagesyntheticfixture screenshots;no blockingvisualfindings. LeadactualbrowserEntervalidjump/invalid101/Go100/boundarystates/topbottomsync/focusverified;320/390pager288/358pxmatchesits scrollwidth,104pxtworows,768/1440one46pxrow. NoderealDOMsuitepassedincluding1000pagesandexistingfilters/CSV/title/timelinechecks. Leadscoped4filesreviewed;userrequestedPRSG142commitusesonlythese4pathsandmandatoryfullhook,nootherstagedticketincluded. Nativezoom/screenreaderhardware nottested;notdeployed.",
+        "Firstmandatoryfullcommithookfailed1/3686passed41warnings79.38s solely143concurrentbriefquality(title+5decisionsections);143ownerrepairedauthoreddocumentation,focusedbriefquality13passed0.10s;142UIunchanged. Requiredfullhookretrybeforecommit,no bypass."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-142-D1",
+      "description": "Designer boundeddesktop/mobile and accessibilitydesign independently accepted.",
+      "check_ids": [
+        "design"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct Designer explicit design handoff accepted: fixedPrevious/PageCofT/Next+labelledGoform,4actionablecontrolsmax,desktop1row/mobile2rows,44pxtargets,focusedcurrentstatus/invalidinputerror. Leadimplementedexact2source/testpaths. nodetests/ticket_dashboard_checks.cjs PASSED existingdashboard+2/5/27/100/1000pagecases,width390/768/1440,invalidjump/range/scientificnotation/trimmeddigits,topbottomsync/focus/filterreset/CSV. Realbrowser1440/768one46pxrow,390/320two104pxrows/no pageroverflow;Enter25,invalid101unchangedanderrorfocus,Go100Nextdisabled,return25verified. Nativezoom/screenreaderhardware nottested. Private100pagefixture screenshotsreviewed;notactualauditdata."
+      ]
+    },
+    {
+      "id": "PRSG-142-D2",
+      "description": "ExistingdashboardandlargecompactpagerDOMregressionspass.",
+      "check_ids": [
+        "dom"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct Designer explicit design handoff accepted: fixedPrevious/PageCofT/Next+labelledGoform,4actionablecontrolsmax,desktop1row/mobile2rows,44pxtargets,focusedcurrentstatus/invalidinputerror. Leadimplementedexact2source/testpaths. nodetests/ticket_dashboard_checks.cjs PASSED existingdashboard+2/5/27/100/1000pagecases,width390/768/1440,invalidjump/range/scientificnotation/trimmeddigits,topbottomsync/focus/filterreset/CSV. Realbrowser1440/768one46pxrow,390/320two104pxrows/no pageroverflow;Enter25,invalid101unchangedanderrorfocus,Go100Nextdisabled,return25verified. Nativezoom/screenreaderhardware nottested. Private100pagefixture screenshotsreviewed;notactualauditdata."
+      ]
+    },
+    {
+      "id": "PRSG-142-D3",
+      "description": "Desktop/mobilevisualreview,scopeanduserrequestedcommitwithhooks verified.",
+      "check_ids": [
+        "delivery"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct Designer finalvisualACCEPT implementeddesktop/mobile100pagesyntheticfixture screenshots;no blockingvisualfindings. LeadactualbrowserEntervalidjump/invalid101/Go100/boundarystates/topbottomsync/focusverified;320/390pager288/358pxmatchesits scrollwidth,104pxtworows,768/1440one46pxrow. NoderealDOMsuitepassedincluding1000pagesandexistingfilters/CSV/title/timelinechecks. Leadscoped4filesreviewed;userrequestedPRSG142commitusesonlythese4pathsandmandatoryfullhook,nootherstagedticketincluded. Nativezoom/screenreaderhardware nottested;notdeployed.",
+        "Firstmandatoryfullcommithookfailed1/3686passed41warnings79.38s solely143concurrentbriefquality(title+5decisionsections);143ownerrepairedauthoreddocumentation,focusedbriefquality13passed0.10s;142UIunchanged. Requiredfullhookretrybeforecommit,no bypass."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "25Oct Designer finalvisualACCEPT implementeddesktop/mobile100pagesyntheticfixture screenshots;no blockingvisualfindings. LeadactualbrowserEntervalidjump/invalid101/Go100/boundarystates/topbottomsync/focusverified;320/390pager288/358pxmatchesits scrollwidth,104pxtworows,768/1440one46pxrow. NoderealDOMsuitepassedincluding1000pagesandexistingfilters/CSV/title/timelinechecks. Leadscoped4filesreviewed;userrequestedPRSG142commitusesonlythese4pathsandmandatoryfullhook,nootherstagedticketincluded. Nativezoom/screenreaderhardware nottested;notdeployed."
+    ]
+  }
+}

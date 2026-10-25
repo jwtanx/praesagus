@@ -204,7 +204,7 @@ async function generatedAudit() {
   assert.equal(t.rows().length, Math.min(5,data.tickets.length));
   for (const ticket of data.tickets) {
     t.change('#search',ticket.ticket_key,'input');
-    while(!t.$(`button[data-key="${ticket.ticket_key}"]`)){const next=t.$('#ticket-pages-top button:last-child');assert.equal(next.disabled,false);next.click()}
+    while(!t.$(`button[data-key="${ticket.ticket_key}"]`)){const next=t.$('#ticket-pages-top button[aria-label="Next page"]');assert.equal(next.disabled,false);next.click()}
     t.$(`button[data-key="${ticket.ticket_key}"]`).click();
     assert.equal(t.$('#detail .timeline')?.children.length || 0, ticket.history?.length || 0);
   }
@@ -221,24 +221,63 @@ async function paginationAndTitleNormalization(width) {
   assert.equal(t.w.normalizeTitle('Mentions PRSG-29','PRSG-29'),'Mentions PRSG-29');
   assert.match(t.$('#result-count').textContent,/12 of 12 tickets.*showing 1–5/);
   const top=t.$('#ticket-pages-top');assert.equal(top.getAttribute('aria-label'),'Ticket pages above results');
-  assert.equal(top.firstChild.disabled,true);assert.equal(top.querySelector('[aria-current="page"]').textContent,'1');
+  assert.equal(top.querySelector('button[aria-label="Previous page"]').disabled,true);assert.equal(top.querySelector('[aria-current="page"]').textContent,'Page 1 of 3');
   assert.ok([...top.querySelectorAll('button')].every(button=>button.getAttribute('aria-controls')==='ticket-rows'));
-  top.lastChild.click();assert.deepEqual(t.rows(),['PRSG-26','PRSG-25','PRSG-24','PRSG-23','PRSG-22']);
-  assert.equal(t.w.document.activeElement.textContent,'2');assert.match(t.$('#result-count').textContent,/showing 6–10/);
+  top.querySelector('button[aria-label="Next page"]').click();assert.deepEqual(t.rows(),['PRSG-26','PRSG-25','PRSG-24','PRSG-23','PRSG-22']);
+  assert.equal(t.w.document.activeElement.textContent,'Page 2 of 3');assert.match(t.$('#result-count').textContent,/showing 6–10/);
   const csv=t.w.filteredCsv();assert.equal(csv.trim().split('\r\n').length,13);assert.match(csv,/'?Title 31/);assert.match(csv,/Title 20/);
-  t.$('#ticket-pages-bottom button:last-child').click();assert.deepEqual(t.rows(),['PRSG-21','PRSG-20']);
-  assert.equal(t.$('#ticket-pages-bottom button:last-child').disabled,true);
+  t.$('#ticket-pages-bottom button[aria-label="Next page"]').click();assert.deepEqual(t.rows(),['PRSG-21','PRSG-20']);
+  assert.equal(t.$('#ticket-pages-bottom button[aria-label="Next page"]').disabled,true);
   t.change('#search','Title 31','input');assert.deepEqual(t.rows(),['PRSG-31']);assert.match(t.$('#result-count').textContent,/showing 1–1/);
   assert.equal(t.$('#ticket-pages-top').hidden,true);
-  t.$('#reset').click();t.$('#ticket-pages-top button:last-child').click();
+  t.$('#reset').click();t.$('#ticket-pages-top button[aria-label="Next page"]').click();
   t.change('#order','asc');assert.deepEqual(t.rows(),['PRSG-20','PRSG-21','PRSG-22','PRSG-23','PRSG-24']);
-  t.$('#ticket-pages-top button:last-child').click();t.change('#owner-filter','Engineer');assert.equal(t.$('#ticket-pages-top [aria-current="page"]').textContent,'1');
-  t.w.eval('currentPage=99;renderResults()');assert.equal(t.$('#ticket-pages-top [aria-current="page"]').textContent,'3');
+  t.$('#ticket-pages-top button[aria-label="Next page"]').click();t.change('#owner-filter','Engineer');assert.equal(t.$('#ticket-pages-top [aria-current="page"]').textContent,'Page 1 of 3');
+  t.w.eval('currentPage=99;renderResults()');assert.equal(t.$('#ticket-pages-top [aria-current="page"]').textContent,'Page 3 of 3');
   t.change('#search','nonexistent','input');assert.equal(t.rows().length,0);assert.equal(t.$('#export').disabled,true);assert.equal(t.$('#ticket-pages-top').hidden,true);
   t.$('#reset').click();assert.equal(t.$('#order').value,'desc');assert.deepEqual(t.rows(),['PRSG-31','PRSG-30','PRSG-29','PRSG-28','PRSG-27']);
+  assert.equal(t.errors.length,0);t.dom.window.close();
+}
+async function compactPagination(width, pageCount=100) {
+  const data=clone(fixture);data.tickets=Array.from({length:pageCount*5},(_,i)=>ticket(`PRSG-${i+2000}`,{history:[]}));
+  const t=mount({width,data});await settle();
+  const nav=id=>t.$('#ticket-pages-'+id);
+  const jump=(id,value)=>{const form=nav(id).querySelector('form'),input=form.querySelector('input');input.value=String(value);input.dispatchEvent(new t.w.Event('input',{bubbles:true}));form.dispatchEvent(new t.w.Event('submit',{bubbles:true,cancelable:true}));};
+  const check=page=>{
+    for(const id of ['top','bottom']){
+      const n=nav(id);assert.equal(n.querySelectorAll('button').length,3);assert.equal(n.querySelectorAll('input').length,1);
+      assert.equal(n.querySelector('[aria-current="page"]').textContent,`Page ${page} of ${pageCount}`);
+      assert.equal(n.querySelector('[aria-label="Previous page"]').disabled,page===1);
+      assert.equal(n.querySelector('[aria-label="Next page"]').disabled,page===pageCount);
+      assert.equal(n.querySelector('input').max,String(pageCount));assert.equal(n.querySelector('input').value,String(page));
+      assert.equal(n.querySelector('label').htmlFor,n.querySelector('input').id);
+    }
+    assert.equal(t.rows().length,5);
+  };
+  check(1);
+  assert.equal(nav('top').querySelectorAll('[data-page]').length,2,'total pages never create numbered controls');
+  jump('top',Math.ceil(pageCount/2));check(Math.ceil(pageCount/2));
+  assert.equal(t.w.document.activeElement,nav('top').querySelector('[aria-current="page"]'));
+  assert.equal(t.w.document.activeElement.tabIndex,-1);
+  assert.match(t.$('#result-count').textContent,new RegExp(`showing ${(Math.ceil(pageCount/2)-1)*5+1}–`));
+  const before=t.rows();
+  for(const bad of ['',0,-1,'1.5','1e2',pageCount+1]){
+    jump('top',bad);assert.deepEqual(t.rows(),before);
+    const input=nav('top').querySelector('input'),error=nav('top').querySelector('.page-error');
+    assert.equal(input.getAttribute('aria-invalid'),'true');assert.equal(t.w.document.activeElement,input);
+    assert.equal(error.hidden,false);assert.equal(input.getAttribute('aria-describedby'),error.id);
+    assert.equal(error.getAttribute('role'),'alert');assert.match(error.textContent,/Enter a whole page number/);
+  }
+  jump('bottom',pageCount);check(pageCount);
+  assert.equal(t.w.document.activeElement,nav('bottom').querySelector('[aria-current="page"]'));
+  nav('bottom').querySelector('[aria-label="Previous page"]').click();check(pageCount-1);
+  jump('top',' 1 ');check(1);
+  jump('top',pageCount);t.change('#search',data.tickets[0].ticket_key,'input');
+  assert.equal(nav('top').hidden,true);assert.equal(nav('bottom').hidden,true);assert.equal(t.rows().length,1);
+  t.$('#reset').click();check(1);assert.ok([...t.w.document.querySelectorAll('.page-error')].every(el=>el.hidden));
   assert.equal(t.errors.length,0);t.dom.window.close();
 }
 if (process.argv.includes('--write-browser-fixture')) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'praesagus-ticket-fixture-'));
   fs.mkdirSync(path.join(dir, 'tickets')); fs.writeFileSync(path.join(dir, 'tickets/index.html'), html); fs.writeFileSync(path.join(dir, 'tickets/audit.json'), JSON.stringify(inconsistentFixture(), null, 2)); console.log(dir);
-} else (async () => { landingChecks(); await paginationAndTitleNormalization(1280); await paginationAndTitleNormalization(390); await controls(1280); await controls(390); await safetyAndCsv(); await loadingAndFailure(); await inconsistentAndRecovery(); await historicalSpecification(); await decisionOverviewAndDisclosures(1280); await decisionOverviewAndDisclosures(390); await decisionFallbackAndSafety(); await generatedAudit(); console.log('Ticket dashboard DOM checks passed: search, all filters/sorts, committed evidence timeline, completion/activity separation, safe links/text, CSV neutralization/export, loading/error/empty, inconsistent checkpoints and recovery, normalized titles, full overview and five-ticket pagination with all-filtered CSV.'); })().catch(error => { console.error(error); process.exitCode = 1; });
+} else (async () => { landingChecks(); await compactPagination(390); await compactPagination(768); await compactPagination(1440); await compactPagination(390,1000); await compactPagination(390,2); await compactPagination(390,5); await compactPagination(390,27); await paginationAndTitleNormalization(1280); await paginationAndTitleNormalization(390); await controls(1280); await controls(390); await safetyAndCsv(); await loadingAndFailure(); await inconsistentAndRecovery(); await historicalSpecification(); await decisionOverviewAndDisclosures(1280); await decisionOverviewAndDisclosures(390); await decisionFallbackAndSafety(); await generatedAudit(); console.log('Ticket dashboard DOM checks passed: search, all filters/sorts, committed evidence timeline, completion/activity separation, safe links/text, CSV neutralization/export, loading/error/empty, inconsistent checkpoints and recovery, normalized titles, full overview and five-ticket pagination with all-filtered CSV.'); })().catch(error => { console.error(error); process.exitCode = 1; });
