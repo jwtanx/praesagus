@@ -4,7 +4,7 @@ Type: feature · Modules: market-research, harness, docs · Owner: Lead · Prior
 
 ## Objective
 
-Deliver a usable manual forecast MVP by **31 October 2026, 23:59 Asia/Kuala_Lumpur** under the human's 23 October request to ticket remaining work, delegate by priority and reactivate execution. The user needs a documented command and a current, attributable CSV rather than repeated preparation-only handoffs. This release ticket coordinates existing accepted work; it does not duplicate their implementation or lower their gates.
+Deliver a usable manual forecast MVP by **28 October 2026, 23:59 Asia/Kuala_Lumpur** under the human's 23 October request to ticket remaining work, delegate by priority and reactivate execution. The user needs a documented command and a current, attributable CSV rather than repeated preparation-only handoffs. This release ticket coordinates existing accepted work; it does not duplicate their implementation or lower their gates.
 
 ## Scope And Dependencies
 
@@ -20,8 +20,8 @@ Execute the ordered queue in [forecast-mvp-queue.md](forecast-mvp-queue.md). Fre
 
 - 23–24Oct: close operational fixed35 preparation, source renewal and finite collection review; deliver current private CSV and matured outcome dispositions.
 - 25–27Oct: enforce publication gate; prioritize the15MY gap remedies under124 and source classification/ETF eligibility under109 with explicit accept/block decisions.
-- 28–30Oct: end-to-end command/reproducibility and failure-path review; freeze release candidate and source/promotion limitations.
-- 31Oct: independently verify and deliver MVP acceptance packet. Misses or unpassed gates remain explicit; do not call the full program complete.
+- 26–28Oct: end-to-end command/reproducibility and failure-path review; freeze release candidate and source/promotion limitations.
+- 28Oct: independently verify and deliver MVP acceptance packet. Misses or unpassed gates remain explicit; do not call the full program complete.
 
 These are target dates, not evidence or guarantees. Prospective26–30Oct outcomes cannot be scored before the full window is complete; one window cannot establish strong statistical validation by month end.
 
@@ -42,7 +42,7 @@ A repeatable private MVP can be delivered without claiming profitable or validat
 - [x] PRSG-135-D1: Dependency-ordered queue, owners, deadline and MVP/full-program distinction accepted.
 - [ ] PRSG-135-D2: Current private fixed50-row bundle targets35 supported forecasts with exact withheld rows and attributable matured outcomes; reproducible command delivered; full50 stays open until proved.
 - [x] PRSG-135-D3: Publication enforcement and conditional35/50 public-use gate verified; insufficient editions remain private.
-- [ ] PRSG-135-D4: Independent end-to-end acceptance/checks/delivery evidence and unfinished parent obligations recorded by31Oct.
+- [ ] PRSG-135-D4: Independent end-to-end acceptance/checks/delivery evidence and unfinished parent obligations recorded by28Oct.
 
 ## Validation And Delivery
 
@@ -67,3 +67,23 @@ PRSG136 enforcement is complete and pushed (`32c20f9`, acceptance `5802752`); ex
 The actual19:09MYT private edition contains50 unique rows:29US forecasts and21 withheld (PGtargetcashhold,5expiredMYtargets,15unsupported names),0demo. D2 remains pending because current35-numeric coverage is not met. The separately issued21October postnoon35 outcomes were reviewed and scored without regenerating forecasts or repeating65previous outcomes:12/35 direction hits and34/35 terminal-range hits. This small operational-close edition does not establish calibration or strategy performance.
 
 Next: complete bounded0097/4707 source follow-ups, resolve remaining MY basis/history gaps and recompute fresh venue/reference/target eligibility before any subsequent forecast edition. Full50/full100/strong-model obligations remain open.
+
+## 25 October Release And Deadline Reconciliation
+
+The human reaffirmed28October end-dayMYT delivery; this supersedes the original31October target, retained above only where describing historical planning. Current acceptance deadline is28October2026 23:59Asia/Kuala_Lumpur. Lead and registered roles are released under explicit human grant; coordinator confirms restored Lead oversight/06:00 and Trader08:00 schedules active. Runtime model settings remain unverified.
+
+The independently accepted24October05:21UTC private edition contains50rows,34generated/16withheld/0demo, reference23October and target26October venue closes. Its CSV SHA256 is d4a8cd1f4bcf179e80952195c76783ad4df832a42765816a29a62c9f55f809b9. The manual command and actual file were delivered to the human25October. D2 remains pending: one additional current eligible forecast is required; full50 remains open. Public derived-use rights remain a separate gate. No new forecast issued during this reconciliation.
+
+Trader owns bounded issuer-hosted Inari0166 entitlement/current-action source review; AI Engineer owns offline existing34 integrity/currentness and one-name numerical-input readiness. Both private write sets are disjoint. Engineer history intake follows successful financial review. Historical permission blocks remain historical; no current coordinator hold remains. Preserve original immutable editions and unrelated .DS_Store/untrackedPRSG138 work.
+
+## 25 October Actual Repeatable Offline Command
+
+PRSG140adapter independently accepted after actualstoreavailabilitycorrection and exact34evidence/admissionparity. Lead ran documentedofflineCLI from/private/tmp at18:22MYT;newimmutable50rowCSV contains34generated/16withheld/0demo,reviewrequired0,exit2insufficient_coverage. CSV SHA b435b5b871874f02e4b375b6f18a5d2beac1accdafd13f0fcca836c2fa879c78. All714closebindings,50identities,manifest/resultdigests/privatepermissions/pending26Octtargets and originaleditionimmutability checked. This closes currentstore-to-batch interface gap,notproviderrefresh/automaticfinancialapproval or>=35coverage. D2/D4remainpendingreleaseacceptance.
+
+PRSG139diagnosticandindependentfinancialreview complete; historicalavailabilitycorrectlyemptiesfolds and savedresearchfitconsumednominalholdout. No genuineoriginvintagearchivefoundwithin23metadatafiles/3knownroots.113D2stronggoalremainsunmet;noaccuracyclaimorprospective26–30Octscoring.
+
+## Reviewed Integration Checkpoint — 25 October
+
+25Oct Lead accepts release-recordintegration scope including reviewed139diagnosticchildrecords; this doesnotreopenparentstrongqualityorallowruntimeedits. Currentcodecommits:140cd55291actualoffline34/16CSV;142c939652compactpager;143ef85d16venueboundofflineMYRmodelpath;141e86ef8aboundedcollectororchestration. Eachrequiredfullhookpassed (last3694/41warnings77.27s). Actual141offlineentryfrom/private/tmp again34generated16held0demo/exit2,no providerrefresh. Onlineactual>=35stillpendingfresh35sourceadmission/27Oct12-17MYTconditionalwindow.139diagnosticcompletedwithinsufficientevidence;113D2stronggateunchangedpending. HumanBOTHfixed50US/MY+standalone100US28Octtargetpreserved;143implementationdoesnotadmitfullOHLCV/quality.
+
+Lead extends only release-recordintegration to the two alreadyreviewed139childrecords;sourcechangesstayintheirchildcommits. Neitherpartial34coverage norpassingtestsfinishD2/D4. Nextsourcecollectionrelease remains conditionalonactualfinancial/venue/reviewevidence.

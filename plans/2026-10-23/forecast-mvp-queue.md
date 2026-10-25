@@ -1,6 +1,6 @@
-# Forecast MVP Queue — 31 October 2026
+# Forecast MVP Queue — 28 October 2026
 
-Human23Oct authorizes remaining tickets and priority delegation. Target31Oct23:59MYT. Canonical child manifests remain authoritative; this is an ordered release view, not a second status registry.
+Human23Oct authorizes remaining tickets and priority delegation. Original target31Oct superseded by human deadline28Oct23:59MYT (25Oct reconciliation). Canonical child manifests remain authoritative; this is an ordered release view, not a second status registry.
 
 | Order | Priority | Canonical Work | Owner / Ready Next Action | Dependency / Release Gate |
 |---|---|---|---|---|

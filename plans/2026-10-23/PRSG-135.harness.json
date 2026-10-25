@@ -20,7 +20,7 @@
   "created_on": "2026-10-23",
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-23/PRSG-135-october-forecast-mvp-release.md",
-  "objective": "Coordinate and verify a reproducible manual forecast MVP by31October2026 MYT, reusing existing tickets without duplicating or relaxing acceptance.",
+  "objective": "Coordinate and verify a reproducible manual forecast MVP by28October2026 MYT, reusing existing tickets without duplicating or relaxing acceptance.",
   "status": "in_progress",
   "owner": "Lead",
   "reviewer": "Lead",
@@ -29,7 +29,9 @@
   "allowed_paths": [
     "plans/2026-10-23/forecast-mvp-queue.md",
     "plans/2026-10-23/PRSG-135-october-forecast-mvp-release.md",
-    "plans/2026-10-23/PRSG-135.harness.json"
+    "plans/2026-10-23/PRSG-135.harness.json",
+    "plans/2026-10-25/PRSG-139.harness.json",
+    "plans/2026-10-25/PRSG-139-tonight-model-validation.md"
   ],
   "protected_paths": [
     "artifacts/",
@@ -45,7 +47,7 @@
     {
       "id": "scope",
       "kind": "manual",
-      "description": "Coordinate and verify a reproducible manual forecast MVP by31October2026 MYT, reusing existing tickets without duplicating or relaxing acceptance.",
+      "description": "Coordinate and verify a reproducible manual forecast MVP by28October2026 MYT, reusing existing tickets without duplicating or relaxing acceptance.",
       "status": "passed",
       "evidence": [
         "23Oct Lead enumerated canonical109\u2013134; reused109/113/124/116, created only135releasecoordination and136missingruntimegate. Both manifests/fullplannedpathscopes valid;13briefqualitytests passed0.09s; complete newqueue/spec reviewed. Engineerhighestpriority124supportingprepare andTraderfinancialdependency dispatch BOTH explicitly rejected byapp approvalgate: requires approval butpolicynever. No worker message delivered; queued ownership only, no completion/providerrelease claimed.",
@@ -59,7 +61,10 @@
       "status": "pending",
       "evidence": [
         "23Oct actual current50-row private edition issued19:09MYT:29USgenerated21withheld0demo. PGtargetcashhold,5expiredMYtargets and15unsupported names retained. Current>=35 gate remains unpassed.",
-        "21Oct immutable postnoon35 matured outcomes separately accepted after Trader comparability and Lead ID/hash/arithmetic review:12/35direction hits,34/35range hits; prior65accepted outcomes excluded. Operational-close/private source qualifications retained; not calibrated model validation."
+        "21Oct immutable postnoon35 matured outcomes separately accepted after Trader comparability and Lead ID/hash/arithmetic review:12/35direction hits,34/35range hits; prior65accepted outcomes excluded. Operational-close/private source qualifications retained; not calibrated model validation.",
+        "25Oct: human28Octend-dayMYT deadline supersedes original31Oct planning target. All roles released; current24Oct05:21UTC private fixed50 CSV accepted34generated16withheld0demo; SHA256 d4a8cd1f4bcf179e80952195c76783ad4df832a42765816a29a62c9f55f809b9. Manual command/actual file delivered to human. D2pending one additional eligible current forecast; Trader bounded0166 source review and AI offline34readiness dispatched to disjoint private paths. No new issuance, public rights or full50 claim.",
+        "25Oct18:22MYT140actualofflineCLI verified50rows34generated16withheld0demo/reviewrequired0/exit2insufficient;newCSVSHAb435b5b871874f02e4b375b6f18a5d2beac1accdafd13f0fcca836c2fa879c78. Store-to-batchadapterdelivered,notproviderrefresh;D2>=35stillpending.139diagnosticacceptednotstrongmodel,113D2pendinglateavailability/usedholdout/noarchivewithinbounded23metadatafiles.",
+        "25Oct Lead accepts release-recordintegration scope including reviewed139diagnosticchildrecords; this doesnotreopenparentstrongqualityorallowruntimeedits. Currentcodecommits:140cd55291actualoffline34/16CSV;142c939652compactpager;143ef85d16venueboundofflineMYRmodelpath;141e86ef8aboundedcollectororchestration. Eachrequiredfullhookpassed (last3694/41warnings77.27s). Actual141offlineentryfrom/private/tmp again34generated16held0demo/exit2,no providerrefresh. Onlineactual>=35stillpendingfresh35sourceadmission/27Oct12-17MYTconditionalwindow.139diagnosticcompletedwithinsufficientevidence;113D2stronggateunchangedpending. HumanBOTHfixed50US/MY+standalone100US28Octtargetpreserved;143implementationdoesnotadmitfullOHLCV/quality."
       ]
     },
     {
@@ -81,7 +86,7 @@
   "acceptance": [
     {
       "id": "PRSG-135-D1",
-      "description": "Dependency-ordered queue, owners,31Octdeadline and MVP/full-program distinction accepted.",
+      "description": "Dependency-ordered queue, owners,28Octdeadline and MVP/full-program distinction accepted.",
       "check_ids": [
         "scope"
       ],
@@ -100,7 +105,10 @@
       "status": "pending",
       "evidence": [
         "23Oct actual current50-row private edition issued19:09MYT:29USgenerated21withheld0demo. PGtargetcashhold,5expiredMYtargets and15unsupported names retained. Current>=35 gate remains unpassed.",
-        "21Oct immutable postnoon35 matured outcomes separately accepted after Trader comparability and Lead ID/hash/arithmetic review:12/35direction hits,34/35range hits; prior65accepted outcomes excluded. Operational-close/private source qualifications retained; not calibrated model validation."
+        "21Oct immutable postnoon35 matured outcomes separately accepted after Trader comparability and Lead ID/hash/arithmetic review:12/35direction hits,34/35range hits; prior65accepted outcomes excluded. Operational-close/private source qualifications retained; not calibrated model validation.",
+        "25Oct: human28Octend-dayMYT deadline supersedes original31Oct planning target. All roles released; current24Oct05:21UTC private fixed50 CSV accepted34generated16withheld0demo; SHA256 d4a8cd1f4bcf179e80952195c76783ad4df832a42765816a29a62c9f55f809b9. Manual command/actual file delivered to human. D2pending one additional eligible current forecast; Trader bounded0166 source review and AI offline34readiness dispatched to disjoint private paths. No new issuance, public rights or full50 claim.",
+        "25Oct18:22MYT140actualofflineCLI verified50rows34generated16withheld0demo/reviewrequired0/exit2insufficient;newCSVSHAb435b5b871874f02e4b375b6f18a5d2beac1accdafd13f0fcca836c2fa879c78. Store-to-batchadapterdelivered,notproviderrefresh;D2>=35stillpending.139diagnosticacceptednotstrongmodel,113D2pendinglateavailability/usedholdout/noarchivewithinbounded23metadatafiles.",
+        "25Oct Lead accepts release-recordintegration scope including reviewed139diagnosticchildrecords; this doesnotreopenparentstrongqualityorallowruntimeedits. Currentcodecommits:140cd55291actualoffline34/16CSV;142c939652compactpager;143ef85d16venueboundofflineMYRmodelpath;141e86ef8aboundedcollectororchestration. Eachrequiredfullhookpassed (last3694/41warnings77.27s). Actual141offlineentryfrom/private/tmp again34generated16held0demo/exit2,no providerrefresh. Onlineactual>=35stillpendingfresh35sourceadmission/27Oct12-17MYTconditionalwindow.139diagnosticcompletedwithinsufficientevidence;113D2stronggateunchangedpending. HumanBOTHfixed50US/MY+standalone100US28Octtargetpreserved;143implementationdoesnotadmitfullOHLCV/quality."
       ]
     },
     {
@@ -116,7 +124,7 @@
     },
     {
       "id": "PRSG-135-D4",
-      "description": "31Oct acceptance packet identifies actual delivery, reproducibility, failures, pending full100/strong-model obligations and next action; never close parent gates from MVP mechanics.",
+      "description": "28Oct acceptance packet identifies actual delivery, reproducibility, failures, pending full100/strong-model obligations and next action; never close parent gates from MVP mechanics.",
       "check_ids": [
         "release"
       ],
@@ -126,7 +134,9 @@
   "review": {
     "status": "pending",
     "evidence": [
-      "Human23Oct authorizes tickets, priority delegation and31OctMVP; implementation/source/model gates retained."
+      "Human23Oct authorizes tickets, priority delegation and31OctMVP; implementation/source/model gates retained.",
+      "25Oct: human28Octend-dayMYT deadline supersedes original31Oct planning target. All roles released; current24Oct05:21UTC private fixed50 CSV accepted34generated16withheld0demo; SHA256 d4a8cd1f4bcf179e80952195c76783ad4df832a42765816a29a62c9f55f809b9. Manual command/actual file delivered to human. D2pending one additional eligible current forecast; Trader bounded0166 source review and AI offline34readiness dispatched to disjoint private paths. No new issuance, public rights or full50 claim.",
+      "25Oct Lead accepts release-recordintegration scope including reviewed139diagnosticchildrecords; this doesnotreopenparentstrongqualityorallowruntimeedits. Currentcodecommits:140cd55291actualoffline34/16CSV;142c939652compactpager;143ef85d16venueboundofflineMYRmodelpath;141e86ef8aboundedcollectororchestration. Eachrequiredfullhookpassed (last3694/41warnings77.27s). Actual141offlineentryfrom/private/tmp again34generated16held0demo/exit2,no providerrefresh. Onlineactual>=35stillpendingfresh35sourceadmission/27Oct12-17MYTconditionalwindow.139diagnosticcompletedwithinsufficientevidence;113D2stronggateunchangedpending. HumanBOTHfixed50US/MY+standalone100US28Octtargetpreserved;143implementationdoesnotadmitfullOHLCV/quality."
     ]
   }
 }

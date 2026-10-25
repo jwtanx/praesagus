@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-139",
+  "tags": {
+    "type": "test",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.15,
+      "high": 0.4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-25",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-25/PRSG-139-tonight-model-validation.md",
+  "objective": "Execute actual stronger-model validation against unchangedPRSG113gates by25Oct2026 23:59MYT; target full acceptance, report exact failed/insufficient gates truthfully.",
+  "status": "complete",
+  "owner": "AI Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6eb4f0cabb0aff7365803c4a7e8e28ab44c3979f",
+  "allowed_paths": [
+    "plans/2026-10-25/PRSG-139-tonight-model-validation.md",
+    "plans/2026-10-25/PRSG-139.harness.json",
+    "scripts/stock-research/validate_model.py",
+    "tests/test_stock_research_validation.py"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/",
+    "connectors/",
+    "scripts/stock-research/model.py",
+    "scripts/stock-research/train.py",
+    "scripts/stock-research/data.py",
+    "scripts/stock-research/storage.py",
+    "plans/2026-10-14/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "eligibility",
+      "kind": "manual",
+      "description": "Input hashes, availability/folds and holdout status independently reviewed before evaluation.",
+      "status": "passed",
+      "evidence": [
+        "25Oct AI initial input/fold audit: late19Octsourceavailability correctly empties earliertrain/calibration; savedpresentfitincludesnominalholdout. Lead inspected child5836e5d1dcf490f7e175189e355f46c5fc044c1f8358a009f9f33d1d524a6bef and cleanup supervisor8aeaef012478c714c00d79e7f7e2ec504ee7107a103c63f39d13c59fbd9b1dc1; one boundedreadonly replay released,resultpending;nostrongacceptance.",
+        "25Oct18:06MYT actual readonly eligibility/reload replay exit0; exact2802window hash/754bars; earlier walkforward508train/256cal beforepurge ->0/0; holdout508/512 ->0/0. All1782nominalholdout candidates used by savedpresentfit, no untouchedholdout. Trustedreload and6originalpins unchanged. Lead independently inspected scripts, receipts, actual6pins, counts, script hashes and cleanup. Result SHA c6bb3abc4371e21892d5f118f23e4b1d5e98e9c26b575bbe864fa1ddfd9407a9; supervisor6083922c398acfdd2c818040c820df2a3112b757227bb0ddf07297a65ec12e27. Actual3.236222s/182009856Bsampled/1thread/15samples/cleanuptrue; nofit/predict/provider/metrics. Every strongqualitygate insufficient;0eligibleOOSdates; parent113D2pending. No further admissible metric run on these inputs. Financialreviewpending."
+      ]
+    },
+    {
+      "id": "actual-runs",
+      "kind": "manual",
+      "description": "All eligible actual bounded runs, baselines, metrics/uncertainty/sample/resources and blocked gates reviewed.",
+      "status": "passed",
+      "evidence": [
+        "25Oct18:06MYT actual readonly eligibility/reload replay exit0; exact2802window hash/754bars; earlier walkforward508train/256cal beforepurge ->0/0; holdout508/512 ->0/0. All1782nominalholdout candidates used by savedpresentfit, no untouchedholdout. Trustedreload and6originalpins unchanged. Lead independently inspected scripts, receipts, actual6pins, counts, script hashes and cleanup. Result SHA c6bb3abc4371e21892d5f118f23e4b1d5e98e9c26b575bbe864fa1ddfd9407a9; supervisor6083922c398acfdd2c818040c820df2a3112b757227bb0ddf07297a65ec12e27. Actual3.236222s/182009856Bsampled/1thread/15samples/cleanuptrue; nofit/predict/provider/metrics. Every strongqualitygate insufficient;0eligibleOOSdates; parent113D2pending. No further admissible metric run on these inputs. Financialreviewpending.",
+        "25Octboundedmetadataarchiveinventory23files/3knownroots,0eligiblearchivecandidate. Lead independently matched inventory SHA63418de2ad6bd4ce029a12de7929f44c6c094aab4f60cb72b3b12134c44a5394 and all23filehashes/bytes. No outcomeprices/providers/fit. No globalabsenceclaim; no usablepre-foldoriginvintagefoundwithinboundedroots. Strong113D2remainsunmet; no repeat numerical run cures missing evidence."
+      ]
+    },
+    {
+      "id": "acceptance",
+      "kind": "manual",
+      "description": "Lead decision against unchanged113contract and tonight human delivery verified.",
+      "status": "passed",
+      "evidence": [
+        "25Oct18:08MYT Trader independent financial review SHA1c5debd466632edf101208350e1add7f776a916fbcbab2affbe2a93fcc0438e3 agrees INSUFFICIENT_EVIDENCE_RESEARCH_ONLY. Lead read exact review, verified result/supervisor/model/sourcepins and bounded23filearchiveinventory. No actualaccuracy/calibration/strongmodel acceptance; original113D2pending.139diagnosticexecution and independentdecision delivered; humanstronggoal remains unmet due genuineoriginvintage/untouchedOOSabsence. Need actual earlierarchive source and genuinelyreservedstudy or time-dependent prospective evidence; no further sameinputruns."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-139-D1",
+      "description": "Input hashes, availability/folds and holdout status independently reviewed before evaluation.",
+      "check_ids": [
+        "eligibility"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct18:06MYT actual readonly eligibility/reload replay exit0; exact2802window hash/754bars; earlier walkforward508train/256cal beforepurge ->0/0; holdout508/512 ->0/0. All1782nominalholdout candidates used by savedpresentfit, no untouchedholdout. Trustedreload and6originalpins unchanged. Lead independently inspected scripts, receipts, actual6pins, counts, script hashes and cleanup. Result SHA c6bb3abc4371e21892d5f118f23e4b1d5e98e9c26b575bbe864fa1ddfd9407a9; supervisor6083922c398acfdd2c818040c820df2a3112b757227bb0ddf07297a65ec12e27. Actual3.236222s/182009856Bsampled/1thread/15samples/cleanuptrue; nofit/predict/provider/metrics. Every strongqualitygate insufficient;0eligibleOOSdates; parent113D2pending. No further admissible metric run on these inputs. Financialreviewpending."
+      ]
+    },
+    {
+      "id": "PRSG-139-D2",
+      "description": "All eligible actual bounded runs, baselines, metrics/uncertainty/sample/resources and blocked gates reviewed.",
+      "check_ids": [
+        "actual-runs"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct18:06MYT actual readonly eligibility/reload replay exit0; exact2802window hash/754bars; earlier walkforward508train/256cal beforepurge ->0/0; holdout508/512 ->0/0. All1782nominalholdout candidates used by savedpresentfit, no untouchedholdout. Trustedreload and6originalpins unchanged. Lead independently inspected scripts, receipts, actual6pins, counts, script hashes and cleanup. Result SHA c6bb3abc4371e21892d5f118f23e4b1d5e98e9c26b575bbe864fa1ddfd9407a9; supervisor6083922c398acfdd2c818040c820df2a3112b757227bb0ddf07297a65ec12e27. Actual3.236222s/182009856Bsampled/1thread/15samples/cleanuptrue; nofit/predict/provider/metrics. Every strongqualitygate insufficient;0eligibleOOSdates; parent113D2pending. No further admissible metric run on these inputs. Financialreviewpending.",
+        "25Octboundedmetadataarchiveinventory23files/3knownroots,0eligiblearchivecandidate. Lead independently matched inventory SHA63418de2ad6bd4ce029a12de7929f44c6c094aab4f60cb72b3b12134c44a5394 and all23filehashes/bytes. No outcomeprices/providers/fit. No globalabsenceclaim; no usablepre-foldoriginvintagefoundwithinboundedroots. Strong113D2remainsunmet; no repeat numerical run cures missing evidence."
+      ]
+    },
+    {
+      "id": "PRSG-139-D3",
+      "description": "Lead decision against unchanged113contract and tonight human delivery verified.",
+      "check_ids": [
+        "acceptance"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct18:08MYT Trader independent financial review SHA1c5debd466632edf101208350e1add7f776a916fbcbab2affbe2a93fcc0438e3 agrees INSUFFICIENT_EVIDENCE_RESEARCH_ONLY. Lead read exact review, verified result/supervisor/model/sourcepins and bounded23filearchiveinventory. No actualaccuracy/calibration/strongmodel acceptance; original113D2pending.139diagnosticexecution and independentdecision delivered; humanstronggoal remains unmet due genuineoriginvintage/untouchedOOSabsence. Need actual earlierarchive source and genuinelyreservedstudy or time-dependent prospective evidence; no further sameinputruns."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "25Oct18:08MYT Trader independent financial review SHA1c5debd466632edf101208350e1add7f776a916fbcbab2affbe2a93fcc0438e3 agrees INSUFFICIENT_EVIDENCE_RESEARCH_ONLY. Lead read exact review, verified result/supervisor/model/sourcepins and bounded23filearchiveinventory. No actualaccuracy/calibration/strongmodel acceptance; original113D2pending.139diagnosticexecution and independentdecision delivered; humanstronggoal remains unmet due genuineoriginvintage/untouchedOOSabsence. Need actual earlierarchive source and genuinelyreservedstudy or time-dependent prospective evidence; no further sameinputruns."
+    ]
+  }
+}
