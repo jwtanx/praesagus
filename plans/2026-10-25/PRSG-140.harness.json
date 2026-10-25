@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-140",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-25",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-25/PRSG-140-fixed50-current-batch-command.md",
+  "objective": "Deliver current fixed50 evidence/preparation-to-export command by28Oct2026 MYT, preserve exact review and source gates.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6eb4f0cabb0aff7365803c4a7e8e28ab44c3979f",
+  "allowed_paths": [
+    "plans/2026-10-25/PRSG-140-fixed50-current-batch-command.md",
+    "plans/2026-10-25/PRSG-140.harness.json",
+    "scripts/daily-market-brief/refresh_private_forecast.py",
+    "ingest/private_forecast_refresh.py",
+    "tests/test_private_forecast_refresh.py",
+    "docs/MANUAL_FORECAST_CSV.md"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "scripts/stock-research/",
+    "ingest/forecast_scenario.py",
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py",
+    "scripts/market_collect.py",
+    "scripts/daily-market-brief/run_private_forecast.sh",
+    "scripts/daily-market-brief/prepare_private_forecast.py",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "mapping",
+      "kind": "manual",
+      "description": "Current fixed50 store-to-evidence contract and original chronology independently inspected.",
+      "status": "passed",
+      "evidence": [
+        "25Oct Lead independently read4files and initialfrozenhashes;35focusedtests passed7.24s. Review found unsupported16required inventedtemplates; samepathnulltemplate/nullrunextensionimplemented. Lead reviewed correction and independently replayed8newcases:8passed35deselected0.46s. Engineer final43passed7.71s. All4changedpathsvalidate,diffcheckpass. Exacthashes:{\"docs/MANUAL_FORECAST_CSV.md\": \"3168a0c6875c033465aac402ca7c7b16f503da21bccbacc56c74c307d7eeab3d\", \"ingest/private_forecast_refresh.py\": \"102ba6256901db0abf77b210d4699e8d1e35034719249bf005bb5f1f3bd8ee95\", \"scripts/daily-market-brief/refresh_private_forecast.py\": \"6090ca361909788602da983c5e1a0f8f87cd5f9dedcca81451363d63a9c4314d\", \"tests/test_private_forecast_refresh.py\": \"5c10c992a2351a2777b66b5ad88b971735b241d27ca263c5f83bec27ef758152\"}. Offline-store only,no providerfreshnessgrant; actualconfig/preparationpending,numeric35gateunmet.",
+        "Actualstorepreparationfound known_msceilboundary differs fromingestedmicroseconds; initialmapperknown_at=ingested_at incorrect. Lead reopenedmappingacceptance for exactknown_ms correction+regression; noactualissuance.",
+        "25Oct18:22MYT Lead actual offlineCLI from/private/tmp exit2insufficient_coverage:50uniqueorderedrows,34generated/16withheld/0demo,34exactoriginalevidenceparity/714bindings,reviewrequired0. Correctedknown_msUTCboundary independently tested:1passed43deselected0.46s; Engineer44passed8.12s. Lead independently verified4finalcodehashes/config/original34templates/finality/exactadmissionobjects,outputmanifesthashbytes/allrowresulthashes/privatepermissions/pendingtargets/originalCSVunchanged. NewCSV SHA b435b5b871874f02e4b375b6f18a5d2beac1accdafd13f0fcca836c2fa879c78. Privateactualconfig/receipt/outputreview under engineeerPRSG140actual-config-prepared. No providerrefresh/newapproval/training/publicpromotion;135>=35/full50/full100/strongmodel stillunmet."
+      ]
+    },
+    {
+      "id": "command",
+      "kind": "manual",
+      "description": "Exact-review lookup/export/status/immutable output and mode semantics independently reviewed.",
+      "status": "passed",
+      "evidence": [
+        "25Oct Lead independently read4files and initialfrozenhashes;35focusedtests passed7.24s. Review found unsupported16required inventedtemplates; samepathnulltemplate/nullrunextensionimplemented. Lead reviewed correction and independently replayed8newcases:8passed35deselected0.46s. Engineer final43passed7.71s. All4changedpathsvalidate,diffcheckpass. Exacthashes:{\"docs/MANUAL_FORECAST_CSV.md\": \"3168a0c6875c033465aac402ca7c7b16f503da21bccbacc56c74c307d7eeab3d\", \"ingest/private_forecast_refresh.py\": \"102ba6256901db0abf77b210d4699e8d1e35034719249bf005bb5f1f3bd8ee95\", \"scripts/daily-market-brief/refresh_private_forecast.py\": \"6090ca361909788602da983c5e1a0f8f87cd5f9dedcca81451363d63a9c4314d\", \"tests/test_private_forecast_refresh.py\": \"5c10c992a2351a2777b66b5ad88b971735b241d27ca263c5f83bec27ef758152\"}. Offline-store only,no providerfreshnessgrant; actualconfig/preparationpending,numeric35gateunmet."
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "command",
+      "description": "Focused cross-stage adapter regressions pass.",
+      "status": "passed",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_private_forecast_refresh.py"
+      ],
+      "cwd": ".",
+      "evidence": [
+        "25Oct Lead independently read4files and initialfrozenhashes;35focusedtests passed7.24s. Review found unsupported16required inventedtemplates; samepathnulltemplate/nullrunextensionimplemented. Lead reviewed correction and independently replayed8newcases:8passed35deselected0.46s. Engineer final43passed7.71s. All4changedpathsvalidate,diffcheckpass. Exacthashes:{\"docs/MANUAL_FORECAST_CSV.md\": \"3168a0c6875c033465aac402ca7c7b16f503da21bccbacc56c74c307d7eeab3d\", \"ingest/private_forecast_refresh.py\": \"102ba6256901db0abf77b210d4699e8d1e35034719249bf005bb5f1f3bd8ee95\", \"scripts/daily-market-brief/refresh_private_forecast.py\": \"6090ca361909788602da983c5e1a0f8f87cd5f9dedcca81451363d63a9c4314d\", \"tests/test_private_forecast_refresh.py\": \"5c10c992a2351a2777b66b5ad88b971735b241d27ca263c5f83bec27ef758152\"}. Offline-store only,no providerfreshnessgrant; actualconfig/preparationpending,numeric35gateunmet.",
+        "Finalknown_msboundarychange:owner44passed8.12s;Lead1newregressionpassed0.46s."
+      ]
+    },
+    {
+      "id": "delivery",
+      "kind": "manual",
+      "description": "Human command/config documentation and actual-run prerequisites accepted by Lead for135release.",
+      "status": "passed",
+      "evidence": [
+        "25Oct18:22MYT Lead actual offlineCLI from/private/tmp exit2insufficient_coverage:50uniqueorderedrows,34generated/16withheld/0demo,34exactoriginalevidenceparity/714bindings,reviewrequired0. Correctedknown_msUTCboundary independently tested:1passed43deselected0.46s; Engineer44passed8.12s. Lead independently verified4finalcodehashes/config/original34templates/finality/exactadmissionobjects,outputmanifesthashbytes/allrowresulthashes/privatepermissions/pendingtargets/originalCSVunchanged. NewCSV SHA b435b5b871874f02e4b375b6f18a5d2beac1accdafd13f0fcca836c2fa879c78. Privateactualconfig/receipt/outputreview under engineeerPRSG140actual-config-prepared. No providerrefresh/newapproval/training/publicpromotion;135>=35/full50/full100/strongmodel stillunmet."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-140-D1",
+      "description": "Current fixed50 store-to-evidence contract and original chronology independently inspected.",
+      "check_ids": [
+        "mapping"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct Lead independently read4files and initialfrozenhashes;35focusedtests passed7.24s. Review found unsupported16required inventedtemplates; samepathnulltemplate/nullrunextensionimplemented. Lead reviewed correction and independently replayed8newcases:8passed35deselected0.46s. Engineer final43passed7.71s. All4changedpathsvalidate,diffcheckpass. Exacthashes:{\"docs/MANUAL_FORECAST_CSV.md\": \"3168a0c6875c033465aac402ca7c7b16f503da21bccbacc56c74c307d7eeab3d\", \"ingest/private_forecast_refresh.py\": \"102ba6256901db0abf77b210d4699e8d1e35034719249bf005bb5f1f3bd8ee95\", \"scripts/daily-market-brief/refresh_private_forecast.py\": \"6090ca361909788602da983c5e1a0f8f87cd5f9dedcca81451363d63a9c4314d\", \"tests/test_private_forecast_refresh.py\": \"5c10c992a2351a2777b66b5ad88b971735b241d27ca263c5f83bec27ef758152\"}. Offline-store only,no providerfreshnessgrant; actualconfig/preparationpending,numeric35gateunmet.",
+        "Verifiedtimestampmappingdefectrequirescorrectionbeforeacceptance.",
+        "25Oct18:22MYT Lead actual offlineCLI from/private/tmp exit2insufficient_coverage:50uniqueorderedrows,34generated/16withheld/0demo,34exactoriginalevidenceparity/714bindings,reviewrequired0. Correctedknown_msUTCboundary independently tested:1passed43deselected0.46s; Engineer44passed8.12s. Lead independently verified4finalcodehashes/config/original34templates/finality/exactadmissionobjects,outputmanifesthashbytes/allrowresulthashes/privatepermissions/pendingtargets/originalCSVunchanged. NewCSV SHA b435b5b871874f02e4b375b6f18a5d2beac1accdafd13f0fcca836c2fa879c78. Privateactualconfig/receipt/outputreview under engineeerPRSG140actual-config-prepared. No providerrefresh/newapproval/training/publicpromotion;135>=35/full50/full100/strongmodel stillunmet."
+      ]
+    },
+    {
+      "id": "PRSG-140-D2",
+      "description": "Exact-review lookup/export/status/immutable output and mode semantics independently reviewed.",
+      "check_ids": [
+        "command"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct Lead independently read4files and initialfrozenhashes;35focusedtests passed7.24s. Review found unsupported16required inventedtemplates; samepathnulltemplate/nullrunextensionimplemented. Lead reviewed correction and independently replayed8newcases:8passed35deselected0.46s. Engineer final43passed7.71s. All4changedpathsvalidate,diffcheckpass. Exacthashes:{\"docs/MANUAL_FORECAST_CSV.md\": \"3168a0c6875c033465aac402ca7c7b16f503da21bccbacc56c74c307d7eeab3d\", \"ingest/private_forecast_refresh.py\": \"102ba6256901db0abf77b210d4699e8d1e35034719249bf005bb5f1f3bd8ee95\", \"scripts/daily-market-brief/refresh_private_forecast.py\": \"6090ca361909788602da983c5e1a0f8f87cd5f9dedcca81451363d63a9c4314d\", \"tests/test_private_forecast_refresh.py\": \"5c10c992a2351a2777b66b5ad88b971735b241d27ca263c5f83bec27ef758152\"}. Offline-store only,no providerfreshnessgrant; actualconfig/preparationpending,numeric35gateunmet."
+      ]
+    },
+    {
+      "id": "PRSG-140-D3",
+      "description": "Focused cross-stage adapter regressions pass.",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct Lead independently read4files and initialfrozenhashes;35focusedtests passed7.24s. Review found unsupported16required inventedtemplates; samepathnulltemplate/nullrunextensionimplemented. Lead reviewed correction and independently replayed8newcases:8passed35deselected0.46s. Engineer final43passed7.71s. All4changedpathsvalidate,diffcheckpass. Exacthashes:{\"docs/MANUAL_FORECAST_CSV.md\": \"3168a0c6875c033465aac402ca7c7b16f503da21bccbacc56c74c307d7eeab3d\", \"ingest/private_forecast_refresh.py\": \"102ba6256901db0abf77b210d4699e8d1e35034719249bf005bb5f1f3bd8ee95\", \"scripts/daily-market-brief/refresh_private_forecast.py\": \"6090ca361909788602da983c5e1a0f8f87cd5f9dedcca81451363d63a9c4314d\", \"tests/test_private_forecast_refresh.py\": \"5c10c992a2351a2777b66b5ad88b971735b241d27ca263c5f83bec27ef758152\"}. Offline-store only,no providerfreshnessgrant; actualconfig/preparationpending,numeric35gateunmet."
+      ]
+    },
+    {
+      "id": "PRSG-140-D4",
+      "description": "Human command/config documentation and actual-run prerequisites accepted by Lead for135release.",
+      "check_ids": [
+        "delivery"
+      ],
+      "status": "done",
+      "evidence": [
+        "25Oct18:22MYT Lead actual offlineCLI from/private/tmp exit2insufficient_coverage:50uniqueorderedrows,34generated/16withheld/0demo,34exactoriginalevidenceparity/714bindings,reviewrequired0. Correctedknown_msUTCboundary independently tested:1passed43deselected0.46s; Engineer44passed8.12s. Lead independently verified4finalcodehashes/config/original34templates/finality/exactadmissionobjects,outputmanifesthashbytes/allrowresulthashes/privatepermissions/pendingtargets/originalCSVunchanged. NewCSV SHA b435b5b871874f02e4b375b6f18a5d2beac1accdafd13f0fcca836c2fa879c78. Privateactualconfig/receipt/outputreview under engineeerPRSG140actual-config-prepared. No providerrefresh/newapproval/training/publicpromotion;135>=35/full50/full100/strongmodel stillunmet."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "25Oct18:22MYT Lead actual offlineCLI from/private/tmp exit2insufficient_coverage:50uniqueorderedrows,34generated/16withheld/0demo,34exactoriginalevidenceparity/714bindings,reviewrequired0. Correctedknown_msUTCboundary independently tested:1passed43deselected0.46s; Engineer44passed8.12s. Lead independently verified4finalcodehashes/config/original34templates/finality/exactadmissionobjects,outputmanifesthashbytes/allrowresulthashes/privatepermissions/pendingtargets/originalCSVunchanged. NewCSV SHA b435b5b871874f02e4b375b6f18a5d2beac1accdafd13f0fcca836c2fa879c78. Privateactualconfig/receipt/outputreview under engineeerPRSG140actual-config-prepared. No providerrefresh/newapproval/training/publicpromotion;135>=35/full50/full100/strongmodel stillunmet."
+    ]
+  }
+}
