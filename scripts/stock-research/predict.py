@@ -11,7 +11,8 @@ ROOT=Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 from config import load_collection_config
 from collect import compatibility
-from data import read_generations,require
+from data import read_generations,read_csv,require
+import glob
 from inference import build_forecasts,load_existing_model,write_forecast_payload
 from evaluation import load_saved_predictions,review_forecasts,write_evaluation_payload
 from market_calendar import MarketCalendar
@@ -45,7 +46,13 @@ def main(argv=None):
     parser.add_argument('--model-dir');parser.add_argument('--model-folder');parser.add_argument('--model-contract')
     parser.add_argument('--output-dir');parser.add_argument('--costs');parser.add_argument('--dated-metadata')
     parser.add_argument('--basis-evidence');parser.add_argument('--as-of')
+    parser.add_argument('--csv-glob');parser.add_argument('--receipt');parser.add_argument('--instruments')
+    parser.add_argument('--calendar',choices=('XNYS','XKLS'))
     args=parser.parse_args(argv);settings=load_collection_config(args.config)
+    explicit=any((args.csv_glob,args.receipt,args.instruments))
+    require(not explicit or args.offline and all((args.csv_glob,args.receipt,args.instruments)),
+        'canonical-inference-requires-offline-csv-receipt-instruments')
+    require(args.calendar!='XKLS' or explicit,'malaysian-inference-requires-explicit-canonical-input')
     parent=Path(args.state_dir or settings.state_parent).expanduser()
     if not args.offline:
         # Reuse exactly one reviewed collector invocation; shared run.py calls the
@@ -58,13 +65,19 @@ def main(argv=None):
     stamp=datetime.fromisoformat(args.as_of.replace('Z','+00:00')) if args.as_of else datetime.fromtimestamp(issued/1000,timezone.utc)
     require(stamp.tzinfo is not None,'as-of-timezone-required');as_of=int(stamp.timestamp()*1000)
     require(0<as_of<=issued,'issuance-cutoff-order')
-    generations=manifests(parent,component='collection',compatibility_id=compatibility(settings))
-    generations=[g for g in generations if type(g[2].get('as_of_ms')) is int and g[2]['as_of_ms']<=as_of]
-    require(generations,'compatible-cached-collection-missing')
-    _,folder,collection_manifest=generations[-1];universe=json.loads(private_read(folder/'universe.json'))
-    instruments=[dict(row,panel='main',speculative=False,metadata_known_at_ms=collection_manifest['as_of_ms']) for row in universe['main']]+[
-        dict(row,panel='speculative',speculative=True,metadata_known_at_ms=collection_manifest['as_of_ms']) for row in universe['speculative']]
-    history=read_generations(parent,compatibility_id=compatibility(settings))
+    if explicit:
+        instruments=read_json(args.instruments,None)
+        require(type(instruments) is list and bool(instruments),'explicit-instrument-list-required')
+        history=read_csv(glob.glob(args.csv_glob),receipt=read_json(args.receipt,None))
+        require(bool(history.rows),'explicit-canonical-history-empty')
+    else:
+        generations=manifests(parent,component='collection',compatibility_id=compatibility(settings))
+        generations=[g for g in generations if type(g[2].get('as_of_ms')) is int and g[2]['as_of_ms']<=as_of]
+        require(generations,'compatible-cached-collection-missing')
+        _,folder,collection_manifest=generations[-1];universe=json.loads(private_read(folder/'universe.json'))
+        instruments=[dict(row,panel='main',speculative=False,metadata_known_at_ms=collection_manifest['as_of_ms']) for row in universe['main']]+[
+            dict(row,panel='speculative',speculative=True,metadata_known_at_ms=collection_manifest['as_of_ms']) for row in universe['speculative']]
+        history=read_generations(parent,compatibility_id=compatibility(settings))
     root=Path(args.model_dir or parent/'models').expanduser()
     if args.model_folder:model_folder=Path(args.model_folder).expanduser()
     else:
@@ -74,7 +87,7 @@ def main(argv=None):
     model,contract,model_ref=load_existing_model(model_folder,trusted_root=root,expected_contract=expected)
     issued=int(datetime.now(timezone.utc).timestamp()*1000)  # Actual issue; frozen as_of remains the earlier input cutoff.
     start=(stamp.date()-timedelta(days=6*366)).isoformat();end=(stamp.date()+timedelta(days=40)).isoformat()
-    calendar=MarketCalendar(start,end,settings.calendar)
+    calendar=MarketCalendar(start,end,args.calendar or settings.calendar)
     output=Path(args.output_dir or parent).expanduser();prior,outcomes=load_saved_predictions(output)
     generation=Generation(output,kind='stock-research-prediction',as_of_ms=as_of)
     result=run_prediction(history,instruments,model=model,contract=contract,model_ref=model_ref,calendar=calendar,

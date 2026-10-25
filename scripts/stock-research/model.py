@@ -21,7 +21,7 @@ import time
 import numpy as np
 from threadpoolctl import threadpool_limits
 
-from data import require, origin_weights
+from data import require, origin_weights, VENUE_CURRENCIES
 from features import FEATURE_COLUMNS
 from storage import Generation, canonical, private_read, sha
 
@@ -47,6 +47,11 @@ WINDOW_POLICY={'calendar':'exchange-regular-sessions','horizons':['1d','3d','5d'
     'reference':'latest-usable-completed-session-close','low_return':'min(low)/reference_close-1',
     'high_return':'max(high)/reference_close-1','terminal_logreturn':'log(last_close/reference_close)',
     'live_quotes':'excluded','crossings':'reject-no-repair'}
+
+
+def venue_window_policy(name):
+    require(name in VENUE_CURRENCIES, 'unsupported-model-venue')
+    return dict(WINDOW_POLICY, next_week='following-Kuala-Lumpur-calendar-week-exchange-sessions-only') if name=='XKLS' else dict(WINDOW_POLICY)
 
 
 @dataclass(frozen=True)
@@ -439,7 +444,7 @@ def freeze(records, *, folds, config=ModelConfig(), provenance, fit_cutoff_ms):
         prior_end=fold['evaluation_end']
     require(folds[-1]['kind']=='holdout' and sum(f['kind']=='holdout' for f in folds)==1,'one-final-holdout-required')
     receipt={'schema_version':1,'config':asdict(config),'folds':folds,'gates':GATES,'baseline_version':BASELINE_VERSION,
-        'targets':TARGETS,'quantiles':QUANTILES,'feature_columns':FEATURE_COLUMNS,'window_policy':WINDOW_POLICY,'data_sha256':canonical_records_hash(records),
+        'targets':TARGETS,'quantiles':QUANTILES,'feature_columns':FEATURE_COLUMNS,'window_policy':venue_window_policy(provenance['calendar']['name']),'data_sha256':canonical_records_hash(records),
         'fit_cutoff_ms':fit_cutoff_ms,'provenance':provenance,'dependencies':dependencies(),
         'prepared_representation':REPRESENTATION_VERSION if isinstance(records,PreparedDataset) else 'legacy-fixture-records',
         'prepared_capacity':({'reserved_rows':records.store.capacity,'reserved_origins':records.store.origin_capacity,
@@ -862,7 +867,7 @@ def save_artifact(generation,model,receipt,evaluation):
         'training_boundaries':{'cutoff_ms':model.fit_cutoff_ms,'origin_start':model.training_origin_start,'origin_end':model.training_origin_end,'max_available_at':model.training_available_at},
         'calibration_boundaries':getattr(model,'calibration_boundaries',None),
         'active_feature_columns':[FEATURE_COLUMNS[i] for i in model.active_columns],
-        'window_policy':WINDOW_POLICY,'feature_variant':model.config.feature_variant,
+        'window_policy':receipt['window_policy'],'feature_variant':model.config.feature_variant,
         'calendar_policy':receipt['provenance'].get('calendar'),
         'adjustment_policy':receipt['provenance'].get('adjustment_policy'),
         'evidence_policy':receipt['provenance'].get('policy'),
@@ -879,7 +884,7 @@ def validate_runtime_policy(contract, *, feature_variant, calendar_name, calenda
             and contract['calendar_policy']['version']==calendar_version,'runtime-calendar-mismatch')
     require(contract['adjustment_policy']['required_basis']==adjustment
             and contract['adjustment_policy']['currency']==currency,'runtime-adjustment-currency-mismatch')
-    require(contract['window_policy']==WINDOW_POLICY,'runtime-window-policy-mismatch')
+    require(contract['window_policy']==venue_window_policy(calendar_name),'runtime-window-policy-mismatch')
     return True
 
 
@@ -904,19 +909,19 @@ def load_artifact(folder,*,trusted_root,expected_contract):
     require(contract==expected_contract,'model-compatibility-mismatch')
     require(contract['record_hash_version']==HASH_VERSION and contract['forecast_shard_version']==FORECAST_SHARD_VERSION
             and contract['prepared_representation'] in ('legacy-fixture-records',REPRESENTATION_VERSION),'model-representation-version-mismatch')
-    require(contract['window_policy']==WINDOW_POLICY and contract['feature_variant']==contract['config']['feature_variant']
+    require(contract['window_policy']==venue_window_policy(contract['calendar_policy']['name']) and contract['feature_variant']==contract['config']['feature_variant']
             and contract['baseline_version']==BASELINE_VERSION,'model-policy-mismatch')
     require(isinstance(contract.get('calendar_policy'),dict) and isinstance(contract.get('adjustment_policy'),dict),'model-calendar-adjustment-policy-missing')
     require(contract['calendar_policy'].get('version')==version('exchange_calendars')
             and bool(contract['calendar_policy'].get('name'))
             and re.fullmatch(r'[0-9a-f]{64}',str(contract['calendar_policy'].get('schedule_sha256',''))) is not None,'model-calendar-incompatible')
     require(contract['adjustment_policy'].get('required_basis')=='forward-excluding-dividends'
-            and contract['adjustment_policy'].get('currency')=='USD','model-adjustment-incompatible')
+            and contract['adjustment_policy'].get('currency')==VENUE_CURRENCIES.get(contract['calendar_policy']['name']),'model-adjustment-incompatible')
     active=contract['active_feature_columns']
     require(bool(active) and len(active)==len(set(active)) and all(c in FEATURE_COLUMNS for c in active),'model-active-feature-schema')
     receipt=json.loads(verified['freeze.json'])
     require(sha(canonical(receipt))==contract['freeze_sha256'],'freeze-integrity-mismatch')
-    require(receipt['gates']==GATES and receipt['window_policy']==WINDOW_POLICY and receipt['config']==contract['config']
+    require(receipt['gates']==GATES and receipt['window_policy']==contract['window_policy'] and receipt['config']==contract['config']
             and receipt['record_hash_version']==contract['record_hash_version']
             and receipt['forecast_shard_version']==contract['forecast_shard_version']
             and receipt['prepared_representation']==contract['prepared_representation']

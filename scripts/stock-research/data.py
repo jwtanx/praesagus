@@ -26,6 +26,14 @@ MAX_BYTES = 256 * 1024 * 1024
 
 GAPS = {'membership','delistings','adjustment-vintage','first-availability'}
 
+CODE_PATTERN = r'(?:US\.[A-Z][A-Z0-9.-]{0,63}|MY\.[0-9]{4}(?:EA)?)'
+VENUE_CURRENCIES = {'XNYS':'USD', 'XKLS':'MYR'}
+
+
+def venue_currency(calendar):
+    require(calendar.name in VENUE_CURRENCIES, 'unsupported-model-venue')
+    return VENUE_CURRENCIES[calendar.name]
+
 
 def require(condition, reason):
     if not condition:
@@ -40,7 +48,7 @@ def valid_identity(value):
 def normalize(raw):
     require(set(raw) == set(HISTORY_COLUMNS), 'canonical-history-columns')
     row = {key: None if value is None or value == '' else value for key, value in raw.items()}
-    require(isinstance(row['code'], str) and re.fullmatch(r'US\.[A-Z][A-Z0-9.-]{0,63}', row['code']), 'invalid-code')
+    require(isinstance(row['code'], str) and re.fullmatch(CODE_PATTERN, row['code']), 'invalid-code')
     require(date.fromisoformat(row['session_date']).isoformat() == row['session_date'], 'invalid-session')
     for key in INTS:
         value = row[key]
@@ -103,7 +111,7 @@ def assemble(rows, receipts):
         for binding in receipt.get('identity_bindings',[]):
             require(isinstance(binding,dict),'invalid-identity-binding')
             security, identity = binding.get('code'), binding.get('stock_id')
-            require(isinstance(security,str) and re.fullmatch(r'US\.[A-Z][A-Z0-9.-]{0,63}',security) and valid_identity(identity), 'identity-binding-missing')
+            require(isinstance(security,str) and re.fullmatch(CODE_PATTERN,security) and valid_identity(identity), 'identity-binding-missing')
             require(security not in identities or type(identities[security]) is type(identity) and identities[security] == identity, 'symbol-identity-conflict')
             identities[security] = identity
     for count,raw in enumerate(rows):
@@ -193,13 +201,17 @@ def read_generations(parent, *, compatibility_id):
     return assemble(stream(),receipts)
 
 
-def validate_window(rows, sessions, calendar, *, cutoff_ms, currency='USD', adjustment='forward-excluding-dividends'):
+def validate_window(rows, sessions, calendar, *, cutoff_ms, currency=None, adjustment='forward-excluding-dividends'):
+    expected_currency=venue_currency(calendar)
+    require(currency is None or currency==expected_currency,'incompatible-venue-currency')
+    currency=expected_currency
     by_day={row['session_date']:row for row in rows}
     require(len(by_day)==len(rows),'duplicate-session')
     output=[]
     for day in sessions:
         row=by_day.get(day)
         require(row is not None,'missing-required-session')
+        require(row['code'].startswith('US.' if calendar.name=='XNYS' else 'MY.'),'incompatible-instrument-venue')
         close=calendar.close_ms(day)
         require(row['completed'] and close<=cutoff_ms and row['price_known_at_ms']>=close and row['retrieved_at_ms']>=close,'incomplete-session')
         require(row['currency']==currency and row['adjustment']==adjustment,'incompatible-units')

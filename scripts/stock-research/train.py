@@ -15,7 +15,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 from config import load_collection_config
-from data import GAPS, make_labels, read_csv, read_generations, read_sqlite, require
+from data import GAPS, make_labels, read_csv, read_generations, read_sqlite, require, venue_currency
 from features import causal_features
 from market_calendar import MarketCalendar
 from model import (ModelConfig, clean_records, freeze, research_fit, save_artifact,
@@ -71,7 +71,7 @@ def run_training(history,*,calendar,start,end,fit_cutoff_ms,folds,model_dir,
         'qualification':'insufficient-until-dated-universe-mandate-adjustment-evidence-reviewed',
         'inputs':history.receipts,'rows_sha256':canonical_records_hash(history.rows)}|{'calendar':{'name':calendar.name,'version':calendar.version,
         'schedule_sha256':sha(canonical([{'session_date':day,'close_at_ms':calendar.close_ms(day)} for day in calendar._sessions]))},
-        'adjustment_policy':{'required_basis':'forward-excluding-dividends','currency':'USD',
+        'adjustment_policy':{'required_basis':'forward-excluding-dividends','currency':venue_currency(calendar),
             'source_receipts':[r.get('adjustment_policy') for r in history.receipts],
             'historical_point_in_time':'not-established-without-independent-reviewed-evidence'},
         'metadata_sha256':sha(canonical(metadata)),'benchmark_sha256':None if benchmark is None else canonical_records_hash(benchmark[0].rows),
@@ -102,8 +102,10 @@ def main(argv=None):
     parser.add_argument('--present-research-fit',action='store_true')
     parser.add_argument('--start');parser.add_argument('--end');parser.add_argument('--calibration-start')
     parser.add_argument('--holdout-start');parser.add_argument('--fit-cutoff')
+    parser.add_argument('--calendar',choices=('XNYS','XKLS'),help='Explicit offline model venue; collection remains US-only.')
     args=parser.parse_args(argv)
     require(sum(bool(v) for v in (args.csv_dir,args.csv_glob,args.sqlite))<=1,'choose-one-history-input')
+    require(args.calendar!='XKLS' or bool(args.csv_dir or args.csv_glob or args.sqlite),'malaysian-model-requires-explicit-canonical-input')
     settings=load_collection_config(args.config)
     if args.sqlite or args.csv_dir or args.csv_glob:
         require(args.receipt,'standalone-data-requires-attributable-receipt')
@@ -121,7 +123,7 @@ def main(argv=None):
     end=args.end or (cutoff.date()-timedelta(days=1)).isoformat()
     start=args.start or (cutoff.date()-timedelta(days=3*365)).isoformat()
     calendar=MarketCalendar((datetime.fromisoformat(start).date()-timedelta(days=400)).isoformat(),
-        (datetime.fromisoformat(end).date()+timedelta(days=40)).isoformat(),settings.calendar)
+        (datetime.fromisoformat(end).date()+timedelta(days=40)).isoformat(),args.calendar or settings.calendar)
     dates=calendar.sessions(start,end)
     require(len(dates)>=100,'history-date-range-too-short')
     calibration=args.calibration_start or dates[int(len(dates)*.6)]
