@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-141",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "market-research",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-25",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-25/PRSG-141-one-command-current-forecast-run.md",
+  "objective": "Onecommand boundedcollection/currentfixed50forecastCSV with>=35actualcurrentnon-demopredictions by28Oct2026 MYT; exactsource/reviewgatespreserved.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "cd5529107b43634ea011facbc2edbd172c4327b0",
+  "allowed_paths": [
+    "plans/2026-10-25/PRSG-141-one-command-current-forecast-run.md",
+    "plans/2026-10-25/PRSG-141.harness.json",
+    "ingest/private_forecast_pipeline.py",
+    "scripts/daily-market-brief/run_current_forecast.py",
+    "tests/test_private_forecast_pipeline.py",
+    "docs/CURRENT_FORECAST_COMMAND.md"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "scripts/stock-research/",
+    "ingest/private_forecast_refresh.py",
+    "ingest/forecast_scenario.py",
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py",
+    "scripts/market_collect.py",
+    "scripts/daily-market-brief/refresh_private_forecast.py",
+    "scripts/daily-market-brief/prepare_private_forecast.py",
+    "docs/MANUAL_FORECAST_CSV.md",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "collector",
+      "kind": "manual",
+      "description": "Secure bounded explicitonline/offline collector orchestration reviewed.",
+      "status": "passed",
+      "evidence": [
+        "25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval."
+      ]
+    },
+    {
+      "id": "integration",
+      "kind": "manual",
+      "description": "Exactreview/currentcandidate/export provenance and nofallback behavior reviewed.",
+      "status": "passed",
+      "evidence": [
+        "25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval."
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "command",
+      "description": "Focused crossstage pipeline regressions pass.",
+      "status": "passed",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_private_forecast_pipeline.py"
+      ],
+      "cwd": ".",
+      "evidence": [
+        "25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval."
+      ]
+    },
+    {
+      "id": "actual",
+      "kind": "manual",
+      "description": "Actual onecommand exact50>=35currentnon-demo output independently accepted and delivered.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-141-D1",
+      "description": "Secure bounded explicitonline/offline collector orchestration reviewed.",
+      "check_ids": [
+        "collector"
+      ],
+      "status": "done",
+      "evidence": [
+        "25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval."
+      ]
+    },
+    {
+      "id": "PRSG-141-D2",
+      "description": "Exactreview/currentcandidate/export provenance and nofallback behavior reviewed.",
+      "check_ids": [
+        "integration"
+      ],
+      "status": "done",
+      "evidence": [
+        "25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval."
+      ]
+    },
+    {
+      "id": "PRSG-141-D3",
+      "description": "Focused crossstage pipeline regressions pass.",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval."
+      ]
+    },
+    {
+      "id": "PRSG-141-D4",
+      "description": "Actual onecommand exact50>=35currentnon-demo output independently accepted and delivered.",
+      "check_ids": [
+        "actual"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval."
+    ]
+  }
+}
