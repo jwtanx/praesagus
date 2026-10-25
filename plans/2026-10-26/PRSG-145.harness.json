@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-145",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-26",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-26/PRSG-145-bounded-malaysian-adjusted-history-capture.md",
+  "objective": "Implement and independently test one narrowly bounded known-symbol Malaysian adjusted-history capability capture without inferring source/model admission.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "cb4f05f493fcdcc9ef67c23db37735ac81975447",
+  "allowed_paths": [
+    "plans/2026-10-26/PRSG-145-bounded-malaysian-adjusted-history-capture.md",
+    "plans/2026-10-26/PRSG-145.harness.json",
+    "connectors/moomoo_rest.py",
+    "connectors/moomoo_rest_live.py",
+    "ingest/market_collector.py",
+    "ingest/private_market_store.py",
+    "tests/test_moomoo_rest.py",
+    "tests/test_moomoo_rest_live.py",
+    "tests/test_market_collector.py",
+    "tests/test_private_market_store.py",
+    "plans/2026-10-25/PRSG-144.harness.json",
+    "plans/2026-10-25/PRSG-144-malaysian-model-history-capability.md"
+  ],
+  "protected_paths": [
+    "scripts/stock-research/",
+    "artifacts/",
+    "ingest/forecast_scenario.py",
+    "ingest/private_forecast_refresh.py",
+    "ingest/private_forecast_pipeline.py",
+    "scripts/daily-market-brief/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "implementation",
+      "kind": "manual",
+      "description": "Narrow qualifier/version and unchanged secure/raw compatibility independently reviewed.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed all eight pinned files and exact secure/local-marker/version7 compatibility."
+      ]
+    },
+    {
+      "id": "tests",
+      "kind": "command",
+      "description": "Four focused connector/collector/store regression suites pass.",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_moomoo_rest.py",
+        "tests/test_moomoo_rest_live.py",
+        "tests/test_market_collector.py",
+        "tests/test_private_market_store.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead focused suites:1157 passed in4.08s; Engineer additional integration338passed10.04s."
+      ]
+    },
+    {
+      "id": "actual",
+      "kind": "manual",
+      "description": "One separately released actual capability request and its bounded result independently reviewed; no model admission.",
+      "status": "passed",
+      "evidence": [
+        "One separately released actual BMS.1155 adjusted canary returned100bars in1.58s, one provider request, zero retries; quarantine replay/hash/time/non-admission labels independently verified."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-145-D1",
+      "description": "Narrow qualifier/version and unchanged secure/raw compatibility independently reviewed.",
+      "check_ids": [
+        "implementation"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reviewed all eight pinned files and exact secure/local-marker/version7 compatibility."
+      ]
+    },
+    {
+      "id": "PRSG-145-D2",
+      "description": "Four focused connector/collector/store regression suites pass.",
+      "check_ids": [
+        "tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead focused suites:1157 passed in4.08s; Engineer additional integration338passed10.04s."
+      ]
+    },
+    {
+      "id": "PRSG-145-D3",
+      "description": "One separately released actual capability request and its bounded result independently reviewed; no model admission.",
+      "check_ids": [
+        "actual"
+      ],
+      "status": "done",
+      "evidence": [
+        "One separately released actual BMS.1155 adjusted canary returned100bars in1.58s, one provider request, zero retries; quarantine replay/hash/time/non-admission labels independently verified."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reviewed all eight pinned files and exact secure/local-marker/version7 compatibility.",
+      "Lead focused suites:1157 passed in4.08s; Engineer additional integration338passed10.04s.",
+      "One separately released actual BMS.1155 adjusted canary returned100bars in1.58s, one provider request, zero retries; quarantine replay/hash/time/non-admission labels independently verified.",
+      "Private review /Users/jwtan/.codex/lead-state/PRSG145/lead/independent-review.json SHA256 af0bdfd5f6e21590e723c912aa9a7e64b2c0d078cc6578d4cc088cc0796106c2",
+      "Initial CLI launch failed deterministically before collect/provider due absent quarantine store; retained separately, initialized store before first actual provider attempt. No adjustment/factor/currency/units/finality/training/public rights or model promotion inferred."
+    ]
+  }
+}

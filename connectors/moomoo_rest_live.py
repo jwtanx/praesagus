@@ -14,7 +14,7 @@ import subprocess
 import time
 from typing import Callable
 
-from connectors.moomoo_rest import MAX_RESPONSE_BYTES, ReadRequest, ReadResponse, RESTError, BMS_FIXED20_CODES
+from connectors.moomoo_rest import MAX_RESPONSE_BYTES, ReadRequest, ReadResponse, RESTError, BMS_FIXED20_CODES, BMS1155_ADJUSTED_HOURS_DIALECT
 
 HOSTNAME = "webapi.moomoo.com"
 SERVICE = "praesagus.moomoo.private-key-passphrase"
@@ -182,6 +182,9 @@ class SecureReadTransport:
         _need(isinstance(request, ReadRequest), "invalid-request")
         _need(type(request.timeout) in (int, float) and math.isfinite(request.timeout)
               and 0 < request.timeout <= 30, "invalid-request")
+        adjusted = type(request.capability) is str and request.capability == BMS1155_ADJUSTED_HOURS_DIALECT
+        _need(request.capability is None or adjusted and request.method == 'GET'
+              and request.path == '/api/v1.0/quote/BMS.1155/history-kline', 'invalid-request')
         history = (request.method == "GET" and isinstance(request.path, str)
                    and (re.fullmatch(r"/api/v1\.0/quote/US\.[A-Z][A-Z0-9.-]{0,63}/history-kline",
                                      request.path) is not None
@@ -210,7 +213,8 @@ class SecureReadTransport:
                   and 1 <= int(query["num"]) <= 370 and str(int(query["num"])) == query["num"],
                   "invalid-request")
             if request.path in {f'/api/v1.0/quote/{code}/history-kline' for code in BMS_FIXED20_CODES}:
-                _need(request.query == f"end={query['end']}&ktype=2&autype=0&num=100", "invalid-request")
+                mode = 1 if adjusted else 0
+                _need(request.query == f"end={query['end']}&ktype=2&autype={mode}&num=100", "invalid-request")
         _need(isinstance(request.body, bytes) and len(request.body) <= 32768
               and (not request.body if request.method == "GET" else bool(request.body) and not request.query),
               "invalid-request")

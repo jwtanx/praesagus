@@ -1201,3 +1201,82 @@ def test_fixed20_worker_failure_frame_and_private_receipt_remain_count_only(rece
     assert json.loads(text)['history_failures'][0]['structure']==reply.diagnostic_structure
     for literal in ('synthetic-api-key','SYNTHETIC-BODY-CANARY','20261001','1790899200000'):
         assert literal not in text
+
+
+def adjusted_job():
+    return dict(kind='history',code='BMS.1155',end='2026-10-02',autype=1,
+                normalization_dialect='bms1155_adjusted_hours_hypothesis_v1')
+
+
+def test_adjusted_capability_closed_plan_worker_frame_store_and_raw_baseline_exclusion(store):
+    from ingest.private_forecast_refresh import validate_config,RefreshError
+    job=adjusted_job();plan=fixed20_plan(job)
+    assert c.validate_plan(plan)==[job] and c.normalization_for(job,current=True)==7
+    request=c.job_request(job)
+    assert request.capability==job['normalization_dialect']
+    assert request.query=='end=2026-10-02&ktype=2&autype=1&num=100'
+    frame=stage_worker(hours_response(),job);header,body=unpack_stage_frame(frame)
+    assert header['version']==3 and header['normalization_version']==7
+    parsed=c.parse_reply(frame,job);assert parsed.failure is None
+    outcome=c.collect(store,plan,LOCATOR,run_id='fixture-adjusted',supervisor=lambda *a,**k:parsed,wall=wall_clock())[0]
+    assert outcome.status=='success' and outcome.normalization_version==7
+    entry,=store.query('history',ING)
+    assert entry['record']['adjustment']==entry['record']['requested_adjustment']==1
+    assert entry['record']['adjustment_basis_status']=='requested_not_verified'
+    assert entry['record']['model_admission']=='not_granted' and not entry['eligible_for_temporal_evidence']
+    # The completed baseline reader still rejects version7, even with null
+    # templates: capability observations cannot become ordinary raw inputs.
+    config=dict(schema_version=1,mode='offline_store',store_root=str(store.root),
+        review_directory=str(store.root),output_parent=str(store.root),items=[dict(ticker='SYN'+str(n),market='US',
+            currency='USD',code='US.SYN'+str(n),run_id=None,normalization_version=7,
+            normalization_dialect=None,template=None,finality=None) for n in range(50)])
+    with pytest.raises(RefreshError):validate_config(config)
+
+
+@pytest.mark.parametrize('bad',['other','US','autype0','autype2','bool','missing-mode','missing-token','old-token','count','start','mix'])
+def test_adjusted_capability_job_rejects_before_credentials(bad):
+    job=adjusted_job()
+    if bad=='other':job['code']='BMS.1023'
+    elif bad=='US':job['code']='US.SYN'
+    elif bad=='autype0':job['autype']=0
+    elif bad=='autype2':job['autype']=2
+    elif bad=='bool':job['autype']=True
+    elif bad=='missing-mode':job.pop('autype')
+    elif bad=='missing-token':job.pop('normalization_dialect')
+    elif bad=='old-token':job['normalization_dialect']=c.HOURS_DIALECT
+    elif bad=='count':job['num']=101
+    elif bad=='start':job['start']='2026-10-01'
+    else:
+        plan=fixed20_plan(job);plan['history'].append(dict(code='US.SYN',end='2026-10-02'))
+        with pytest.raises(ValueError):c.validate_plan(plan)
+        return
+    def forbidden(*a,**kw):pytest.fail('credentials/transport forbidden')
+    with pytest.raises(ValueError):c.execute_job(job,LOCATOR,credentials=forbidden,transport_factory=forbidden)
+
+
+@pytest.mark.parametrize('version',[None,3,4,5,6,True])
+def test_adjusted_capability_frame_cannot_claim_legacy_normalization(version):
+    job=adjusted_job();header,body=unpack_stage_frame(stage_worker(hours_response(),job))
+    header['normalization_version']=version
+    with pytest.raises(ValueError):c.parse_reply(pack_stage_frame(header,body),job)
+
+
+@pytest.mark.parametrize('kind',['empty','malformed','denied','secret'])
+def test_adjusted_capability_failure_and_empty_capture_are_bounded(store,kind,receipt_parent):
+    job=adjusted_job()
+    if kind=='empty':resp=stage_history_response(data={'kline_list':[]})
+    elif kind=='malformed':resp=stage_history_response(dict(time_key=1790884800000,date=20261001,time_zone=8,close=12.5))
+    elif kind=='secret':resp=stage_history_response(token='synthetic-api-key')
+    else:resp=ReadResponse(403,b'PRIVATE_CANARY')
+    frame=stage_worker(resp,job);reply=c.parse_reply(frame,job)
+    calls=[]
+    def supervise(*a,**kw):calls.append(True);return reply
+    outcome,=c.collect(store,fixed20_plan(job),LOCATOR,run_id='fixture-adjusted-failure',supervisor=supervise,wall=wall_clock())
+    assert len(calls)==1 and outcome.normalization_version==7
+    assert not store.query('history',ING)
+    if kind=='empty':assert outcome.status=='all-missing' and outcome.failure is None
+    else:assert outcome.status=='failed' and outcome.failure is not None and not list(store.raw_dir.iterdir())
+    receipt=c.DiagnosticReceipt(str(receipt_parent/'adjusted-failure.json'))
+    try:receipt.write([outcome])
+    finally:receipt.close()
+    assert 'PRIVATE_CANARY' not in (receipt_parent/'adjusted-failure.json').read_text()

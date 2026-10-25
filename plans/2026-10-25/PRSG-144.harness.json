@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-144",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-25",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-25/PRSG-144-malaysian-model-history-capability.md",
+  "objective": "Within45minutesresolveactualdocumentedMYadjustedfullOHLCVhistorycapabilityandfreezevalidnextsourceactionfor28Octbothproductgoal.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "e86ef8aec0dade74ea2e10b6ca00ea794ec749b1",
+  "allowed_paths": [
+    "plans/2026-10-25/PRSG-144-malaysian-model-history-capability.md",
+    "plans/2026-10-25/PRSG-144.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "scripts/",
+    "connectors/",
+    "tests/",
+    "docs/",
+    "artifacts/",
+    "frontend/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "capability",
+      "kind": "manual",
+      "description": "Primarydocumentation/currentcodecapabilitymatrixandunknowns independently reviewed.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed the capability decision, its official-source matrix, all recorded code pins and the exact proposed one-request canary. Report SHA fe33caaa66587e69313e10ad86bc1691960e493b020647d8b47079f1de7728e0 verified; all source code pins match. Four targeted queries and six official-document attempts, zero retries/provider calls. Dictionary describes autype1 as forward excluding dividends; actual Malaysian response semantics, units, rights and long-history admission remain unproven. Accept a separately scoped known BMS.1155 route canary changing only autype0 to1; no call or model promotion is granted by this spike. Raw offline projection remains a separate candidate-data option, not a substitute for adjusted history."
+      ]
+    },
+    {
+      "id": "decision",
+      "kind": "manual",
+      "description": "Boundedsource/canary/projectionnextactionor exactblocker accepted; parentqualitygatesunchanged.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed the capability decision, its official-source matrix, all recorded code pins and the exact proposed one-request canary. Report SHA fe33caaa66587e69313e10ad86bc1691960e493b020647d8b47079f1de7728e0 verified; all source code pins match. Four targeted queries and six official-document attempts, zero retries/provider calls. Dictionary describes autype1 as forward excluding dividends; actual Malaysian response semantics, units, rights and long-history admission remain unproven. Accept a separately scoped known BMS.1155 route canary changing only autype0 to1; no call or model promotion is granted by this spike. Raw offline projection remains a separate candidate-data option, not a substitute for adjusted history."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-144-D1",
+      "description": "Primarydocumentation/currentcodecapabilitymatrixandunknowns independently reviewed.",
+      "check_ids": [
+        "capability"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed the capability decision, its official-source matrix, all recorded code pins and the exact proposed one-request canary. Report SHA fe33caaa66587e69313e10ad86bc1691960e493b020647d8b47079f1de7728e0 verified; all source code pins match. Four targeted queries and six official-document attempts, zero retries/provider calls. Dictionary describes autype1 as forward excluding dividends; actual Malaysian response semantics, units, rights and long-history admission remain unproven. Accept a separately scoped known BMS.1155 route canary changing only autype0 to1; no call or model promotion is granted by this spike. Raw offline projection remains a separate candidate-data option, not a substitute for adjusted history."
+      ]
+    },
+    {
+      "id": "PRSG-144-D2",
+      "description": "Boundedsource/canary/projectionnextactionor exactblocker accepted; parentqualitygatesunchanged.",
+      "check_ids": [
+        "decision"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed the capability decision, its official-source matrix, all recorded code pins and the exact proposed one-request canary. Report SHA fe33caaa66587e69313e10ad86bc1691960e493b020647d8b47079f1de7728e0 verified; all source code pins match. Four targeted queries and six official-document attempts, zero retries/provider calls. Dictionary describes autype1 as forward excluding dividends; actual Malaysian response semantics, units, rights and long-history admission remain unproven. Accept a separately scoped known BMS.1155 route canary changing only autype0 to1; no call or model promotion is granted by this spike. Raw offline projection remains a separate candidate-data option, not a substitute for adjusted history."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewed the capability decision, its official-source matrix, all recorded code pins and the exact proposed one-request canary. Report SHA fe33caaa66587e69313e10ad86bc1691960e493b020647d8b47079f1de7728e0 verified; all source code pins match. Four targeted queries and six official-document attempts, zero retries/provider calls. Dictionary describes autype1 as forward excluding dividends; actual Malaysian response semantics, units, rights and long-history admission remain unproven. Accept a separately scoped known BMS.1155 route canary changing only autype0 to1; no call or model promotion is granted by this spike. Raw offline projection remains a separate candidate-data option, not a substitute for adjusted history."
+    ]
+  }
+}

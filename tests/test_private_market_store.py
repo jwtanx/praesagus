@@ -1186,3 +1186,77 @@ def test_fixed20_metadata_query_code_substitution_fails_raw_replay(store):
         db.execute('UPDATE attempts SET id=?,metadata=? WHERE id=?',(newid,encoded,attempt.attempt_id))
         db.execute('UPDATE observations SET attempt_id=? WHERE attempt_id=?',(newid,attempt.attempt_id))
     with pytest.raises(MarketStoreError):store.query('history',ING)
+
+
+def adjusted_request():
+    return ReadRequest('GET','/api/v1.0/quote/BMS.1155/history-kline',
+        'end=2026-10-02&ktype=2&autype=1&num=100',b'',{},1,'bms1155_adjusted_hours_hypothesis_v1')
+
+
+def test_adjusted_capability_store_replay_requested_basis_unknown_units_and_no_raw_revision_mix(store):
+    from ingest import private_market_store as m
+    token=m.BMS1155_ADJUSTED_HOURS_DIALECT
+    raw=diagnostic_history_body(hours_row());resp=ReadResponse(200,raw)
+    raw_attempt=store.ingest(my_history_request(),resp,run_id='fixture-original-raw',observed_at=OBS,ingested_at=ING,
+        origin='synthetic',normalization_version=5,normalization_dialect=m.HOURS_DIALECT)
+    attempt=store.ingest(adjusted_request(),resp,run_id='fixture-adjusted',observed_at=OBS,ingested_at=ING,
+        origin='synthetic',normalization_version=7,normalization_dialect=token)
+    assert attempt.status=='success' and attempt.raw_hash==raw_attempt.raw_hash
+    assert store.raw(attempt.raw_hash)==raw
+    entry,=store.query('history',ING,run_id='fixture-adjusted')
+    record,meta=entry['record'],entry['observation']
+    assert record['adjustment']==record['requested_adjustment']==1 and record['capability_only'] is True
+    assert record['adjustment_basis_status']=='requested_not_verified'
+    assert record['raw_time_zone_unit']=='hours_hypothesis' and record['effective_offset_minutes']==480
+    assert meta['known_ms']==m.aware_ms(ING,True) and meta['observed_at']==OBS and meta['ingested_at']==ING
+    assert meta['currency_status']=='unknown' and meta['price_volume_units_status']=='unknown'
+    assert meta['rights_status']=='unconfirmed' and meta['model_admission']=='not_granted'
+    assert not entry['eligible_for_temporal_evidence'] and entry['revision']==1
+    assert 'corporate_action_adjustment_none' not in entry['quality']
+    assert 'capability_only_not_for_raw_projection_or_model' in entry['quality']
+    old,=store.query('history',ING,run_id='fixture-original-raw')
+    assert old['record']['adjustment']==0 and old['revision']==1 and old['eligible_for_temporal_evidence']
+    assert not any(k in old['record'] for k in ('capability_only','requested_adjustment','model_admission'))
+    kind,query,_=m.request_meta(adjusted_request(),normalization_dialect=token)
+    exact,=m.normalized(raw,kind,query,version=7,normalization_dialect=token)
+    assert exact[1]==m.canonical(record)
+
+
+@pytest.mark.parametrize('bad',['marker','token','legacy','other','raw-mode','promoted'])
+def test_adjusted_capability_store_rejects_context_or_semantic_promotion(store,bad):
+    from dataclasses import replace
+    from ingest import private_market_store as m
+    req=adjusted_request();version=7;token=m.BMS1155_ADJUSTED_HOURS_DIALECT
+    if bad=='marker':req=replace(req,capability=None)
+    elif bad=='token':token=m.HOURS_DIALECT
+    elif bad=='legacy':version=6
+    elif bad=='other':req=replace(req,path='/api/v1.0/quote/BMS.1023/history-kline')
+    elif bad=='raw-mode':req=replace(req,query=req.query.replace('autype=1','autype=0'))
+    else:
+        attempt=store.ingest(req,ReadResponse(200,diagnostic_history_body(hours_row())),run_id='fixture-tamper',
+            observed_at=OBS,ingested_at=ING,origin='synthetic',normalization_version=7,normalization_dialect=token)
+        meta=store.attempts(ING)[0];meta['model_admission']='accepted';new_id=m.digest(m.canonical(meta).encode())
+        forged=dict(id=new_id,metadata=m.canonical(meta),known_ms=meta['known_ms'],
+                    run_id=meta['run_id'],kind=meta['kind'])
+        with pytest.raises(MarketStoreError):store._meta(forged)
+        original,=store.query('history',ING)
+        assert original['observation']['model_admission']=='not_granted'
+        return
+    with pytest.raises(MarketStoreError):
+        store.ingest(req,ReadResponse(200,diagnostic_history_body(hours_row())),run_id='fixture-bad',
+            observed_at=OBS,ingested_at=ING,origin='synthetic',normalization_version=version,normalization_dialect=token)
+    assert not store.attempts(ING)
+
+
+@pytest.mark.parametrize('field,value',[('requested_adjustment',2),('adjustment_basis_status','verified'),
+    ('capability_only',1),('rights_status','permitted'),('currency_status','MYR'),
+    ('price_volume_units_status','verified'),('provider_finality_status','verified')])
+def test_adjusted_rehashed_metadata_cannot_promote_unknowns(store,field,value):
+    from ingest import private_market_store as m
+    store.ingest(adjusted_request(),ReadResponse(200,diagnostic_history_body(hours_row())),run_id='fixture-unadmitted',
+        observed_at=OBS,ingested_at=ING,origin='synthetic',normalization_version=7,
+        normalization_dialect=m.BMS1155_ADJUSTED_HOURS_DIALECT)
+    meta=store.attempts(ING)[0];meta[field]=value
+    forged=dict(id=m.digest(m.canonical(meta).encode()),metadata=m.canonical(meta),known_ms=meta['known_ms'],
+                run_id=meta['run_id'],kind=meta['kind'])
+    with pytest.raises(MarketStoreError):store._meta(forged)

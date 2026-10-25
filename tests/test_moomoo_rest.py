@@ -540,3 +540,31 @@ def test_exact_malaysia_candidate_does_not_enable_snapshot():
     h=Harness()
     with pytest.raises(RESTError):h.client.snapshot(['BMS.1155'])
     assert not h.requests and not h.signed
+
+
+ADJUSTED_TOKEN = 'bms1155_adjusted_hours_hypothesis_v1'
+
+
+def test_adjusted_capability_local_qualifier_changes_only_signed_autype():
+    from connectors.moomoo_rest import BMS1155_ADJUSTED_HOURS_DIALECT
+    assert BMS1155_ADJUSTED_HOURS_DIALECT == ADJUSTED_TOKEN
+    row=kline(time_key=NOW-4*3600000,date=20261002,time_zone=8)
+    h=Harness(quote({'kline_list':[row],'volume_precision':0}))
+    result=h.client.history_kline('BMS.1155','2026-10-02',autype=1,normalization_dialect=ADJUSTED_TOKEN)
+    req,=h.requests
+    assert req.capability==ADJUSTED_TOKEN and req.query=='end=2026-10-02&ktype=2&autype=1&num=100'
+    assert h.signed==[f'{NOW}\nGET\n{req.path}\n{req.query}\n'.encode()]
+    assert ADJUSTED_TOKEN not in req.url and ADJUSTED_TOKEN not in str(req.headers)
+    assert result.data==[row] and 'currency' not in result.data[0]
+
+
+@pytest.mark.parametrize('changes',[{'code':'BMS.1023'},{'code':'US.AAPL'},{'code':'MY.1155'},
+    {'autype':0},{'autype':2},{'autype':3},{'autype':True},{'num':99},{'num':370},
+    {'start':'2026-10-01'},{'ktype':3},{'normalization_dialect':None},
+    {'normalization_dialect':'bms1155_hours_hypothesis_v1'},
+    {'normalization_dialect':'bms_fixed20_hours_hypothesis_v1'}])
+def test_adjusted_capability_is_not_a_general_bms_mode(changes):
+    options=dict(code='BMS.1155',end='2026-10-02',autype=1,normalization_dialect=ADJUSTED_TOKEN)
+    options.update(changes);h=Harness()
+    with pytest.raises(RESTError):h.client.history_kline(**options)
+    assert not h.signed and not h.requests

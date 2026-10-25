@@ -19,6 +19,7 @@ BMS_FIXED20_CODES = frozenset('BMS.' + code for code in (
     '0820EA','0800EA','1155','1023','0277','0259','0166','0097','5225','5878',
     '4707','3689','5296','4715','6033','5681','5246','3816','1961','5285'))
 BMS_FIXED20_HOURS_DIALECT = 'bms_fixed20_hours_hypothesis_v1'
+BMS1155_ADJUSTED_HOURS_DIALECT = 'bms1155_adjusted_hours_hypothesis_v1'
 
 
 class RESTError(RuntimeError):
@@ -37,6 +38,7 @@ class ReadRequest:
     body: bytes
     headers: Mapping[str, str]
     timeout: float
+    capability: str | None = None  # Local only; never URL/headers/signing material.
 
     @property
     def url(self) -> str:
@@ -200,7 +202,7 @@ class MoomooRESTConnector:
         return value
 
     def _read(self, method: str, path: str, query: list, *, body: bytes = b"",
-              account: bool = False) -> tuple[Any, int, int]:
+              account: bool = False, capability: str | None = None) -> tuple[Any, int, int]:
         timestamp = self._clock()
         nonce = _invoke(self._nonce_factory, kind="nonce-failed")
         _require(isinstance(nonce, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,64}", nonce) is not None,
@@ -215,7 +217,7 @@ class MoomooRESTConnector:
                    "X-Timestamp": str(timestamp), "X-Nonce": nonce}
         if body:
             headers["Content-Type"] = "application/json"
-        request = ReadRequest(method, path, raw_query, body, headers, self._timeout)
+        request = ReadRequest(method, path, raw_query, body, headers, self._timeout, capability)
         response = _invoke(self._transport, request, kind="transport-failed")
         retrieved = self._clock()
         _require(retrieved >= timestamp, "clock-failed")
@@ -334,16 +336,22 @@ class MoomooRESTConnector:
         _require(_date(end) and (start is None or _date(start) and start <= end))
         _require(_integer(num, 1, 370) and _integer(ktype, 2, 2)
                  and _integer(autype, 0, 2))
-        _require(code not in BMS_FIXED20_CODES or start is None and num == 100 and ktype == 2 and autype == 0)
+        adjusted = normalization_dialect == BMS1155_ADJUSTED_HOURS_DIALECT
+        if adjusted:
+            _require(code == 'BMS.1155' and start is None and num == 100 and ktype == 2 and autype == 1)
+        _require(code not in BMS_FIXED20_CODES or start is None and num == 100 and ktype == 2
+                 and (autype == 0 and not adjusted or adjusted and autype == 1))
         _require(normalization_dialect is None or type(normalization_dialect) is str
-                 and (normalization_dialect == 'bms1155_hours_hypothesis_v1' and code == 'BMS.1155'
+                 and (adjusted
+                      or normalization_dialect == 'bms1155_hours_hypothesis_v1' and code == 'BMS.1155'
                       or normalization_dialect == BMS_FIXED20_HOURS_DIALECT and code in BMS_FIXED20_CODES))
         _require(code not in BMS_FIXED20_CODES-{'BMS.1155'} or normalization_dialect == BMS_FIXED20_HOURS_DIALECT)
         query = [("end", end), ("ktype", ktype), ("autype", autype), ("num", num)]
         if start is not None:
             query.insert(0, ("start", start))
         path = f"/api/v1.0/quote/{code}/history-kline"
-        data, requested, retrieved = self._read("GET", path, query)
+        data, requested, retrieved = self._read("GET", path, query,
+            capability=BMS1155_ADJUSTED_HOURS_DIALECT if adjusted else None)
         _require(isinstance(data, dict) and "kline_list" in data
                  and set(data) <= {"kline_list", "next_time", "volume_precision"},
                  "malformed-response")

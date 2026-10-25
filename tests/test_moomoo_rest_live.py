@@ -500,3 +500,30 @@ def test_exact_malaysia_history_secure_allowlist_fails_before_connect(changes):
     values.update(changes)
     with pytest.raises(live.LiveReadError,match='invalid-request'):transport(request(**values))
     assert not factories and not c.calls
+
+
+def test_adjusted_capability_core_secure_transport_marker_never_sent():
+    token='bms1155_adjusted_hours_hypothesis_v1'
+    body=b'{"ret_code":0,"ret_msg":"fictional","data":{"kline_list":[{"time_key":1790884800000,"date":20261002,"time_zone":8,"close":12.5}]}}'
+    transport,connection,factories=harness(FakeResponse(body=body));signed=[]
+    client=MoomooRESTConnector(api_key='synthetic-key',signer=lambda value:signed.append(value) or b's'*64,
+        transport=transport,clock_ms=lambda:1790899200000,nonce_factory=lambda:'n')
+    result=client.history_kline('BMS.1155','2026-10-02',autype=1,normalization_dialect=token)
+    path='/api/v1.0/quote/BMS.1155/history-kline';query='end=2026-10-02&ktype=2&autype=1&num=100'
+    assert signed==[f'1790899200000\nGET\n{path}\n{query}\n'.encode()]
+    assert connection.calls[1][0]==('GET',path+'?'+query) and len(factories)==1 and connection.closed
+    assert token not in repr(connection.calls) and result.data[0]['time_zone']==8
+
+
+@pytest.mark.parametrize('changes',[{'capability':None},{'capability':'unknown'},{'capability':True},
+    {'path':'/api/v1.0/quote/BMS.1023/history-kline'},{'path':'/api/v1.0/quote/US.AAPL/history-kline'},
+    {'query':'end=2026-10-02&ktype=2&autype=0&num=100'},
+    {'query':'end=2026-10-02&ktype=2&autype=2&num=100'},
+    {'query':'start=2026-10-01&end=2026-10-02&ktype=2&autype=1&num=100'},
+    {'query':'end=2026-10-02&ktype=2&autype=1&num=101'}])
+def test_adjusted_capability_transport_requires_exact_local_marker_and_wire_shape(changes):
+    transport,connection,factories=harness()
+    values=dict(path='/api/v1.0/quote/BMS.1155/history-kline',query='end=2026-10-02&ktype=2&autype=1&num=100',
+                capability='bms1155_adjusted_hours_hypothesis_v1');values.update(changes)
+    with pytest.raises(live.LiveReadError):transport(request(**values))
+    assert not factories and not connection.calls
