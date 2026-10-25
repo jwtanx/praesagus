@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-146",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "Trader",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-26",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-26/PRSG-146-malaysian-sample-data-contract.md",
+  "objective": "Within45minutes resolve the retained-evidence semantic contract and exact missing primary facts for the single BMS.1155 adjusted sample; no source or model promotion.",
+  "status": "complete",
+  "owner": "Trader",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "3a7f7bdd40d35a749d81fe25bbbcb091aa8e2324",
+  "allowed_paths": [
+    "plans/2026-10-26/PRSG-146-malaysian-sample-data-contract.md",
+    "plans/2026-10-26/PRSG-146.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "scripts/",
+    "connectors/",
+    "tests/",
+    "docs/",
+    "artifacts/",
+    "frontend/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "contract",
+      "kind": "manual",
+      "description": "Bounded retained-source identity/units/action/calendar/use contract and unknowns independently reviewed.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed partial offline contract; all9retained input pins match. Generic documentation volume/offset semantics distinguished from unverified BMS applicability."
+      ]
+    },
+    {
+      "id": "next",
+      "kind": "manual",
+      "description": "Exact smallest release dependency or next action accepted without weakening model gates.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed bounded2queries/3primaryattempts/0provider/0retry follow-up and3input pins. BNM holiday/RENTAS support is not direct Bursa equities confirmation. Exact vendor BMS units/formula/training-use and Bursa closure evidence remain external dependencies; no repeated exhausted routes or source/model admission."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-146-D1",
+      "description": "Bounded retained-source identity/units/action/calendar/use contract and unknowns independently reviewed.",
+      "check_ids": [
+        "contract"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed partial offline contract; all9retained input pins match. Generic documentation volume/offset semantics distinguished from unverified BMS applicability."
+      ]
+    },
+    {
+      "id": "PRSG-146-D2",
+      "description": "Exact smallest release dependency or next action accepted without weakening model gates.",
+      "check_ids": [
+        "next"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed bounded2queries/3primaryattempts/0provider/0retry follow-up and3input pins. BNM holiday/RENTAS support is not direct Bursa equities confirmation. Exact vendor BMS units/formula/training-use and Bursa closure evidence remain external dependencies; no repeated exhausted routes or source/model admission."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewed partial offline contract; all9retained input pins match. Generic documentation volume/offset semantics distinguished from unverified BMS applicability.",
+      "Lead reviewed bounded2queries/3primaryattempts/0provider/0retry follow-up and3input pins. BNM holiday/RENTAS support is not direct Bursa equities confirmation. Exact vendor BMS units/formula/training-use and Bursa closure evidence remain external dependencies; no repeated exhausted routes or source/model admission.",
+      "Private semantic-contract.json and primary-followup-result.json under /Users/jwtan/.codex/lead-state/PRSG146/trader/; follow-up SHA256 e606e8f4c1232c65f4c8f3dcf150294382a689b52719aff8f40c0117545a270c"
+    ]
+  }
+}
