@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-150",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-26",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-26/PRSG-150-pooled-us-stock-etf-research-model.md",
+  "objective": "Train and independently run a new actual AAPL+SPY present-cutoff research model after exact dataset/private-fit admission, preserving strong-validation and full-coverage gates.",
+  "status": "in_progress",
+  "owner": "AI Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "8dd45932c9d400c1fc9408c5e2248963449841f2",
+  "allowed_paths": [
+    "plans/2026-10-26/PRSG-150-pooled-us-stock-etf-research-model.md",
+    "plans/2026-10-26/PRSG-150.harness.json"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "ingest/",
+    "connectors/",
+    "tests/",
+    "artifacts/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "1",
+      "kind": "manual",
+      "description": "Exact actual two-name canonical dataset, typed identities/provenance/missing-metadata policy and new private-fit purpose independently admitted before numerical execution.",
+      "status": "passed",
+      "evidence": [
+        "Lead independentlyverified76runtime/sourceinventory+57source/reviewpins,1508typedcanonicalrows/9048numericcomparisons/alloriginalsourceclocks/basis/vintages,784AAPLobservationslineage;5604purelabelsandexactf28dcd4265b47547115a87e80ad91a36b3711430ff8dcba38c297e05e751ef9e preparedhash;53privateguardQApassed1.63s. Newprivatecanonicaltrainingpurpose admittedwithactualLeadknown;nofit/inference/public/strongrelease."
+      ]
+    },
+    {
+      "id": "2",
+      "kind": "manual",
+      "description": "One frozen current-cutoff research fit saves/reloads new artifact under600seconds/2GiB sampled process-treeRSS/one thread with original artifacts preserved; no historical OOS/calibration claim.",
+      "status": "passed",
+      "evidence": [
+        "Actualoneusepooledpresentresearchfit succeeded:5604records/9estimators/defaults/uncalibrated;6.234sfit/10.9997ssupervision/203292672BsampledRSS/0retry/verifiedcleanup. Leadindependentlyverified4modelmanifestartifacts+child/parentapprovalchain/frozenconfig/provenance/maskedhistoricmetadata. AIindependentlymatchedall5oldmodelpinsunchanged. NohistoricalOOS/strong/publicpromotion;freshfutureinferenceD3pending."
+      ]
+    },
+    {
+      "id": "3",
+      "kind": "manual",
+      "description": "Separate actual future-window two-name saved-model inference and immutable CSV independently verified under60seconds/512MiB/one thread; unsupported outputs withheld.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-150-D1",
+      "description": "Exact actual two-name canonical dataset, typed identities/provenance/missing-metadata policy and new private-fit purpose independently admitted before numerical execution.",
+      "check_ids": [
+        "1"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independentlyverified76runtime/sourceinventory+57source/reviewpins,1508typedcanonicalrows/9048numericcomparisons/alloriginalsourceclocks/basis/vintages,784AAPLobservationslineage;5604purelabelsandexactf28dcd4265b47547115a87e80ad91a36b3711430ff8dcba38c297e05e751ef9e preparedhash;53privateguardQApassed1.63s. Newprivatecanonicaltrainingpurpose admittedwithactualLeadknown;nofit/inference/public/strongrelease."
+      ]
+    },
+    {
+      "id": "PRSG-150-D2",
+      "description": "One frozen current-cutoff research fit saves/reloads new artifact under600seconds/2GiB sampled process-treeRSS/one thread with original artifacts preserved; no historical OOS/calibration claim.",
+      "check_ids": [
+        "2"
+      ],
+      "status": "done",
+      "evidence": [
+        "Actualoneusepooledpresentresearchfit succeeded:5604records/9estimators/defaults/uncalibrated;6.234sfit/10.9997ssupervision/203292672BsampledRSS/0retry/verifiedcleanup. Leadindependentlyverified4modelmanifestartifacts+child/parentapprovalchain/frozenconfig/provenance/maskedhistoricmetadata. AIindependentlymatchedall5oldmodelpinsunchanged. NohistoricalOOS/strong/publicpromotion;freshfutureinferenceD3pending."
+      ]
+    },
+    {
+      "id": "PRSG-150-D3",
+      "description": "Separate actual future-window two-name saved-model inference and immutable CSV independently verified under60seconds/512MiB/one thread; unsupported outputs withheld.",
+      "check_ids": [
+        "3"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "Lead accepts operational child after148reviewedreuse-firstroute;149actualAAPLsource/fullspan/fit-purposeadmissionremainmandatory; no fit/inference released.",
+      "Lead independentlyverified76runtime/sourceinventory+57source/reviewpins,1508typedcanonicalrows/9048numericcomparisons/alloriginalsourceclocks/basis/vintages,784AAPLobservationslineage;5604purelabelsandexactf28dcd4265b47547115a87e80ad91a36b3711430ff8dcba38c297e05e751ef9e preparedhash;53privateguardQApassed1.63s. Newprivatecanonicaltrainingpurpose admittedwithactualLeadknown;nofit/inference/public/strongrelease.",
+      "Actualoneusepooledpresentresearchfit succeeded:5604records/9estimators/defaults/uncalibrated;6.234sfit/10.9997ssupervision/203292672BsampledRSS/0retry/verifiedcleanup. Leadindependentlyverified4modelmanifestartifacts+child/parentapprovalchain/frozenconfig/provenance/maskedhistoricmetadata. AIindependentlymatchedall5oldmodelpinsunchanged. NohistoricalOOS/strong/publicpromotion;freshfutureinferenceD3pending."
+    ]
+  }
+}
