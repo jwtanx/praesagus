@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-149",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-26",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-26/PRSG-149-us-stock-etf-source-capability-pilot.md",
+  "objective": "Prepare and separately release StageA2requestidentity/latestAAPLcapability and StageB6olderAAPLoverlappedhistoryrequests; independently verify exact researchsource readiness without fitting or coverage promotion.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "8dd45932c9d400c1fc9408c5e2248963449841f2",
+  "allowed_paths": [
+    "plans/2026-10-26/PRSG-149-us-stock-etf-source-capability-pilot.md",
+    "plans/2026-10-26/PRSG-149.harness.json"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "ingest/",
+    "connectors/",
+    "tests/",
+    "artifacts/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "1",
+      "kind": "manual",
+      "description": "Exact fixed-list private source wrapper, two requests, clocks/budgets/security and rejection QA independently accepted.",
+      "status": "passed",
+      "evidence": [
+        "StageA exact2request wrapper/49LeadQA accepted; StageB pre-import provenance defect fixed without weakening source gates,64LeadQA17.70s and32exactruntime/private/externalpins independently verified."
+      ]
+    },
+    {
+      "id": "2",
+      "kind": "manual",
+      "description": "Separately released actual identity/history packet and scoped financial/canonical readiness independently reviewed; later source expansion/fit remain held.",
+      "status": "passed",
+      "evidence": [
+        "ActualStageA2completedresponses128wirerows126AAPLdates;9manifestartifacts/clocks/typedidentities/positiveOHLCV independentlyverified. Latest21closebridge exact; scopednativeUSD/privatepurpose reviewed byTraderandLead;fullcohortfit separate."
+      ]
+    },
+    {
+      "id": "3",
+      "kind": "manual",
+      "description": "Six separately released older AAPL one-page windows have exact5-session seams and754unique total target dates, with lineage/units/basis/new-fit-purpose readiness independently reviewed; no source fallback/rescale.",
+      "status": "passed",
+      "evidence": [
+        "Lead verified actual6GET/658older/754unique AAPL/784allobservations/450exactseamfieldchecks/27manifestartifacts;Trader independently admits exact754AAPL+754SPY fornewprivatepresentresearchfitpurpose,44inputpinsLeadverified;nativeUSDinference/requestedbasis/mixedvintage/PITlimits preserved. AIcanonicaltrainingadmission/fitrelease separate."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-149-D1",
+      "description": "Exact fixed-list private source wrapper, two requests, clocks/budgets/security and rejection QA independently accepted.",
+      "check_ids": [
+        "1"
+      ],
+      "status": "done",
+      "evidence": [
+        "StageA exact2request wrapper/49LeadQA accepted; StageB pre-import provenance defect fixed without weakening source gates,64LeadQA17.70s and32exactruntime/private/externalpins independently verified."
+      ]
+    },
+    {
+      "id": "PRSG-149-D2",
+      "description": "Separately released actual identity/history packet and scoped financial/canonical readiness independently reviewed; later source expansion/fit remain held.",
+      "check_ids": [
+        "2"
+      ],
+      "status": "done",
+      "evidence": [
+        "ActualStageA2completedresponses128wirerows126AAPLdates;9manifestartifacts/clocks/typedidentities/positiveOHLCV independentlyverified. Latest21closebridge exact; scopednativeUSD/privatepurpose reviewed byTraderandLead;fullcohortfit separate."
+      ]
+    },
+    {
+      "id": "PRSG-149-D3",
+      "description": "Six separately released older AAPL one-page windows have exact5-session seams and754unique total target dates, with lineage/units/basis/new-fit-purpose readiness independently reviewed; no source fallback/rescale.",
+      "check_ids": [
+        "3"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead verified actual6GET/658older/754unique AAPL/784allobservations/450exactseamfieldchecks/27manifestartifacts;Trader independently admits exact754AAPL+754SPY fornewprivatepresentresearchfitpurpose,44inputpinsLeadverified;nativeUSDinference/requestedbasis/mixedvintage/PITlimits preserved. AIcanonicaltrainingadmission/fitrelease separate."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead accepts StageA after148concreteproposal and10pinnedTraderconditionalpreflight;actualcallrequiresseparateexactrelease.",
+      "Pre-implementationamendment:148reuse-firstconditionalroute;StageA1POSTbothidentities+1AAPLhistoryGET only,372wirerowcap,noSPYhistorycall;prior3requestdraftsuperseded.",
+      "PostStageAsuccessscopeextensionacceptedbyLead beforeStageBimplementation:6olderAAPLGETs only,180s+2cleanup/2220wire/3sactualspacing10sHTTP0retry;exact5-sessionseams;separaterelease. Earlier149recordsarchivedprivately.",
+      "StageA exact2request wrapper/49LeadQA accepted; StageB pre-import provenance defect fixed without weakening source gates,64LeadQA17.70s and32exactruntime/private/externalpins independently verified.",
+      "ActualStageA2completedresponses128wirerows126AAPLdates;9manifestartifacts/clocks/typedidentities/positiveOHLCV independentlyverified. Latest21closebridge exact; scopednativeUSD/privatepurpose reviewed byTraderandLead;fullcohortfit separate.",
+      "Lead verified actual6GET/658older/754unique AAPL/784allobservations/450exactseamfieldchecks/27manifestartifacts;Trader independently admits exact754AAPL+754SPY fornewprivatepresentresearchfitpurpose,44inputpinsLeadverified;nativeUSDinference/requestedbasis/mixedvintage/PITlimits preserved. AIcanonicaltrainingadmission/fitrelease separate."
+    ]
+  }
+}
