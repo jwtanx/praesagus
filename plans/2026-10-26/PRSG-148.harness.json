@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-148",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-26",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-26/PRSG-148-us-cohort-model-delivery-feasibility.md",
+  "objective": "Within45minutes freeze the smallest valid actual US multi-name current-cutoff research model route toward28October, or identify exact missing external input; preserve113strong gates.",
+  "status": "complete",
+  "owner": "AI Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "8dd45932c9d400c1fc9408c5e2248963449841f2",
+  "allowed_paths": [
+    "plans/2026-10-26/PRSG-148-us-cohort-model-delivery-feasibility.md",
+    "plans/2026-10-26/PRSG-148.harness.json"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "scripts/",
+    "connectors/",
+    "tests/",
+    "docs/",
+    "artifacts/",
+    "frontend/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "1",
+      "kind": "manual",
+      "description": "Actual saved-artifact/domain/cohort/data-contract applicability and bounded source requirements independently reviewed.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed actualartifactdomain/missingfeaturemask and source/traininginterfaces;all8sourcecodepinsmatch. Independently matchedoldSPYCSV/receipt+147sourcehashes and recomputed726OHLCV/turnovercomparisons:0differences/121dates;trim754dates=628old+126new,actualknowledge/vintagespreserved. No admission/fit/provider."
+      ]
+    },
+    {
+      "id": "2",
+      "kind": "manual",
+      "description": "Executable smallest valid next source/training/inference scope and deadline feasibility accepted without promotion or historical-validation substitution.",
+      "status": "passed",
+      "evidence": [
+        "Lead accepts conditionalreuse-firstroute:149StageA1POSTbothidentities+1AAPLlatestGET,372cap;separatelyfrozen6olderAAPLone-pageGETswith5-sessionseams within7totalAAPLhistorycalls. Allseamsmustmatchorno fit. Newexplicitfinancial/dataset/fitadmissionrequired;currentcutoffresearchfit600s2GiB1thread,independentinference60s512MiB,unknownhistoricmetadata variant. No freshSPYfallback/strongpromotion/fullcoverage accepted."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-148-D1",
+      "description": "Actual saved-artifact/domain/cohort/data-contract applicability and bounded source requirements independently reviewed.",
+      "check_ids": [
+        "1"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed actualartifactdomain/missingfeaturemask and source/traininginterfaces;all8sourcecodepinsmatch. Independently matchedoldSPYCSV/receipt+147sourcehashes and recomputed726OHLCV/turnovercomparisons:0differences/121dates;trim754dates=628old+126new,actualknowledge/vintagespreserved. No admission/fit/provider."
+      ]
+    },
+    {
+      "id": "PRSG-148-D2",
+      "description": "Executable smallest valid next source/training/inference scope and deadline feasibility accepted without promotion or historical-validation substitution.",
+      "check_ids": [
+        "2"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead accepts conditionalreuse-firstroute:149StageA1POSTbothidentities+1AAPLlatestGET,372cap;separatelyfrozen6olderAAPLone-pageGETswith5-sessionseams within7totalAAPLhistorycalls. Allseamsmustmatchorno fit. Newexplicitfinancial/dataset/fitadmissionrequired;currentcutoffresearchfit600s2GiB1thread,independentinference60s512MiB,unknownhistoricmetadata variant. No freshSPYfallback/strongpromotion/fullcoverage accepted."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead reviewed actualartifactdomain/missingfeaturemask and source/traininginterfaces;all8sourcecodepinsmatch. Independently matchedoldSPYCSV/receipt+147sourcehashes and recomputed726OHLCV/turnovercomparisons:0differences/121dates;trim754dates=628old+126new,actualknowledge/vintagespreserved. No admission/fit/provider.",
+      "Lead accepts conditionalreuse-firstroute:149StageA1POSTbothidentities+1AAPLlatestGET,372cap;separatelyfrozen6olderAAPLone-pageGETswith5-sessionseams within7totalAAPLhistorycalls. Allseamsmustmatchorno fit. Newexplicitfinancial/dataset/fitadmissionrequired;currentcutoffresearchfit600s2GiB1thread,independentinference60s512MiB,unknownhistoricmetadata variant. No freshSPYfallback/strongpromotion/fullcoverage accepted.",
+      "ExactprivateproposalSHAcd513a25b19eafe3f2c89e3b8f816fc71ed8e1c6480ad096d041271c07f7d319;Traderconditional10pinsreviewed,no blankettraining/publicadmission."
+    ]
+  }
+}
