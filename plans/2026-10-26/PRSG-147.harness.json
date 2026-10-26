@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-147",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-26",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-26/PRSG-147-current-saved-model-prediction-run.md",
+  "objective": "Produce independently reviewed current SPY saved-model research predictions and immutable CSV through existing bounded interfaces before26OctoberUSopen, as a deadline recovery milestone; do not claim strong validation or full coverage.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "468783e23b4bc0478bc3e4b4add21ebc67d597bd",
+  "allowed_paths": [
+    "plans/2026-10-26/PRSG-147-current-saved-model-prediction-run.md",
+    "plans/2026-10-26/PRSG-147.harness.json"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "ingest/",
+    "connectors/",
+    "tests/",
+    "artifacts/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "1",
+      "kind": "manual",
+      "description": "Exact source/runner/model/input/window/resource preparation independently reviewed.",
+      "status": "passed",
+      "evidence": [
+        "Lead reviewed current US source compatibility/clone diff,8repo11private12externalpins and Trader4retainedpreflightpins. Independent46privateQApassed2.56s; existing USmodelcompatibility5artifact7runtimepins matched,1.469s169984000Bcleanuptrue,notinference."
+      ]
+    },
+    {
+      "id": "2",
+      "kind": "manual",
+      "description": "One separately released bounded SPY source refresh and current input basis independently reviewed.",
+      "status": "passed",
+      "evidence": [
+        "One actual sourceGET returned126bars/0retry in1.930s,cleanuptrue;Lead verified5manifestartifacts and126calendar/124unchangedOHLCVoverlap/2new/latest51/actualknowledge. Trader14pinnedcapture-specificrecords and Lead scoped private prospective acceptance verified;no training/public/strong promotion. Rawbody not retained,responsehash-only."
+      ]
+    },
+    {
+      "id": "3",
+      "kind": "manual",
+      "description": "Existing saved model produces supported current research horizon rows under supervised budgets; immutable CSV and command independently verified.",
+      "status": "passed",
+      "evidence": [
+        "Lead executed one exact reviewed launcher invocation:4 actual SPYmodel-backedresearch horizons1d/3d/5d/next_week in immutableCSV,72model/baseline pricequantile conversions independently checked;bothgenerationapprovals+2outputmanifestartifacts+CSVhash verified;all34input/model/runtimepins unchanged. Supervisor1.684508s176799744BsampledRSS/cleanuptrue/0fit/0providerduringinference;allNO TRADE,0qualified. Strong113D2/full50/full100remainunmet."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-147-D1",
+      "description": "Exact source/runner/model/input/window/resource preparation independently reviewed.",
+      "check_ids": [
+        "1"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed current US source compatibility/clone diff,8repo11private12externalpins and Trader4retainedpreflightpins. Independent46privateQApassed2.56s; existing USmodelcompatibility5artifact7runtimepins matched,1.469s169984000Bcleanuptrue,notinference."
+      ]
+    },
+    {
+      "id": "PRSG-147-D2",
+      "description": "One separately released bounded SPY source refresh and current input basis independently reviewed.",
+      "check_ids": [
+        "2"
+      ],
+      "status": "done",
+      "evidence": [
+        "One actual sourceGET returned126bars/0retry in1.930s,cleanuptrue;Lead verified5manifestartifacts and126calendar/124unchangedOHLCVoverlap/2new/latest51/actualknowledge. Trader14pinnedcapture-specificrecords and Lead scoped private prospective acceptance verified;no training/public/strong promotion. Rawbody not retained,responsehash-only."
+      ]
+    },
+    {
+      "id": "PRSG-147-D3",
+      "description": "Existing saved model produces supported current research horizon rows under supervised budgets; immutable CSV and command independently verified.",
+      "check_ids": [
+        "3"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead executed one exact reviewed launcher invocation:4 actual SPYmodel-backedresearch horizons1d/3d/5d/next_week in immutableCSV,72model/baseline pricequantile conversions independently checked;bothgenerationapprovals+2outputmanifestartifacts+CSVhash verified;all34input/model/runtimepins unchanged. Supervisor1.684508s176799744BsampledRSS/cleanuptrue/0fit/0providerduringinference;allNO TRADE,0qualified. Strong113D2/full50/full100remainunmet."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead executed one exact reviewed launcher invocation:4 actual SPYmodel-backedresearch horizons1d/3d/5d/next_week in immutableCSV,72model/baseline pricequantile conversions independently checked;bothgenerationapprovals+2outputmanifestartifacts+CSVhash verified;all34input/model/runtimepins unchanged. Supervisor1.684508s176799744BsampledRSS/cleanuptrue/0fit/0providerduringinference;allNO TRADE,0qualified. Strong113D2/full50/full100remainunmet.",
+      "Source46LeadQA2.56s anddelivery32LeadQA0.61s passed;Leadpre-importprovenancefindingfixedbeforeactualrun. Private source/delivery/receipts under /Users/jwtan/.codex/lead-state/PRSG147/;no privateprice/providerIDs/credentials committed.",
+      "Initial mandatoryfullhook3754passed/1briefcontextfailure/41warnings75.82s;namedApproach/Findings corrected without changingruntime/tests/acceptance; requiredretrypending."
+    ]
+  }
+}
