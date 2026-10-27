@@ -36,7 +36,7 @@ Two assets do not establish learned asset-class or leverage conditioning, calibr
 
 - [x] PRSG-150-D1: Exact two-name dataset and new fit-purpose admission independently accepted.
 - [x] PRSG-150-D2: One actual frozen candidate fit/save/reload and measured resources independently accepted.
-- [ ] PRSG-150-D3: Actual current future-window inference and immutable CSV independently verified.
+- [x] PRSG-150-D3: Actual current future-window inference and immutable CSV independently verified.
 
 ## Validation and delivery
 
@@ -55,3 +55,9 @@ D1accepted after exact1508row comparison against actualsources,9048numericchecks
 D2accepted: one new actualAAPL+SPY present-cutoff researchfit trained5604completedlabels with9estimators and frozenoriginaldefaults. Fit6.234seconds; fullsupervision10.9997seconds,203292672bytes sampledaggregateRSS,0retry andverifiedcleanup. Childtrustedreload verifiedfitted9estimators/uncalibrated; LeadandAI independentlyverifiedall4manifestartifacts, bothapprovalreceipts, frozenconfig/cohort/provenance and unchanged5originalmodelpins. Historicalfolds have0eligibletrain/calibration/0OOS; strongcriteria remainunmet. Sampling is not anabsoluteOSmemory/thread guarantee.
 
 D3remains pending:26October USfirstopen elapsed, so freshlycompleted26Octoberreferenceinputs with27Octoberfuturewindows are required. Earliest acceptedproviderfinality checkpoint is27October12:00MYT. Engineerprepares the boundedtwoGETrefresh while allactualcalls/inference remain separatelyheld; fixed35CSV/full50/full100 and stronger113D2validation remain unfinished. No repeatedfit is needed merely to refreshcompatible inference inputs.
+
+## Actual current saved-model prediction delivery accepted — 27 October
+
+27Oct12:16MYT actualoneusefreshsavedmodelinferencecommand succeeded:8availableuniqueAAPL/SPYx4horizons/0withheld0demo0qualified/allNO TRADE;26Octreference/27Octfuturewindows. 102freshsourcebars/1300exactoverlapchecks/newfinancial+Leadinterfaceadmissionknowns.1.869806s/191037440BsampledRSS/0retry/cleanupverified. Lead+AI independentlyverified57input/runtime/source/modelpins,bothfit+inferenceapprovalchains,model/outputartifacthashes and336CSVquantilenumerics. Same9estimators/uncalibratedresearch;no refit/providerduringpredict. ExactCSV SHA00aaa7e899591e54b1cd794c2142fa832d9b8c3b0f34011ccf5184adf9f32c9d. Strong113D2/full50/full100/publicrights unchanged/unmet.
+
+The exact documentedprivatecommand invokes reviewedinference-supervisor.py with externallyapprovedpinSHA; consumedoneusereleasepreventsduplicateexecution. Futurecompatibleinputs requirefreshsource/financial/interfaceadmissions andnewfiniteinference release; no unattendedapprovalclaim. Bothfour-horizonpredictions derivefromactualnewpooledsavedmodel, separatefrom14135-nameuncalibratedbaseline. Alloutputs researchonly/NO TRADE; neither8horizons norpassingmechanicalchecks provequality/fulluniversecoverage. PrivateCSV/model/sourcevaluesnotpublished.

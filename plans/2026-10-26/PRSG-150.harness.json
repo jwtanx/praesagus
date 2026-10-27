@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-26/PRSG-150-pooled-us-stock-etf-research-model.md",
   "objective": "Train and independently run a new actual AAPL+SPY present-cutoff research model after exact dataset/private-fit admission, preserving strong-validation and full-coverage gates.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "AI Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -62,7 +62,10 @@
       "id": "3",
       "kind": "manual",
       "description": "Separate actual future-window two-name saved-model inference and immutable CSV independently verified under60seconds/512MiB/one thread; unsupported outputs withheld.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "27Oct12:16MYT actualoneusefreshsavedmodelinferencecommand succeeded:8availableuniqueAAPL/SPYx4horizons/0withheld0demo0qualified/allNO TRADE;26Octreference/27Octfuturewindows. 102freshsourcebars/1300exactoverlapchecks/newfinancial+Leadinterfaceadmissionknowns.1.869806s/191037440BsampledRSS/0retry/cleanupverified. Lead+AI independentlyverified57input/runtime/source/modelpins,bothfit+inferenceapprovalchains,model/outputartifacthashes and336CSVquantilenumerics. Same9estimators/uncalibratedresearch;no refit/providerduringpredict. ExactCSV SHA00aaa7e899591e54b1cd794c2142fa832d9b8c3b0f34011ccf5184adf9f32c9d. Strong113D2/full50/full100/publicrights unchanged/unmet."
+      ]
     }
   ],
   "acceptance": [
@@ -94,15 +97,19 @@
       "check_ids": [
         "3"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "27Oct12:16MYT actualoneusefreshsavedmodelinferencecommand succeeded:8availableuniqueAAPL/SPYx4horizons/0withheld0demo0qualified/allNO TRADE;26Octreference/27Octfuturewindows. 102freshsourcebars/1300exactoverlapchecks/newfinancial+Leadinterfaceadmissionknowns.1.869806s/191037440BsampledRSS/0retry/cleanupverified. Lead+AI independentlyverified57input/runtime/source/modelpins,bothfit+inferenceapprovalchains,model/outputartifacthashes and336CSVquantilenumerics. Same9estimators/uncalibratedresearch;no refit/providerduringpredict. ExactCSV SHA00aaa7e899591e54b1cd794c2142fa832d9b8c3b0f34011ccf5184adf9f32c9d. Strong113D2/full50/full100/publicrights unchanged/unmet."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
+    "status": "accepted",
     "evidence": [
       "Lead accepts operational child after148reviewedreuse-firstroute;149actualAAPLsource/fullspan/fit-purposeadmissionremainmandatory; no fit/inference released.",
       "Lead independentlyverified76runtime/sourceinventory+57source/reviewpins,1508typedcanonicalrows/9048numericcomparisons/alloriginalsourceclocks/basis/vintages,784AAPLobservationslineage;5604purelabelsandexactf28dcd4265b47547115a87e80ad91a36b3711430ff8dcba38c297e05e751ef9e preparedhash;53privateguardQApassed1.63s. Newprivatecanonicaltrainingpurpose admittedwithactualLeadknown;nofit/inference/public/strongrelease.",
-      "Actualoneusepooledpresentresearchfit succeeded:5604records/9estimators/defaults/uncalibrated;6.234sfit/10.9997ssupervision/203292672BsampledRSS/0retry/verifiedcleanup. Leadindependentlyverified4modelmanifestartifacts+child/parentapprovalchain/frozenconfig/provenance/maskedhistoricmetadata. AIindependentlymatchedall5oldmodelpinsunchanged. NohistoricalOOS/strong/publicpromotion;freshfutureinferenceD3pending."
+      "Actualoneusepooledpresentresearchfit succeeded:5604records/9estimators/defaults/uncalibrated;6.234sfit/10.9997ssupervision/203292672BsampledRSS/0retry/verifiedcleanup. Leadindependentlyverified4modelmanifestartifacts+child/parentapprovalchain/frozenconfig/provenance/maskedhistoricmetadata. AIindependentlymatchedall5oldmodelpinsunchanged. NohistoricalOOS/strong/publicpromotion;freshfutureinferenceD3pending.",
+      "27Oct12:16MYT actualoneusefreshsavedmodelinferencecommand succeeded:8availableuniqueAAPL/SPYx4horizons/0withheld0demo0qualified/allNO TRADE;26Octreference/27Octfuturewindows. 102freshsourcebars/1300exactoverlapchecks/newfinancial+Leadinterfaceadmissionknowns.1.869806s/191037440BsampledRSS/0retry/cleanupverified. Lead+AI independentlyverified57input/runtime/source/modelpins,bothfit+inferenceapprovalchains,model/outputartifacthashes and336CSVquantilenumerics. Same9estimators/uncalibratedresearch;no refit/providerduringpredict. ExactCSV SHA00aaa7e899591e54b1cd794c2142fa832d9b8c3b0f34011ccf5184adf9f32c9d. Strong113D2/full50/full100/publicrights unchanged/unmet."
     ]
   }
 }
