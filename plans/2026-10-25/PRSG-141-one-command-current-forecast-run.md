@@ -39,7 +39,7 @@ One invocation can coordinate collection/preparation but cannot manufacture abse
 - [x] PRSG-141-D1: Explicit secure online/offline config and finite history orchestration implemented with existing collector/store, pacing/deadline/budgets/stopfailure, sanitized results and original provenance.
 - [x] PRSG-141-D2: Existing140candidate/exactreview/export integration implemented; newcaptures mappedtoexactitems without oldconfig/review mutation, currentness checked and no automaticacceptedgates/fallback.
 - [x] PRSG-141-D3: Focused mocked integration/failure tests pass for actual crossstage behavior, quotas/timeout/cleanup/partial/future/malformed/stale inputs, offline no-credentials/network and immutableoutputs; nofixture-asactual35.
-- [ ] PRSG-141-D4: Lead independently reviews source/tests and actual released one-command run producing>=35currentnon-demo forecasts inexact50CSV, delivers config/command/output/status and records135acceptance by28Oct.
+- [x] PRSG-141-D4: Lead independently reviews source/tests and actual released one-command run producing>=35currentnon-demo forecasts inexact50CSV, delivers config/command/output/status and records135acceptance by28Oct.
 
 ## Validation and delivery
 
@@ -50,3 +50,9 @@ Use approvedPython pytest -q tests/test_private_forecast_pipeline.py and focused
 25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval.
 
 D4remainsopen. Codeintegrationandactualoffline34CSVarenottheone-command>=35outcome. Preserveexactfinancialreleaseandfreshmatchingreviews;nooldapprovalcarryforward.
+
+## Actual delivery accepted — 27 October
+
+27Oct12:13MYT actualdocumentedofflinecommand exit0/ready:exact50orderedidentities35generatednumeric15withheld0demo0review_required/currentreference26Octtarget27Oct. Leadindependentlyreplayed3500storehistory/735requiredcloses,accepted42financialpins/new35seven-gateadmissions+qualifiedCAThistoricalcash;verifiedall35finiteorderednumericpairs/15blankwithholds/bothmanifestartifacthashes. Source35calls103.251s0retry. Onlinecapturealone0generatedreviewrequired retained; finalofflineusesSAMEcaptureIDs. Commoncurrentissuancebefore27Oct17MYT;uncalibratedraw/cashclosebaselines,notAI150/strong/fullcoverage/publicpromotion.
+
+The documentedhumancommand uses existingrun_current_forecast.py --offline --config with the private reviewedcurrentconfig. Captureandfinancialreviewprecededthiscommand; onlinecapturedoesnotapproveitsowninputs. Thecurrentreviewedsnapshot requiresrenewalaftertargetexpiry; no unattendedfuturefinancialapproval claim. CSV SHA256 a5a317c434c111f3e25c0a6d13823ce1755367226fd39fc50ec317352f592a01. Methods:22rawcloseH1 and13cash-returnH1, unchangeduncalibratedbaselineformulas. PrivateCSV/sourcevaluesnotpublished. Strong113D2/full50/full100/publicderivedrights remainunmet.

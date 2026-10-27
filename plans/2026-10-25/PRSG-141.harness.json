@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-25/PRSG-141-one-command-current-forecast-run.md",
   "objective": "Onecommand boundedcollection/currentfixed50forecastCSV with>=35actualcurrentnon-demopredictions by28Oct2026 MYT; exactsource/reviewgatespreserved.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -89,7 +89,10 @@
       "id": "actual",
       "kind": "manual",
       "description": "Actual onecommand exact50>=35currentnon-demo output independently accepted and delivered.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "27Oct12:13MYT actualdocumentedofflinecommand exit0/ready:exact50orderedidentities35generatednumeric15withheld0demo0review_required/currentreference26Octtarget27Oct. Leadindependentlyreplayed3500storehistory/735requiredcloses,accepted42financialpins/new35seven-gateadmissions+qualifiedCAThistoricalcash;verifiedall35finiteorderednumericpairs/15blankwithholds/bothmanifestartifacthashes. Source35calls103.251s0retry. Onlinecapturealone0generatedreviewrequired retained; finalofflineusesSAMEcaptureIDs. Commoncurrentissuancebefore27Oct17MYT;uncalibratedraw/cashclosebaselines,notAI150/strong/fullcoverage/publicpromotion."
+      ]
     }
   ],
   "acceptance": [
@@ -132,13 +135,17 @@
       "check_ids": [
         "actual"
       ],
-      "status": "pending"
+      "status": "done",
+      "evidence": [
+        "27Oct12:13MYT actualdocumentedofflinecommand exit0/ready:exact50orderedidentities35generatednumeric15withheld0demo0review_required/currentreference26Octtarget27Oct. Leadindependentlyreplayed3500storehistory/735requiredcloses,accepted42financialpins/new35seven-gateadmissions+qualifiedCAThistoricalcash;verifiedall35finiteorderednumericpairs/15blankwithholds/bothmanifestartifacthashes. Source35calls103.251s0retry. Onlinecapturealone0generatedreviewrequired retained; finalofflineusesSAMEcaptureIDs. Commoncurrentissuancebefore27Oct17MYT;uncalibratedraw/cashclosebaselines,notAI150/strong/fullcoverage/publicpromotion."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
+    "status": "accepted",
     "evidence": [
-      "25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval."
+      "25OctLeadreadfull285linemodule/CLI/docs and4frozenhashes;all4Engineersuppliedpathsvalidate. Owner39focused1.36s/392integration12.59s. Required143commithookfullworkingtree3694passed41warnings77.63s includes14139cases. Leadactual141offlineCLIfrom/private/tmp producednewimmutable50rowCSV34generated16withheld0demo/reviewrequired0,exit2insufficient,no providerrefresh;outputmanifesthashbytes/50uniqueidentitiesverified. Onlineactualexecutionand>=35D4notmet;currentreviews/exactreleaseand27Octmarketwindowremainrequired. DeadlineboundsdispatchnotparentdiskI/O;noautomaticapproval.",
+      "27Oct12:13MYT actualdocumentedofflinecommand exit0/ready:exact50orderedidentities35generatednumeric15withheld0demo0review_required/currentreference26Octtarget27Oct. Leadindependentlyreplayed3500storehistory/735requiredcloses,accepted42financialpins/new35seven-gateadmissions+qualifiedCAThistoricalcash;verifiedall35finiteorderednumericpairs/15blankwithholds/bothmanifestartifacthashes. Source35calls103.251s0retry. Onlinecapturealone0generatedreviewrequired retained; finalofflineusesSAMEcaptureIDs. Commoncurrentissuancebefore27Oct17MYT;uncalibratedraw/cashclosebaselines,notAI150/strong/fullcoverage/publicpromotion."
     ]
   }
 }
