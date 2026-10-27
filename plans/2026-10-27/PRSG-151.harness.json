@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-151",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-27",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-27/PRSG-151-first-us-model-cohort-expansion-source.md",
+  "objective": "Obtain exact bounded adjusted-history source evidence for the first four remaining US names V,JNJ,WMT,XOM toward accepted US30 model coverage without fitting or promotion.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6144408833f3250b4c7b512f47d7fdf78cab00a3",
+  "allowed_paths": [
+    "plans/2026-10-27/PRSG-151-first-us-model-cohort-expansion-source.md",
+    "plans/2026-10-27/PRSG-151.harness.json"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "ingest/",
+    "connectors/",
+    "tests/",
+    "artifacts/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "1",
+      "kind": "manual",
+      "description": "Exact29request private four-name source preparation with closed budgets, provenance/identity/overlap rejection and meaningful QA independently accepted.",
+      "status": "passed",
+      "evidence": [
+        "Leadindependentlyreviewedclosed29requestcode/pins35files and83meaningfulQApassed3.26s;actualsourcepurposeTrader+Leadacceptedbeforefiniteoneuserelease;preimport/privacy/typedidentity/seam/partial/cleanupbudgets preserved."
+      ]
+    },
+    {
+      "id": "2",
+      "kind": "manual",
+      "description": "Separately released actual4typedidentities and4x754unique dates/24exactfive-sessionseams independently verified; fullfinancial/dataset/fit admission remains separate.",
+      "status": "passed",
+      "evidence": [
+        "Lead verified122fullspanfinancialinputpins and independentlyrecomputed80recentraw-versus-adjustedclosebridges0differences;accepted4x754exactsourcecomponents/currentnativeUSDfinancialinference/requestedadjustedresearchbasis/privatefuturefitpurpose withalloriginalcurrencyNone/firstseen/factor/PIT/historicalactionlimitations. Actual29calls3136observations3016codedates24five-dateexactseams1800comparisons118artifacthashes86.3298s0retrycleanup independentlyverified. No canonicaldataset/fit/model/public/strongadmission."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-151-D1",
+      "description": "Exact29request private four-name source preparation with closed budgets, provenance/identity/overlap rejection and meaningful QA independently accepted.",
+      "check_ids": [
+        "1"
+      ],
+      "status": "done",
+      "evidence": [
+        "Leadindependentlyreviewedclosed29requestcode/pins35files and83meaningfulQApassed3.26s;actualsourcepurposeTrader+Leadacceptedbeforefiniteoneuserelease;preimport/privacy/typedidentity/seam/partial/cleanupbudgets preserved."
+      ]
+    },
+    {
+      "id": "PRSG-151-D2",
+      "description": "Separately released actual4typedidentities and4x754unique dates/24exactfive-sessionseams independently verified; fullfinancial/dataset/fit admission remains separate.",
+      "check_ids": [
+        "2"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead verified122fullspanfinancialinputpins and independentlyrecomputed80recentraw-versus-adjustedclosebridges0differences;accepted4x754exactsourcecomponents/currentnativeUSDfinancialinference/requestedadjustedresearchbasis/privatefuturefitpurpose withalloriginalcurrencyNone/firstseen/factor/PIT/historicalactionlimitations. Actual29calls3136observations3016codedates24five-dateexactseams1800comparisons118artifacthashes86.3298s0retrycleanup independentlyverified. No canonicaldataset/fit/model/public/strongadmission."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead freezes smallest firstfourremainingUS source slice under accepted fullUS30coverage objective;149/150doneoperationalpilots not reopened. No livecalls authorized by preparation.",
+      "Leadindependentlyreviewedclosed29requestcode/pins35files and83meaningfulQApassed3.26s;actualsourcepurposeTrader+Leadacceptedbeforefiniteoneuserelease;preimport/privacy/typedidentity/seam/partial/cleanupbudgets preserved.",
+      "Actual29requests0retry/3136historyobs3016codedates/24x5exact15fieldseams/118manifestartifacts/86.3298s/cleanupindependentlyverified. Fullspanfinancialreviewpending;D2notmarkedcompletependingreview, no dataset/fit/strongadmission.",
+      "Lead verified122fullspanfinancialinputpins and independentlyrecomputed80recentraw-versus-adjustedclosebridges0differences;accepted4x754exactsourcecomponents/currentnativeUSDfinancialinference/requestedadjustedresearchbasis/privatefuturefitpurpose withalloriginalcurrencyNone/firstseen/factor/PIT/historicalactionlimitations. Actual29calls3136observations3016codedates24five-dateexactseams1800comparisons118artifacthashes86.3298s0retrycleanup independentlyverified. No canonicaldataset/fit/model/public/strongadmission."
+    ]
+  }
+}
