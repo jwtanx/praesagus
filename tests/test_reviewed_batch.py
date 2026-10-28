@@ -13,6 +13,7 @@ import subprocess
 import sys
 import time
 import types
+import weakref
 
 import numpy as np
 import pytest
@@ -466,6 +467,8 @@ def test_three_historical_origins_resolve_only_exact_hashes(packet, monkeypatch)
         return original_read(path, **kwargs)
     monkeypatch.setattr(batch, 'read_file', checked)
     inventory = batch.Inventory(packet['bundle'])
+    assert not set(inventory.aliases) & inventory.recheck_refs.keys()
+    assert inventory.recheck()['unchanged'] is True
     for entry in entries:
         inventory.closed(entry)
         assert inventory.hashes[entry['original_path']] == entry['original_sha256']
@@ -780,3 +783,82 @@ def test_legacy_paired_source_hash_must_match_inventory(packet):
     inventory = batch.Inventory(packet['bundle'])
     with pytest.raises(batch.Blocked, match='paired_source_hash_mismatch'):
         inventory.closed({'accepted_history': target['path'], 'accepted_history_sha256': '0'*64})
+
+
+def test_streaming_recheck_preserves_graph_without_another_constructor(packet, monkeypatch):
+    bundle, inventory, _, _ = batch.preflight(packet['bp'], packet['sha'], packet['rp'])
+    original_documents = inventory.documents
+    monkeypatch.setattr(batch, 'decode', lambda *a: pytest.fail('streaming recheck decoded JSON'))
+    result = inventory.recheck()
+    assert result['unchanged'] and result['files_checked'] == len(inventory.recheck_refs)
+    assert result['bytes_checked'] == inventory.total
+    assert inventory.documents is original_documents
+
+
+@pytest.mark.parametrize('mutation', ['tamper', 'removed', 'symlink', 'file_permission', 'parent_permission', 'root_permission'])
+def test_streaming_recheck_rejects_changed_files_paths_and_permissions(packet, mutation):
+    _, inventory, _, _ = batch.preflight(packet['bp'], packet['sha'], packet['rp'])
+    path = Path(packet['bundle']['inputs']['history_csv']['path'])
+    if mutation == 'tamper':
+        raw = path.read_bytes()
+        path.write_bytes(raw.replace(b'fiction-only', b'changed-only', 1))
+    elif mutation == 'removed':
+        path.unlink()
+    elif mutation == 'symlink':
+        original = path.with_suffix('.original')
+        path.rename(original)
+        path.symlink_to(original)
+    elif mutation == 'file_permission':
+        path.chmod(0o644)
+    elif mutation == 'parent_permission':
+        path.parent.chmod(0o755)
+    else:
+        Path(packet['bundle']['trusted_model_root']).chmod(0o755)
+    with pytest.raises((batch.Blocked, OSError)):
+        inventory.recheck()
+
+
+def test_streaming_recheck_cannot_lose_ledger_binding(packet):
+    target, ledger = with_label(packet)
+    ref = bind_labels(packet, target, ledger)
+    _, inventory, _, _ = batch.preflight(packet['bp'], packet['sha'], packet['rp'])
+    document = json.loads(Path(ref['path']).read_text())
+    document['entries'][0]['value'] = '/different-label'
+    put(Path(ref['path']), document)
+    with pytest.raises(batch.Blocked, match='input_hash_mismatch'):
+        inventory.recheck()
+
+
+def test_internal_child_does_not_build_outer_inventory(packet, monkeypatch):
+    monkeypatch.setattr(batch, 'preflight', lambda *a: pytest.fail('duplicate outer preflight'))
+    called = []
+    monkeypatch.setattr(batch, 'child_run', lambda *a: called.append(a) or 0)
+    assert batch.main(args(packet, '--internal-child', str(packet['output']/'fictional'))) == 0
+    assert len(called) == 1
+
+
+def test_parent_drops_initial_graph_and_child_streams_recheck(packet, monkeypatch, capsys):
+    fake_pipeline(packet, monkeypatch)
+    original_preflight = batch.preflight
+    references = []
+    rechecks = []
+    original_recheck = batch.Inventory.recheck
+    def observed_preflight(*args):
+        result = original_preflight(*args)
+        references.append(weakref.ref(result[1]))
+        return result
+    def observed_recheck(self):
+        rechecks.append(weakref.ref(self))
+        return original_recheck(self)
+    supervise = batch.supervise
+    def observed_supervise(command):
+        assert references[0]() is None  # parent graph already released
+        return supervise(command)
+    monkeypatch.setattr(batch, 'preflight', observed_preflight)
+    monkeypatch.setattr(batch.Inventory, 'recheck', observed_recheck)
+    monkeypatch.setattr(batch, 'supervise', observed_supervise)
+    assert batch.main(args(packet)) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report['counts']['available'] == 120 and report['child_approval_sha256'] and report['parent_approval_sha256']
+    # One parent graph, one child graph, one fresh post-child parent graph.
+    assert len(references) == 3 and len(rechecks) == 1

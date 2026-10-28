@@ -234,6 +234,9 @@ class Inventory:
             self.raw[str(path)], self.hashes[str(path)] = raw, digest(raw)
             if path.suffix == '.json':
                 self.documents[str(path)] = decode(raw)
+        # Physical files only: historical origins resolve to their verified
+        # snapshots. Never reopen mutable original paths on an integrity recheck.
+        self.recheck_refs = {path: (self.hashes[path], len(raw)) for path, raw in self.raw.items()}
         for original, snapshot in self.aliases.items():
             need(snapshot['path'] in self.raw and self.hashes[snapshot['path']] == snapshot['sha256'], 'historical_archive_mismatch')
             self.raw[original], self.hashes[original] = self.raw[snapshot['path']], snapshot['sha256']
@@ -272,6 +275,34 @@ class Inventory:
             self.label_ledger_sha256 = ledger_sha
         for path, doc in self.documents.items():
             self.closed(doc, self.hashes[path])
+
+    def recheck(self):
+        """Unchanged bytes preserve the already checked graph/aliases/ledger proof.
+
+        Stream hashes instead of decoding a second full provenance graph beside
+        the first graph, numerical dependencies and model/prediction objects.
+        """
+        for root in self.roots:
+            narrow_root(str(root))
+        total = 0
+        for name, (expected_hash, expected_bytes) in self.recheck_refs.items():
+            path = path_check(name)
+            need(any(path.is_relative_to(root) for root in self.roots), 'foreign_or_symlink_path')
+            cap = JSON_LIMIT if path.suffix == '.json' else FILE_LIMIT
+            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+            hasher, count = hashlib.sha256(), 0
+            with os.fdopen(fd, 'rb') as stream:
+                info = os.fstat(stream.fileno())
+                need(stat.S_ISREG(info.st_mode) and info.st_uid == os.getuid()
+                     and stat.S_IMODE(info.st_mode) == 0o600, 'private_permissions_required')
+                need(info.st_size == expected_bytes and info.st_size <= cap, 'input_hash_mismatch')
+                for chunk in iter(lambda: stream.read(65536), b''):
+                    count += len(chunk)
+                    need(count <= cap and total+count <= TOTAL_LIMIT, 'input_budget')
+                    hasher.update(chunk)
+            need(count == expected_bytes and hasher.hexdigest() == expected_hash, 'input_hash_mismatch')
+            total += count
+        return dict(files_checked=len(self.recheck_refs), bytes_checked=total, unchanged=True)
 
     def closed(self, value, document_sha=None, pointer=''):
         if type(value) is dict:
@@ -685,7 +716,7 @@ def child_run(bundle_path, bundle_sha, release_path, run_dir):
     hashes = {name: entry['sha256'] for name, entry in generation.manifest['artifacts'].items()}
     hashes['manifest.json'] = digest(read_file(path / 'manifest.json'))
     runtime_check(bundle)
-    Inventory(bundle)
+    inventory.recheck()
     forecasts_check(payload, bundle, calendar, now_ms())
     release_check(bundle, bundle_sha, release, inventory, now_ms())
     approval = dict(schema_version=1, run_id=release['run_id'], bundle_sha256=bundle_sha, generation=str(path),
@@ -917,10 +948,12 @@ def main(argv=None):
     args = parser.parse_args(argv)
     run_dir, stage = None, 2
     try:
-        bundle, inventory, _, release = preflight(args.bundle, args.bundle_sha256, args.release)
         if args.internal_child:
             need(not args.check_only, 'input_schema_invalid')
+            # child_run owns its single preflight. An outer graph would remain
+            # live on this stack throughout inference if constructed here too.
             return child_run(args.bundle, args.bundle_sha256, args.release, Path(args.internal_child))
+        bundle, inventory, source, release = preflight(args.bundle, args.bundle_sha256, args.release)
         if args.check_only:
             calendar_and_history(bundle, inventory)
             print(json.dumps(dict(status='inputs-checked' if release else 'inputs-checked-release-not-checked',
@@ -934,6 +967,9 @@ def main(argv=None):
             raise Blocked('run_id_consumed', 'Preserve the prior attempt and request a new reviewed run ID.') from None
         write_exclusive(run_dir / 'claim.json', canonical(dict(run_id=release['run_id'], bundle_sha256=args.bundle_sha256)))
         stage = 3
+        # The parent needs only the small bundle/release bindings while waiting.
+        # Fresh post-child preflight must not coexist with the old parsed graph.
+        del inventory, source
         command = [sys.executable, '-I', '-B', str(SCRIPT), '--bundle', args.bundle, '--bundle-sha256', args.bundle_sha256,
                    '--release', args.release, '--internal-child', str(run_dir)]
         receipt = supervise(command)

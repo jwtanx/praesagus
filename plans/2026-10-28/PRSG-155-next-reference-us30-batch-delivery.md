@@ -61,3 +61,7 @@ The actualmodel audit found1121hash-boundfiles and91exactartifactparents; the ne
 ## Financial Review Supporting Ownership
 
 Trader may write only new private PRSG155/trader/ financial-context/review templates and actual post-capture financial reviews. Reuse retained issuer/unit/action context and make every unknown explicit. No repository writes, shared documentation edits, push, provider capture, fit, inference, public publication or rights invention. Lead integrates all canonical/runtime changes. Actual new sources and source/admission/interface review remain required; pre-capture templates are not approval.
+
+## Reviewed Memory Fix
+
+29OctLead independentlyacceptedstreamingintegrity memoryfix:180focusedpassed15.75s;actualsingleInventory+stream1141physicalfiles/67799273bytes peaked217579520B with0recheckincrement. Duplicatechildentrypreflight/secondpostpredictiongraph removed;parentdropsoldgraphbeforespawn. Tamper/remove/symlink/permission/ledgerhashchanges reject. 512MiB/58+2seconds capsunchanged; excludesnumericworker/currentCSV acceptance.
