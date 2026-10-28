@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-153",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 3
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-27",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-27/PRSG-153-full-us30-research-model-batch.md",
+  "objective": "Assemble exact admitted30-nameUS research dataset, run one frozen present-cutoff research fit, then independently issue all120code-horizon output rows in one documented saved-model invocation using freshfuture-window inputs.",
+  "status": "in_progress",
+  "owner": "AI Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6f6cec69cf35a28f3e5a90fd5cf80ad3d634980d",
+  "allowed_paths": [
+    "plans/2026-10-27/PRSG-153.harness.json",
+    "plans/2026-10-27/PRSG-153-full-us30-research-model-batch.md"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "ingest/",
+    "connectors/",
+    "tests/",
+    "artifacts/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "1",
+      "kind": "manual",
+      "description": "Exact30typedcode754sessioneach22620rowcanonicaldataset with originalvintages/knowledge/compacthashboundlineage, frozenactualpreparedlabels/source-financial-purpose/Leadadmission independently accepted before training.",
+      "status": "passed",
+      "evidence": [
+        "D1 independently replayed22620rows/84060labels/971files52433923bytes and113QA passed1.95s. D2 one fit52.056s numerical/113.266s supervised/367542272B sampledRSS/0retry/cleanuptrue; fourartifact hashes/both approvals/six basis disclosures verified. Private final acceptance /Users/jwtan/.codex/lead-state/PRSG153/lead/final-fit-artifact-acceptance.json. Uncalibrated research only; strongvalidation unchanged/unmet. D3 unfinished: resource interruptions;28Oct21:30MYTfirstopen cutoff elapsed, no current120-key CSV issued."
+      ]
+    },
+    {
+      "id": "2",
+      "kind": "manual",
+      "description": "Exactlyone frozen current-cutoff unvalidatedresearchfit saves/reloads newtrustedartifact under600seconds/2GiBsampledprocess-treeRSS/one-thread/0retry without alteringpreviousmodels orclaiminguntouchedOOS.",
+      "status": "passed",
+      "evidence": [
+        "D1 independently replayed22620rows/84060labels/971files52433923bytes and113QA passed1.95s. D2 one fit52.056s numerical/113.266s supervised/367542272B sampledRSS/0retry/cleanuptrue; fourartifact hashes/both approvals/six basis disclosures verified. Private final acceptance /Users/jwtan/.codex/lead-state/PRSG153/lead/final-fit-artifact-acceptance.json. Uncalibrated research only; strongvalidation unchanged/unmet. D3 unfinished: resource interruptions;28Oct21:30MYTfirstopen cutoff elapsed, no current120-key CSV issued."
+      ]
+    },
+    {
+      "id": "3",
+      "kind": "manual",
+      "description": "Fresh27Octreference/28Octfuturewindowinputs and separatelyreleasedsaved-modelinference produceexact120uniquecode-horizonrows inonecommand under60seconds/512MiB/one-thread/0retry, unsupportednumericoutputswithheld andactualcoverage/approvals/CSVhashes independentlyverified.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-153-D1",
+      "description": "Exact30typedcode754sessioneach22620rowcanonicaldataset with originalvintages/knowledge/compacthashboundlineage, frozenactualpreparedlabels/source-financial-purpose/Leadadmission independently accepted before training.",
+      "check_ids": [
+        "1"
+      ],
+      "status": "done",
+      "evidence": [
+        "D1 independently replayed22620rows/84060labels/971files52433923bytes and113QA passed1.95s. D2 one fit52.056s numerical/113.266s supervised/367542272B sampledRSS/0retry/cleanuptrue; fourartifact hashes/both approvals/six basis disclosures verified. Private final acceptance /Users/jwtan/.codex/lead-state/PRSG153/lead/final-fit-artifact-acceptance.json. Uncalibrated research only; strongvalidation unchanged/unmet. D3 unfinished: resource interruptions;28Oct21:30MYTfirstopen cutoff elapsed, no current120-key CSV issued."
+      ]
+    },
+    {
+      "id": "PRSG-153-D2",
+      "description": "Exactlyone frozen current-cutoff unvalidatedresearchfit saves/reloads newtrustedartifact under600seconds/2GiBsampledprocess-treeRSS/one-thread/0retry without alteringpreviousmodels orclaiminguntouchedOOS.",
+      "check_ids": [
+        "2"
+      ],
+      "status": "done",
+      "evidence": [
+        "D1 independently replayed22620rows/84060labels/971files52433923bytes and113QA passed1.95s. D2 one fit52.056s numerical/113.266s supervised/367542272B sampledRSS/0retry/cleanuptrue; fourartifact hashes/both approvals/six basis disclosures verified. Private final acceptance /Users/jwtan/.codex/lead-state/PRSG153/lead/final-fit-artifact-acceptance.json. Uncalibrated research only; strongvalidation unchanged/unmet. D3 unfinished: resource interruptions;28Oct21:30MYTfirstopen cutoff elapsed, no current120-key CSV issued."
+      ]
+    },
+    {
+      "id": "PRSG-153-D3",
+      "description": "Fresh27Octreference/28Octfuturewindowinputs and separatelyreleasedsaved-modelinference produceexact120uniquecode-horizonrows inonecommand under60seconds/512MiB/one-thread/0retry, unsupportednumericoutputswithheld andactualcoverage/approvals/CSVhashes independentlyverified.",
+      "check_ids": [
+        "3"
+      ],
+      "status": "pending"
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "LeadfreezesnewUS30studyunderacceptedcoverageobjective. Dependsall152sourcecohorts/fullspanfinancialreview;existing6seriesretained. Preparationallowed;no fit/inference/providers/strongpromotion released.",
+      "D1 independently replayed22620rows/84060labels/971files52433923bytes and113QA passed1.95s. D2 one fit52.056s numerical/113.266s supervised/367542272B sampledRSS/0retry/cleanuptrue; fourartifact hashes/both approvals/six basis disclosures verified. Private final acceptance /Users/jwtan/.codex/lead-state/PRSG153/lead/final-fit-artifact-acceptance.json. Uncalibrated research only; strongvalidation unchanged/unmet. D3 unfinished: resource interruptions;28Oct21:30MYTfirstopen cutoff elapsed, no current120-key CSV issued."
+    ]
+  }
+}
