@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-138",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 2,
+      "high": 4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-25",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-25/PRSG-138-daily-report-public-eligibility-recovery.md",
+  "objective": "Restore actual public daily report before 28 October 2026 with at least 35 of the fixed 50 same-row eligible prices and publicly admitted forecasts; preserve source rights and all gates.",
+  "status": "blocked",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "provisional",
+  "base_sha": "6eb4f0cabb0aff7365803c4a7e8e28ab44c3979f",
+  "allowed_paths": [
+    "plans/2026-10-25/PRSG-138-daily-report-public-eligibility-recovery.md",
+    "plans/2026-10-25/PRSG-138.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/",
+    "scripts/",
+    "tests/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    "agent-operations/",
+    ".github/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "source-review",
+      "kind": "manual",
+      "description": "Independently inspect applicable permission/source evidence for at least35names including5MY.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "scope-review",
+      "kind": "manual",
+      "description": "Lead freezes exact implementation scope and reviews changes plus source/temporal/failure regressions.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "actual-publication",
+      "kind": "manual",
+      "description": "Actual at least35same-row eligible pairs pass final existing compact/publication validation and mobile/keyboard review.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "live-delivery",
+      "kind": "manual",
+      "description": "Inspect frozen issuance/outcomes, exact-SHA CI/Pages, live dated report and schedule invocation before27Oct23:59MYT.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-138-D1",
+      "description": "Applicable public-use/source permissions and at least35same-row identities including5MY independently accepted.",
+      "check_ids": [
+        "source-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-138-D2",
+      "description": "Exact implementation scope accepted; required changes implemented and independently reviewed with unchanged gates.",
+      "check_ids": [
+        "scope-review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-138-D3",
+      "description": "Actual current report has at least35eligible pairs and passes final structural/publication and rendered checks.",
+      "check_ids": [
+        "actual-publication"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-138-D4",
+      "description": "Issuance/outcomes and live delivery verified before deadline;08:00schedule invokes accepted path.",
+      "check_ids": [
+        "live-delivery"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
