@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-154",
+  "tags": {
+    "type": "docs",
+    "modules": [
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-28",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-28/PRSG-154-claude-handover-and-delivery-audit.md",
+  "objective": "Deliver truthful portable handover of all unfinished canonical tickets, wishlist, evidence, blockers, next actions and leadership failures.",
+  "status": "complete",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "d9a3c64ebcecf5afd9b9aa917e0896b261ef7b71",
+  "allowed_paths": [
+    "plans/2026-10-28/PRSG-154-claude-handover-and-delivery-audit.md",
+    "plans/2026-10-28/PRSG-154.harness.json",
+    "docs/CLAUDE_HANDOVER_2026-10-28.md"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "ingest/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "1",
+      "kind": "manual",
+      "description": "All unfinished canonical manifests indexed with limits/blockers/next owner/action; proposals labeled separately.",
+      "status": "passed",
+      "evidence": [
+        "Lead cross-checked every pending acceptance ID across all open canonical manifests and all 33 local links. Git/model/source/CSV limitations reconciled with current execution and accepted153receipts. No secrets or private data payloads included; explicit deadline miss/leadership failures/proposals retained."
+      ]
+    },
+    {
+      "id": "2",
+      "kind": "manual",
+      "description": "Handover checked against Git/current execution and delivered without secrets or invented completion.",
+      "status": "passed",
+      "evidence": [
+        "Lead cross-checked every pending acceptance ID across all open canonical manifests and all 33 local links. Git/model/source/CSV limitations reconciled with current execution and accepted153receipts. No secrets or private data payloads included; explicit deadline miss/leadership failures/proposals retained."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-154-D1",
+      "description": "All unfinished canonical manifests indexed with limits/blockers/next owner/action; proposals labeled separately.",
+      "check_ids": [
+        "1"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead cross-checked every pending acceptance ID across all open canonical manifests and all 33 local links. Git/model/source/CSV limitations reconciled with current execution and accepted153receipts. No secrets or private data payloads included; explicit deadline miss/leadership failures/proposals retained."
+      ]
+    },
+    {
+      "id": "PRSG-154-D2",
+      "description": "Handover checked against Git/current execution and delivered without secrets or invented completion.",
+      "check_ids": [
+        "2"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead cross-checked every pending acceptance ID across all open canonical manifests and all 33 local links. Git/model/source/CSV limitations reconciled with current execution and accepted153receipts. No secrets or private data payloads included; explicit deadline miss/leadership failures/proposals retained."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead cross-checked every pending acceptance ID across all open canonical manifests and all 33 local links. Git/model/source/CSV limitations reconciled with current execution and accepted153receipts. No secrets or private data payloads included; explicit deadline miss/leadership failures/proposals retained."
+    ]
+  }
+}
