@@ -59,7 +59,10 @@
       "id": "3",
       "kind": "manual",
       "description": "One documented user command verifies reviewed bundle, runs batch/export or returns exact actionable failure; focused tests and independent clean-directory execution pass.",
-      "status": "pending"
+      "status": "pending",
+      "evidence": [
+        "Publiccommand implemented/reviewed: independent147focusedchecks passed13.82s;verified-buffer imports,observedtree resources,exact3historicalarchives,stagedsamebytes,explicitcalendar-deriveddates and overlap; actualclean-directoryclockprobe exit2 before29Oct12MYT withoutworker/modelcalls. Source/current120CSV/actualpositiveoutput remainpending; notfullacceptance."
+      ]
     }
   ],
   "acceptance": [
@@ -93,6 +96,9 @@
   ],
   "review": {
     "status": "pending",
-    "evidence": []
+    "evidence": [
+      "29OctLead explicit-bundle-date clarification: genericruntime mustnot require dailycodeedits; no automaticselection/rollover. Actual155release remainsfixed28Octreference/29Oct12..21:30MYT, allotherdateauthority separate. Independent129focusedchecks passed11.51s on priorcandidate; newdatebinding regressions andfinalreview pending.",
+      "Publiccommand implemented/reviewed: independent147focusedchecks passed13.82s;verified-buffer imports,observedtree resources,exact3historicalarchives,stagedsamebytes,explicitcalendar-deriveddates and overlap; actualclean-directoryclockprobe exit2 before29Oct12MYT withoutworker/modelcalls. Source/current120CSV/actualpositiveoutput remainpending; notfullacceptance."
+    ]
   }
 }

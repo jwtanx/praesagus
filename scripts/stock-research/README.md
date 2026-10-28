@@ -83,6 +83,87 @@ Use `--costs /absolute/private/costs.json` for explicit per-code nonnegative rou
 
 Default `--sentiment auto` is explicitly unavailable/not configured until the later sentiment extension exists. `--sentiment off` records off. Neither mode performs a fake connection check, reads subscription tokens, invokes an LLM or changes numerical features. `--offline` prohibits all provider and LLM calls.
 
+## Reviewed batch command
+
+`run_reviewed_batch.py` consumes an explicit private reviewed bundle and an existing trusted model. It produces one 120-key research CSV for the fixed 30-name cohort, or a structured failure explaining the missing prerequisite. It never collects sources, fits, selects a latest model, rolls the reference date forward, or places trades. Every run supplies an explicit reference and time window in a newly reviewed bundle; the command verifies them against XNYS sessions and the actual clock. Source finality is midnight in America/New_York immediately after the reference date, including daylight-saving rules; the deadline is the next XNYS session’s first open. Both source and compatibility reviews and the finite release review must bind those same explicit date/window fields.
+
+The **actual PRSG-155 authority remains fixed** to reference **28 October 2026**, with execution **29 October 2026 12:00 MYT through strictly before 21:30 MYT**. Supporting another explicitly reviewed date in the CLI grants no new source or inference authority. This command alone does not provide fresh data or financial admission.
+
+From any working directory, using the Python environment with the repository dependencies installed:
+
+```sh
+python3.11 -I -B /absolute/checkout/scripts/stock-research/run_reviewed_batch.py \
+  --bundle /absolute/private/reviewed-bundle.json \
+  --bundle-sha256 REVIEWED_BUNDLE_FILE_SHA256 \
+  --release /absolute/private/lead-inference-release.json
+```
+
+Add `--check-only` to validate inputs, calendar, typed identities, reviews and the trusted fit chain without loading the model, starting a worker or consuming a release. The release is optional in this mode; its absence is explicitly reported as `inputs-checked-release-not-checked`. The actual clock is always used, including in check-only mode. There is no historical clock override. Outside the explicitly supplied window, the command returns `issue_window_closed` with that reviewed window and the exact next dependency.
+
+The reviewed bundle is strict JSON, schema version `1`, kind `praesagus-reviewed-inference-bundle`, purpose `private-unvalidated-research`. Unknown fields, duplicate keys, nonfinite JSON and booleans used as integers are rejected. All these root fields are required:
+
+| Field | Required content |
+| --- | --- |
+| `schema_version`, `kind`, `purpose` | The exact values above. |
+| `read_roots` | One to 32 explicit, narrow private artifact directories; no filesystem/home/code/credential roots. |
+| `trusted_model_root`, `output_parent` | Explicit private directories. The original model folder is an immediate child of the trusted root. Output must not contain an input root. |
+| `inputs` | Exactly `history_csv`, `receipt`, `instruments`, `source_review`, `model_compatibility_review`, each a file reference. |
+| `model` | Exactly `folder` plus file references `contract`, `manifest`, `artifact`, `child_fit_approval`, `parent_fit_approval`. |
+| `runtime_files` | Exact nine-file inventory: this entry point, `data.py`, `storage.py`, `market_calendar.py`, `features.py`, `model.py`, `inference.py`, `ranking.py`, `export.py` under `scripts/stock-research/`. Each entry has exactly `repo_path`, `sha256`, `bytes`. |
+| `data_files` | Closed inventory of all transitive source/model/fit-resource files. Each entry is a file reference; at most 2,048 entries. No supplied Python executor is imported. |
+| `calendar` | Exactly `name: "XNYS"`, installed `version`, ISO-date `start`, `end`, covering the 51-session input and all forecast windows. |
+| `expected_codes` | Exact order: `US.SPY, US.AAPL, US.V, US.JNJ, US.WMT, US.XOM, US.QQQ, US.IWM, US.JPM, US.GS, US.MSFT, US.GOOGL, US.NVDA, US.TSM, US.AVGO, US.LLY, US.ABT, US.PG, US.KO, US.TSLA, US.HD, US.MCD, US.COP, US.SLB, US.CAT, US.GE, US.UPS, US.LIN, US.FCX, US.NEM`. |
+| `horizons`, `reference_session` | Exactly `["1d", "3d", "5d", "next_week"]`; an explicit strict `YYYY-MM-DD` XNYS reference date. Actual PRSG-155: `"2026-10-28"`. |
+| `as_of_ms`, `minimum_known_ms` | Actual integer knowledge cutoffs: source/review availability ≤ minimum known ≤ as-of ≤ actual issue. |
+| `source_not_before_ms`, `issue_before_ms` | Explicit positive integers matching the reference’s next New York midnight and next XNYS first open. Actual PRSG-155: `1793246400000`, `1793280600000`. |
+| `limits` | Exactly `{"work_seconds":58,"cleanup_seconds":2,"rss_bytes":536870912,"threads":1,"retries":0}`. |
+| `feature_variant` | Exactly `{"metadata":[],"dated_metadata":{},"benchmark":null}`. |
+| `output_policy` | Exactly `{"required_keys":120,"qualified":0,"actions":["NO TRADE"],"unavailable_forecast_numbers":"blank-with-reasons","partial_exit_code":4}`. |
+
+A file reference has exactly `{"path":"/absolute/private/file","sha256":"64 lowercase hexadecimal characters","bytes":123}`. Files must be owner-held regular files with mode `0600`, their parent directories `0700`; roots are `0700`. Symlinks, traversal, conflicting references and unlisted source paths are rejected. Limits are 2 MiB per JSON, 32 MiB per other input and 128 MiB aggregate data. Runtime modules execute the verified source buffers, bypassing `.pyc` and later source changes. Unexpected preloaded protected modules or unlisted repository imports fail closed. The worker stages verified CSV and model bytes privately before calling existing readers/loaders; original artifacts remain untouched.
+
+The source admission review must explicitly have `kind: "reviewed-source-admission"`, `approved: true`, `reference_session`, `source_not_before_ms`, `issue_before_ms`, `known_at_ms`, `inputs_sha256` with the exact `history_csv`/`receipt`/`instruments` hashes, and the actual `source_completed_at_ms`, `financial_review_known_ms`, `inference_purpose_review_known_ms`, `lead_interface_admission_known_ms`. `qualifications` must equal `{"native_currency":null,"financial_currency":"USD","provider_formula_certified":false,"dividend_exclusion_certified":false,"cash_added":false}`. Its `basis_evidence` must retain the JPM/ABT/PG/CAT/GE/FCX qualifications: `request_label_only: true`, `cash_added: false`, `provider_formula_certified: false`, `dividend_exclusion_certified: false`. These explicit reviews bind already reviewed source facts; a filename or reviewer label supplies no authority.
+
+The compatibility review must have `kind: "reviewed-model-compatibility"`, `approved: true`, `reference_session`, `source_not_before_ms`, `issue_before_ms`, `known_at_ms`, `source_review_sha256`, the same `inputs_sha256`, `generation` equal to the original model folder and `model_sha256` containing exact hashes for `contract`, `manifest`, `artifact`, `child_fit_approval`, `parent_fit_approval`. Both reviews must be known by `minimum_known_ms`. The original canonical receipt must retain source/inference admission, deny training/public/promotion admission, declare no held revisions, preserve all 30 typed identities and exact shared training dates, and record the same financial/time qualifications. The original training CSV identified by `model_contract.provenance.inputs[0].file_sha256` must be included in the closed data inventory. The command independently intersects its per-code sessions with the requested 51 trailing sessions and requires the receipt’s `shared_training_dates_by_code` to match exactly. Missing or duplicate candidate CSV paths, duplicate training sessions and conflicting identities are blocked. The new inference CSV must contain exactly 1,530 distinct code/session rows: 51 sessions per name ending at the explicit reference, with compatible units and actual availability. For actual PRSG-155 these are 18 August through 28 October, with 48 shared training dates per name. Both existing fit approvals, the matching generation/contract/manifest chain and the parent-bound successful cleanup receipt are checked before deserialization.
+
+The three historically accepted PRSG-152/153 ticket path/hash claims may resolve only through the accepted, hash-bound three-entry historical resolution map and matching archived bytes in `data_files`. Their original claims remain intact. Current repository ticket files are never opened through this mechanism; no general path alias, hash refresh or broader code-root permission is supported.
+
+The separate finite release has exactly these fields:
+
+```json
+{
+  "schema_version": 1,
+  "kind": "praesagus-reviewed-inference-release",
+  "approved": true,
+  "bundle_sha256": "ACTUAL_BUNDLE_SHA256",
+  "run_id": "new_unique_reviewed_run_id",
+  "not_before_ms": 1793246400000,
+  "expires_at_ms": 1793247000000,
+  "resources_confirmed": true,
+  "exclusive_local_run_confirmed": true,
+  "review_reference": {
+    "path": "/absolute/private/lead-release-review.json",
+    "sha256": "ACTUAL_REVIEW_FILE_SHA256",
+    "bytes": 123
+  }
+}
+```
+
+This is a shape example, not a release. The actual validity interval is at most ten minutes and must end by the first-open deadline. `run_id` is one to 64 letters/digits/underscores/hyphens. The referenced review must explicitly approve the same `bundle_sha256` and `run_id`, and repeat `reference_session`, `source_not_before_ms`, `issue_before_ms` from the bundle, with an actual `known_at_ms` no later than execution. It is read from a permitted private root with its own hash/size check **after** the bundle is frozen; placing that later review inside the bundle's inventory would create a circular hash dependency.
+
+Each attempted run reserves `output_parent/run_id` once. Successful output includes a timestamped generation with `predictions.json`, `forecasts.csv`, `coverage.json`, `manifest.json`, plus attempt-level `child-approved.json`, `supervisor-receipt.json`, `parent-approved.json`, `delivery-receipt.json`. Failures retain their claim and failure/resource evidence; a consumed ID cannot be retried. Consumers must verify the final delivery receipt, **both** matching approvals and the immutable CSV hash. A lone child approval or CSV is insufficient. Approvals concern timing, resources and lineage for unpromoted research, not forecast quality or trading authority.
+
+The worker receives 58 seconds plus at most two seconds cleanup, with one-thread environment settings and sampled aggregate RSS limited to 512 MiB. Monitoring tracks observed PID start labels, descendant relationships and process groups, including observed descendants that detach. Unobserved children, sampling gaps above one second or unverifiable cleanup cannot approve. This is sampled supervision, not a hard RSS/thread cap or proof that descendants escaping before observation were seen. The actual clock, input hashes and future windows are checked again before delivery.
+
+| Exit | Meaning |
+| --- | --- |
+| `0` | All 120 numerical rows available; zero qualified candidates; all NO TRADE; both approvals and CSV hash verified. |
+| `2` | Preflight blocked, with JSON `reason_code`, `message`, `action`; no model worker started. |
+| `3` | Execution, resource, cleanup, artifact or approval failure; no approved delivery. |
+| `4` | All 120 keys retained, but some forecast numbers are blank with reasons. Actual available/withheld counts are reported; this is partial output. |
+
+Focused offline verification: `python -m pytest -q tests/test_reviewed_batch.py`. Synthetic pipeline tests and local subprocess resource tests do not establish actual forecast quality or a successful current-source run.
+
 ## Reading the bundle
 
 - `master.csv`: one main instrument per row, front-loaded identity/action/reference/current range and four median low/high windows, followed by uncertainty/status/provenance. `forecasts.csv` preserves immutable per-window model and matched-baseline results separately.

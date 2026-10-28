@@ -2,13 +2,9 @@
 
 Type: feature · Modules: market-research, financial-data, connectors · Owner: Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — replaces missed fresh CSV with next valid dated delivery.
 
-## Objective
+## Problem And Authority
 
 Human28Oct explicitly directs continued work until usable output and requests candid handover. PRSG153D1/D2 accepted; D3 original28Oct21:30MYTfirstopen window MISSED. This new dated contract does not rewrite that failure or reopen model training. Lead accepts preparation now and retains finite source/inference releases and actual financial/source review. Engineer owns supporting ingestion/user CLI; AI Engineer owns inference candidate/compatibility/output in disjoint private directory; Lead owns canonical pair/integration. At most two workers. Preserve unrelated .DS_Store.
-
-## Approach
-
-Prepare a newly dated source and inference bundle using the accepted saved model and existing interfaces, then independently verify the actual current CSV and user command. Source and inference execution remain separately released operations under the exact dated scope below.
 
 ## Frozen Dated Scope
 
@@ -19,18 +15,6 @@ Earliest source finality29Oct2026 12:00MYT, strictly before29Oct21:30MYTfirstope
 ## Durable Command Boundary
 
 First inspect existing run.py/predict/export interfaces; avoid a new calculator or duplicated training. Engineer may add ONLY scripts/stock-research/run_reviewed_batch.py, tests/test_reviewed_batch.py and README instructions if needed to consume a versioned reviewed bundle with explicit CSV/receipt/model/cutoff/output paths and verify provenance/hash/currentness/approval before one inference/export. Lead must review proposed exact bundle schema and executable path BEFORE runtime implementation. No private absolute locator/account/secret baked into committed code. Command must have a useful fail-closed explanation and nonzero exit for missing/stale/expired/partial inputs, and actual human-runnable invocation from a clean directory. This is not unattended source licensing/admission or model promotion. Data stays private; CLI alone cannot invent fresh sources or rights.
-
-## Choices
-
-Reuse the accepted PRSG-153 model without another fit. Preserve the missed delivery and select the next explicit eligible reference window rather than backdating or silently rolling an expired plan. Add a durable reviewed-bundle command only after its schema and executable path are reviewed.
-
-## Findings
-
-PRSG-153-D1/D2 are accepted, while its original fresh inference window was missed. The new reference, source preparation, actual CSV and clean-directory command acceptance in this ticket remain pending; a frozen plan is not evidence of successful delivery.
-
-## Tradeoffs
-
-The next eligible finality window moves actual delivery to 29 October and does not satisfy the missed 28 October outcome. A repeatable command reduces manual orchestration but cannot supply missing source permissions, current inputs, calibrated quality or public-report eligibility.
 
 ## Acceptance
 
@@ -61,3 +45,11 @@ The153offline refresh packet passed70independent tests but is expired. The curre
 ## Tradeoffs
 
 A next-day current forecast cannot be issued before the required completed-session finality. Offline preparation and a durable command can be completed now, while actual delivery remains dependent on fresh data and review.
+
+## Explicit Bundle Dates And Runtime Reuse
+
+Lead29October review clarifies the durable interface: the public wrapper accepts an explicitly supplied, separately reviewed reference and calendar-derived issuance bounds without a source-code edit each day. It never chooses or advances dates automatically. Require exact source/compatibility/release hash bindings and independently derive finality/first-open constraints from XNYS and actual clocks. PRSG155 actual source and inference authority remains ONLY28October reference/29October12:00–before21:30MYT. Other dated inputs require their own accepted purpose/source review and finite release; this does not authorize future collection or promotion. FixedUS30/120keys, resource budgets and all data/model safeguards remain unchanged.
+
+## Reviewed Runtime Implementation
+
+Publiccommand implemented/reviewed: independent147focusedchecks passed13.82s;verified-buffer imports,observedtree resources,exact3historicalarchives,stagedsamebytes,explicitcalendar-deriveddates and overlap; actualclean-directoryclockprobe exit2 before29Oct12MYT withoutworker/modelcalls. Source/current120CSV/actualpositiveoutput remainpending; notfullacceptance.
