@@ -53,3 +53,11 @@ Lead29October review clarifies the durable interface: the public wrapper accepts
 ## Reviewed Runtime Implementation
 
 Publiccommand implemented/reviewed: independent147focusedchecks passed13.82s;verified-buffer imports,observedtree resources,exact3historicalarchives,stagedsamebytes,explicitcalendar-deriveddates and overlap; actualclean-directoryclockprobe exit2 before29Oct12MYT withoutworker/modelcalls. Source/current120CSV/actualpositiveoutput remainpending; notfullacceptance.
+
+## Actual Provenance Graph Compatibility Review
+
+The actualmodel audit found1121hash-boundfiles and91exactartifactparents; the newlydesigned32root-count limit couldnotrepresentthatgraph. Lead explicitly permits atmost128narrowartifactroots, retaining2MiBJSON/32MiBfile/128MiBaggregate/256preimport/2048deep-reference and all execution caps. No home/code/globalprivate-store roots. Historicalbarepathlabels need a finite reviewed ledger binding exactdocumenthash,JSONpointer,value,class/rationale; neverdereferenceor execute. Structuredorpaired hash-bound source dependencies andabsolutehash-keyclaims remainclosed and nonexempt. Source review and bundle/release bindledgerhash; originalproofs andexact3historicalalias rules remainimmutable. Actualwhole-graph regression required before release; fixturesalone arenotadmission.
+
+## Financial Review Supporting Ownership
+
+Trader may write only new private PRSG155/trader/ financial-context/review templates and actual post-capture financial reviews. Reuse retained issuer/unit/action context and make every unknown explicit. No repository writes, shared documentation edits, push, provider capture, fit, inference, public publication or rights invention. Lead integrates all canonical/runtime changes. Actual new sources and source/admission/interface review remain required; pre-capture templates are not approval.

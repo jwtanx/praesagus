@@ -37,6 +37,8 @@ RUNTIME = {'scripts/stock-research/' + name + '.py' for name in
            ('run_reviewed_batch', 'data', 'storage', 'market_calendar', 'features', 'model', 'inference', 'ranking', 'export')}
 BASIS_CODES = {'US.JPM', 'US.ABT', 'US.PG', 'US.CAT', 'US.GE', 'US.FCX'}
 JSON_LIMIT, FILE_LIMIT, TOTAL_LIMIT = 2 * 1024**2, 32 * 1024**2, 128 * 1024**2
+LABEL_CLASSES = {'historical-execution-label', 'historical-config-label', 'environment-label', 'third-party-path-label'}
+NON_LABEL_FIELDS = {'prior_facts_path', 'accepted_history', 'accepted_receipt', 'financial_review', 'template_draft'}
 ARCHIVE_MAP_SHA = 'da796d77da285776b5f1ab1b526ab6248381a44bbd85910f7a71b3cca3db8d4a'
 HISTORICAL_ORIGINS = {
     'plans/2026-10-27/PRSG-152-remaining-us-model-source-cohorts.md': '8bf145720fa3813a0f1528f9a55afb2059c9a00fdfaee96b72509bac7c54beb8',
@@ -111,7 +113,8 @@ def narrow_root(value):
     path = path_check(value, directory=True)
     home = Path.home().resolve()
     need(len(path.parts) >= 4 and path != home and path not in home.parents and path != ROOT
-         and not path.is_relative_to(ROOT), 'broad_or_code_root_forbidden')
+         and not path.is_relative_to(ROOT) and path.name not in {'lead-state', 'private', 'store', 'moomoo-market-store'}
+         and (not path.is_relative_to(home) or len(path.relative_to(home).parts) >= 3), 'broad_or_code_root_forbidden')
     need(not any(re.fullmatch(r'(?i)(?:\.ssh|\.aws|\.config|credentials?|secrets?|keychains?)', part)
                  for part in path.parts), 'credential_root_forbidden')
     return path
@@ -168,7 +171,7 @@ def validate_shape(bundle):
     need(bundle['source_not_before_ms'] == int(midnight.timestamp()*1000), 'source_finality_mismatch')
     for key in ('as_of_ms', 'minimum_known_ms'):
         integer(bundle[key], 1)
-    need(type(bundle['read_roots']) is list and 1 <= len(bundle['read_roots']) <= 32
+    need(type(bundle['read_roots']) is list and 1 <= len(bundle['read_roots']) <= 128
          and all(type(x) is str for x in bundle['read_roots'])
          and len(set(bundle['read_roots'])) == len(bundle['read_roots']), 'input_schema_invalid')
     keys(bundle['inputs'], ('history_csv', 'receipt', 'instruments', 'source_review', 'model_compatibility_review'))
@@ -234,27 +237,72 @@ class Inventory:
         for original, snapshot in self.aliases.items():
             need(snapshot['path'] in self.raw and self.hashes[snapshot['path']] == snapshot['sha256'], 'historical_archive_mismatch')
             self.raw[original], self.hashes[original] = self.raw[snapshot['path']], snapshot['sha256']
-        for doc in self.documents.values():
-            self.closed(doc)
+        self.labels = set()
+        self.label_ledger_sha256 = None
+        source = self.document(bundle['inputs']['source_review'])
+        if 'provenance_path_labels_sha256' in source:
+            ledger_sha = source['provenance_path_labels_sha256']
+            ledger = self.by_hash(ledger_sha)
+            keys(ledger, ('schema_version', 'kind', 'approved', 'known_at_ms', 'entries'))
+            need(exact(ledger['schema_version'], 1) and ledger['kind'] == 'reviewed-provenance-path-labels'
+                 and ledger['approved'] is True, 'path_label_ledger_unreviewed')
+            integer(ledger['known_at_ms'], 1, bundle['as_of_ms'])
+            need(type(ledger['entries']) is list and 1 <= len(ledger['entries']) <= 256, 'path_label_ledger_invalid')
+            controls = {ref['sha256'] for ref in [*bundle['inputs'].values(),
+                        *[v for k, v in bundle['model'].items() if k != 'folder']]}
+            for index, entry in enumerate(ledger['entries']):
+                keys(entry, ('document_sha256', 'pointer', 'value', 'classification', 'rationale'))
+                need(entry['classification'] in LABEL_CLASSES and type(entry['rationale']) is str
+                     and 0 < len(entry['rationale'].strip()) <= 4096 and type(entry['value']) is str
+                     and entry['value'].startswith('/') and len(entry['value']) <= 8192
+                     and entry['document_sha256'] not in controls and entry['document_sha256'] != ledger_sha,
+                     'path_label_ledger_invalid')
+                document = self.by_hash(entry['document_sha256'])
+                parent, leaf, value = pointer_value(document, entry['pointer'])
+                need(type(value) is str and value == entry['value'], 'path_label_binding_mismatch')
+                need(leaf not in NON_LABEL_FIELDS and not (type(parent) is dict
+                     and ({'path', 'sha256'} <= parent.keys() or leaf.endswith('_path')
+                          and leaf[:-5]+'_sha256' in parent)), 'path_label_reference_forbidden')
+                label = (entry['document_sha256'], entry['pointer'], entry['value'])
+                need(label not in self.labels, 'path_label_duplicate')
+                self.labels.add(label)
+                # Validated declarations describe labels; they are not new references.
+                self.labels.add((ledger_sha, '/entries/'+str(index)+'/value', entry['value']))
+                self.labels.add((ledger_sha, '/entries/'+str(index)+'/pointer', entry['pointer']))
+            self.label_ledger_sha256 = ledger_sha
+        for path, doc in self.documents.items():
+            self.closed(doc, self.hashes[path])
 
-    def closed(self, value):
+    def closed(self, value, document_sha=None, pointer=''):
         if type(value) is dict:
+            if value.get('original_path') in self.aliases:
+                need(value.get('original_sha256') == self.aliases[value['original_path']]['sha256'], 'historical_archive_mismatch')
             for name, item in value.items():
                 if name in self.aliases:
                     need(item == self.aliases[name]['sha256'], 'historical_archive_mismatch')
-            if value.get('original_path') in self.aliases:
-                need(value.get('original_sha256') == self.aliases[value['original_path']]['sha256'], 'historical_archive_mismatch')
+                elif name.startswith('/') and type(item) is str and re.fullmatch('[0-9a-f]{64}', item):
+                    need(name in self.raw and self.hashes[name] == item, 'unlisted_source_reference')
+                if type(item) is str and item.startswith('/'):
+                    paired = {'prior_facts_path': 'prior_facts_sha256', 'accepted_history': 'accepted_history_sha256',
+                              'accepted_receipt': 'accepted_receipt_sha256', 'template_draft': 'template_wrapper_sha256',
+                              'financial_review': 'financial_review_sha256'}.get(name)
+                    if paired is None and name.endswith('_path'):
+                        paired = name[:-5]+'_sha256'
+                    if paired in value:
+                        need(item in self.raw and self.hashes[item] == value[paired], 'paired_source_hash_mismatch')
             if {'path', 'sha256'} <= value.keys() and type(value['path']) is str and value['path'].startswith('/'):
                 need(value['path'] in self.raw and self.hashes[value['path']] == value['sha256'], 'unlisted_source_reference')
                 if 'bytes' in value:
                     integer(value['bytes'], high=FILE_LIMIT)
                     need(value['bytes'] == len(self.raw[value['path']]), 'input_hash_mismatch')
-            for item in value.values():
-                self.closed(item)
+            for name, item in value.items():
+                self.closed(item, document_sha, pointer+'/'+name.replace('~', '~0').replace('/', '~1'))
         elif type(value) is list:
-            for item in value:
-                self.closed(item)
+            for index, item in enumerate(value):
+                self.closed(item, document_sha, pointer+'/'+str(index))
         elif type(value) is str and value.startswith('/') and not value.startswith('/api/'):
+            if (document_sha, pointer, value) in getattr(self, 'labels', set()):
+                return
             # Directory labels may only be explicit roots or ancestors of listed files.
             p = Path(value)
             need(value in self.raw or any(p == Path(f).parent or p in Path(f).parents
@@ -270,6 +318,23 @@ class Inventory:
         matches = [p for p, h in self.hashes.items() if h == value and p in self.documents]
         need(len(matches) == 1, 'unlisted_source_reference')
         return self.documents[matches[0]]
+
+
+def pointer_value(document, pointer):
+    """Resolve one canonical RFC6901 pointer; never treat it as a filesystem path."""
+    need(type(pointer) is str and pointer.startswith('/') and len(pointer) <= 8192, 'path_label_pointer_invalid')
+    value, parent, leaf = document, None, None
+    for token in pointer[1:].split('/'):
+        need(re.search(r'~(?![01])', token) is None, 'path_label_pointer_invalid')
+        leaf = token.replace('~1', '/').replace('~0', '~')
+        parent = value
+        if type(value) is list:
+            need(re.fullmatch(r'0|[1-9][0-9]*', leaf) is not None and int(leaf) < len(value), 'path_label_pointer_invalid')
+            value = value[int(leaf)]
+        else:
+            need(type(value) is dict and leaf in value, 'path_label_pointer_invalid')
+            value = value[leaf]
+    return parent, leaf, value
 
 
 class BufferLoader(importlib.abc.Loader):

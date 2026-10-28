@@ -655,3 +655,128 @@ def test_training_csv_inventory_intersection_fails_closed(packet, case):
         inventory.raw[path] = raw + raw.splitlines(keepends=True)[1]
     with pytest.raises(batch.Blocked, match='training_source_inventory'):
         batch.calendar_and_history(bundle, inventory)
+
+
+def with_label(packet, *, document=None, pointer='/threads_environment/PATH', value='/usr/bin:/bin'):
+    document = document or {'threads_environment': {'PATH': value}}
+    target = put(packet['inputs']/'historical-metadata.json', document)
+    entry = dict(document_sha256=target['sha256'], pointer=pointer, value=value,
+                 classification='environment-label', rationale='Historical environment value only; never read or executed.')
+    ledger = dict(schema_version=1, kind='reviewed-provenance-path-labels', approved=True,
+                  known_at_ms=packet['now']-2000, entries=[entry])
+    return target, ledger
+
+
+def bind_labels(packet, target, ledger):
+    ledger_ref = put(packet['inputs']/'path-labels.json', ledger)
+    packet['bundle']['data_files'] += [target, ledger_ref]
+    source = packet['source']
+    source['provenance_path_labels_sha256'] = ledger_ref['sha256']
+    packet['bundle']['inputs']['source_review'] = put(Path(packet['bundle']['inputs']['source_review']['path']), source)
+    packet['compat']['source_review_sha256'] = packet['bundle']['inputs']['source_review']['sha256']
+    packet['bundle']['inputs']['model_compatibility_review'] = put(Path(packet['bundle']['inputs']['model_compatibility_review']['path']), packet['compat'])
+    rebind(packet)
+    return ledger_ref
+
+
+def test_exact_reviewed_path_label_is_not_opened_or_executed(packet, monkeypatch, capsys):
+    target, ledger = with_label(packet)
+    bind_labels(packet, target, ledger)
+    read = batch.read_file
+    def guarded(path, **kwargs):
+        assert str(path) != '/usr/bin:/bin'
+        return read(path, **kwargs)
+    monkeypatch.setattr(batch, 'read_file', guarded)
+    assert batch.main(args(packet, '--check-only')) == 0
+    assert json.loads(capsys.readouterr().out)['model_loaded'] is False
+    assert not list(packet['output'].iterdir())
+
+
+@pytest.mark.parametrize('defect', ['approval', 'document_hash', 'pointer', 'value', 'classification', 'rationale',
+                                   'duplicate', 'future', 'unbound', 'unknown', 'current_control'])
+def test_finite_label_ledger_fails_closed(packet, defect, capsys):
+    target, ledger = with_label(packet)
+    entry = ledger['entries'][0]
+    if defect == 'approval':
+        ledger['approved'] = False
+    elif defect == 'document_hash':
+        entry['document_sha256'] = '0'*64
+    elif defect == 'pointer':
+        entry['pointer'] = '/threads_environment/OTHER'
+    elif defect == 'value':
+        entry['value'] = '/different'
+    elif defect == 'classification':
+        entry['classification'] = 'arbitrary-file-authority'
+    elif defect == 'rationale':
+        entry['rationale'] = ''
+    elif defect == 'duplicate':
+        ledger['entries'].append(dict(entry))
+    elif defect == 'future':
+        ledger['known_at_ms'] = packet['bundle']['as_of_ms']+1
+    elif defect == 'unknown':
+        entry['execute'] = True
+    elif defect == 'current_control':
+        entry['document_sha256'] = packet['bundle']['inputs']['receipt']['sha256']
+        entry['pointer'] = '/currency_interpretation'
+    bind_labels(packet, target, ledger)
+    if defect == 'unbound':
+        packet['source'].pop('provenance_path_labels_sha256')
+        packet['bundle']['inputs']['source_review'] = put(Path(packet['bundle']['inputs']['source_review']['path']), packet['source'])
+        rebind(packet)
+    assert batch.main(args(packet, '--check-only')) == 2
+    assert json.loads(capsys.readouterr().out)['status'] == 'blocked'
+
+
+@pytest.mark.parametrize('document,pointer', [
+    ({'ref': {'path': '/unlisted', 'sha256': '0'*64, 'bytes': 1}}, '/ref/path'),
+    ({'prior_facts_path': '/unlisted'}, '/prior_facts_path'),
+    ({'accepted_history': '/unlisted'}, '/accepted_history'),
+    ({'accepted_receipt': '/unlisted'}, '/accepted_receipt'),
+    ({'financial_review': '/unlisted'}, '/financial_review'),
+    ({'template_draft': '/unlisted'}, '/template_draft'),
+    ({'evidence_path': '/unlisted', 'evidence_sha256': '0'*64}, '/evidence_path'),
+])
+def test_source_references_cannot_be_exempted_as_labels(packet, document, pointer, capsys):
+    target, ledger = with_label(packet, document=document, pointer=pointer, value='/unlisted')
+    bind_labels(packet, target, ledger)
+    assert batch.main(args(packet, '--check-only')) == 2
+    assert json.loads(capsys.readouterr().out)['reason_code'] == 'path_label_reference_forbidden'
+
+
+def test_absolute_hash_map_is_closed_even_when_other_scalar_is_labelled(packet, capsys):
+    target, ledger = with_label(packet, document={'/unlisted': '0'*64, 'label': '/historical'}, pointer='/label', value='/historical')
+    bind_labels(packet, target, ledger)
+    assert batch.main(args(packet, '--check-only')) == 2
+    assert json.loads(capsys.readouterr().out)['reason_code'] == 'unlisted_source_reference'
+
+
+def test_rfc6901_escaping_and_exact_array_index():
+    doc = {'a/b~': [{'path': '/label'}]}
+    assert batch.pointer_value(doc, '/a~1b~0/0/path')[2] == '/label'
+    for pointer in ('/a~1b~0/00/path', '/a~1b~0/-/path', '/a~2b/0/path'):
+        with pytest.raises(batch.Blocked, match='path_label_pointer_invalid'):
+            batch.pointer_value(doc, pointer)
+
+
+def test_more_exact_narrow_roots_without_broader_access(packet, capsys):
+    for i in range(96):
+        root = packet['inputs'].parent/('artifact-parent-'+str(i))
+        root.mkdir(mode=0o700)
+        packet['bundle']['read_roots'].append(str(root))
+    assert len(packet['bundle']['read_roots']) == 98
+    rebind(packet)
+    assert batch.main(args(packet, '--check-only')) == 0
+    assert json.loads(capsys.readouterr().out)['model_loaded'] is False
+    assert batch.JSON_LIMIT == 2*1024**2 and batch.FILE_LIMIT == 32*1024**2 and batch.TOTAL_LIMIT == 128*1024**2
+    oversized = copy.deepcopy(packet['bundle'])
+    oversized['read_roots'] += [str(packet['inputs'].parent/('extra-'+str(i))) for i in range(31)]
+    with pytest.raises(batch.Blocked):
+        batch.validate_shape(oversized)
+
+
+def test_legacy_paired_source_hash_must_match_inventory(packet):
+    target = put(packet['inputs']/'old-history.csv', b'fictional', raw=True)
+    packet['bundle']['data_files'].append(target)
+    inventory = batch.Inventory(packet['bundle'])
+    with pytest.raises(batch.Blocked, match='paired_source_hash_mismatch'):
+        inventory.closed({'accepted_history': target['path'], 'accepted_history_sha256': '0'*64})
