@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-155",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "connectors"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-28",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-28/PRSG-155-next-reference-us30-batch-delivery.md",
+  "objective": "Recover missed PRSG153D3 using a separately dated28Octreference/29Octfuture-window source and one saved-model120-key CSV; deliver documented repeatable command and preserve deadline miss.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "d9a3c64ebcecf5afd9b9aa917e0896b261ef7b71",
+  "allowed_paths": [
+    "plans/2026-10-28/PRSG-155-next-reference-us30-batch-delivery.md",
+    "plans/2026-10-28/PRSG-155.harness.json",
+    "scripts/stock-research/run_reviewed_batch.py",
+    "tests/test_reviewed_batch.py",
+    "scripts/stock-research/README.md"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "connectors/",
+    "ingest/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "1",
+      "kind": "manual",
+      "description": "Frozen next-reference source preparation/QA, current financial-purpose review and source lineage independently accepted.",
+      "status": "pending"
+    },
+    {
+      "id": "2",
+      "kind": "manual",
+      "description": "One actual next-reference120-key saved-model CSV with immutable receipts/coverage and current future windows independently verified; no refit or promotion.",
+      "status": "pending"
+    },
+    {
+      "id": "3",
+      "kind": "manual",
+      "description": "One documented user command verifies reviewed bundle, runs batch/export or returns exact actionable failure; focused tests and independent clean-directory execution pass.",
+      "status": "pending"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-155-D1",
+      "description": "Frozen next-reference source preparation/QA, current financial-purpose review and source lineage independently accepted.",
+      "check_ids": [
+        "1"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-155-D2",
+      "description": "One actual next-reference120-key saved-model CSV with immutable receipts/coverage and current future windows independently verified; no refit or promotion.",
+      "check_ids": [
+        "2"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-155-D3",
+      "description": "One documented user command verifies reviewed bundle, runs batch/export or returns exact actionable failure; focused tests and independent clean-directory execution pass.",
+      "check_ids": [
+        "3"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

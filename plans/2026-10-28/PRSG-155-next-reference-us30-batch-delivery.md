@@ -1,0 +1,63 @@
+# PRSG-155 — Next Reference US30 Batch Delivery
+
+Type: feature · Modules: market-research, financial-data, connectors · Owner: Engineer · Priority: P1 · Effort: S (0.5–2 person-days estimate) · Impact: high — replaces missed fresh CSV with next valid dated delivery.
+
+## Objective
+
+Human28Oct explicitly directs continued work until usable output and requests candid handover. PRSG153D1/D2 accepted; D3 original28Oct21:30MYTfirstopen window MISSED. This new dated contract does not rewrite that failure or reopen model training. Lead accepts preparation now and retains finite source/inference releases and actual financial/source review. Engineer owns supporting ingestion/user CLI; AI Engineer owns inference candidate/compatibility/output in disjoint private directory; Lead owns canonical pair/integration. At most two workers. Preserve unrelated .DS_Store.
+
+## Approach
+
+Prepare a newly dated source and inference bundle using the accepted saved model and existing interfaces, then independently verify the actual current CSV and user command. Source and inference execution remain separately released operations under the exact dated scope below.
+
+## Frozen Dated Scope
+
+Exact same30code order/model from153. Private source preparation ONLY /Users/jwtan/.codex/lead-state/PRSG155/engineer; AI ONLY /Users/jwtan/.codex/lead-state/PRSG155/ai; no modification of old inputs/models/releases. Calendar independently verify latest51XNYSregularsessions ending28Oct2026 (expected18Aug–28Oct); sharedtraining-through23Oct expected48/name, three new26/27/28Oct dates. One basicinfoPOST all30 then30historyGET; same31requests/11130wire/10sHTTP/3sactualstartspacing/600swork+2scleanup/0retry. ExacttypedIDs/type/unit/precision/nativeNone/basis/source/knowns preserved; newfactor/currentvintagechanges HOLD for explicit unchanged-source financial interpretation, neverrepair/drop.
+
+Earliest source finality29Oct2026 12:00MYT, strictly before29Oct21:30MYTfirstopen. No live calls now; no automatic rollover beyond this dated contract. Source capture and inference each require NEW finite Lead release after preparation/financial-purpose review and fresh resource gates. Reuse accepted153model; no refit/calibration/HPO. AI inference60seconds/512MiB/1thread/0retry, exact120keys over1d/3d/5d/next_week, allNO TRADE/zeroqualified, numericalinvalidrowsblankwithreasons, actualcoverage reported. Both actual child/parent approvals and immutable CSV hash required. Strong113D2/MY20/full50/standalone100/publicrights remain separate unmet gates.
+
+## Durable Command Boundary
+
+First inspect existing run.py/predict/export interfaces; avoid a new calculator or duplicated training. Engineer may add ONLY scripts/stock-research/run_reviewed_batch.py, tests/test_reviewed_batch.py and README instructions if needed to consume a versioned reviewed bundle with explicit CSV/receipt/model/cutoff/output paths and verify provenance/hash/currentness/approval before one inference/export. Lead must review proposed exact bundle schema and executable path BEFORE runtime implementation. No private absolute locator/account/secret baked into committed code. Command must have a useful fail-closed explanation and nonzero exit for missing/stale/expired/partial inputs, and actual human-runnable invocation from a clean directory. This is not unattended source licensing/admission or model promotion. Data stays private; CLI alone cannot invent fresh sources or rights.
+
+## Choices
+
+Reuse the accepted PRSG-153 model without another fit. Preserve the missed delivery and select the next explicit eligible reference window rather than backdating or silently rolling an expired plan. Add a durable reviewed-bundle command only after its schema and executable path are reviewed.
+
+## Findings
+
+PRSG-153-D1/D2 are accepted, while its original fresh inference window was missed. The new reference, source preparation, actual CSV and clean-directory command acceptance in this ticket remain pending; a frozen plan is not evidence of successful delivery.
+
+## Tradeoffs
+
+The next eligible finality window moves actual delivery to 29 October and does not satisfy the missed 28 October outcome. A repeatable command reduces manual orchestration but cannot supply missing source permissions, current inputs, calibrated quality or public-report eligibility.
+
+## Acceptance
+
+- [ ] PRSG-155-D1: Frozen next-reference source preparation/QA, current financial-purpose review and source lineage independently accepted.
+- [ ] PRSG-155-D2: One actual next-reference120-key saved-model CSV with immutable receipts/coverage and current future windows independently verified; no refit or promotion.
+- [ ] PRSG-155-D3: One documented user command verifies reviewed bundle, runs batch/export or returns exact actionable failure; focused tests and independent clean-directory execution pass.
+
+## Checks
+
+Typedduplicates/missingIDs, shared48datefacts and changedbasis, bounds, stale/future/expiry/noautorollover, invalidfiles/foreignpaths/sidecarhashes, no network in offlineQA, no sourcecalls before finality, immutable outputs, numericalcrossings/blankwithheld/exactkeys, bothapprovals/resources/timeoutcleanup, actionable command failures. Preserve allfailedattempts. SyntheticQA is not actualforecastquality.
+
+## Objective
+
+Deliver the next valid datedUS30 batch after the original153window was missed, plus a durable human command. Preserve the original failure and all coverage/quality gates.
+
+## Approach
+
+Prepare disjoint Engineer source/CLI and AI inference work, independently review actual inputs and finite releases, then execute one end-to-end output before its next first-open cutoff.
+
+## Choices
+
+Reuse the accepted153model and existing numerical/export interfaces, with no refit, new calculator, implicit rollover or public-data publication. A versioned reviewed bundle makes prerequisites explicit.
+
+## Findings
+
+The153offline refresh packet passed70independent tests but is expired. The current trained30-name model has22620source rows/84060labels and remains uncalibrated research. New source finality is29October12MYT.
+
+## Tradeoffs
+
+A next-day current forecast cannot be issued before the required completed-session finality. Offline preparation and a durable command can be completed now, while actual delivery remains dependent on fresh data and review.
