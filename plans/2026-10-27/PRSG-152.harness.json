@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-152",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-27",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-27/PRSG-152-remaining-us-model-source-cohorts.md",
+  "objective": "Collect and independently review the remaining24 fixedUS30 adjusted-history series through six separately released four-name source cohorts; no fitting or coverage promotion.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "6f6cec69cf35a28f3e5a90fd5cf80ad3d634980d",
+  "allowed_paths": [
+    "plans/2026-10-27/PRSG-152.harness.json",
+    "plans/2026-10-27/PRSG-152-remaining-us-model-source-cohorts.md"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "ingest/",
+    "connectors/",
+    "tests/",
+    "artifacts/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "1",
+      "kind": "manual",
+      "description": "Six exact independent29request cohort preparations/type maps/source-use/bounded artifacts/rejectionQA independently accepted before live releases.",
+      "status": "passed",
+      "evidence": [
+        "Six finite cohorts:174 actual requests/0retries,18816 observations/18096 unique code-dates,144 five-date seams/10800 exact field comparisons. Lead preparation510QA passed; all six actual-source reviews and financial basis resolutions accepted. Private evidence /Users/jwtan/.codex/lead-state/PRSG152/lead/ and PRSG153/lead/full30-candidate-admission.json. Conditional nativeUSD inference retains nativeNone; cash-linked adjustments disclosed, no provider formula/PIT/public certification."
+      ]
+    },
+    {
+      "id": "2",
+      "kind": "manual",
+      "description": "All separately released remaining24source series have754unique target dates/6exactfive-date seams each, original lineage preserved and financial-source readiness independently reviewed; no canonicaldataset/fit/promotion implied.",
+      "status": "passed",
+      "evidence": [
+        "Six finite cohorts:174 actual requests/0retries,18816 observations/18096 unique code-dates,144 five-date seams/10800 exact field comparisons. Lead preparation510QA passed; all six actual-source reviews and financial basis resolutions accepted. Private evidence /Users/jwtan/.codex/lead-state/PRSG152/lead/ and PRSG153/lead/full30-candidate-admission.json. Conditional nativeUSD inference retains nativeNone; cash-linked adjustments disclosed, no provider formula/PIT/public certification."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-152-D1",
+      "description": "Six exact independent29request cohort preparations/type maps/source-use/bounded artifacts/rejectionQA independently accepted before live releases.",
+      "check_ids": [
+        "1"
+      ],
+      "status": "done",
+      "evidence": [
+        "Six finite cohorts:174 actual requests/0retries,18816 observations/18096 unique code-dates,144 five-date seams/10800 exact field comparisons. Lead preparation510QA passed; all six actual-source reviews and financial basis resolutions accepted. Private evidence /Users/jwtan/.codex/lead-state/PRSG152/lead/ and PRSG153/lead/full30-candidate-admission.json. Conditional nativeUSD inference retains nativeNone; cash-linked adjustments disclosed, no provider formula/PIT/public certification."
+      ]
+    },
+    {
+      "id": "PRSG-152-D2",
+      "description": "All separately released remaining24source series have754unique target dates/6exactfive-date seams each, original lineage preserved and financial-source readiness independently reviewed; no canonicaldataset/fit/promotion implied.",
+      "check_ids": [
+        "2"
+      ],
+      "status": "done",
+      "evidence": [
+        "Six finite cohorts:174 actual requests/0retries,18816 observations/18096 unique code-dates,144 five-date seams/10800 exact field comparisons. Lead preparation510QA passed; all six actual-source reviews and financial basis resolutions accepted. Private evidence /Users/jwtan/.codex/lead-state/PRSG152/lead/ and PRSG153/lead/full30-candidate-admission.json. Conditional nativeUSD inference retains nativeNone; cash-linked adjustments disclosed, no provider formula/PIT/public certification."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Leadacceptsnextremaining24sourcegroupsunderexistingfullUS30coveragegoal;completed141/150/151notreopened.EachcohortneedsnewfiniteLeadrelease;noautomaticallbatchdispatch.",
+      "Six finite cohorts:174 actual requests/0retries,18816 observations/18096 unique code-dates,144 five-date seams/10800 exact field comparisons. Lead preparation510QA passed; all six actual-source reviews and financial basis resolutions accepted. Private evidence /Users/jwtan/.codex/lead-state/PRSG152/lead/ and PRSG153/lead/full30-candidate-admission.json. Conditional nativeUSD inference retains nativeNone; cash-linked adjustments disclosed, no provider formula/PIT/public certification."
+    ]
+  }
+}
