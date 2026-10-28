@@ -73,7 +73,7 @@ Parents can remain open after a child delivered one historical result. Do not re
 | PRSG-3 | Filing details and metric attribution | Acceptance not delivered | Engineer build a small accession/period/unit/amendment-aware vertical slice before UI expansion. |
 | PRSG-4 | Authenticated versioned shared watchlist | Authentication, concurrency, persistence and reload acceptance pending | Engineer implement conflict/restart tests and one safe API/UI path. Do not use report names as a discovery universe. |
 | PRSG-5 | Alert outbox, retries and delivery visibility | Transactional leases, restart behavior and actual delivery acceptance pending | Engineer use a fake receiver first; verify idempotency, leases and secret redaction before real notifications. |
-| PRSG-154 | This handover | Documentation review and delivery | Lead verify every open ticket is indexed, links resolve and no secrets or false completion claims appear. |
+| PRSG-154 | This handover | Documentation review accepted; product delivery remains separate | Preserve the verified inventory and inspect later canonical changes before continuing. |
 
 ## Separate unmet products and proposals
 
@@ -107,7 +107,6 @@ Each link points to the authoritative specification and manifest. The handover d
 - **PRSG-135** (in_progress, Lead): `PRSG-135-D2`, `PRSG-135-D4`. [Spec](../plans/2026-10-23/PRSG-135-october-forecast-mvp-release.md) · [Manifest](../plans/2026-10-23/PRSG-135.harness.json).
 - **PRSG-138** (blocked, Lead): `PRSG-138-D1`, `PRSG-138-D2`, `PRSG-138-D3`, `PRSG-138-D4`. [Spec](../plans/2026-10-25/PRSG-138-daily-report-public-eligibility-recovery.md) · [Manifest](../plans/2026-10-25/PRSG-138.harness.json).
 - **PRSG-153** (in_progress, AI Engineer): `PRSG-153-D3`. [Spec](../plans/2026-10-27/PRSG-153-full-us30-research-model-batch.md) · [Manifest](../plans/2026-10-27/PRSG-153.harness.json).
-- **PRSG-154** (in_progress, Lead): `PRSG-154-D1`, `PRSG-154-D2`. [Spec](../plans/2026-10-28/PRSG-154-claude-handover-and-delivery-audit.md) · [Manifest](../plans/2026-10-28/PRSG-154.harness.json).
 - **PRSG-155** (in_progress, Engineer): `PRSG-155-D1`, `PRSG-155-D2`, `PRSG-155-D3`. [Spec](../plans/2026-10-28/PRSG-155-next-reference-us30-batch-delivery.md) · [Manifest](../plans/2026-10-28/PRSG-155.harness.json).
 
 ## Candid retrospective
