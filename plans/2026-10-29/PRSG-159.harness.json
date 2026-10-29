@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-159",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "skills",
+      "harness",
+      "docs"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-29",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-29/PRSG-159-lead-optional-workflow-decision.md",
+  "objective": "Deliver a bounded, reviewable decision and candidate prompts for slim Lead, on-demand Lead, or Lead-free delivery, preserving human pauses and independent financial/model review.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Human; independent specialists as specified",
+  "scope_status": "provisional",
+  "base_sha": "50ce86d8c4c8f7a89acbe7df2536db2bb231b2b7",
+  "allowed_paths": [
+    "plans/2026-10-29/PRSG-159-lead-optional-workflow-decision.md",
+    "plans/2026-10-29/PRSG-159.harness.json",
+    "docs/LEAD_OPTIONAL_DECISION.md"
+  ],
+  "protected_paths": [
+    "skills/",
+    "agent-operations/",
+    "AGENTS.md",
+    "docs/LEAD_WORKFLOW.md",
+    "connectors/",
+    "ingest/",
+    "artifacts/",
+    ".DS_Store"
+  ],
+  "dependencies": [
+    "PRSG-122",
+    "PRSG-98",
+    "PRSG-121"
+  ],
+  "checks": [
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent review of scoped artifacts, relevant focused behavior checks and Human acceptance; execution evidence recorded at implementation time.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-159-D1",
+      "description": "Compare the three viable operating modes within the one-person-day timebox, using current local evidence, ownership costs, risks and an explicit recommended pilot with stop/continue criteria.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-159-D2",
+      "description": "Deliver concise candidate skill/coordination/report prompts and a role-responsibility map, showing actual UTF-8 byte counts and unavailable telemetry honestly; preserve pauses, resource gates, review and recovery semantics.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-159-D3",
+      "description": "Replay completed-ticket preservation, busy owner, returned result, user amendment, missing worker state, denied dispatch, expired admission, resource block and human pause against the proposed behavior; record expected versus observed judgments.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-159-D4",
+      "description": "Human selects the mode and reviews the concrete cutover/rollback and acceptance-authority changes before any operational or production instruction mutation. No existing role, schedule or skill is changed by this spike.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

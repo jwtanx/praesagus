@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-157",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "harness",
+      "financial-data",
+      "docs"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-29",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-29/PRSG-157-cross-product-delivery-readiness.md",
+  "objective": "Derive one read-only per-product readiness and safe restart view from existing immutable receipts, exact reviews and canonical tickets without creating another run framework or admission registry.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Human; independent specialists as specified",
+  "scope_status": "provisional",
+  "base_sha": "50ce86d8c4c8f7a89acbe7df2536db2bb231b2b7",
+  "allowed_paths": [
+    "plans/2026-10-29/PRSG-157-cross-product-delivery-readiness.md",
+    "plans/2026-10-29/PRSG-157.harness.json",
+    "scripts/stock-research/inspect_delivery.py",
+    "tests/test_delivery_readiness.py",
+    "docs/DELIVERY_READINESS.md",
+    "plans/2026-10-29/final-work-plan.md"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "ingest/",
+    "artifacts/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "dependencies": [
+    "PRSG-140",
+    "PRSG-141",
+    "PRSG-155",
+    "PRSG-124",
+    "PRSG-109"
+  ],
+  "checks": [
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent review of scoped artifacts, relevant focused behavior checks and Human acceptance; execution evidence recorded at implementation time.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-157-D1",
+      "description": "Inventory existing receipts and prove the minimal missing delta; document fixed50, US30 and standalone100 contracts without reopening completed implementations.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-157-D2",
+      "description": "Derive an attributable per-ticker/product readiness view with explicit missing, stale, incompatible, withheld and ready states, exact blocker/owner/next action and honest denominators; original knowledge times and approvals are preserved.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-157-D3",
+      "description": "Reconcile completed, interrupted, tampered, expired and consumed-release states without network, credentials, capture, inference or implicit approval; expose the exact safe continuation.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-157-D4",
+      "description": "Independently reproduce the view from a frozen private bundle and verify actual output references, focused negative cases and human-readable command/documentation; Human accepts with Trader and AI Engineer domain review.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

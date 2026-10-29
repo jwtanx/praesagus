@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-158",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend",
+      "market-research",
+      "docs"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "medium-high"
+  },
+  "created_on": "2026-10-29",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-29/PRSG-158-research-reading-comprehension.md",
+  "objective": "Verify and, only where a fresh baseline finds a gap, improve one representative daily-report reading path so readers identify the finding, evidence limits and next check.",
+  "status": "planned",
+  "owner": "Engineer",
+  "reviewer": "Human; independent specialists as specified",
+  "scope_status": "provisional",
+  "base_sha": "50ce86d8c4c8f7a89acbe7df2536db2bb231b2b7",
+  "allowed_paths": [
+    "plans/2026-10-29/PRSG-158-research-reading-comprehension.md",
+    "plans/2026-10-29/PRSG-158.harness.json",
+    "artifacts/daily-market-brief/index.html",
+    "tests/compact_report_viewer_checks.cjs",
+    "tests/daily_report_viewer_checks.cjs",
+    "docs/RESEARCH_READING_REVIEW.md"
+  ],
+  "protected_paths": [
+    "artifacts/daily-market-brief/reports/",
+    "artifacts/financial-calendar/",
+    "connectors/",
+    "ingest/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "dependencies": [
+    "PRSG-87",
+    "PRSG-89",
+    "PRSG-96",
+    "PRSG-157"
+  ],
+  "checks": [
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent review of scoped artifacts, relevant focused behavior checks and Human acceptance; execution evidence recorded at implementation time.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-158-D1",
+      "description": "Recheck the current four representative states, retain a baseline and have Human select a Designer/Trader-reviewed bounded layout or accept an evidence-backed no-code outcome.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-158-D2",
+      "description": "Essential instrument information fits 390px without horizontal document scrolling; observations, interpretations, forecasts and Unrated states remain distinct, with material limits adjacent and full provenance accessible.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-158-D3",
+      "description": "Verify keyboard/focus/disclosure/filter/report-date/history behavior and unchanged financial values using relevant existing checks; replay frozen summary-fidelity examples where applicable.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-158-D4",
+      "description": "Record reader tasks, participant count, completion and misinterpretations for finding, Unrated meaning, source time and next check, and deliver actual preview/evidence/limitations for Human acceptance; claim no measured lift without a comparable baseline.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

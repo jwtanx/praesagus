@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-160",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P3",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.25,
+      "high": 0.5
+    },
+    "impact": "low"
+  },
+  "created_on": "2026-10-29",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-29/PRSG-160-fear-greed-challenger-feasibility.md",
+  "objective": "Assess whether a separately scoped CNN Fear and Greed challenger experiment is justified by permitted timestamped evidence and a valid unseen-period evaluation design.",
+  "status": "planned",
+  "owner": "AI Engineer",
+  "reviewer": "Human; independent specialists as specified",
+  "scope_status": "provisional",
+  "base_sha": "50ce86d8c4c8f7a89acbe7df2536db2bb231b2b7",
+  "allowed_paths": [
+    "plans/2026-10-29/PRSG-160-fear-greed-challenger-feasibility.md",
+    "plans/2026-10-29/PRSG-160.harness.json",
+    "docs/FEAR_GREED_CHALLENGER_DECISION.md"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "skills/",
+    "agent-operations/",
+    "connectors/",
+    "ingest/",
+    "artifacts/",
+    "backend/",
+    "frontend/",
+    ".DS_Store"
+  ],
+  "dependencies": [
+    "PRSG-109",
+    "PRSG-113",
+    "PRSG-116"
+  ],
+  "checks": [
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent review of scoped artifacts, relevant focused behavior checks and Human acceptance; execution evidence recorded at implementation time.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-160-D1",
+      "description": "Document source/availability/rights and historical-vintage evidence or the exact absent facts without claiming an admitted dataset.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-160-D2",
+      "description": "Compare baseline, challenger and deferral; freeze a leakage-safe matched evaluation plan and stop/continue rule before outcome inspection, with no training or collection.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-160-D3",
+      "description": "Deliver a reviewed go/no-go/defer decision with limitations, separate any future implementation authority and keep this optional P3 study outside the final-work critical path.",
+      "check_ids": [
+        "review"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
