@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-28/PRSG-155-next-reference-us30-batch-delivery.md",
   "objective": "Recover missed PRSG153D3 using a separately dated28Octreference/29Octfuture-window source and one saved-model120-key CSV; deliver documented repeatable command and preserve deadline miss.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -47,21 +47,27 @@
       "id": "1",
       "kind": "manual",
       "description": "Frozen next-reference source preparation/QA, current financial-purpose review and source lineage independently accepted.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "29Oct12:00MYT datedcapture succeeded:31requests/1560wire including1530history/1440shared/90new;126manifestentries independentlyverified;18720typedsharedfieldcomparisons0differences;spacing>=3.061980s/0retry/cleanuptrue. Engineeractualtechnicalreview+Traderall30financialreview independentlyaccepted byLead actual-source-interface-admission.json; nativeNone/laterUSD/unit/action/finality/basis qualifications retained. Source construction only; actualmodelcompatibility/inference/CSV stillpending."
+      ]
     },
     {
       "id": "2",
       "kind": "manual",
       "description": "One actual next-reference120-key saved-model CSV with immutable receipts/coverage and current future windows independently verified; no refit or promotion.",
-      "status": "pending"
+      "status": "passed",
+      "evidence": [
+        "29Oct12:11MYT actual publicCLI from/tmp exit0:120unique30x4numeric/0withheld/0qualified/allNO TRADE;CSV99bd20ee2e55983af34082ea09a754e1e3449708b3a8bc32a1cbf40c4260240b. IndependentEngineer receipt9d6ad2c5807361ab9157d176e7955a98085bdf62541dcca5696ac118a06f44e1 verifiesbyteidenticalCSV/120IDs/2160priceconversions/bothapprovals/manifest/futurewindows/cleanup/savedmodelwithoutrefit. Actualworker4.048166s/456392704Bsampledpeak/0retry/1thread. Currentness strictlybefore29Oct21:30MYT; no automaticrenewal; uncalibratedprivate research only."
+      ]
     },
     {
       "id": "3",
       "kind": "manual",
       "description": "One documented user command verifies reviewed bundle, runs batch/export or returns exact actionable failure; focused tests and independent clean-directory execution pass.",
-      "status": "pending",
+      "status": "passed",
       "evidence": [
-        "Publiccommand implemented/reviewed: independent147focusedchecks passed13.82s;verified-buffer imports,observedtree resources,exact3historicalarchives,stagedsamebytes,explicitcalendar-deriveddates and overlap; actualclean-directoryclockprobe exit2 before29Oct12MYT withoutworker/modelcalls. Source/current120CSV/actualpositiveoutput remainpending; notfullacceptance."
+        "29Oct12:11MYT actual publicCLI from/tmp exit0:120unique30x4numeric/0withheld/0qualified/allNO TRADE;CSV99bd20ee2e55983af34082ea09a754e1e3449708b3a8bc32a1cbf40c4260240b. IndependentEngineer receipt9d6ad2c5807361ab9157d176e7955a98085bdf62541dcca5696ac118a06f44e1 verifiesbyteidenticalCSV/120IDs/2160priceconversions/bothapprovals/manifest/futurewindows/cleanup/savedmodelwithoutrefit. Actualworker4.048166s/456392704Bsampledpeak/0retry/1thread. Currentness strictlybefore29Oct21:30MYT; no automaticrenewal; uncalibratedprivate research only."
       ]
     }
   ],
@@ -72,8 +78,10 @@
       "check_ids": [
         "1"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "29Oct12:00MYT datedcapture succeeded:31requests/1560wire including1530history/1440shared/90new;126manifestentries independentlyverified;18720typedsharedfieldcomparisons0differences;spacing>=3.061980s/0retry/cleanuptrue. Engineeractualtechnicalreview+Traderall30financialreview independentlyaccepted byLead actual-source-interface-admission.json; nativeNone/laterUSD/unit/action/finality/basis qualifications retained. Source construction only; actualmodelcompatibility/inference/CSV stillpending."
+      ]
     },
     {
       "id": "PRSG-155-D2",
@@ -81,8 +89,10 @@
       "check_ids": [
         "2"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "29Oct12:11MYT actual publicCLI from/tmp exit0:120unique30x4numeric/0withheld/0qualified/allNO TRADE;CSV99bd20ee2e55983af34082ea09a754e1e3449708b3a8bc32a1cbf40c4260240b. IndependentEngineer receipt9d6ad2c5807361ab9157d176e7955a98085bdf62541dcca5696ac118a06f44e1 verifiesbyteidenticalCSV/120IDs/2160priceconversions/bothapprovals/manifest/futurewindows/cleanup/savedmodelwithoutrefit. Actualworker4.048166s/456392704Bsampledpeak/0retry/1thread. Currentness strictlybefore29Oct21:30MYT; no automaticrenewal; uncalibratedprivate research only."
+      ]
     },
     {
       "id": "PRSG-155-D3",
@@ -90,17 +100,20 @@
       "check_ids": [
         "3"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "29Oct12:11MYT actual publicCLI from/tmp exit0:120unique30x4numeric/0withheld/0qualified/allNO TRADE;CSV99bd20ee2e55983af34082ea09a754e1e3449708b3a8bc32a1cbf40c4260240b. IndependentEngineer receipt9d6ad2c5807361ab9157d176e7955a98085bdf62541dcca5696ac118a06f44e1 verifiesbyteidenticalCSV/120IDs/2160priceconversions/bothapprovals/manifest/futurewindows/cleanup/savedmodelwithoutrefit. Actualworker4.048166s/456392704Bsampledpeak/0retry/1thread. Currentness strictlybefore29Oct21:30MYT; no automaticrenewal; uncalibratedprivate research only."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
+    "status": "accepted",
     "evidence": [
       "29OctLead explicit-bundle-date clarification: genericruntime mustnot require dailycodeedits; no automaticselection/rollover. Actual155release remainsfixed28Octreference/29Oct12..21:30MYT, allotherdateauthority separate. Independent129focusedchecks passed11.51s on priorcandidate; newdatebinding regressions andfinalreview pending.",
       "Publiccommand implemented/reviewed: independent147focusedchecks passed13.82s;verified-buffer imports,observedtree resources,exact3historicalarchives,stagedsamebytes,explicitcalendar-deriveddates and overlap; actualclean-directoryclockprobe exit2 before29Oct12MYT withoutworker/modelcalls. Source/current120CSV/actualpositiveoutput remainpending; notfullacceptance.",
       "29OctLead independentfinalpathlabelreview:170focused passed15.34s;actual1142refconstructor67799285bytes/103roots/1132JSON/3aliases/18labels +4negativecases PASS usingdata-onlyfalse sourcebinding. This verifiesprovenancemechanics, notcurrent source/inference admission. Trader assigneddisjointprivatefinancialpreparation only; no repositoryownership.",
-      "29OctLead independentlyacceptedstreamingintegrity memoryfix:180focusedpassed15.75s;actualsingleInventory+stream1141physicalfiles/67799273bytes peaked217579520B with0recheckincrement. Duplicatechildentrypreflight/secondpostpredictiongraph removed;parentdropsoldgraphbeforespawn. Tamper/remove/symlink/permission/ledgerhashchanges reject. 512MiB/58+2seconds capsunchanged; excludesnumericworker/currentCSV acceptance."
+      "29OctLead independentlyacceptedstreamingintegrity memoryfix:180focusedpassed15.75s;actualsingleInventory+stream1141physicalfiles/67799273bytes peaked217579520B with0recheckincrement. Duplicatechildentrypreflight/secondpostpredictiongraph removed;parentdropsoldgraphbeforespawn. Tamper/remove/symlink/permission/ledgerhashchanges reject. 512MiB/58+2seconds capsunchanged; excludesnumericworker/currentCSV acceptance.",
+      "29Oct12:11MYT actual publicCLI from/tmp exit0:120unique30x4numeric/0withheld/0qualified/allNO TRADE;CSV99bd20ee2e55983af34082ea09a754e1e3449708b3a8bc32a1cbf40c4260240b. IndependentEngineer receipt9d6ad2c5807361ab9157d176e7955a98085bdf62541dcca5696ac118a06f44e1 verifiesbyteidenticalCSV/120IDs/2160priceconversions/bothapprovals/manifest/futurewindows/cleanup/savedmodelwithoutrefit. Actualworker4.048166s/456392704Bsampledpeak/0retry/1thread. Currentness strictlybefore29Oct21:30MYT; no automaticrenewal; uncalibratedprivate research only."
     ]
   }
 }

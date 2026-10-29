@@ -18,9 +18,9 @@ First inspect existing run.py/predict/export interfaces; avoid a new calculator 
 
 ## Acceptance
 
-- [ ] PRSG-155-D1: Frozen next-reference source preparation/QA, current financial-purpose review and source lineage independently accepted.
-- [ ] PRSG-155-D2: One actual next-reference120-key saved-model CSV with immutable receipts/coverage and current future windows independently verified; no refit or promotion.
-- [ ] PRSG-155-D3: One documented user command verifies reviewed bundle, runs batch/export or returns exact actionable failure; focused tests and independent clean-directory execution pass.
+- [x] PRSG-155-D1: Frozen next-reference source preparation/QA, current financial-purpose review and source lineage independently accepted.
+- [x] PRSG-155-D2: One actual next-reference120-key saved-model CSV with immutable receipts/coverage and current future windows independently verified; no refit or promotion.
+- [x] PRSG-155-D3: One documented user command verifies reviewed bundle, runs batch/export or returns exact actionable failure; focused tests and independent clean-directory execution pass.
 
 ## Checks
 
@@ -65,3 +65,15 @@ Trader may write only new private PRSG155/trader/ financial-context/review templ
 ## Reviewed Memory Fix
 
 29OctLead independentlyacceptedstreamingintegrity memoryfix:180focusedpassed15.75s;actualsingleInventory+stream1141physicalfiles/67799273bytes peaked217579520B with0recheckincrement. Duplicatechildentrypreflight/secondpostpredictiongraph removed;parentdropsoldgraphbeforespawn. Tamper/remove/symlink/permission/ledgerhashchanges reject. 512MiB/58+2seconds capsunchanged; excludesnumericworker/currentCSV acceptance.
+
+## Actual dated source review, 29 October noon
+
+29Oct12:00MYT datedcapture succeeded:31requests/1560wire including1530history/1440shared/90new;126manifestentries independentlyverified;18720typedsharedfieldcomparisons0differences;spacing>=3.061980s/0retry/cleanuptrue. Engineeractualtechnicalreview+Traderall30financialreview independentlyaccepted byLead actual-source-interface-admission.json; nativeNone/laterUSD/unit/action/finality/basis qualifications retained. Source construction only; actualmodelcompatibility/inference/CSV stillpending.
+
+## Actual command and independent delivery acceptance
+
+29Oct12:11MYT actual publicCLI from/tmp exit0:120unique30x4numeric/0withheld/0qualified/allNO TRADE;CSV99bd20ee2e55983af34082ea09a754e1e3449708b3a8bc32a1cbf40c4260240b. IndependentEngineer receipt9d6ad2c5807361ab9157d176e7955a98085bdf62541dcca5696ac118a06f44e1 verifiesbyteidenticalCSV/120IDs/2160priceconversions/bothapprovals/manifest/futurewindows/cleanup/savedmodelwithoutrefit. Actualworker4.048166s/456392704Bsampledpeak/0retry/1thread. Currentness strictlybefore29Oct21:30MYT; no automaticrenewal; uncalibratedprivate research only.
+
+The documented `run_reviewed_batch.py --bundle ... --bundle-sha256 ... --release ...` command was executed once from a clean working directory with actual dated evidence. Its one-use release is consumed; another execution requires a new reviewed finite release. A later reference requires new source admission. Existing `--check-only` remains subject to actual dated-window checks. Private artifacts and the exact executed invocation are retained in the Lead delivery pointer; none were published.
+
+This completes the separately dated US30 recovery ticket. It does not satisfy the original missed28Octwindow, fullUS/MY50, standaloneUS100, publicrights or unchanged stronger-model gates.
