@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-156",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-29",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-29/PRSG-156-dated-single-my-source-controller.md",
+  "objective": "Gate one separatelydated4707MY source collection with exact finite release/clock/hash/request/cleanup bounds; no actual source use yet.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "0d90bacea1997ee758de91902c50371c10046be0",
+  "allowed_paths": [
+    "plans/2026-10-29/PRSG-156-dated-single-my-source-controller.md",
+    "plans/2026-10-29/PRSG-156.harness.json",
+    "scripts/stock-research/run_reviewed_my_capture.py",
+    "tests/test_reviewed_my_capture.py"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "ingest/",
+    "artifacts/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    ".DS_Store"
+  ],
+  "checks": [
+    {
+      "id": "offline",
+      "kind": "manual",
+      "description": "Independent offlinecontroller/negativeprocesscleanup and frozenactualplan review",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-156-D1",
+      "description": "A reviewed offline controller rejects invalid date/release/hash/scope/permissions and enforces exact single request, no retry and observed cleanup.",
+      "check_ids": [
+        "offline"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-156-D2",
+      "description": "Exact4707 dated source plan/finite release requirements and independent negative tests accepted; actual capture remains held until dated finality and current financial mapping.",
+      "check_ids": [
+        "offline"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-156-D3",
+      "description": "Implementation and preparation committed/pushed with exact limitations and release dependency; actual21close source and financial/model admissions remain separate124D3 work.",
+      "check_ids": [
+        "offline"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "Human29Octfinalsignoff: scopedpreparation preserved, runtime/testfiles notwritten, noactualcapture. Ticket remainsin_progress withallacceptancepending; implementationnotclaimed."
+    ]
+  }
+}
