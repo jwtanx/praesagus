@@ -332,6 +332,24 @@ async function snapshotTrendAndForecast() {
   unavailable.cutoff='invalid-cutoff';t.click('#date-picker-button');t.click('button[data-report-date="2026-10-01"]');await settle();assert.match(t.$('#market-snapshot-panel').textContent,/Trend warmup: 1 valid capture date/);assert.match(t.$('#market-snapshot-panel').textContent,/News snapshot unavailable/);assert.equal(t.$('#market-snapshot-panel').querySelectorAll('svg').length,0);
   unavailable.cutoff='2026-10-01T08:00:00+08:00';t.click('#date-picker-button');t.click('button[data-report-date="2026-10-02"]');await settle();t.click('#date-picker-button');t.click('button[data-report-date="2026-10-01"]');await settle();assert.match(t.$('#market-snapshot-panel').textContent,/News query unavailable/);assert.equal(t.errors.length,0);t.dom.window.close();
 }
+async function savedUnratedExplanation(){
+  const data=JSON.parse(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/2026-10-21.json'),'utf8'));
+  const frozen=JSON.stringify(data),t=mount({width:390,search:'?date=2026-10-21',routes:{'./reports.json':{latest:'2026-10-21',reports:[{date:'2026-10-21',label:'21 October'},{date:'2026-10-08',label:'8 October'}]},'./2026-10-21.json':data}});await settle();
+  const rows=[...t.w.document.querySelectorAll('#forecast-rows tr')];
+  const row=(market,ticker)=>rows.find(r=>r.dataset.instrument===market+':'+ticker);
+  const spy=row('US','SPY'),nvda=row('US','NVDA'),my=row('MY','4707');
+  assert.match(spy.querySelector('.unrated-reason').textContent,/Completed reference data and a reviewed public forecast are unavailable/);
+  assert.match(spy.querySelector('.unrated-observation').textContent,/snapshot was not stored/);
+  assert.match(spy.querySelector('.forecast-evidence').textContent,/Retained forecast timestamp — no supported current forecast: Unknown/);
+  assert.match(nvda.querySelector('.forecast-evidence').textContent,/Retained forecast timestamp — no supported current forecast: 2026-10-20T08:01:22/);
+  assert.match(my.querySelector('.unrated-observation').textContent,/Local-market snapshot intake is unsupported here/);
+  assert.doesNotMatch(my.querySelector('.unrated-observation').textContent,/was not stored|failed API/);
+  assert.match(my.querySelector('.unrated-reason').textContent,/reviewed evidence\/public-use pair/);
+  for(const r of rows){assert.equal(r.querySelectorAll('.prediction-chip').length,1);assert.equal(r.querySelector('.prediction-chip').textContent,'Unrated · target unavailable · range unavailable');assert.ok(r.querySelector('.unrated-explanation'));}
+  assert.equal(spy.querySelectorAll('.prediction-chip.up').length,0,'historical green chip never copied into the selected edition');
+  assert.ok(spy.querySelector('.historical-forecast-example'));assert.equal(my.querySelector('.historical-forecast-example'),null);
+  assert.equal(JSON.stringify(data),frozen);assert.equal(t.errors.length,0);t.dom.window.close();
+}
 if (process.argv.includes('--write-browser-fixture')) {
   const dir = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'praesagus-report-fixture-'));
   fs.mkdirSync(path.join(dir, 'daily-market-brief')); fs.mkdirSync(path.join(dir, 'financial-calendar'));
@@ -343,6 +361,7 @@ if (process.argv.includes('--write-browser-fixture')) {
   write('financial-calendar/2026-10.json', calendar('2026-10', [revision(1), revision(2, { recorded_at: '2026-09-30T00:00:00Z', status: 'cancelled', change_reason: 'Official cancellation; retained for audit' })]));
   console.log(dir);
 } else (async () => {
+  await savedUnratedExplanation();
   await publicSnapshotDisplay();
   await snapshotTrendAndForecast();
   await observedQuoteDisplay();

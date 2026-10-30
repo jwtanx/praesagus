@@ -21,18 +21,18 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-29/PRSG-158-research-reading-comprehension.md",
   "objective": "Verify and, only where a fresh baseline finds a gap, improve one representative daily-report reading path so readers identify the finding, evidence limits and next check.",
-  "status": "planned",
+  "status": "review",
   "owner": "Engineer",
   "reviewer": "Human; independent specialists as specified",
-  "scope_status": "provisional",
-  "base_sha": "50ce86d8c4c8f7a89acbe7df2536db2bb231b2b7",
+  "scope_status": "accepted",
+  "base_sha": "51e0706e065f7bc767f21be8416138f48ff4bac7",
   "allowed_paths": [
     "plans/2026-10-29/PRSG-158-research-reading-comprehension.md",
     "plans/2026-10-29/PRSG-158.harness.json",
+    "docs/RESEARCH_READING_REVIEW.md",
     "artifacts/daily-market-brief/index.html",
     "tests/compact_report_viewer_checks.cjs",
-    "tests/daily_report_viewer_checks.cjs",
-    "docs/RESEARCH_READING_REVIEW.md"
+    "tests/daily_report_viewer_checks.cjs"
   ],
   "protected_paths": [
     "artifacts/daily-market-brief/reports/",
@@ -52,9 +52,28 @@
   ],
   "checks": [
     {
-      "id": "review",
+      "id": "baseline",
       "kind": "manual",
-      "description": "Independent review of scoped artifacts, relevant focused behavior checks and Human acceptance; execution evidence recorded at implementation time.",
+      "description": "Independent actualsavedstates/design/domainreview plus anonymized actualHumanbaseline observation and explicitlayoutselection.",
+      "status": "passed",
+      "evidence": [
+        "Designeractualpublic390/1440fourstates;keyboardfocus/disclosures/filter/date/historyboundedreview. Traderactualrenderer/domaincopyreview; oneactualHumanqualitativereply andselectedadjacentexplanation. All4existingNodebaselinereplayspassed. No measuredlift orAPI-totalfailureinference."
+      ]
+    },
+    {
+      "id": "viewer",
+      "kind": "manual",
+      "description": "ChangedNodeDOMregressions,390px/nativekeyboardreview,42financialJSONpincheck and focused unchanged-navigation/comparison evidence.",
+      "status": "passed",
+      "evidence": [
+        "Engineer andLead exacttwochangedNodechecks passed; priorunchangeddate-navigation/comparisonbaseline passed. Leadactualbrowser390/1440:nohorizontaloverflow,onechip,Enter/Spaceopen-close,visiblefocus;8OctSPYretainsgreenBullishoriginalvalues/date.42trackedfinancialJSONbyte-identical;predictionState/targetTimingunchanged;complete6pathscopevalidationpassed.",
+        "IndependentAIEngineer uncertainty/summaryfidelityreviewacceptedexactUIsha dc40b223389335a6871589a3967a1b0ddafb85861533315902b4ba99b18c7d9d;5deterministicreplayspassed, noLLMsummaryruntime/unsupportedcertaintyfound. Humancomprehensionnotinferred."
+      ]
+    },
+    {
+      "id": "human",
+      "kind": "manual",
+      "description": "ActualpostchangeHumanreaderobservation andfinalacceptance. No syntheticparticipant ormeasuredlift substitution.",
       "status": "pending",
       "evidence": []
     }
@@ -64,34 +83,43 @@
       "id": "PRSG-158-D1",
       "description": "Recheck the current four representative states, retain a baseline and have Human select a Designer/Trader-reviewed bounded layout or accept an evidence-backed no-code outcome.",
       "check_ids": [
-        "review"
+        "baseline"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Currentreal8OctSPYnumericdisplay,21OctSPYUnrated/missingobservation,30SepAAPLlegacy retained; Designer+Traderreviewedminimaladjacentproposal; HumanexplicitlyselectedAddtheexplanationbesideeachchip. BaselineN1qualitativemisinterpretationrecordedprivately; no datachanges."
+      ]
     },
     {
       "id": "PRSG-158-D2",
       "description": "Essential instrument information fits 390px without horizontal document scrolling; observations, interpretations, forecasts and Unrated states remain distinct, with material limits adjacent and full provenance accessible.",
       "check_ids": [
-        "review"
+        "baseline",
+        "viewer"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Engineer andLead exacttwochangedNodechecks passed; priorunchangeddate-navigation/comparisonbaseline passed. Leadactualbrowser390/1440:nohorizontaloverflow,onechip,Enter/Spaceopen-close,visiblefocus;8OctSPYretainsgreenBullishoriginalvalues/date.42trackedfinancialJSONbyte-identical;predictionState/targetTimingunchanged;complete6pathscopevalidationpassed."
+      ]
     },
     {
       "id": "PRSG-158-D3",
       "description": "Verify keyboard/focus/disclosure/filter/report-date/history behavior and unchanged financial values using relevant existing checks; replay frozen summary-fidelity examples where applicable.",
       "check_ids": [
-        "review"
+        "baseline",
+        "viewer"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Engineer andLead exacttwochangedNodechecks passed; priorunchangeddate-navigation/comparisonbaseline passed. Leadactualbrowser390/1440:nohorizontaloverflow,onechip,Enter/Spaceopen-close,visiblefocus;8OctSPYretainsgreenBullishoriginalvalues/date.42trackedfinancialJSONbyte-identical;predictionState/targetTimingunchanged;complete6pathscopevalidationpassed."
+      ]
     },
     {
       "id": "PRSG-158-D4",
       "description": "Record reader tasks, participant count, completion and misinterpretations for finding, Unrated meaning, source time and next check, and deliver actual preview/evidence/limitations for Human acceptance; claim no measured lift without a comparable baseline.",
       "check_ids": [
-        "review"
+        "baseline",
+        "human"
       ],
       "status": "pending",
       "evidence": []
@@ -99,6 +127,10 @@
   ],
   "review": {
     "status": "pending",
-    "evidence": []
+    "evidence": [
+      "Human30Oct authorizes nextwishlist work within30minutes. Lead selects158baseline/review/readerprotocol only, base51e0706. Lead owns canonicalpair/docs; Designer/Trader private reviews only. OriginalUI/testpaths remain futureproposed scope, excluded from currentwriteallowlist until Humanselects concrete outcome. No data/financial/UI edits or Human-gate waiver.",
+      "Human30Oct selects Addtheexplanationbesideeachchip viaactualselection. LeadreleasesboundedUI: instrument-specificrecordedmissingreason+nextrequiredcheck belowexistingUnratedchip; separatequote failure; preservecoloredsupportedstates/dates/nulls/guardfunctions/provenance;datedSPYarchiveexamplehistoricalonly. Engineerownsindex+twoJSchecks; Leadcanonicalpair/docs. No data/recalculation/provider/model/schedule changes.",
+      "LeadindependentimplementationreviewacceptsD2-D3 forselectedUI; UIsha dc40b223389335a6871589a3967a1b0ddafb85861533315902b4ba99b18c7d9d. Twofoundwordingedgecasesfixed:observedpointwithUnratedandunknownrecordedcoveragegaps. Humanpostchangeanswer/finalacceptancepending; reviewstatusremainspending,ticketnotcomplete. NoAPI/source/modeldataadmission orcomprehensionliftclaim."
+    ]
   }
 }

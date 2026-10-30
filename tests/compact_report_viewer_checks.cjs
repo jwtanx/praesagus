@@ -83,6 +83,10 @@ async function compactRendering(width){
   const provenance=row.querySelector('.quote-evidence');assert.equal(provenance.open,false);
   assert.match(provenance.textContent,/Observed:.*Ingested:.*Known:.*Report cutoff:.*currency unverified.*rights unconfirmed/s);
   assert.match(provenance.textContent,/Missing history and target model/);
+  assert.match(row.querySelector('.unrated-observation').textContent,/saved price point is present/);
+  assert.doesNotMatch(row.querySelector('.unrated-observation').textContent,/Observation: Reason not recorded|snapshot was not stored/);
+  assert.match(row.querySelector('.unrated-reason').textContent,/Missing history and target model/);
+  assert.match(row.querySelector('.unrated-next').textContent,/Required check not recorded/);
   assert.equal(row.querySelector('.compact-forecast-reason'),null,'confidence reason lives inside details');
   assert.match(t.$('.forecast-table th:nth-child(3)').textContent,/Prediction · target \/ range/);
   const rows=t.w.document.querySelectorAll('#forecast-rows tr');
@@ -135,6 +139,9 @@ async function predictionCases(width,compact){
   for(const row of rows.slice(3,15)){assert.equal(row.querySelector('.prediction-chip').textContent,'Unrated · target unavailable · range unavailable');assert.match(row.className,/unknown/);assert.match(row.querySelector('.forecast-evidence').textContent,/Display coverage:/);}
   assert.match(rows[3].querySelector('.forecast-evidence').textContent,/incomplete, nonnumeric or unordered/);
   assert.match(rows[9].querySelector('.forecast-evidence').textContent,/units disagree or are unsupported/);
+  assert.match(rows[3].querySelector('.unrated-reason').textContent,/incomplete, nonnumeric or unordered/);
+  assert.match(rows[9].querySelector('.unrated-reason').textContent,/units disagree or are unsupported/);
+  assert.doesNotMatch(rows[3].querySelector('.unrated-reason').textContent,/history|public-use|snapshot/,'display rejection never fabricates a missing-input cause');
   assert.equal(rows[15].querySelector('.prediction-target-date').textContent,'Target date unavailable · horizon unavailable');
   assert.equal(rows[0].querySelector('.forecast-evidence').open,false);rows[0].querySelector('summary').click();await settle();
   assert.match(rows[0].textContent,/<img src=x onerror=alert\(1\)>/);assert.match(rows[0].textContent,/<svg onload=alert\(1\)>/);
@@ -190,4 +197,36 @@ async function responsiveInstrumentContract(width){
   assert.match(observation.textContent,/2026-09-30T23:59:00Z.*2026-09-30T23:59:30Z.*2026-09-30T23:59:40Z.*2026-09-30T23:59:50Z.*2026-10-01T08:00:00\+08:00/s);
   assert.equal(t.errors.length,0);t.dom.window.close();
 }
-(async()=>{for(const width of [1440,768,390]){await responsiveInstrumentContract(width);await compactRendering(width);for(const compact of [true,false])await predictionCases(width,compact);}await archivedReports();console.log('Prediction DOM checks passed: responsive single DOM, 390/768/1440 layouts, independent disclosure state/focus across breakpoints, complete identity/scenario/provenance, section selector/deep links, all prediction guards and archived forecasts retained.');})().catch(e=>{console.error(e);process.exitCode=1});
+async function adjacentExplanation(width){
+  const data=compactFixture(),spy=data.forecasts[0],my=data.forecasts[1],unknown=data.forecasts[2];
+  spy.ticker='SPY';delete spy.public_snapshot;spy.data_gaps=['Current snapshot not persisted: storage-failed.','Current public derived-use admission is unavailable.','Latest October 20 completed-close window and renewed October 21 target admission are unavailable.'];
+  Object.assign(my,{market:'MY',ticker:'4707',price_as_of:'Unavailable; local-market snapshot intake unsupported.',forecast_as_of:'2026-09-30T08:00:00+08:00',moomoo_session_direction:{reason:'unsupported-market'},data_gaps:['Current snapshot not persisted: storage-failed.','Current reviewed evidence/public admission pair is unavailable; private research rights do not authorize public targets.']});
+  unknown.data_gaps=['<img src=x onerror=alert(1)> unrecognized reason'];
+  const frozen=JSON.stringify(data),t=mount({width,routes:{'./2026-10-01.json':data,'./reports.json':{latest:'2026-10-01',reports:[{date:'2026-10-01',label:'Fixture'},{date:'2026-10-08',label:'Archived fixture'}]}}});await settle();
+  const rows=[...t.w.document.querySelectorAll('#forecast-rows tr')];
+  assert.match(rows[0].querySelector('.unrated-explanation').textContent,/Unrated means no supported directional forecast\. It does not mean Sideways\./);
+  assert.match(rows[0].querySelector('.unrated-reason').textContent,/Completed reference data and a reviewed public forecast/);
+  assert.doesNotMatch(rows[0].querySelector('.unrated-reason').textContent,/snapshot|storage-failed/);
+  assert.match(rows[0].querySelector('.unrated-observation').textContent,/snapshot was not stored.*quote alone does not establish a forecast/);
+  assert.match(rows[0].querySelector('.unrated-next').textContent,/completed reference window and current target\/public-use review/);
+  assert.match(rows[1].querySelector('.unrated-observation').textContent,/Local-market snapshot intake is unsupported here/);
+  assert.doesNotMatch(rows[1].querySelector('.unrated-observation').textContent,/was not stored|storage-failed|failed API/);
+  assert.match(rows[1].querySelector('.forecast-evidence').textContent,/Retained forecast timestamp — no supported current forecast: 2026-09-30/);
+  assert.doesNotMatch(rows[1].querySelector('.forecast-evidence').textContent,/Forecast issued at:/);
+  assert.match(rows[2].querySelector('.unrated-reason').textContent,/<img src=x onerror=alert\(1\)> unrecognized reason/);
+  assert.match(rows[2].querySelector('.unrated-next').textContent,/Required check not recorded/);
+  assert.equal(rows[2].querySelector('img'),null);
+  assert.equal(rows[3].querySelector('.unrated-explanation'),null,'supported colored prediction retains its existing presentation');
+  const link=rows[0].querySelector('.historical-forecast-example');assert.ok(link);assert.equal(link.getAttribute('href'),'?date=2026-10-08#top10');
+  assert.match(link.textContent,/archived forecast from 8 Oct 2026/);assert.match(link.parentElement.textContent,/Historical example only; not a current forecast or evidence of accuracy/);
+  link.focus();assert.equal(t.w.document.activeElement,link);
+  for(const row of rows)assert.equal(row.querySelectorAll('.prediction-chip').length,1);
+  assert.match(rows[0].querySelector('.unrated-explanation').textContent,/next-check time: not recorded/);
+  assert.equal(JSON.stringify(data),frozen);assert.equal(t.errors.length,0);t.dom.window.close();
+  unknown.data_gaps=[];
+  const without=mount({width,routes:{'./2026-10-01.json':data}});await settle();
+  assert.equal(without.$('.historical-forecast-example'),null,'no archive link when report index does not contain the edition');
+  assert.match(without.w.document.querySelectorAll('#forecast-rows tr')[2].querySelector('.unrated-reason').textContent,/Reason not recorded/);
+  without.dom.window.close();
+}
+(async()=>{for(const width of [1440,768,390]){await adjacentExplanation(width);await responsiveInstrumentContract(width);await compactRendering(width);for(const compact of [true,false])await predictionCases(width,compact);}await archivedReports();console.log('Prediction DOM checks passed: responsive single DOM, 390/768/1440 layouts, independent disclosure state/focus across breakpoints, complete identity/scenario/provenance, section selector/deep links, all prediction guards and archived forecasts retained.');})().catch(e=>{console.error(e);process.exitCode=1});
