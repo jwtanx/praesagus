@@ -28,4 +28,18 @@ produce a bounded diagnostic warning. This makes failure evidence inspectable
 when the normal job log requires sign-in; it does not establish the cause of a
 failure before the resulting annotation is reviewed.
 
+CI creates its Poetry environment with `POETRY_VIRTUALENVS_OPTIONS_ALWAYS_COPY=true`
+([Poetry configuration](https://python-poetry.org/docs/configuration/#virtualenvsoptionsalways-copy)).
+Before tests, it requires the resolved active executable inside that virtualenv;
+shared toolcache Python stays untouched. CI checks that executable and canonical
+tracked Python source files, rejecting symlinked parents or leaves. If a regular
+file owned by the runner is group/other writable, it
+removes those write bits and verifies byte identity, ownership and other mode
+bits remain unchanged. Bounded notices record actual changes. Foreign-owned
+writable files, source symlinks and paths outside the checkout reject preparation. This applies
+only to the ephemeral runner; production integrity and private-file checks stay
+strict. There is no recursive chmod, sudo or ownership change. Failure summaries
+also publish total failures and counts for up to eight test classes, separate
+from the eight detailed annotations.
+
 CI first installs Poetry dependencies, then installs the standalone research requirements with `poetry run python -m pip` into the same interpreter used for pytest. The standalone NumPy range is `>=1.26.4,<3`, retaining its tested NumPy 2 support. CI adds an explicit `numpy>=1.26.4,<2` constraint in that same install command, compatible with Poetry's `^1.26` and the NumPy 1.x environment for PyArrow 12; exchange-calendars 4.13.2 requires at least 1.26.4. No package migration to NumPy 2 is implied. CI runs `pip check`, asserts NumPy major version 1, and imports NumPy, Arrow/parquet, pandas, scikit-learn, exchange-calendars and openpyxl before collection. Offline subprocess import-blocking fixtures reproduce collection exit 2 when either missing research dependency is unavailable. Local isolated-stack checks do not establish the inaccessible original CI traceback or substitute for a new successful remote run.

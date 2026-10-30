@@ -1,10 +1,10 @@
-# PRSG-164 — Nonnegative Process Group Monitoring
+# PRSG-164 — Portable Supervisor and CI Integrity Checks
 
 Type: bug · Modules: harness, infra · Owner: Lead · Priority: P1 · Effort: XS (<0.5 person-day) · Impact: high — a valid unrelated system-process row must not disable every supervised run.
 
 ## Objective
 
-Fix process snapshot portability while retaining strict positive owned-group identity and safe cleanup.
+Preserve strict process and file integrity while making CI reproducible and its actual failures inspectable.
 
 ## Approach
 
@@ -52,3 +52,17 @@ The exact556749bremoteCIrun41003275906 still failed Run tests after the reproduc
 ExistingCIdependency4passed0.50s. Leadexecuted exactembeddeddiagnostic code: missing/malformed/oversizedreportsboundedwarnings,12failures=>8annotations,percent/CR/LFescaping,collectionerrorhandling. Privatecheck65d8a01d9a1d94e3b4813bce7408274802a91bef7c25ad33e6101d5e48bced22; independentEngineerfinalreviewa2a852b6373602694f18af5b8501c4d230b30153b8c474675d09e5e26c220e5c. Workflow4f69061d9b88398249937f96be474ca5642c19f42accd5c1940e69cc0ebf7ab8. OriginalfullPoetrypytestcommand/dependencies/nonzeroexit/safetyreplay preserved; no skip,retry,continue-on-error orcapturedoutputpublication. 1800sourcecharactersmayencodeupto5400logcharacters,stillbounded.
 
 The prior failed-run record remains unchanged. D4 is not complete until the remaining actual CI failure is identified, fixed under accepted scope, and a new full remote run succeeds.
+
+## CI Permission Contract Amendment
+
+Run41004647722/head79e7508 diagnostic annotations identify163positive/inspection/recovery fixture paths failing with file-permissions before intended assertions. The precise hosted file/mode is not yet observed. Lead accepts an ephemeral-CI-only preparation step for the active resolved Python executable and tracked regular Python sources: remove022writebits only when the runner owns the file, verify byte hashes and executable/owner metadata unchanged, emit bounded before/after notices, reject foreign ownership/symlinks/escape. No sudo, ownership change, recursive chmod, production guard relaxation, skipped test or altered numerical/runtime/release policy. Publish a bounded aggregate failure-count notice so remaining groups are visible beyond the first eight details. Existing runtime/source scope stays unchanged. Engineer independently reviews exact implementation; the next remote notices+suite result are required evidence.
+
+- [ ] PRSG-164-D5: Prepare the ephemeral CI interpreter and tracked Python source permissions by removing group/other write bits only on owned regular files, preserving bytes, executable bits and ownership; publish bounded before/after notices and keep production permission rejection unchanged. Verify the actual remote outcome without assuming the hosted mode in advance.
+
+### Owned Interpreter Boundary
+
+Lead accepts Poetry's documented POETRY_VIRTUALENVS_OPTIONS_ALWAYS_COPY creation setting for the fresh CI environment, then requires the resolved interpreter inside its virtualenv prefix before any permission adjustment. Shared toolcache Python remains untouched even if owned by the runner. No dependency versions, Python version, tests or production permission rules change. Canonical tracked-source paths must have no symlinked parent or leaf. This is a narrow CI setup boundary; official Poetry configuration documents the copy setting, while actual remote source permissions remain to be observed.
+
+### Reviewed CI Preparation
+
+ActualCI41004647722/head79e7508 annotations identify163fixture positive/inspection/recovery cases rejected by file-permissions before intended assertions. Hosted offendingfile/mode isnotyetobserved. CI-only preparation uses documentedcopiedPoetryvenv, requiresresolvedexeinsideprefix, canonicaltracked*.py only, ownertyped022-onlyremoval withbyteSHA/UID/GID/mode preservation, boundednotices; sharedtoolcache untouched. Leadexactscriptprivatefixtures775exe/664source->755/644,normal755unchanged,parent-symlinktargetuntouched,realsharedinterpreterrejectedunchanged; manualreceipt24ebd2f3f1e1827151a00530725f073336b0220c6a310f1dc055664fb179ceb6. CIdependency4passed0.49s. IndependentEngineerfinalreviewf7b79aa4f809aa3f053aa52c58d05962c105830a29d4da347f515632d36a0c04 accepted exactworkflowa9a6413fd6b0fe28af79b2a6ad7d789474233c9e546925dd33e34b5ea7e395a5 anddocs1b04ece9fbd4586ec2ccf43da09c1c0e2abfe8d7020115c907034a0bcde7fd26. Production163/155guards/tests/limits/releasepolicy unchanged. D4/D5remoteproofpending.
