@@ -31,7 +31,8 @@ Base cca89e514ed6217d3afb980063b604a53ff069c3. Lead owns only run_reviewed_batch
 - [x] PRSG-164-D1: Reproduce an unrelated nonnegative process-group-zero row rejecting the whole process snapshot, and preserve the distinction between this portable defect and an unconfirmed remote CI traceback.
 - [x] PRSG-164-D2: Accept nonnegative unrelated process-group IDs while requiring positive IDs for owned process groups and every group signal; preserve process identity, descendant tracking, sampled RSS, deadline and cleanup rejection gates.
 - [x] PRSG-164-D3: Focused parser/scope/signal regressions and the existing real child exit, timeout, memory and cleanup cases pass; independent runtime review confirms no financial or execution-policy change.
-- [ ] PRSG-164-D4: Integrate through mandatory hooks, inspect the resulting remote CI and report its exact result. A green run is required before claiming CI repaired; historical forecast approvals are never renewed.
+- [x] PRSG-164-D4: Integrate through mandatory hooks, inspect the resulting remote CI and report its exact result. A green run is required before claiming CI repaired; historical forecast approvals are never renewed.
+- [x] PRSG-164-D5: Prepare the ephemeral CI interpreter and tracked Python source permissions by removing group/other write bits only on owned regular files, preserving bytes, executable bits and ownership; publish bounded before/after notices and keep production permission rejection unchanged. Verify the actual remote outcome without assuming the hosted mode in advance.
 
 ## Checks
 
@@ -57,7 +58,6 @@ The prior failed-run record remains unchanged. D4 is not complete until the rema
 
 Run41004647722/head79e7508 diagnostic annotations identify163positive/inspection/recovery fixture paths failing with file-permissions before intended assertions. The precise hosted file/mode is not yet observed. Lead accepts an ephemeral-CI-only preparation step for the active resolved Python executable and tracked regular Python sources: remove022writebits only when the runner owns the file, verify byte hashes and executable/owner metadata unchanged, emit bounded before/after notices, reject foreign ownership/symlinks/escape. No sudo, ownership change, recursive chmod, production guard relaxation, skipped test or altered numerical/runtime/release policy. Publish a bounded aggregate failure-count notice so remaining groups are visible beyond the first eight details. Existing runtime/source scope stays unchanged. Engineer independently reviews exact implementation; the next remote notices+suite result are required evidence.
 
-- [ ] PRSG-164-D5: Prepare the ephemeral CI interpreter and tracked Python source permissions by removing group/other write bits only on owned regular files, preserving bytes, executable bits and ownership; publish bounded before/after notices and keep production permission rejection unchanged. Verify the actual remote outcome without assuming the hosted mode in advance.
 
 ### Owned Interpreter Boundary
 
@@ -66,3 +66,9 @@ Lead accepts Poetry's documented POETRY_VIRTUALENVS_OPTIONS_ALWAYS_COPY creation
 ### Reviewed CI Preparation
 
 ActualCI41004647722/head79e7508 annotations identify163fixture positive/inspection/recovery cases rejected by file-permissions before intended assertions. Hosted offendingfile/mode isnotyetobserved. CI-only preparation uses documentedcopiedPoetryvenv, requiresresolvedexeinsideprefix, canonicaltracked*.py only, ownertyped022-onlyremoval withbyteSHA/UID/GID/mode preservation, boundednotices; sharedtoolcache untouched. Leadexactscriptprivatefixtures775exe/664source->755/644,normal755unchanged,parent-symlinktargetuntouched,realsharedinterpreterrejectedunchanged; manualreceipt24ebd2f3f1e1827151a00530725f073336b0220c6a310f1dc055664fb179ceb6. CIdependency4passed0.49s. IndependentEngineerfinalreviewf7b79aa4f809aa3f053aa52c58d05962c105830a29d4da347f515632d36a0c04 accepted exactworkflowa9a6413fd6b0fe28af79b2a6ad7d789474233c9e546925dd33e34b5ea7e395a5 anddocs1b04ece9fbd4586ec2ccf43da09c1c0e2abfe8d7020115c907034a0bcde7fd26. Production163/155guards/tests/limits/releasepolicy unchanged. D4/D5remoteproofpending.
+
+## Verified Remote Acceptance
+
+Implementationfac101d3ce55b38f02e3b49d4fe6ab8af30de238 committed/pushed with mandatory4051passed41warnings precommit93.29s/prepush92.44s. ExactremoteCI41006598986 andPages41006598952 bothsuccess. Publicjob123902788261 reports184fileschecked,0writablemodes tightened,byteidentitypreserved; copiedvenv/prefixguard andcompletepytest+safetyreplay passed. Originalhosted offendingfile/mode remainsunobserved, so no exactoldmode/solecauseattribution. No productionpermission/process/release/modelguard or testcase weakened. Privateactualremoteverification3ff7a2e2d4ca346db1fd09c38c22d7b6a046246e68f3d4d25ffeecbad305b211. Canonicalcompletionmetadata publication followsnormalhooks.
+
+All pending statements in the earlier reproduction/diagnosis entries describe those historical checkpoints. The checklist and current manifest now record accepted completion; original failed runs remain part of the evidence.

@@ -37,3 +37,11 @@ PRSG-161 is an explicit163dependency. Real positive execution uses the accepted 
 ## Integration Dependency
 
 PRSG-164 repairs a reproduced unrelated-PGID-zero process-snapshot portability defect while preserving strict positive owned groups and all resource/release gates. Independent runtime review and110focused checks pass; exact remote CI recovery must be verified after push. This is a narrow delivery prerequisite, not a new financial feature or source authority.
+
+## Accepted Campaign Delivery
+
+All selected implementation outcomes are independently accepted:157readiness,159leanLeaddecision,161actualoutcome/baselinescorecard,162savedcomparison/staticselector and163resumableoperator.164closes the reproducedmonitorportability andCIintegritysetup delivery dependency. Implementation commits556749b,79e7508andfac101d are pushed to main. Local mandatory hooks passed4051tests with41existingdeprecationwarnings on each commit/push; focusedfrontend/contracts and actualprivateCLI/recovery proofs are separately recorded in their canonical tickets.
+
+RemoteCI41006598986 andPages41006598952 forfac101d succeeded. ServedreportHTML/chartscript/20and21OctoberJSON were byte-matched to reviewed code/data; original42publicJSON artifacts stayed unchanged. The last completion-metadata update must also be committed/pushed through the same required hooks and its remote delivery checked.
+
+Limitations remain explicit: one intraday-issued correlated US target session does not qualify model quality;30scored/5missingactual/15withheld and120newOHLCpending at the frozen review cutoff. The model did not beat its original baseline on the paired sample. Browser policy prevented privateHTMLvisual certification; a readable directJSONstaticPDF was inspected instead. Native200%zoom,formalreader/usability studies, broader full50/100coverage,strong-model andpublic-rights obligations remain separate open work. Stopped schedules and production prompts were not activated/promoted.
