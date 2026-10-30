@@ -9,7 +9,7 @@
       "docs"
     ],
     "owner_role": "Engineer",
-    "priority": "P2",
+    "priority": "P1",
     "effort_size": "S",
     "effort_person_days": {
       "low": 1,
@@ -21,11 +21,11 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-29/PRSG-157-cross-product-delivery-readiness.md",
   "objective": "Derive one read-only per-product readiness and safe restart view from existing immutable receipts, exact reviews and canonical tickets without creating another run framework or admission registry.",
-  "status": "planned",
+  "status": "complete",
   "owner": "Engineer",
-  "reviewer": "Human; independent specialists as specified",
-  "scope_status": "provisional",
-  "base_sha": "50ce86d8c4c8f7a89acbe7df2536db2bb231b2b7",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "cca89e514ed6217d3afb980063b604a53ff069c3",
   "allowed_paths": [
     "plans/2026-10-29/PRSG-157-cross-product-delivery-readiness.md",
     "plans/2026-10-29/PRSG-157.harness.json",
@@ -52,11 +52,29 @@
   ],
   "checks": [
     {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_delivery_readiness.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently62passed4.12s; Engineer62passed4.04s. Exact frozen code3140f7f7c80c0c6102e481ebbe4a3579f113214ce0039f3aaa65e8bb5026c754."
+      ]
+    },
+    {
       "id": "review",
       "kind": "manual",
-      "description": "Independent review of scoped artifacts, relevant focused behavior checks and Human acceptance; execution evidence recorded at implementation time.",
-      "status": "pending",
-      "evidence": []
+      "description": "Lead independently verifies a frozen actual private bundle, clean-directory command, product counts and negative dispositions; AI Engineer and Trader review relevant semantics. Human retains promotion/publication authority.",
+      "status": "passed",
+      "evidence": [
+        "Clean-/tmp actual explicit-bundle inspection exit2 for missing standalone100;16input files1879231B rehashed unchanged. Historical fixed50=50slots35numeric/15withheld; US30=30names120rows0qualified; standalone100=0known100unknownslots. Lead receipt62d40dcd120db2467824db349d827fdeb6abccdbc8e635b5ea7899cda8b3a986; Trader33928fe305ce30bffc1f0fc02165a881cc18249c4a665b6e6408f7e58df7c38e; AI032df1ccc0f39b5b0543d566340ea68da3c282a1699066b6e829e30761d78b46. All120US30outcomes stillpending;90issuance-stale/30private-inspectable nextweek. No newrun,source,quality,publication or trading authority."
+      ]
     }
   ],
   "acceptance": [
@@ -64,41 +82,55 @@
       "id": "PRSG-157-D1",
       "description": "Inventory existing receipts and prove the minimal missing delta; document fixed50, US30 and standalone100 contracts without reopening completed implementations.",
       "check_ids": [
+        "focused",
         "review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Clean-/tmp actual explicit-bundle inspection exit2 for missing standalone100;16input files1879231B rehashed unchanged. Historical fixed50=50slots35numeric/15withheld; US30=30names120rows0qualified; standalone100=0known100unknownslots. Lead receipt62d40dcd120db2467824db349d827fdeb6abccdbc8e635b5ea7899cda8b3a986; Trader33928fe305ce30bffc1f0fc02165a881cc18249c4a665b6e6408f7e58df7c38e; AI032df1ccc0f39b5b0543d566340ea68da3c282a1699066b6e829e30761d78b46. All120US30outcomes stillpending;90issuance-stale/30private-inspectable nextweek. No newrun,source,quality,publication or trading authority."
+      ]
     },
     {
       "id": "PRSG-157-D2",
       "description": "Derive an attributable per-ticker/product readiness view with explicit missing, stale, incompatible, withheld and ready states, exact blocker/owner/next action and honest denominators; original knowledge times and approvals are preserved.",
       "check_ids": [
+        "focused",
         "review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Clean-/tmp actual explicit-bundle inspection exit2 for missing standalone100;16input files1879231B rehashed unchanged. Historical fixed50=50slots35numeric/15withheld; US30=30names120rows0qualified; standalone100=0known100unknownslots. Lead receipt62d40dcd120db2467824db349d827fdeb6abccdbc8e635b5ea7899cda8b3a986; Trader33928fe305ce30bffc1f0fc02165a881cc18249c4a665b6e6408f7e58df7c38e; AI032df1ccc0f39b5b0543d566340ea68da3c282a1699066b6e829e30761d78b46. All120US30outcomes stillpending;90issuance-stale/30private-inspectable nextweek. No newrun,source,quality,publication or trading authority."
+      ]
     },
     {
       "id": "PRSG-157-D3",
       "description": "Reconcile completed, interrupted, tampered, expired and consumed-release states without network, credentials, capture, inference or implicit approval; expose the exact safe continuation.",
       "check_ids": [
+        "focused",
         "review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Clean-/tmp actual explicit-bundle inspection exit2 for missing standalone100;16input files1879231B rehashed unchanged. Historical fixed50=50slots35numeric/15withheld; US30=30names120rows0qualified; standalone100=0known100unknownslots. Lead receipt62d40dcd120db2467824db349d827fdeb6abccdbc8e635b5ea7899cda8b3a986; Trader33928fe305ce30bffc1f0fc02165a881cc18249c4a665b6e6408f7e58df7c38e; AI032df1ccc0f39b5b0543d566340ea68da3c282a1699066b6e829e30761d78b46. All120US30outcomes stillpending;90issuance-stale/30private-inspectable nextweek. No newrun,source,quality,publication or trading authority."
+      ]
     },
     {
       "id": "PRSG-157-D4",
-      "description": "Independently reproduce the view from a frozen private bundle and verify actual output references, focused negative cases and human-readable command/documentation; Human accepts with Trader and AI Engineer domain review.",
+      "description": "Independently reproduce the view from a frozen private bundle and verify actual output references, focused negative cases and human-readable command/documentation; Lead accepts operational delivery with Trader and AI Engineer domain review; Human retains promotion/publication authority.",
       "check_ids": [
+        "focused",
         "review"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Clean-/tmp actual explicit-bundle inspection exit2 for missing standalone100;16input files1879231B rehashed unchanged. Historical fixed50=50slots35numeric/15withheld; US30=30names120rows0qualified; standalone100=0known100unknownslots. Lead receipt62d40dcd120db2467824db349d827fdeb6abccdbc8e635b5ea7899cda8b3a986; Trader33928fe305ce30bffc1f0fc02165a881cc18249c4a665b6e6408f7e58df7c38e; AI032df1ccc0f39b5b0543d566340ea68da3c282a1699066b6e829e30761d78b46. All120US30outcomes stillpending;90issuance-stale/30private-inspectable nextweek. No newrun,source,quality,publication or trading authority."
+      ]
     }
   ],
   "review": {
-    "status": "pending",
-    "evidence": []
+    "status": "accepted",
+    "evidence": [
+      "Clean-/tmp actual explicit-bundle inspection exit2 for missing standalone100;16input files1879231B rehashed unchanged. Historical fixed50=50slots35numeric/15withheld; US30=30names120rows0qualified; standalone100=0known100unknownslots. Lead receipt62d40dcd120db2467824db349d827fdeb6abccdbc8e635b5ea7899cda8b3a986; Trader33928fe305ce30bffc1f0fc02165a881cc18249c4a665b6e6408f7e58df7c38e; AI032df1ccc0f39b5b0543d566340ea68da3c282a1699066b6e829e30761d78b46. All120US30outcomes stillpending;90issuance-stale/30private-inspectable nextweek. No newrun,source,quality,publication or trading authority."
+    ]
   }
 }

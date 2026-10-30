@@ -1,6 +1,6 @@
 # PRSG-159 — Lead Skill and Schedule Simplification or Removal
 
-Type: spike · Modules: skills, harness, docs · Owner: Engineer · Priority: P2 · Effort: S (0.5–1 person-days, estimate) · Impact: high — addresses directly reported delivery or comprehension friction; benefit remains unmeasured.
+Type: spike · Modules: skills, harness, docs · Owner: Lead · Priority: P1 · Effort: S (0.5–1 person-days, estimate) · Impact: high — addresses directly reported delivery or comprehension friction; benefit remains unmeasured.
 
 ## Objective
 
@@ -36,11 +36,19 @@ Dependencies / reuse: PRSG-122, PRSG-98, PRSG-121. Dependencies identify interfa
 
 ## When It Is Considered Done
 
-- [ ] PRSG-159-D1: Compare the three viable operating modes within the one-person-day timebox, using current local evidence, ownership costs, risks and an explicit recommended pilot with stop/continue criteria.
-- [ ] PRSG-159-D2: Deliver concise candidate skill/coordination/report prompts and a role-responsibility map, showing actual UTF-8 byte counts and unavailable telemetry honestly; preserve pauses, resource gates, review and recovery semantics.
-- [ ] PRSG-159-D3: Replay completed-ticket preservation, busy owner, returned result, user amendment, missing worker state, denied dispatch, expired admission, resource block and human pause against the proposed behavior; record expected versus observed judgments.
-- [ ] PRSG-159-D4: Human selects the mode and reviews the concrete cutover/rollback and acceptance-authority changes before any operational or production instruction mutation. No existing role, schedule or skill is changed by this spike.
+- [x] PRSG-159-D1: Compare the three viable operating modes within the one-person-day timebox, using current local evidence, ownership costs, risks and an explicit recommended pilot with stop/continue criteria.
+- [x] PRSG-159-D2: Deliver concise candidate skill/coordination/report prompts and a role-responsibility map, showing actual UTF-8 byte counts and unavailable telemetry honestly; preserve pauses, resource gates, review and recovery semantics.
+- [x] PRSG-159-D3: Replay completed-ticket preservation, busy owner, returned result, user amendment, missing worker state, denied dispatch, expired admission, resource block and human pause against the proposed behavior; record expected versus observed judgments.
+- [x] PRSG-159-D4: Record the Human-selected continued Lead role, short-handoff pilot, concrete cutover/rollback and retained independent review. Candidate production prompt/schedule adoption remains human-review gated; no production instructions or schedules are changed by this spike.
 
 ## Checks and Delivery
 
 All implementation checks and acceptance items are pending. At implementation, record exact focused command/manual results and failures, inspect all changed paths (including new/deleted files and both rename endpoints), validate this manifest with every supplied changed path, and run required hooks on any authorized commit/push. Skill changes require metadata/reference checks and a frozen behavioral replay, plus human review before promotion. No code, model, prompt, rights policy, publication, schedule or role change is implemented by creating this ticket. A schema pass is planning validation only.
+
+## Accepted Scope Amendment — 30 October 2026
+
+Human appointed the current Lead and explicitly resumes final team delivery. The chosen mode is continued lean Lead with short handoffs, not the earlier Lead-free recommendation. Lead owns this decision spike and docs/LEAD_OPTIONAL_DECISION.md; Engineer independently reviews it after157 implementation. Base cca89e514ed6217d3afb980063b604a53ff069c3. The spike delivers a decision and reviewable candidates, not installed production prompts or scheduling changes. The prior human-review-before-promotion boundary is preserved; Human-selected role authority is current evidence. All original options, quantitative honesty and frozen behavioral checks remain required.
+
+## Independent Acceptance — 30 October 2026
+
+30Oct independent Engineer review b6b5d9d1a4e6da0c1dd6132e2832e133514f39f3eb8fa82398ee7bc94632a527 accepted all10 frozen instruction cases and674/270UTF8candidate bytes; reviewed functional document d8ab65ff1ec67dcf740de9992ad14ccf3a4326a982b4f7cc3c459baad79ec7cd. Lead verified referenced hashes/cases and changed only final status sentence afterward; candidates/rules/measurements unchanged. Decision artifact only, no production prompt/schedule adoption. Final status-note-only document SHA 5fde5481e062fe1841b730f5b2df49b672fe19fa317ae765598046404d9df4e9. No runtime dispatch/cost improvement or production instruction promotion claimed. Commit/push hooks run at integration; this acceptance covers the completed decision spike only.

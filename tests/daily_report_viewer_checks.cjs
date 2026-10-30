@@ -246,41 +246,20 @@ async function observedQuoteDisplay() {
   }
   t.w.eval(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'));
   const controls=t.w.PraesagusTA.create(t.w.document);controls.update(data);
-  const chip=t.$('#ta-chips button');
-  assert.equal(chip.textContent,'💻 TEST0 ↑','chip uses historical SMA trend even when same-session quote direction conflicts');
-  assert.match(chip.getAttribute('aria-label'),/historical SMA-5\/SMA-20 trend: Up.*last bar 2026-09-30.*forecast Unrated/);
-  assert.match(chip.title,/Up/);assert.match(chip.title,/forecast Unrated/);assert.doesNotMatch(chip.title,/Bullish|Bearish|Neutral/);
-  assert.match(chip.className,/ta-trend-bullish/);
-  const upChip=t.$('#ta-chips button:nth-child(2)');
-  assert.equal(upChip.textContent,'💻 TEST1 ↑');
-  assert.match(upChip.getAttribute('aria-label'),/: Up.*last bar 2026-09-30/);
-  const sidewaysChip=t.$('#ta-chips button:nth-child(3)');
-  assert.equal(sidewaysChip.textContent,'💻 TEST2 ↔');
-  assert.match(sidewaysChip.getAttribute('aria-label'),/: Sideways/);
-  const invalidSignalChip=t.$('#ta-chips button:nth-child(4)');
-  assert.equal(invalidSignalChip.textContent,'💻 TEST3 ↓');assert.match(invalidSignalChip.getAttribute('aria-label'),/saved forecast direction: Down/);
-  assert.match(invalidSignalChip.getAttribute('aria-label'),/Unsupported signal/);
-  assert.match(invalidSignalChip.className,/ta-trend-bearish/);
-  const missingSignalChip=t.$('#ta-chips button:nth-child(5)');
-  assert.equal(missingSignalChip.textContent,'🧪 TEST4 ↑','row sector_emoji takes precedence when its group key is absent');
-  assert.match(missingSignalChip.getAttribute('aria-label'),/saved forecast direction: Up/);
-  assert.match(missingSignalChip.className,/ta-trend-bullish/);
-  const noSignalChip=[...t.w.document.querySelectorAll('#ta-chips button')].find(b=>b.textContent.includes('TEST9'));
-  assert.equal(noSignalChip.textContent,'💻 TEST9 —','no evidence uses an explicit unavailable marker, never a fabricated trend');
-  assert.match(noSignalChip.className,/ta-trend-unavailable/);
-  const quoteOnlyChip=[...t.w.document.querySelectorAll('#ta-chips button')].find(b=>b.textContent.includes('TEST8'));
-  assert.equal(quoteOnlyChip.textContent,'🧪 TEST8 ↑','timestamped quote direction supplies an arrow when historical SMA is missing');
-  assert.match(quoteOnlyChip.getAttribute('aria-label'),/quote direction vs previous close: Up.*source 2026-10-01T07:59:00Z/);
-  assert.match(quoteOnlyChip.className,/ta-trend-bullish/);
-  const bullishAliasChip=t.$('#ta-chips button:nth-child(6)'),downAliasChip=t.$('#ta-chips button:nth-child(7)'),neutralAliasChip=t.$('#ta-chips button:nth-child(8)');
-  assert.equal(bullishAliasChip.textContent,'💻 TEST5 ↑');assert.match(bullishAliasChip.getAttribute('aria-label'),/: Up/);
-  assert.equal(downAliasChip.textContent,'💻 TEST6 ↓');assert.match(downAliasChip.getAttribute('aria-label'),/: Down/);
-  assert.equal(neutralAliasChip.textContent,'💻 TEST7 ↔');assert.match(neutralAliasChip.getAttribute('aria-label'),/: Sideways/);
-  assert.match(missingSignalChip.getAttribute('aria-label'),/forecast up/);
-  chip.dispatchEvent(new t.w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
-  assert.equal(t.w.document.activeElement,upChip,'ArrowRight still moves focus between ticker chips');
-  upChip.click();assert.equal(upChip.getAttribute('aria-pressed'),'true','Ticker selection remains available');
-  assert.match(t.$('#ta-caption').textContent,/historical SMA trend when available.*timestamped quote direction.*Forecast direction remains separate/);
+  const picker=t.$('#ta-candidate');
+  function inspect(ticker){const option=[...picker.options].find(x=>x.textContent.includes(' · '+ticker+' —')||x.textContent.endsWith(' · '+ticker));assert.ok(option);picker.value=option.value;picker.dispatchEvent(new t.w.Event('change'));t.$('#ta-show').click();return t.$('#ta-evidence').textContent}
+  assert.match(inspect('TEST0'),/Historical SMA-5\/SMA-20 trend: Up.*last bar 2026-09-30.*recorded forecast: Unrated/,'Historical trend retains precedence over conflicting quote direction');
+  assert.match(inspect('TEST1'),/Historical SMA-5\/SMA-20 trend: Up.*last bar 2026-09-30/);
+  assert.match(inspect('TEST2'),/Historical SMA-5\/SMA-20 trend: Sideways/);
+  assert.match(inspect('TEST3'),/Historical trend and quote direction unavailable.*recorded forecast: down/,'Unsupported signals never become validated trend');
+  assert.match(inspect('TEST4'),/Historical trend and quote direction unavailable.*recorded forecast: up/);
+  assert.match(inspect('TEST9'),/Historical trend and quote direction unavailable/);
+  assert.match(inspect('TEST8'),/Timestamped quote direction vs previous close: Up.*source 2026-10-01T07:59:00Z/);
+  assert.match(inspect('TEST5'),/Historical SMA-5\/SMA-20 trend: Up/);
+  assert.match(inspect('TEST6'),/Historical SMA-5\/SMA-20 trend: Down/);
+  assert.match(inspect('TEST7'),/Historical SMA-5\/SMA-20 trend: Sideways/);
+  assert.equal(picker.tagName,'SELECT');assert.equal(t.$('#ta-chips [data-tape-copy]'),null);
+  assert.match(t.$('#ta-caption').textContent,/Historical SMA trend when available.*timestamped quote direction.*Forecast direction remains separate/);
   controls.destroy();
   t.$('#forecast-sort').value='price-desc';t.$('#forecast-sort').dispatchEvent(new t.w.Event('change'));
   assert.equal(t.$('#forecast-rows tr').dataset.universeOrder,'1','Unknown-unit point excluded from nominal sorting');
@@ -301,11 +280,8 @@ async function historicalForecastArchive() {
   assert.ok(spyRow);assert.match(spyRow.className,/flat/);
   t.w.eval(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'));
   const controls=t.w.PraesagusTA.create(t.w.document);controls.update(archive);
-  const chips=[...t.w.document.querySelectorAll('#ta-chips button')];
-  const aaplChip=chips.find(x=>x.textContent.includes('AAPL'));
-  assert.ok(aaplChip);assert.match(aaplChip.textContent,/AAPL ↑/);assert.match(aaplChip.getAttribute('aria-label'),/saved forecast direction: Up/);
-  const spyChip=chips.find(x=>x.textContent.includes('SPY'));
-  assert.ok(spyChip);assert.match(spyChip.textContent,/SPY ↔/);assert.match(spyChip.className,/ta-trend-neutral/);
+  const picker=t.$('#ta-candidate');
+  for(const [ticker,direction] of [['AAPL','up'],['SPY','flat']]){const option=[...picker.options].find(x=>x.textContent.includes(' · '+ticker+' —'));assert.ok(option);picker.value=option.value;picker.dispatchEvent(new t.w.Event('change'));t.$('#ta-show').click();assert.match(t.$('#ta-evidence').textContent,new RegExp('recorded forecast: '+direction));}
   controls.destroy();assert.equal(t.errors.length,0);t.dom.window.close();
 }
 async function currentReportTrendChips() {
@@ -314,11 +290,10 @@ async function currentReportTrendChips() {
   const t=mount({search:'?date=2026-10-07',routes:{'./2026-10-07.json':data}});await settle();
   t.w.eval(fs.readFileSync(path.join(root,'artifacts/daily-market-brief/tradingview.js'),'utf8'));
   const controls=t.w.PraesagusTA.create(t.w.document);controls.update(data);
-  const chips=[...t.w.document.querySelectorAll('#ta-chips button')];
-  const spy=chips.find(x=>x.textContent.includes('SPY'));
-  assert.ok(spy);assert.match(spy.textContent,/SPY ↓/);assert.match(spy.getAttribute('aria-label'),/quote direction vs previous close: Down.*source 2026-10-07/);assert.match(spy.className,/ta-trend-bearish/);
-  const my=chips.find(x=>x.textContent.includes('0820EA'));
-  assert.ok(my);assert.match(my.textContent,/0820EA —/);assert.match(my.className,/ta-trend-unavailable/);
+  const picker=t.$('#ta-candidate');
+  const choose=ticker=>{picker.value=[...picker.options].find(x=>x.textContent.includes(' · '+ticker+' —')).value;picker.dispatchEvent(new t.w.Event('change'));t.$('#ta-show').click();return t.$('#ta-evidence').textContent};
+  assert.match(choose('SPY'),/Timestamped quote direction vs previous close: Down.*source 2026-10-07/);
+  assert.match(choose('0820EA'),/Historical trend and quote direction unavailable/);
   controls.destroy();assert.equal(t.errors.length,0);t.dom.window.close();
 }
 async function publicSnapshotDisplay() {

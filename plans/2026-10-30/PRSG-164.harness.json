@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-164",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "harness",
+      "infra"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.4
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-30",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-30/PRSG-164-nonnegative-process-group-monitoring.md",
+  "objective": "Fix process snapshot portability while retaining strict positive owned-group identity and safe cleanup.",
+  "status": "in_progress",
+  "owner": "Lead",
+  "reviewer": "AI Engineer runtime review; Lead integration",
+  "scope_status": "accepted",
+  "base_sha": "cca89e514ed6217d3afb980063b604a53ff069c3",
+  "allowed_paths": [
+    "plans/2026-10-30/PRSG-164-nonnegative-process-group-monitoring.md",
+    "plans/2026-10-30/PRSG-164.harness.json",
+    "scripts/stock-research/run_reviewed_batch.py",
+    "tests/test_reviewed_batch.py"
+  ],
+  "protected_paths": [
+    "ingest/",
+    "connectors/",
+    "artifacts/",
+    "harness/",
+    "skills/",
+    "agent-operations/",
+    ".DS_Store"
+  ],
+  "dependencies": [
+    "PRSG-155"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_reviewed_batch.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead whole focused110passed7.00s; AI independent16targetedcasespassed0.48s,94deselected. Exactsource5b5625e29859b60d1ae9bfeb4df467fa98f1cbd8ebfb6564e5562cf4c7d72982; tests8571b2ec6126ca068b654c20108a2da187955a7a0e86b901c9d5f897912b7804. AIreceiptcf035d95d2b1141e66aaad7c316bf37a4493a918443023144c63f675820b2a0c. OriginalglobalPGID0rejection independentlyreproduced; realchild+authoredunrelatedrow succeeds; selectedzero/negative/malformed/signal errorsstillreject; original58+2/512MiB/1thread/0retryLIMITS ASTunchanged. OriginalCItracebackunavailable; remoteCIrepair notclaimed."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Independent AI Engineer runtime-boundary review of final source and focused rejection/real-process cases.",
+      "status": "passed",
+      "evidence": [
+        "Lead whole focused110passed7.00s; AI independent16targetedcasespassed0.48s,94deselected. Exactsource5b5625e29859b60d1ae9bfeb4df467fa98f1cbd8ebfb6564e5562cf4c7d72982; tests8571b2ec6126ca068b654c20108a2da187955a7a0e86b901c9d5f897912b7804. AIreceiptcf035d95d2b1141e66aaad7c316bf37a4493a918443023144c63f675820b2a0c. OriginalglobalPGID0rejection independentlyreproduced; realchild+authoredunrelatedrow succeeds; selectedzero/negative/malformed/signal errorsstillreject; original58+2/512MiB/1thread/0retryLIMITS ASTunchanged. OriginalCItracebackunavailable; remoteCIrepair notclaimed. Independentcode reviewaccepted; remoteCIremains pending."
+      ]
+    },
+    {
+      "id": "remote",
+      "kind": "manual",
+      "description": "Exact commit/push/full mandatory hooks and resulting remote CI; no repair claim until green.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-164-D1",
+      "description": "Reproduce an unrelated nonnegative process-group-zero row rejecting the whole process snapshot, and preserve the distinction between this portable defect and an unconfirmed remote CI traceback.",
+      "check_ids": [
+        "focused",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead whole focused110passed7.00s; AI independent16targetedcasespassed0.48s,94deselected. Exactsource5b5625e29859b60d1ae9bfeb4df467fa98f1cbd8ebfb6564e5562cf4c7d72982; tests8571b2ec6126ca068b654c20108a2da187955a7a0e86b901c9d5f897912b7804. AIreceiptcf035d95d2b1141e66aaad7c316bf37a4493a918443023144c63f675820b2a0c. OriginalglobalPGID0rejection independentlyreproduced; realchild+authoredunrelatedrow succeeds; selectedzero/negative/malformed/signal errorsstillreject; original58+2/512MiB/1thread/0retryLIMITS ASTunchanged. OriginalCItracebackunavailable; remoteCIrepair notclaimed."
+      ]
+    },
+    {
+      "id": "PRSG-164-D2",
+      "description": "Accept nonnegative unrelated process-group IDs while requiring positive IDs for owned process groups and every group signal; preserve process identity, descendant tracking, sampled RSS, deadline and cleanup rejection gates.",
+      "check_ids": [
+        "focused",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead whole focused110passed7.00s; AI independent16targetedcasespassed0.48s,94deselected. Exactsource5b5625e29859b60d1ae9bfeb4df467fa98f1cbd8ebfb6564e5562cf4c7d72982; tests8571b2ec6126ca068b654c20108a2da187955a7a0e86b901c9d5f897912b7804. AIreceiptcf035d95d2b1141e66aaad7c316bf37a4493a918443023144c63f675820b2a0c. OriginalglobalPGID0rejection independentlyreproduced; realchild+authoredunrelatedrow succeeds; selectedzero/negative/malformed/signal errorsstillreject; original58+2/512MiB/1thread/0retryLIMITS ASTunchanged. OriginalCItracebackunavailable; remoteCIrepair notclaimed."
+      ]
+    },
+    {
+      "id": "PRSG-164-D3",
+      "description": "Focused parser/scope/signal regressions and the existing real child exit, timeout, memory and cleanup cases pass; independent runtime review confirms no financial or execution-policy change.",
+      "check_ids": [
+        "focused",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead whole focused110passed7.00s; AI independent16targetedcasespassed0.48s,94deselected. Exactsource5b5625e29859b60d1ae9bfeb4df467fa98f1cbd8ebfb6564e5562cf4c7d72982; tests8571b2ec6126ca068b654c20108a2da187955a7a0e86b901c9d5f897912b7804. AIreceiptcf035d95d2b1141e66aaad7c316bf37a4493a918443023144c63f675820b2a0c. OriginalglobalPGID0rejection independentlyreproduced; realchild+authoredunrelatedrow succeeds; selectedzero/negative/malformed/signal errorsstillreject; original58+2/512MiB/1thread/0retryLIMITS ASTunchanged. OriginalCItracebackunavailable; remoteCIrepair notclaimed."
+      ]
+    },
+    {
+      "id": "PRSG-164-D4",
+      "description": "Integrate through mandatory hooks, inspect the resulting remote CI and report its exact result. A green run is required before claiming CI repaired; historical forecast approvals are never renewed.",
+      "check_ids": [
+        "focused",
+        "remote"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead whole focused110passed7.00s; AI independent16targetedcasespassed0.48s,94deselected. Exactsource5b5625e29859b60d1ae9bfeb4df467fa98f1cbd8ebfb6564e5562cf4c7d72982; tests8571b2ec6126ca068b654c20108a2da187955a7a0e86b901c9d5f897912b7804. AIreceiptcf035d95d2b1141e66aaad7c316bf37a4493a918443023144c63f675820b2a0c. OriginalglobalPGID0rejection independentlyreproduced; realchild+authoredunrelatedrow succeeds; selectedzero/negative/malformed/signal errorsstillreject; original58+2/512MiB/1thread/0retryLIMITS ASTunchanged. OriginalCItracebackunavailable; remoteCIrepair notclaimed. Implementationaccepted; integration/remotegateD4pending."
+    ]
+  }
+}

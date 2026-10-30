@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-162",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-30",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-30/PRSG-162-saved-report-comparison-static-selector.md",
+  "objective": "Make recorded report changes easy to inspect and instrument selection stable: explicit two-report comparison plus static searchable chart selector, preserving financial meaning and provenance.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead; Designer visual/interaction review",
+  "scope_status": "accepted",
+  "base_sha": "cca89e514ed6217d3afb980063b604a53ff069c3",
+  "allowed_paths": [
+    "plans/2026-10-30/PRSG-162-saved-report-comparison-static-selector.md",
+    "plans/2026-10-30/PRSG-162.harness.json",
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/daily-market-brief/tradingview.js",
+    "tests/report_comparison_checks.cjs",
+    "tests/ticker_tape_loop_checks.cjs",
+    "tests/tradingview_checks.cjs",
+    "tests/compact_report_viewer_checks.cjs",
+    "tests/daily_report_viewer_checks.cjs",
+    "docs/REPORT_COMPARISON.md"
+  ],
+  "protected_paths": [
+    "artifacts/daily-market-brief/reports.json",
+    "artifacts/financial-calendar/",
+    "connectors/",
+    "ingest/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    "agent-operations/",
+    ".DS_Store"
+  ],
+  "dependencies": [
+    "PRSG-87",
+    "PRSG-96",
+    "PRSG-53",
+    "PRSG-158"
+  ],
+  "checks": [
+    {
+      "id": "dom",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/report_comparison_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope."
+      ]
+    },
+    {
+      "id": "selector",
+      "kind": "command",
+      "argv": [
+        "node",
+        "tests/ticker_tape_loop_checks.cjs"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope."
+      ]
+    },
+    {
+      "id": "review",
+      "kind": "manual",
+      "description": "Lead and Designer inspect actual saved20/21Oct comparison and static selector at390/768/1440, keyboard/focus/stale/error handling and financial/provenance preservation; native zoom limitations explicit.",
+      "status": "passed",
+      "evidence": [
+        "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-162-D1",
+      "description": "Implement an opt-in comparison of two explicitly selected indexed saved reports with independent request cancellation/generation, complete paired report-date/revision/cutoff links and no change to the displayed report.",
+      "check_ids": [
+        "dom",
+        "selector",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope."
+      ]
+    },
+    {
+      "id": "PRSG-162-D2",
+      "description": "Compare meaningful whitelisted membership/coverage, guarded forecast fields and normalized research text/source sets with stable identities; preserve null/unknowns, reject duplicate ambiguity and ignore reorder/whitespace/timestamp noise. Absence is not cancellation; different saved forecasts are not revisions or performance.",
+      "check_ids": [
+        "dom",
+        "selector",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope."
+      ]
+    },
+    {
+      "id": "PRSG-162-D3",
+      "description": "Replace automatic ticker motion with a static local ticker/company/market search, native candidate selector and explicit Show chart action; keep active chart identity/context visible even when filtered out, and preserve curated mapping, fallback, timeout, date and lifecycle behavior.",
+      "check_ids": [
+        "dom",
+        "selector",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope."
+      ]
+    },
+    {
+      "id": "PRSG-162-D4",
+      "description": "Focused DOM/contract regressions pass for invalid/missing/equal/reversed selection, bounded two-report reads, stale responses, unsafe content, missing groups, no-match search, keyboard exploration, date changes and immutable stored reports; old motion-specific assertions are replaced by the new static behavior contract.",
+      "check_ids": [
+        "dom",
+        "selector",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope."
+      ]
+    },
+    {
+      "id": "PRSG-162-D5",
+      "description": "Lead and Designer independently inspect actual saved-report20/21October comparison plus 390/768/1440 layouts, keyboard/focus/chart error/selection states and no document overflow. Record native zoom/reader limitations honestly; no usability-study, calibration or model-quality claim.",
+      "check_ids": [
+        "dom",
+        "selector",
+        "review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope."
+      ]
+    },
+    {
+      "id": "PRSG-162-D6",
+      "description": "Deliver reviewed code/docs and actual preview with unchanged original report/ledger/calendar/source/model files; commit/push and verify the exact resulting deployment when authorized.",
+      "check_ids": [
+        "dom",
+        "selector",
+        "review"
+      ],
+      "status": "pending",
+      "evidence": [
+        "Reviewedcode/docs/preview complete; authorizedcommit/push/deployment verification remains."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope. Implementationaccepted; deliverygateD6remains pending."
+    ]
+  }
+}

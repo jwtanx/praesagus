@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-161",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-30",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-30/PRSG-161-forecast-outcome-quality-scorecard.md",
+  "objective": "Make original forecast follow-through and matched-baseline quality evidence inspectable through an offline scorecard, reusing existing immutable forecasts and eligible retained outcomes.",
+  "status": "complete",
+  "owner": "AI Engineer",
+  "reviewer": "Lead; Trader financial review",
+  "scope_status": "accepted",
+  "base_sha": "cca89e514ed6217d3afb980063b604a53ff069c3",
+  "allowed_paths": [
+    "plans/2026-10-30/PRSG-161-forecast-outcome-quality-scorecard.md",
+    "plans/2026-10-30/PRSG-161.harness.json",
+    "scripts/stock-research/quality_scorecard.py",
+    "tests/test_quality_scorecard.py",
+    "docs/FORECAST_QUALITY_SCORECARD.md"
+  ],
+  "protected_paths": [
+    "scripts/stock-research/evaluation.py",
+    "harness/",
+    "artifacts/",
+    "ingest/",
+    "connectors/",
+    "skills/",
+    "agent-operations/",
+    ".DS_Store"
+  ],
+  "dependencies": [
+    "PRSG-113",
+    "PRSG-114",
+    "PRSG-83",
+    "PRSG-155"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_quality_scorecard.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead58passed0.62s; AI58passed0.59s. Exact final scorer178d088b5169d15082ad11c834d97dd324ab0335cecf1cc0686b9834d9db95f2; testsf1408bae9615f180d95b7ae2ce76b87adb7151c2bf587330df867e41e0910e7c."
+      ]
+    },
+    {
+      "id": "actual_review",
+      "kind": "manual",
+      "description": "Lead independently reproduces actual frozen-cohort scores and failures, with Trader financial semantics review; evidence remains private.",
+      "status": "passed",
+      "evidence": [
+        "Lead clean-/tmp actualCLI exit0 independently reproduced4artifact hashes,38originalrefs unchanged; final acceptanced8b88bfa4d2260f0c851550b3f048d8df90d078b47c01a0aef0dd74c56e7e4ae. Original30US20Oct intraday-issued terminalforecasts scored:15directionhits28rangehits;5missingactual15withheld. Paired unrounded modelerror1.1533458060% vs originalbaseline1.0775827966%,12/30lowererror. One targetdate, no edge/calibration/qualification. All120newOHLCrows pending at frozen2026-10-30T01:13:35+08:00. Trader precisionreview7652383a3d52b59e4eb18a84b1361046115705db41096b753c4a2b9cccad33e0. PrivateHTML browserpreview explicitly blocked; no workaround. Human-readableHTML/JSON/CSV produced+tested; independently visually reviewed six-page directJSON staticPDF is safer readingalternative, not HTMLcontrol certification. No fit/model/provider/promotion."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-161-D1",
+      "description": "Freeze a bounded explicit-input contract reusing existing ledgers/evaluators, immutable forecast/model/source references, target semantics and origin-time matched baselines; Lead reviews before numerical implementation.",
+      "check_ids": [
+        "focused",
+        "actual_review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead clean-/tmp actualCLI exit0 independently reproduced4artifact hashes,38originalrefs unchanged; final acceptanced8b88bfa4d2260f0c851550b3f048d8df90d078b47c01a0aef0dd74c56e7e4ae. Original30US20Oct intraday-issued terminalforecasts scored:15directionhits28rangehits;5missingactual15withheld. Paired unrounded modelerror1.1533458060% vs originalbaseline1.0775827966%,12/30lowererror. One targetdate, no edge/calibration/qualification. All120newOHLCrows pending at frozen2026-10-30T01:13:35+08:00. Trader precisionreview7652383a3d52b59e4eb18a84b1361046115705db41096b753c4a2b9cccad33e0. PrivateHTML browserpreview explicitly blocked; no workaround. Human-readableHTML/JSON/CSV produced+tested; independently visually reviewed six-page directJSON staticPDF is safer readingalternative, not HTMLcontrol certification. No fit/model/provider/promotion."
+      ]
+    },
+    {
+      "id": "PRSG-161-D2",
+      "description": "Implement a reproducible offline scorecard with per-instrument/horizon/market sample counts and pending/insufficient/failed/qualified-for-review dispositions; distinguish terminal-close and whole-window extrema, missing actuals, correlated vintages and missing matched baselines.",
+      "check_ids": [
+        "focused",
+        "actual_review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead clean-/tmp actualCLI exit0 independently reproduced4artifact hashes,38originalrefs unchanged; final acceptanced8b88bfa4d2260f0c851550b3f048d8df90d078b47c01a0aef0dd74c56e7e4ae. Original30US20Oct intraday-issued terminalforecasts scored:15directionhits28rangehits;5missingactual15withheld. Paired unrounded modelerror1.1533458060% vs originalbaseline1.0775827966%,12/30lowererror. One targetdate, no edge/calibration/qualification. All120newOHLCrows pending at frozen2026-10-30T01:13:35+08:00. Trader precisionreview7652383a3d52b59e4eb18a84b1361046115705db41096b753c4a2b9cccad33e0. PrivateHTML browserpreview explicitly blocked; no workaround. Human-readableHTML/JSON/CSV produced+tested; independently visually reviewed six-page directJSON staticPDF is safer readingalternative, not HTMLcontrol certification. No fit/model/provider/promotion."
+      ]
+    },
+    {
+      "id": "PRSG-161-D3",
+      "description": "Preserve original forecasts and require completed reviewed comparable outcomes. Report low/high/terminal errors and interval coverage/width only where their target and evidence support them; never invent a baseline or label a missing metric as success.",
+      "check_ids": [
+        "focused",
+        "actual_review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead clean-/tmp actualCLI exit0 independently reproduced4artifact hashes,38originalrefs unchanged; final acceptanced8b88bfa4d2260f0c851550b3f048d8df90d078b47c01a0aef0dd74c56e7e4ae. Original30US20Oct intraday-issued terminalforecasts scored:15directionhits28rangehits;5missingactual15withheld. Paired unrounded modelerror1.1533458060% vs originalbaseline1.0775827966%,12/30lowererror. One targetdate, no edge/calibration/qualification. All120newOHLCrows pending at frozen2026-10-30T01:13:35+08:00. Trader precisionreview7652383a3d52b59e4eb18a84b1361046115705db41096b753c4a2b9cccad33e0. PrivateHTML browserpreview explicitly blocked; no workaround. Human-readableHTML/JSON/CSV produced+tested; independently visually reviewed six-page directJSON staticPDF is safer readingalternative, not HTMLcontrol certification. No fit/model/provider/promotion."
+      ]
+    },
+    {
+      "id": "PRSG-161-D4",
+      "description": "Produce and independently review an actual retained frozen-cohort scorecard plus human-readable local HTML/JSON/CSV evidence or exact per-row missing/pending reasons. At least one genuinely matured previously issued cohort is scored from existing retained approved actuals if such evidence is present; absent evidence must be resolved or remain an explicit unmet gate.",
+      "check_ids": [
+        "focused",
+        "actual_review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead clean-/tmp actualCLI exit0 independently reproduced4artifact hashes,38originalrefs unchanged; final acceptanced8b88bfa4d2260f0c851550b3f048d8df90d078b47c01a0aef0dd74c56e7e4ae. Original30US20Oct intraday-issued terminalforecasts scored:15directionhits28rangehits;5missingactual15withheld. Paired unrounded modelerror1.1533458060% vs originalbaseline1.0775827966%,12/30lowererror. One targetdate, no edge/calibration/qualification. All120newOHLCrows pending at frozen2026-10-30T01:13:35+08:00. Trader precisionreview7652383a3d52b59e4eb18a84b1361046115705db41096b753c4a2b9cccad33e0. PrivateHTML browserpreview explicitly blocked; no workaround. Human-readableHTML/JSON/CSV produced+tested; independently visually reviewed six-page directJSON staticPDF is safer readingalternative, not HTMLcontrol certification. No fit/model/provider/promotion."
+      ]
+    },
+    {
+      "id": "PRSG-161-D5",
+      "description": "Focused negative/reproducibility checks pass; actual artifact/hash/issue/review/currentness provenance is demonstrated from a clean directory. No new source call, fit, calibration, risk-policy or model promotion.",
+      "check_ids": [
+        "focused",
+        "actual_review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead clean-/tmp actualCLI exit0 independently reproduced4artifact hashes,38originalrefs unchanged; final acceptanced8b88bfa4d2260f0c851550b3f048d8df90d078b47c01a0aef0dd74c56e7e4ae. Original30US20Oct intraday-issued terminalforecasts scored:15directionhits28rangehits;5missingactual15withheld. Paired unrounded modelerror1.1533458060% vs originalbaseline1.0775827966%,12/30lowererror. One targetdate, no edge/calibration/qualification. All120newOHLCrows pending at frozen2026-10-30T01:13:35+08:00. Trader precisionreview7652383a3d52b59e4eb18a84b1361046115705db41096b753c4a2b9cccad33e0. PrivateHTML browserpreview explicitly blocked; no workaround. Human-readableHTML/JSON/CSV produced+tested; independently visually reviewed six-page directJSON staticPDF is safer readingalternative, not HTMLcontrol certification. No fit/model/provider/promotion."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead clean-/tmp actualCLI exit0 independently reproduced4artifact hashes,38originalrefs unchanged; final acceptanced8b88bfa4d2260f0c851550b3f048d8df90d078b47c01a0aef0dd74c56e7e4ae. Original30US20Oct intraday-issued terminalforecasts scored:15directionhits28rangehits;5missingactual15withheld. Paired unrounded modelerror1.1533458060% vs originalbaseline1.0775827966%,12/30lowererror. One targetdate, no edge/calibration/qualification. All120newOHLCrows pending at frozen2026-10-30T01:13:35+08:00. Trader precisionreview7652383a3d52b59e4eb18a84b1361046115705db41096b753c4a2b9cccad33e0. PrivateHTML browserpreview explicitly blocked; no workaround. Human-readableHTML/JSON/CSV produced+tested; independently visually reviewed six-page directJSON staticPDF is safer readingalternative, not HTMLcontrol certification. No fit/model/provider/promotion."
+    ]
+  }
+}

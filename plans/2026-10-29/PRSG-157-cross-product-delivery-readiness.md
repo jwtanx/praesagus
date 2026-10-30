@@ -1,6 +1,6 @@
 # PRSG-157 — Cross-Product Delivery Readiness and Restart Reconciliation
 
-Type: feature · Modules: harness, financial-data, docs · Owner: Engineer · Priority: P2 · Effort: S (1–2 person-days, estimate) · Impact: high — addresses directly reported delivery or comprehension friction; benefit remains unmeasured.
+Type: feature · Modules: harness, financial-data, docs · Owner: Engineer · Priority: P1 · Effort: S (1–2 person-days, estimate) · Impact: high — addresses directly reported delivery or comprehension friction; benefit remains unmeasured.
 
 ## Objective
 
@@ -36,11 +36,21 @@ Dependencies / reuse: PRSG-140, PRSG-141, PRSG-155, PRSG-124, PRSG-109. Dependen
 
 ## When It Is Considered Done
 
-- [ ] PRSG-157-D1: Inventory existing receipts and prove the minimal missing delta; document fixed50, US30 and standalone100 contracts without reopening completed implementations.
-- [ ] PRSG-157-D2: Derive an attributable per-ticker/product readiness view with explicit missing, stale, incompatible, withheld and ready states, exact blocker/owner/next action and honest denominators; original knowledge times and approvals are preserved.
-- [ ] PRSG-157-D3: Reconcile completed, interrupted, tampered, expired and consumed-release states without network, credentials, capture, inference or implicit approval; expose the exact safe continuation.
-- [ ] PRSG-157-D4: Independently reproduce the view from a frozen private bundle and verify actual output references, focused negative cases and human-readable command/documentation; Human accepts with Trader and AI Engineer domain review.
+- [x] PRSG-157-D1: Inventory existing receipts and prove the minimal missing delta; document fixed50, US30 and standalone100 contracts without reopening completed implementations.
+- [x] PRSG-157-D2: Derive an attributable per-ticker/product readiness view with explicit missing, stale, incompatible, withheld and ready states, exact blocker/owner/next action and honest denominators; original knowledge times and approvals are preserved.
+- [x] PRSG-157-D3: Reconcile completed, interrupted, tampered, expired and consumed-release states without network, credentials, capture, inference or implicit approval; expose the exact safe continuation.
+- [x] PRSG-157-D4: Independently reproduce the view from a frozen private bundle and verify actual output references, focused negative cases and human-readable command/documentation; Lead accepts operational delivery with Trader and AI Engineer domain review; Human retains promotion/publication authority.
 
 ## Checks and Delivery
 
 All implementation checks and acceptance items are pending. At implementation, record exact focused command/manual results and failures, inspect all changed paths (including new/deleted files and both rename endpoints), validate this manifest with every supplied changed path, and run required hooks on any authorized commit/push. Skill changes require metadata/reference checks and a frozen behavioral replay, plus human review before promotion. No code, model, prompt, rights policy, publication, schedule or role change is implemented by creating this ticket. A schema pass is planning validation only.
+
+## Accepted Delivery Amendment — 30 October 2026
+
+Human appoints this chat Lead and explicitly directs resumed team execution through final impactful delivery. Lead accepts PRSG-157 at base cca89e514ed6217d3afb980063b604a53ff069c3. Engineer owns only inspect_delivery.py, test_delivery_readiness.py and DELIVERY_READINESS.md; Lead owns canonical plan/manifest edits. Existing acceptance evidence requirements remain; operational delivery acceptance moves from the resting Human/Lead-free proposal to the newly appointed Lead, with relevant Trader/AI review. No model/prompt/risk promotion or source request is authorized. Implement the real receipt adapters and demonstrate actual retained private bundles; do not build a manual parallel status registry.
+
+## Independent Acceptance — 30 October 2026
+
+Lead independently62passed4.12s; Engineer62passed4.04s. Exact frozen code3140f7f7c80c0c6102e481ebbe4a3579f113214ce0039f3aaa65e8bb5026c754.
+
+Clean-/tmp actual explicit-bundle inspection exit2 for missing standalone100;16input files1879231B rehashed unchanged. Historical fixed50=50slots35numeric/15withheld; US30=30names120rows0qualified; standalone100=0known100unknownslots. Lead receipt62d40dcd120db2467824db349d827fdeb6abccdbc8e635b5ea7899cda8b3a986; Trader33928fe305ce30bffc1f0fc02165a881cc18249c4a665b6e6408f7e58df7c38e; AI032df1ccc0f39b5b0543d566340ea68da3c282a1699066b6e829e30761d78b46. All120US30outcomes stillpending;90issuance-stale/30private-inspectable nextweek. No newrun,source,quality,publication or trading authority.

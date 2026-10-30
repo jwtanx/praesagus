@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-163",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "harness",
+      "financial-data",
+      "docs"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-10-30",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-30/PRSG-163-resumable-run-and-deliver.md",
+  "objective": "Deliver the role-requested resumable Run and Deliver operator command over existing approved interfaces, with stage-aware at-most-once recovery and actionable output/blocker reporting.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead; AI Engineer/Trader review relevant boundaries",
+  "scope_status": "accepted",
+  "base_sha": "cca89e514ed6217d3afb980063b604a53ff069c3",
+  "allowed_paths": [
+    "plans/2026-10-30/PRSG-163-resumable-run-and-deliver.md",
+    "plans/2026-10-30/PRSG-163.harness.json",
+    "scripts/stock-research/run_and_deliver.py",
+    "tests/test_run_and_deliver.py",
+    "docs/RUN_AND_DELIVER.md",
+    "plans/2026-10-30/final-delivery-campaign.md"
+  ],
+  "protected_paths": [
+    "scripts/stock-research/run_reviewed_batch.py",
+    "scripts/stock-research/run.py",
+    "ingest/",
+    "connectors/",
+    "artifacts/",
+    "harness/",
+    "skills/",
+    "agent-operations/",
+    ".DS_Store"
+  ],
+  "dependencies": [
+    "PRSG-157",
+    "PRSG-140",
+    "PRSG-141",
+    "PRSG-155",
+    "PRSG-109",
+    "PRSG-161"
+  ],
+  "checks": [
+    {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_run_and_deliver.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independently66focusedtests passed3.83s; Engineer66passed3.78s. Frozen wrapper4f0eff1122be5ca6855a31aad6e350d54ecaddce1022e00455fa1365c82f3685; tests624e84eae3ee670cd40492351937bfb59a59f64ba3a51d5ecafa79d7125432f8. Finiteplan573b776626d3df1639d45f5dd5ebd861645d24b03b0759fdc7fc34434933591d and exactapproval908470b53c14e7d451cd824034686828203cc5d0c598fd39dde2c383c9a6bed0 produced real161evaluation once from/tmp, exit0,4acceptedartifacts byte-identical,38originalrefs unchanged. Observed0.6418s/95698944BsampledRSS/14samples/maxgap0.0518s,cleanupverified. Controlledoutersealwithholding preserved originalsealbytes; inspectchild-verified(no writes), recover/repeatrecover0nochild; consumedexecute2held,claim/intent/supervisor/childhashesunchanged. Retained155inspect/recover0forecastcomplete/nochild. Actualreviewbfe3e60424cdd159116aa763026152869ecfe386dfb2bcb6b48f5b0b84efec65. No new155inference/provider/source/fit/promotion; original155expiredrelease remainsconsumed. A stale descriptivecodepin inreviewtextwascorrected inpreservederrata; exactplanruntimehasheswereverifiedbeforeapproval andactual4fcodeused."
+      ]
+    },
+    {
+      "id": "actual",
+      "kind": "manual",
+      "description": "Lead verifies real retained155 recovery plus finite explicitly approved actual161 evaluation and no-second-child recovery; no new forecast authority is inferred.",
+      "status": "passed",
+      "evidence": [
+        "Lead independently66focusedtests passed3.83s; Engineer66passed3.78s. Frozen wrapper4f0eff1122be5ca6855a31aad6e350d54ecaddce1022e00455fa1365c82f3685; tests624e84eae3ee670cd40492351937bfb59a59f64ba3a51d5ecafa79d7125432f8. Finiteplan573b776626d3df1639d45f5dd5ebd861645d24b03b0759fdc7fc34434933591d and exactapproval908470b53c14e7d451cd824034686828203cc5d0c598fd39dde2c383c9a6bed0 produced real161evaluation once from/tmp, exit0,4acceptedartifacts byte-identical,38originalrefs unchanged. Observed0.6418s/95698944BsampledRSS/14samples/maxgap0.0518s,cleanupverified. Controlledoutersealwithholding preserved originalsealbytes; inspectchild-verified(no writes), recover/repeatrecover0nochild; consumedexecute2held,claim/intent/supervisor/childhashesunchanged. Retained155inspect/recover0forecastcomplete/nochild. Actualreviewbfe3e60424cdd159116aa763026152869ecfe386dfb2bcb6b48f5b0b84efec65. No new155inference/provider/source/fit/promotion; original155expiredrelease remainsconsumed. A stale descriptivecodepin inreviewtextwascorrected inpreservederrata; exactplanruntimehasheswereverifiedbeforeapproval andactual4fcodeused."
+      ]
+    },
+    {
+      "id": "contract",
+      "kind": "manual",
+      "description": "Lead accepts exact typed contract before implementation.",
+      "status": "passed",
+      "evidence": [
+        "Lead accepts typed contract proposal017f26a62c4a70e820d6fc742618c8034e61fac9f25c88ac12928d854e9a137e(10203B), AI boundaryreview5119064637d062ecea5984fdf7d9fa360d5bb8724aa6546fd67bf1ba9e99e311. Two fixed aliases;161private verified relative-layout source snapshot preserving accepted output bytes, canonical and actualargv recorded. Defaultinspection has no writes/subprocess/evaluator/model import. Exact private600/700 paths; fsyncedworkflow+crossworkflowtargetclaims; uncertainstartedattemptheld; originalsuccessfulsupervision required for outer-onlyrecovery. 16160s+2s/512MiB sampledRSS/1thread/0retry;155child58s+2s unchanged,outer120s+2s constrainedoriginalexpiry/firstopen. Fixed50/standaloneexecutionexcluded untilseparatelyreviewedauthority,157readinessvisible. SeparateplanSHA-bound<=10minouterapprovalnotchildfinancialauthority. Implementationonly now; actualfiniteapproval follows frozenreviewablecode/plan."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-163-D1",
+      "description": "Inventory the existing approved runners and freeze a typed hash-bound workflow-plan contract and exact supported argv before implementation; no arbitrary shell commands, implicit provider access, dates or review authority.",
+      "check_ids": [
+        "contract"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead accepts typed contract proposal017f26a62c4a70e820d6fc742618c8034e61fac9f25c88ac12928d854e9a137e(10203B), AI boundaryreview5119064637d062ecea5984fdf7d9fa360d5bb8724aa6546fd67bf1ba9e99e311. Two fixed aliases;161private verified relative-layout source snapshot preserving accepted output bytes, canonical and actualargv recorded. Defaultinspection has no writes/subprocess/evaluator/model import. Exact private600/700 paths; fsyncedworkflow+crossworkflowtargetclaims; uncertainstartedattemptheld; originalsuccessfulsupervision required for outer-onlyrecovery. 16160s+2s/512MiB sampledRSS/1thread/0retry;155child58s+2s unchanged,outer120s+2s constrainedoriginalexpiry/firstopen. Fixed50/standaloneexecutionexcluded untilseparatelyreviewedauthority,157readinessvisible. SeparateplanSHA-bound<=10minouterapprovalnotchildfinancialauthority. Implementationonly now; actualfiniteapproval follows frozenreviewablecode/plan."
+      ]
+    },
+    {
+      "id": "PRSG-163-D2",
+      "description": "Provide one operator command that checks original prerequisites and invokes only typed quality-scorecard161 or reviewed-us30-155 aliases when explicitly authorized; offline evaluation is distinct from fresh prediction and original child gates remain authoritative.",
+      "check_ids": [
+        "focused",
+        "actual"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently66focusedtests passed3.83s; Engineer66passed3.78s. Frozen wrapper4f0eff1122be5ca6855a31aad6e350d54ecaddce1022e00455fa1365c82f3685; tests624e84eae3ee670cd40492351937bfb59a59f64ba3a51d5ecafa79d7125432f8. Finiteplan573b776626d3df1639d45f5dd5ebd861645d24b03b0759fdc7fc34434933591d and exactapproval908470b53c14e7d451cd824034686828203cc5d0c598fd39dde2c383c9a6bed0 produced real161evaluation once from/tmp, exit0,4acceptedartifacts byte-identical,38originalrefs unchanged. Observed0.6418s/95698944BsampledRSS/14samples/maxgap0.0518s,cleanupverified. Controlledoutersealwithholding preserved originalsealbytes; inspectchild-verified(no writes), recover/repeatrecover0nochild; consumedexecute2held,claim/intent/supervisor/childhashesunchanged. Retained155inspect/recover0forecastcomplete/nochild. Actualreviewbfe3e60424cdd159116aa763026152869ecfe386dfb2bcb6b48f5b0b84efec65. No new155inference/provider/source/fit/promotion; original155expiredrelease remainsconsumed. A stale descriptivecodepin inreviewtextwascorrected inpreservederrata; exactplanruntimehasheswereverifiedbeforeapproval andactual4fcodeused."
+      ]
+    },
+    {
+      "id": "PRSG-163-D3",
+      "description": "Resume from a verified completed delivery without repeating capture or inference. Persist exclusive stage/attempt evidence; an uncertain started provider or inference attempt is held for review and never automatically retried or reused with a consumed release.",
+      "check_ids": [
+        "focused",
+        "actual"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently66focusedtests passed3.83s; Engineer66passed3.78s. Frozen wrapper4f0eff1122be5ca6855a31aad6e350d54ecaddce1022e00455fa1365c82f3685; tests624e84eae3ee670cd40492351937bfb59a59f64ba3a51d5ecafa79d7125432f8. Finiteplan573b776626d3df1639d45f5dd5ebd861645d24b03b0759fdc7fc34434933591d and exactapproval908470b53c14e7d451cd824034686828203cc5d0c598fd39dde2c383c9a6bed0 produced real161evaluation once from/tmp, exit0,4acceptedartifacts byte-identical,38originalrefs unchanged. Observed0.6418s/95698944BsampledRSS/14samples/maxgap0.0518s,cleanupverified. Controlledoutersealwithholding preserved originalsealbytes; inspectchild-verified(no writes), recover/repeatrecover0nochild; consumedexecute2held,claim/intent/supervisor/childhashesunchanged. Retained155inspect/recover0forecastcomplete/nochild. Actualreviewbfe3e60424cdd159116aa763026152869ecfe386dfb2bcb6b48f5b0b84efec65. No new155inference/provider/source/fit/promotion; original155expiredrelease remainsconsumed. A stale descriptivecodepin inreviewtextwascorrected inpreservederrata; exactplanruntimehasheswereverifiedbeforeapproval andactual4fcodeused."
+      ]
+    },
+    {
+      "id": "PRSG-163-D4",
+      "description": "Return the actual output path/hash/counts or exact missing evidence, affected scope, owner and next action. Historical completion and present forecast readiness remain distinct; full50/standalone100/strong-model/public rights are never inferred.",
+      "check_ids": [
+        "focused",
+        "actual"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently66focusedtests passed3.83s; Engineer66passed3.78s. Frozen wrapper4f0eff1122be5ca6855a31aad6e350d54ecaddce1022e00455fa1365c82f3685; tests624e84eae3ee670cd40492351937bfb59a59f64ba3a51d5ecafa79d7125432f8. Finiteplan573b776626d3df1639d45f5dd5ebd861645d24b03b0759fdc7fc34434933591d and exactapproval908470b53c14e7d451cd824034686828203cc5d0c598fd39dde2c383c9a6bed0 produced real161evaluation once from/tmp, exit0,4acceptedartifacts byte-identical,38originalrefs unchanged. Observed0.6418s/95698944BsampledRSS/14samples/maxgap0.0518s,cleanupverified. Controlledoutersealwithholding preserved originalsealbytes; inspectchild-verified(no writes), recover/repeatrecover0nochild; consumedexecute2held,claim/intent/supervisor/childhashesunchanged. Retained155inspect/recover0forecastcomplete/nochild. Actualreviewbfe3e60424cdd159116aa763026152869ecfe386dfb2bcb6b48f5b0b84efec65. No new155inference/provider/source/fit/promotion; original155expiredrelease remainsconsumed. A stale descriptivecodepin inreviewtextwascorrected inpreservederrata; exactplanruntimehasheswereverifiedbeforeapproval andactual4fcodeused."
+      ]
+    },
+    {
+      "id": "PRSG-163-D5",
+      "description": "Demonstrate clean-directory retained155 reconciliation and a finite explicitly approved actual161 offline evaluation, matching all four accepted artifacts, then recover without a second child. Guarded155 fresh execution remains unavailable without its own current exact release; fixtures do not prove new inference. Focused interruption, failure, concurrent-target, expiry, tamper and no-network default tests pass.",
+      "check_ids": [
+        "focused",
+        "actual"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently66focusedtests passed3.83s; Engineer66passed3.78s. Frozen wrapper4f0eff1122be5ca6855a31aad6e350d54ecaddce1022e00455fa1365c82f3685; tests624e84eae3ee670cd40492351937bfb59a59f64ba3a51d5ecafa79d7125432f8. Finiteplan573b776626d3df1639d45f5dd5ebd861645d24b03b0759fdc7fc34434933591d and exactapproval908470b53c14e7d451cd824034686828203cc5d0c598fd39dde2c383c9a6bed0 produced real161evaluation once from/tmp, exit0,4acceptedartifacts byte-identical,38originalrefs unchanged. Observed0.6418s/95698944BsampledRSS/14samples/maxgap0.0518s,cleanupverified. Controlledoutersealwithholding preserved originalsealbytes; inspectchild-verified(no writes), recover/repeatrecover0nochild; consumedexecute2held,claim/intent/supervisor/childhashesunchanged. Retained155inspect/recover0forecastcomplete/nochild. Actualreviewbfe3e60424cdd159116aa763026152869ecfe386dfb2bcb6b48f5b0b84efec65. No new155inference/provider/source/fit/promotion; original155expiredrelease remainsconsumed. A stale descriptivecodepin inreviewtextwascorrected inpreservederrata; exactplanruntimehasheswereverifiedbeforeapproval andactual4fcodeused."
+      ]
+    },
+    {
+      "id": "PRSG-163-D6",
+      "description": "Deliver runnable instructions, independent review and authorized commit/push evidence. Existing provider/financial/model promotion rules remain; no new framework or duplicate authoritative admission registry.",
+      "check_ids": [
+        "focused",
+        "actual"
+      ],
+      "status": "pending",
+      "evidence": [
+        "Code/docs and independent actual proof complete; mandatorycommit/push and remoteverification remain pending."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently66focusedtests passed3.83s; Engineer66passed3.78s. Frozen wrapper4f0eff1122be5ca6855a31aad6e350d54ecaddce1022e00455fa1365c82f3685; tests624e84eae3ee670cd40492351937bfb59a59f64ba3a51d5ecafa79d7125432f8. Finiteplan573b776626d3df1639d45f5dd5ebd861645d24b03b0759fdc7fc34434933591d and exactapproval908470b53c14e7d451cd824034686828203cc5d0c598fd39dde2c383c9a6bed0 produced real161evaluation once from/tmp, exit0,4acceptedartifacts byte-identical,38originalrefs unchanged. Observed0.6418s/95698944BsampledRSS/14samples/maxgap0.0518s,cleanupverified. Controlledoutersealwithholding preserved originalsealbytes; inspectchild-verified(no writes), recover/repeatrecover0nochild; consumedexecute2held,claim/intent/supervisor/childhashesunchanged. Retained155inspect/recover0forecastcomplete/nochild. Actualreviewbfe3e60424cdd159116aa763026152869ecfe386dfb2bcb6b48f5b0b84efec65. No new155inference/provider/source/fit/promotion; original155expiredrelease remainsconsumed. A stale descriptivecodepin inreviewtextwascorrected inpreservederrata; exactplanruntimehasheswereverifiedbeforeapproval andactual4fcodeused. D6deliverypending."
+    ]
+  }
+}

@@ -25,77 +25,39 @@
   function create(root){
     const chips=root.querySelector('#ta-chips'),chart=root.querySelector('#ta-chart'),status=root.querySelector('#ta-status'),caption=root.querySelector('#ta-caption'),fallback=root.querySelector('#ta-external');
     let rows=[],selected=-1,active=false,generation=0,timer=null,observer=null,destroyed=false;
-    const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)'),listeners=[];
-    let frame=null,lastTime=null,period=0,offset=0,hover=false,focused=false,paused=false,manual=false,inViewport=false,idleTimer=null;
-    const pointers=new Set(),touches=new Set();
-    let windowBlurred=false;
-    function listen(target,type,fn,options){target?.addEventListener?.(type,fn,options);listeners.push(()=>target?.removeEventListener?.(type,fn,options))}
-    function stopMotion(){if(frame!==null)window.cancelAnimationFrame(frame);frame=null;lastTime=null}
-    function canMove(){return !destroyed&&active&&inViewport&&!document.hidden&&!reduced?.matches&&!hover&&!focused&&!paused&&!manual&&!windowBlurred&&!pointers.size&&!touches.size&&rows.length>1&&period>chips.clientWidth}
-    function rebuildTape(){
-      if(destroyed)return;
-      stopMotion();
-      for(const copy of chips.querySelectorAll('[data-tape-copy]'))copy.remove();
-      period=0;offset=0;
-      const buttons=[...chips.children];
-      if(rows.length>1&&buttons.length){
-        const gap=parseFloat(window.getComputedStyle(chips).gap)||0;
-        const first=buttons[0],last=buttons.at(-1);
-        const firstRect=first.getBoundingClientRect(),lastRect=last.getBoundingClientRect();
-        const extent=lastRect.right-firstRect.left||last.offsetLeft+last.offsetWidth-first.offsetLeft;
-        const width=extent||chips.scrollWidth;
-        if(width>chips.clientWidth){
-          period=width+gap;
-          for(const [index,button] of buttons.entries()){
-            // Decorative spans cannot enter the accessibility tree or receive focus.
-            const copy=node('span');copy.className=button.className;copy.dataset.tapeCopy=String(index);
-            copy.setAttribute('aria-hidden','true');copy.title=button.title;
-            copy.append(button.firstChild.cloneNode(true));
-            const buttonWidth=button.getBoundingClientRect().width||button.offsetWidth;
-            if(buttonWidth)copy.style.width=buttonWidth+'px';
-            copy.style.font=window.getComputedStyle(button).font;
-            copy.classList.toggle('ta-chip-selected',index===selected);
-            copy.onclick=()=>{manualPause();select(index)};chips.append(copy);
-          }
-          offset=((chips.scrollLeft%period)+period)%period;chips.scrollLeft=offset;
-        }else chips.scrollLeft=0;
+    const searchGroup=node('div'),pickerGroup=node('div');searchGroup.className=pickerGroup.className='ta-control-group';
+    const searchLabel=node('label','Find a report instrument'),search=node('input');search.id='ta-search';search.type='search';search.placeholder='Search ticker, company or market';search.autocomplete='off';search.maxLength=120;searchLabel.htmlFor=search.id;
+    const clearSearch=node('button','Clear');clearSearch.id='ta-clear';clearSearch.type='button';
+    const searchLine=node('div');searchLine.className='ta-control-line';searchLine.append(search,clearSearch);searchGroup.append(searchLabel,searchLine);
+    const pickerLabel=node('label','Instrument'),candidate=node('select'),showChart=node('button','Show chart');candidate.id='ta-candidate';pickerLabel.htmlFor=candidate.id;showChart.id='ta-show';showChart.type='button';
+    const pickerLine=node('div');pickerLine.className='ta-control-line';pickerLine.append(candidate,showChart);pickerGroup.append(pickerLabel,pickerLine);
+    const count=node('p'),selection=node('p'),context=node('p');count.id='ta-count';count.className='small';count.setAttribute('role','status');selection.id='ta-selected';context.id='ta-evidence';context.className='small';
+    chips.replaceChildren(searchGroup,pickerGroup,count,selection,context);
+    function label(row){return row.market+' · '+row.ticker+(row.name?' — '+row.name:'')}
+    function options(){
+      const previous=candidate.value,query=search.value.trim().toLocaleLowerCase();
+      candidate.replaceChildren();const placeholder=node('option','Choose a matching instrument');placeholder.value='';candidate.append(placeholder);
+      let matches=0;
+      for(const [index,row] of rows.entries())if([row.market,row.ticker,row.name,symbol(row)||''].join(' ').toLocaleLowerCase().includes(query)){
+        const option=node('option',label(row));option.value=String(index);candidate.append(option);matches++;
       }
-      syncMotion();
+      candidate.value=[...candidate.options].some(option=>option.value===previous)?previous:'';
+      candidate.disabled=!matches;showChart.disabled=candidate.value==='';search.disabled=!rows.length;clearSearch.disabled=!rows.length;
+      count.textContent=rows.length+' report instruments · '+matches+' match your search'+(!matches&&rows.length?'. No instruments match. Clear search to show all report instruments.':'');
     }
-    function tick(now){
-      frame=null;if(!canMove()){lastTime=null;return}
-      // Accumulate fractions independently of rounded browser scroll readback.
-      // Copies at one measured period have identical pixels; modulo connects end to start.
-      if(lastTime!==null){offset=(offset+Math.min(64,Math.max(0,now-lastTime))/1000*12)%period;chips.scrollLeft=offset;}
-      lastTime=now;frame=window.requestAnimationFrame(tick);
-    }
-    function syncMotion(){
-      if(!canMove()){stopMotion();return}if(frame===null){offset=((chips.scrollLeft%period)+period)%period;frame=window.requestAnimationFrame(tick)}
-    }
-    function clearIdle(){clearTimeout(idleTimer);idleTimer=null}
-    function manualPause(){clearIdle();if(paused)return;manual=true;syncMotion();idleTimer=setTimeout(()=>{idleTimer=null;manual=false;syncMotion()},5000)}
-    listen(chips,'mouseenter',()=>{hover=true;syncMotion()});listen(chips,'mouseleave',()=>{hover=false;syncMotion()});
-    listen(chips,'focusin',()=>{focused=true;syncMotion()});listen(chips,'focusout',event=>{focused=chips.contains(event.relatedTarget);syncMotion()});
-    listen(chips,'pointerdown',event=>{pointers.add(event.pointerId??'legacy');manualPause()},{passive:true});
-    listen(chips,'touchstart',event=>{for(const touch of event.changedTouches||[{identifier:'legacy'}])touches.add(touch.identifier);manualPause()},{passive:true});
-    function releasePointer(event){if(pointers.delete(event.pointerId??'legacy'))manualPause()}
-    function releaseTouch(event){let released=false;for(const touch of event.changedTouches||[{identifier:'legacy'}])released=touches.delete(touch.identifier)||released;if(released)manualPause()}
-    for(const type of ['pointerup','pointercancel'])listen(window,type,releasePointer,{capture:true,passive:true});
-    for(const type of ['touchend','touchcancel'])listen(window,type,releaseTouch,{capture:true,passive:true});
-    for(const type of ['touchmove','wheel'])listen(chips,type,manualPause,{passive:true});
-    listen(window,'blur',()=>{windowBlurred=true;pointers.clear();touches.clear();manualPause();syncMotion()});
-    listen(window,'focus',()=>{windowBlurred=false;syncMotion()});
-    listen(chips,'pointermove',event=>{if(event.buttons)manualPause()},{passive:true});
-    listen(chips,'keydown',event=>{if(event.key==='Escape'){paused=true;manual=false;clearIdle();syncMotion()}else manualPause()});
-    listen(document,'visibilitychange',syncMotion);listen(window,'resize',rebuildTape);listen(reduced,'change',syncMotion);
-    const tapeResize=typeof ResizeObserver==='function'?new ResizeObserver(rebuildTape):null;
-    tapeResize?.observe(chips);
-    const visibility=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{inViewport=entries.some(entry=>entry.isIntersecting);syncMotion()}):null;
-    if(visibility)visibility.observe(chips);else inViewport=true;
+    search.oninput=options;search.onkeydown=event=>{if(event.key==='Enter')event.preventDefault()};
+    clearSearch.onclick=()=>{search.value='';options();search.focus()};
+    candidate.onchange=()=>{showChart.disabled=candidate.value===''};
+    showChart.onclick=()=>{if(candidate.value!=='')select(Number(candidate.value))};
     function clear(){++generation;clearTimeout(timer);timer=null;observer?.disconnect();observer=null;chart.replaceChildren()}
     function select(index){
-      if(destroyed||index<0||index>=rows.length)return;selected=index;clear();
-      [...chips.children].forEach((button,i)=>{if(button.dataset.tapeCopy!==undefined)button.classList.toggle('ta-chip-selected',Number(button.dataset.tapeCopy)===index);else button.setAttribute('aria-pressed',String(i===index))});
+      if(destroyed||!Number.isInteger(index)||index<0||index>=rows.length)return;selected=index;clear();
+      selection.textContent='Chart selected: '+label(rows[index]);
+      const item=rows[index],sma=item.trend,quote=item.sessionDirection;
+      const signals={bullish:'Up',up:'Up',bearish:'Down',down:'Down',neutral:'Sideways',flat:'Sideways',sideways:'Sideways'};
+      const smaSignal=sma?.status==='available'&&Object.hasOwn(signals,sma.signal),quoteSignal=quote?.status==='available'&&Object.hasOwn(signals,quote.signal);
+      const signal=smaSignal?sma:quoteSignal?quote:null;
+      context.textContent=(smaSignal?'Historical SMA-5/SMA-20 trend: '+signals[sma.signal]:quoteSignal?'Timestamped quote direction vs previous close: '+signals[quote.signal]:'Historical trend and quote direction unavailable')+(smaSignal&&sma.last_bar_date?' · last bar '+sma.last_bar_date:'')+(quoteSignal&&quote.source_at?' · source '+quote.source_at:'')+(signal?.retrieved_at?' · retrieved '+signal.retrieved_at:'')+(signal?.reason?' · '+signal.reason:'')+'. Forecast direction remains separate; recorded forecast: '+(['up','down','flat'].includes(item.direction)?item.direction:'Unrated')+'.';
       const row=rows[index],mapped=symbol(row);fallback.href=external(row);fallback.hidden=false;
       fallback.textContent=mapped?'Open '+mapped+' on TradingView (availability unverified)':'Find symbol on TradingView (identity unverified)';
       if(!mapped){status.textContent=row.market==='MY'?'No curated Bursa identity; use TradingView symbol search.':'No curated US exchange mapping; embedded chart unavailable.';return}
@@ -113,20 +75,19 @@
       observer.observe(container,{childList:true,subtree:true});container.append(script);chart.append(container);timer=setTimeout(()=>{if(!container.querySelector('iframe'))fail()},15000);
     }
     function update(report,message){
-      if(destroyed)return;clearIdle();manual=false;stopMotion();clear();selected=-1;chips.replaceChildren();chips.scrollLeft=0;period=0;offset=0;focused=chips.contains(document.activeElement);rows=[];fallback.hidden=true;
-      caption.textContent=report?.metadata?.date?'Watchlist from '+report.metadata.date+'. Chips show historical SMA trend when available, otherwise the timestamped quote direction. Forecast direction remains separate. Chart prices may be current or delayed, not frozen to the report date.':'Select a saved report date for its research watchlist.';
-      const seen=new Set(),groupEmojis=new Map((Array.isArray(report?.watchlist_config?.groups)?report.watchlist_config.groups:[]).filter(group=>group&&typeof group.key==='string'&&typeof group.emoji==='string').map(group=>[group.key,group.emoji]));
-      for(const row of Array.isArray(report?.forecasts)?report.forecasts:[]){if(!row||typeof row.ticker!=='string'||!(/^[A-Z][A-Z0-9.\-]{0,14}$/.test(row.ticker)||/^\d{4}(?:EA)?$/.test(row.ticker))||!['US','MY'].includes(row.market))continue;const key=row.market+':'+row.ticker;if(seen.has(key))continue;seen.add(key);rows.push({ticker:row.ticker,market:row.market,direction:row.direction,sectorEmoji:typeof row.sector_emoji==='string'&&row.sector_emoji?row.sector_emoji:groupEmojis.get(row.sector_category)||'',trend:row.moomoo_trend,sessionDirection:row.moomoo_session_direction})}
-      const trends={bullish:{arrow:'↑',label:'Up',color:'bullish'},up:{arrow:'↑',label:'Up',color:'bullish'},bearish:{arrow:'↓',label:'Down',color:'bearish'},down:{arrow:'↓',label:'Down',color:'bearish'},neutral:{arrow:'↔',label:'Sideways',color:'neutral'},flat:{arrow:'↔',label:'Sideways',color:'neutral'},sideways:{arrow:'↔',label:'Sideways',color:'neutral'}};
-      for(const [index,row] of rows.entries()){
-        const sma=row.trend,quote=row.sessionDirection,smaTrend=sma?.status==='available'&&Object.hasOwn(trends,sma.signal)?trends[sma.signal]:null,quoteTrend=quote?.status==='available'&&Object.hasOwn(trends,quote.signal)?trends[quote.signal]:null,forecastTrend=Object.hasOwn(trends,row.direction)?trends[row.direction]:null,signal=smaTrend?sma:quoteTrend?quote:null,direction=smaTrend||quoteTrend||forecastTrend||{arrow:'—',label:'Unavailable',color:'unavailable'},basis=smaTrend?'historical SMA-5/SMA-20 trend':quoteTrend?'quote direction vs previous close':forecastTrend?'saved forecast direction':'trend unavailable',reason=(signal?.reason||sma?.reason||quote?.reason)?' · '+(signal?.reason||sma?.reason||quote?.reason):'',source=smaTrend&&sma?.last_bar_date?' · last bar '+sma.last_bar_date:quoteTrend&&quote?.source_at?' · source '+quote.source_at:'',retrieved=signal?.retrieved_at?' · retrieved '+signal.retrieved_at:'';
-        const button=node('button'),visible=[row.sectorEmoji,row.ticker,direction.arrow].filter(Boolean).join(' '),inner=node('span',visible);inner.className='ta-chip-label';button.append(inner);button.type='button';button.className='ta-chip ta-trend-'+direction.color;const forecast=row.direction==='unknown'?'forecast Unrated':'forecast '+String(row.direction||'unavailable');button.setAttribute('aria-label',row.market+' '+row.ticker+' · '+basis+': '+direction.label+source+retrieved+reason+' · '+forecast);button.title=row.market+' '+row.ticker+' · '+basis+': '+direction.label+source+retrieved+reason+' · '+forecast;button.setAttribute('aria-pressed','false');button.onclick=()=>{manualPause();select(index)};
-        button.onkeydown=event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const target=event.key==='Home'?0:event.key==='End'?rows.length-1:(index+(event.key==='ArrowRight'?1:-1)+rows.length)%rows.length;chips.children[target].focus();chips.children[target].scrollIntoView({block:'nearest',inline:'nearest',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})};chips.append(button);
+      if(destroyed)return;clear();selected=-1;rows=[];search.value='';candidate.value='';fallback.hidden=true;
+      selection.textContent='Chart selected: none';context.textContent='';
+      caption.textContent=report?.metadata?.date?'Watchlist saved: '+report.metadata.date+'. Historical SMA trend when available, otherwise timestamped quote direction. Forecast direction remains separate. Chart prices may be current or delayed, not frozen to the report date.':'Select a saved report date for its research watchlist.';
+      const seen=new Set();
+      for(const row of Array.isArray(report?.forecasts)?report.forecasts:[]){
+        if(!row||typeof row.ticker!=='string'||!(/^[A-Z][A-Z0-9.\-]{0,14}$/.test(row.ticker)||/^\d{4}(?:EA)?$/.test(row.ticker))||!['US','MY'].includes(row.market))continue;
+        const key=row.market+':'+row.ticker;if(seen.has(key))continue;seen.add(key);
+        rows.push({ticker:row.ticker,market:row.market,name:typeof row.name==='string'?row.name:'',direction:row.direction,trend:row.moomoo_trend,sessionDirection:row.moomoo_session_direction});
       }
-      if(rows.length)select(0);else status.textContent=message||'No supported tickers recorded for this report.';rebuildTape();
+      options();if(rows.length)select(0);else status.textContent=message||'No supported tickers recorded for this report.';
     }
-    function show(value){if(destroyed)return;const changed=active!==value;active=value;if(!active){clear();clearIdle();manual=false}else if(changed&&selected>=0)select(selected);if(active&&changed)rebuildTape();else syncMotion()}
-    function destroy(){if(destroyed)return;destroyed=true;active=false;pointers.clear();touches.clear();clearIdle();stopMotion();clear();visibility?.disconnect();tapeResize?.disconnect();listeners.forEach(remove=>remove());for(const button of chips.children){button.onclick=null;button.onkeydown=null}}
+    function show(value){if(destroyed)return;const changed=active!==Boolean(value);active=Boolean(value);if(!active)clear();else if(changed&&selected>=0)select(selected)}
+    function destroy(){if(destroyed)return;destroyed=true;active=false;clear();search.oninput=null;search.onkeydown=null;clearSearch.onclick=null;candidate.onchange=null;showChart.onclick=null}
     update(null);return {update,show,destroy};
   }
   window.PraesagusTA=Object.freeze({create,symbol,external});

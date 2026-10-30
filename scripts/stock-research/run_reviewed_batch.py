@@ -734,7 +734,9 @@ def process_snapshot(timeout=.5):
         parts = line.split(None, 4)
         need(len(parts) == 5, 'monitor_shape_invalid')
         pid, ppid, pgid, rss = map(int, parts[:4])
-        need(pid > 0 and ppid >= 0 and pgid > 0 and rss >= 0, 'monitor_shape_invalid')
+        # The global table can include unrelated system tasks with PGID zero.
+        # Keep those rows observable; owned groups must still be positive below.
+        need(pid > 0 and ppid >= 0 and pgid >= 0 and rss >= 0, 'monitor_shape_invalid')
         table[pid] = (ppid, pgid, rss*1024, parts[4])
     return table
 
@@ -752,12 +754,14 @@ def process_scope(table, leader, owned):
             break
         selected |= extra
     selected &= table.keys()
+    need(all(table[pid][1] > 0 for pid in selected), 'monitor_owned_group_invalid')
     for pid in selected:
         owned[pid] = table[pid][3]
     return selected
 
 
 def group_state(group):
+    need(type(group) is int and group > 0, 'monitor_owned_group_invalid')
     try:
         os.killpg(group, 0)
         return True

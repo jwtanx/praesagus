@@ -420,6 +420,58 @@ def test_observed_detached_descendant_stays_in_scope_and_pid_reuse_does_not():
     assert batch.process_scope(reused, 100, owned) == set()
 
 
+def test_unrelated_zero_group_is_observed_without_rejecting_owned_child(monkeypatch):
+    output = ('2 0 0 0 Thu Oct 29 00:00:00 2026\n'
+              '777 1 777 12000 Thu Oct 29 00:00:01 2026\n')
+    monkeypatch.setattr(batch.subprocess, 'run', lambda *a, **kw: types.SimpleNamespace(stdout=output))
+    table = batch.process_snapshot()
+    assert table[2] == (0, 0, 0, 'Thu Oct 29 00:00:00 2026')
+    owned = {}
+    assert batch.process_scope(table, 777, owned) == {777}
+    assert owned == {777: 'Thu Oct 29 00:00:01 2026'}
+
+
+def test_real_child_supervision_survives_unrelated_system_zero_group(monkeypatch):
+    original = batch.subprocess.run
+    def with_system_row(*args, **kwargs):
+        result = original(*args, **kwargs)
+        if args[0][0] == '/bin/ps':
+            result.stdout = result.stdout.rstrip('\n') + '\n2147483647 0 0 0 Thu Oct 29 00:00:00 2026\n'
+        return result
+    monkeypatch.setattr(batch.subprocess, 'run', with_system_row)
+    receipt = batch.supervise([sys.executable, '-I', '-B', '-c', 'import time;time.sleep(.2)'],
+                             limits=dict(work_seconds=2, cleanup_seconds=1,
+                                         rss_bytes=128*1024**2, threads=1, retries=0))
+    assert receipt['approved'] is True and receipt['cleanup_verified'] is True
+    assert receipt['reason'] is None and receipt['peak_group_rss_bytes'] > 0
+    assert 2147483647 not in receipt['owned_pid_births']
+    assert 0 not in receipt['owned_groups']
+
+
+@pytest.mark.parametrize('line', ['2 0 -1 0 birth', '0 0 0 0 birth',
+                                  '2 -1 0 0 birth', '2 0 0 -1 birth', '2 0 malformed'])
+def test_invalid_global_process_rows_still_reject(line, monkeypatch):
+    monkeypatch.setattr(batch.subprocess, 'run', lambda *a, **kw: types.SimpleNamespace(stdout=line))
+    with pytest.raises(batch.Blocked, match='monitor_shape_invalid'):
+        batch.process_snapshot()
+
+
+@pytest.mark.parametrize('table', [
+    {777: (1, 0, 12000, 'leader')},
+    {777: (1, 777, 12000, 'leader'), 778: (777, 0, 12000, 'descendant')},
+])
+def test_owned_zero_group_remains_unapprovable(table):
+    with pytest.raises(batch.Blocked, match='monitor_owned_group_invalid'):
+        batch.process_scope(table, 777, {})
+
+
+@pytest.mark.parametrize('group', [0, -1, True, '777'])
+def test_group_probe_never_signals_nonpositive_or_untyped_group(group, monkeypatch):
+    monkeypatch.setattr(batch.os, 'killpg', lambda *a: pytest.fail('unsafe group signal'))
+    with pytest.raises(batch.Blocked, match='monitor_owned_group_invalid'):
+        batch.group_state(group)
+
+
 def test_unobserved_fast_child_never_approves(monkeypatch):
     monkeypatch.setattr(batch, 'process_snapshot', lambda **kw: {})
     receipt = batch.supervise([sys.executable, '-I', '-B', '-c', 'pass'],
