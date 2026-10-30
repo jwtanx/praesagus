@@ -20,7 +20,7 @@ Use private124/engineer4707-baseline-capability-plan-20261029.json SHA bc534eaa8
 
 - [x] PRSG-156-D1: A reviewed offline controller rejects invalid date/release/hash/scope/permissions and enforces exact single request, no retry and observed cleanup.
 - [x] PRSG-156-D2: Exact4707 dated source plan/finite release requirements and independent negative tests accepted; actual capture remains held until dated finality and current financial mapping.
-- [ ] PRSG-156-D3: Implementation and preparation committed/pushed with exact limitations and release dependency; actual21close source and financial/model admissions remain separate124D3 work.
+- [x] PRSG-156-D3: Implementation and preparation committed/pushed with exact limitations and release dependency; actual21close source and financial/model admissions remain separate124D3 work.
 
 ## Checks
 
@@ -76,4 +76,11 @@ Lead accepts D1–D2 after reviewing the final controller and tests, verifying t
 
 Lead independently ran the original packet inspection: exit2, `HELD`, `expired:true`, `source_released:false`, `child_started:false`, `date_rollover:false`. Original packet/calendar/collector references still match their frozen hashes; all seven existing support sources match d88c305 byte-for-byte. Every changed path is within this ticket's four allowed paths, and scope validation passed. No credentials, provider/search/model calls, actual capture, executable release or new financial admission occurred.
 
-Final controller SHA2561090420ce71eb42e6fce9b0b306fe5e65494bc92100b90ceaa4897239e112a63; tests SHA256c29662698b4cd5b696721cb13b8ebce7bf8f113e52fac4737805a562dc704d7e. Private Engineer and Lead receipts retain detailed review evidence. D3 remains pending until implementation commit/push with required hooks; broader suite results will be recorded after those checks. This accepts offline preparation only and does not close PRSG-124 source/model coverage.
+Final controller SHA2561090420ce71eb42e6fce9b0b306fe5e65494bc92100b90ceaa4897239e112a63; tests SHA256c29662698b4cd5b696721cb13b8ebce7bf8f113e52fac4737805a562dc704d7e. Private Engineer and Lead receipts retain detailed review evidence. The implementation was subsequently committed and pushed as recorded below; D3 is now complete. This accepts offline preparation only and does not close PRSG-124 source/model coverage.
+
+
+## Delivery and completion — 30 October 2026
+
+Implementation **77fd78b8fbd7326562e76ef1c72f2c638d3f2d36** is pushed to `origin/main`. Required full-suite commit hook: **4149 passed,41 warnings in95.25s**; required push hook: **4149 passed,41 warnings in92.97s**. The41 existing Starlette/httpx deprecation warnings remain visible. All three acceptance items are complete; this closure record undergoes the same required hooks. CI and hosted publication are separate from these local hook results and are not source/provider validation.
+
+Delivered behavior is offline reviewed execution control and immutable run-bound validation. No live source request was made. The original expired window and missing renewed exact-window financial/action mapping still hold actual capture; no dates, source rights, model promotion, public report, forecasts or schedules were renewed. The next dependency is a separately reviewed dated source/financial packet under PRSG-124, not replay of this consumed or expired authority.
