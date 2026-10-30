@@ -71,3 +71,10 @@ The Human-selected adjacent explanation is implemented in the existing renderer.
 Lead returned and Engineer fixed two concrete findings: a saved observed point with Unrated must not imply missing observations; unfamiliar nonempty recorded coverage notes must not be labelled absent. Their regressions passed. UI SHA256dc40b223389335a6871589a3967a1b0ddafb85861533315902b4ba99b18c7d9d. Raw known gaps remain accessible; unsupported-MY intake takes precedence over general storage failure. Historical link and retained timestamp wording preserve dates and uncertainty.
 
 D1-D3 are verified. D4 and final Human review remain pending actual post-change reader response/acceptance; the preview and neutral reader tasks were delivered. Baseline participantN1 is actual anonymized qualitative feedback; post-changeN0 until an actual response arrives. No measured comprehension lift,200%zoom/screenreader certification,fresh forecast,provider success orsource rights are claimed. Required commit/push hooks and actual delivery are recorded separately.
+
+
+## Published implementation — 30 October 2026
+
+Implementation36265f94ef3c580ff6e8c4251d6ab6f88ab75600 is pushed toorigin/main. Required commit hook4149passed,41existingwarnings in95.03s;requiredpushhook4149passed,41warnings in92.67s. Pages run41085476040 succeeded. Public renderer bytes match reviewedSHAdc40b223389335a6871589a3967a1b0ddafb85861533315902b4ba99b18c7d9d exactly;Lead verified actual public21OctoberSPY explanation/onechip/historical link. GitHub CI41085476120 remained running at this observation and is not claimed passed. No trackedfinancialJSON changed.
+
+The actual updated preview and neutral recheck questions were supplied to the Human. No post-change answer/final acceptance has arrived at this record,so D4,Humancheck and finalreview remain pending; ticket statusreview is intentional. Baseline N1 and post-changeN0 remain distinct,with no measured lift. This metadata delivery undergoes the required hooks too.
