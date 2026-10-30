@@ -18,8 +18,8 @@ Use private124/engineer4707-baseline-capability-plan-20261029.json SHA bc534eaa8
 
 ## When considered done
 
-- [ ] PRSG-156-D1: A reviewed offline controller rejects invalid date/release/hash/scope/permissions and enforces exact single request, no retry and observed cleanup.
-- [ ] PRSG-156-D2: Exact4707 dated source plan/finite release requirements and independent negative tests accepted; actual capture remains held until dated finality and current financial mapping.
+- [x] PRSG-156-D1: A reviewed offline controller rejects invalid date/release/hash/scope/permissions and enforces exact single request, no retry and observed cleanup.
+- [x] PRSG-156-D2: Exact4707 dated source plan/finite release requirements and independent negative tests accepted; actual capture remains held until dated finality and current financial mapping.
 - [ ] PRSG-156-D3: Implementation and preparation committed/pushed with exact limitations and release dependency; actual21close source and financial/model admissions remain separate124D3 work.
 
 ## Checks
@@ -49,3 +49,31 @@ Offline inspection verified XKLS calendar dates, the single existing history end
 ## Tradeoffs
 
 The narrow controller adds review and process-supervision work but preserves existing source semantics and finite request limits. Sampled supervision cannot guarantee a hard OS deadline. Even a passing controller cannot resolve missing dividend placement, fresh price evidence or public rights.
+
+## Resumed Implementation Freeze — 30 October 2026
+
+Human asks Lead to continue another ticket. Lead selects this existing accepted P1 dependency and accepts the Engineer's read-only proposal SHA062fc19d1540c06caad38e934473c3c222ca687d201d1d429e20663d0429539a. Current clean implementation base is d88c3053d4695fcd100db85d15d34a3011099e79; original0d90bacea1997ee758de91902c50371c10046be0 remains the historical preparation base. Engineer owns only the two existing allowed runtime/test paths; Lead owns this pair. No old financial or date approval is renewed.
+
+Pin and reuse unchanged163bounded-pipe supervision and155process identity/group primitives, adding163to the explicit runtime inventory. MY limits are maximum25seconds work+2cleanup,512MiB sampled RSS,one numerical thread andzero retry. This is a sampled rejection threshold, not a hard OS/RSS/thread guarantee. Public entry establishes one monotonic work deadline at+25seconds and total cleanup boundary at+27seconds; preflight, dispatch, collection, store postvalidation and success handling consume that same budget. Reduce child/worker remaining budgets; never stack another25/27seconds after preflight or postvalidation. Existing worker maximum20+2 andHTTP10 remain; late or unverified proof is held.
+
+Default inspection is read-only and cannot load credentials, start a child or call the provider. Explicit execute and private internal stages revalidate the exact pinned plan/release/argv/runtime/request/frame/locator and single-use claims before possible credential use. Use existing collector hooks, not protected-source edits or new163aliases. No raw credentials or locator values in user-facing results. Success requires exact one run/job success plus bounded run-bound immutable store verification, all21frozen dates and originalnormalization6/hourshypothesis; partial/empty/all-missing/revised/missing/future/unknown evidence stays held.
+
+Preserve the exact29Octoberreference/30Octobertarget packet and its expired00:00–09:00MYT window. Deliver an actual frozen-packet inspection showing expired/missing renewed mapping dependencies; do not generate an executable release or infer rollover. A future live capture needs a separately reviewed dated financial/identity/basis/source-purpose packet and explicit Lead source release. Completion here is the offline controller and its independent negative/process proof, not124numericcoverage or livecapture.
+
+
+## Operator contract
+
+The controller is `scripts/stock-research/run_reviewed_my_capture.py`. Default `--mode inspect` is read-only; `--packet --plan <original-private-capability-packet> --plan-sha256 bc534eaa8740b270392a2e3cdc7c307c9498969c298fe3d6df2aa6270d53cfcb` inspects the preserved original packet. Expected current result is exit2 with `HELD`, `expired:true`, `source_released:false`, `child_started:false` and `date_rollover:false`. This is the required rejection, not a failed source attempt.
+
+An execution plan is a separate strict schema1 `single-my-capture` document: exact frozen instrument/dates, active Python command plus resolved executable hash, complete runtime-file references, collector/calendar/purpose/financial references, private store/output roots, opaque locator, exact canonical argv hash and fixed limits. The small reviewed calendar contract retains the21 required dates and midnight cutoff from the original installed-calendar evidence; the original full evidence packet is preserved unchanged. A separate schema1 `lead-single-my-release` binds plan/argv/run/dates, at most10minutes, resource and exclusive-window confirmations and explicit source authority. The program creates neither approvals nor releases. Tests use authored approvals and clocks; they confer no financial or source authority. Internal stages are continuation checks, not operator shortcuts.
+
+Claims and uncertain attempts remain consumed. Final receipts are private unsealed evidence with `accepted:false`; even `PRIVATE_CANDIDATE` requires independent review and is never a financial/model/public admission. Resource evidence is sampled process/RSS observation, not a hard OS cap. Actual execution of the preserved dates remains expired and held; a future date requires separate reviewed scope and authority, never an implicit rollover.
+
+
+## Independent acceptance — 30 October 2026
+
+Lead accepts D1–D2 after reviewing the final controller and tests, verifying the exact Engineer handoff hashes, and independently running the focused command: **98 passed in4.23s** (Engineer98passed in4.17s). Coverage includes strict preflight/release/permission/hash/frame rejection, exclusive/concurrent claims, birth/group cleanup, real synthetic timeout/detached-descendant cleanup, the unchanged collector IPC path with a safe substitute worker, real immutable-store/raw integrity replay, exact one-run/one-attempt binding including hidden failed/empty attempts, all21 required dates with valid older history, sentinel overflow and late final-write/output rejection. Early development fixture failures are resolved; no failing check is waived.
+
+Lead independently ran the original packet inspection: exit2, `HELD`, `expired:true`, `source_released:false`, `child_started:false`, `date_rollover:false`. Original packet/calendar/collector references still match their frozen hashes; all seven existing support sources match d88c305 byte-for-byte. Every changed path is within this ticket's four allowed paths, and scope validation passed. No credentials, provider/search/model calls, actual capture, executable release or new financial admission occurred.
+
+Final controller SHA2561090420ce71eb42e6fce9b0b306fe5e65494bc92100b90ceaa4897239e112a63; tests SHA256c29662698b4cd5b696721cb13b8ebce7bf8f113e52fac4737805a562dc704d7e. Private Engineer and Lead receipts retain detailed review evidence. D3 remains pending until implementation commit/push with required hooks; broader suite results will be recorded after those checks. This accepts offline preparation only and does not close PRSG-124 source/model coverage.

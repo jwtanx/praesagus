@@ -20,11 +20,11 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-29/PRSG-156-dated-single-my-source-controller.md",
   "objective": "Gate one separatelydated4707MY source collection with exact finite release/clock/hash/request/cleanup bounds; no actual source use yet.",
-  "status": "in_progress",
+  "status": "review",
   "owner": "Engineer",
   "reviewer": "Lead",
   "scope_status": "accepted",
-  "base_sha": "0d90bacea1997ee758de91902c50371c10046be0",
+  "base_sha": "d88c3053d4695fcd100db85d15d34a3011099e79",
   "allowed_paths": [
     "plans/2026-10-29/PRSG-156-dated-single-my-source-controller.md",
     "plans/2026-10-29/PRSG-156.harness.json",
@@ -42,11 +42,29 @@
   ],
   "checks": [
     {
+      "id": "focused",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_reviewed_my_capture.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "Lead independent exact focused command:98passed in4.23s; Engineer98passed in4.17s. Authored offline fixtures only; no credentials/provider."
+      ]
+    },
+    {
       "id": "offline",
       "kind": "manual",
       "description": "Independent offlinecontroller/negativeprocesscleanup and frozenactualplan review",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "Lead independently reviewed controller/tests, verified exact handoff/support/original-input hashes and unchanged155/163/collector/store/connectors; originalpacket CLI exit2HELD expiredtrue childfalse sourcefalse rolloverfalse; real synthetic timeout/detachedcleanup and IPC/store regression cases passed; complete4path scope validator passed. Resource supervision remains sampled, not hardOS enforcement."
+      ]
     }
   ],
   "acceptance": [
@@ -54,24 +72,33 @@
       "id": "PRSG-156-D1",
       "description": "A reviewed offline controller rejects invalid date/release/hash/scope/permissions and enforces exact single request, no retry and observed cleanup.",
       "check_ids": [
+        "focused",
         "offline"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independent exact focused command:98passed in4.23s; Engineer98passed in4.17s. Authored offline fixtures only; no credentials/provider.",
+        "Lead independently reviewed controller/tests, verified exact handoff/support/original-input hashes and unchanged155/163/collector/store/connectors; originalpacket CLI exit2HELD expiredtrue childfalse sourcefalse rolloverfalse; real synthetic timeout/detachedcleanup and IPC/store regression cases passed; complete4path scope validator passed. Resource supervision remains sampled, not hardOS enforcement."
+      ]
     },
     {
       "id": "PRSG-156-D2",
       "description": "Exact4707 dated source plan/finite release requirements and independent negative tests accepted; actual capture remains held until dated finality and current financial mapping.",
       "check_ids": [
+        "focused",
         "offline"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Lead independent exact focused command:98passed in4.23s; Engineer98passed in4.17s. Authored offline fixtures only; no credentials/provider.",
+        "Lead independently reviewed controller/tests, verified exact handoff/support/original-input hashes and unchanged155/163/collector/store/connectors; originalpacket CLI exit2HELD expiredtrue childfalse sourcefalse rolloverfalse; real synthetic timeout/detachedcleanup and IPC/store regression cases passed; complete4path scope validator passed. Resource supervision remains sampled, not hardOS enforcement."
+      ]
     },
     {
       "id": "PRSG-156-D3",
       "description": "Implementation and preparation committed/pushed with exact limitations and release dependency; actual21close source and financial/model admissions remain separate124D3 work.",
       "check_ids": [
+        "focused",
         "offline"
       ],
       "status": "pending",
@@ -79,9 +106,16 @@
     }
   ],
   "review": {
-    "status": "pending",
+    "status": "accepted",
     "evidence": [
-      "Human29Octfinalsignoff: scopedpreparation preserved, runtime/testfiles notwritten, noactualcapture. Ticket remainsin_progress withallacceptancepending; implementationnotclaimed."
+      "Human29Octfinalsignoff: scopedpreparation preserved, runtime/testfiles notwritten, noactualcapture. Ticket remainsin_progress withallacceptancepending; implementationnotclaimed.",
+      "Human30Oct asks Lead to continue another ticket. Lead selects accepted unfinishedP1156; cleanbase refreshed to d88c305, preserving original0d90bacea1997ee758de91902c50371c10046be0 anddatedpacket. ReadonlyEngineerproposal accepted beforeimplementation; actualcapture remainsheldexpiredwindow/currentfinancialmapping.",
+      "Lead30Oct accepts reviewed offline implementation D1-D2; D3 remains pending until implementation commit/push. Finalruntime1090420ce71eb42e6fce9b0b306fe5e65494bc92100b90ceaa4897239e112a63; testsc29662698b4cd5b696721cb13b8ebce7bf8f113e52fac4737805a562dc704d7e. Actualsource, financialmapping/model/publicgates remainheld."
     ]
-  }
+  },
+  "dependencies": [
+    "PRSG-124",
+    "PRSG-155",
+    "PRSG-163"
+  ]
 }
