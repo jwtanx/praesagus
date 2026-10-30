@@ -19,4 +19,13 @@ The existing full-pytest pre-commit/pre-push gate includes `tests/test_ticket_br
 
 The hook integration regression stages a lowercase brief and then a brief missing choices in an isolated repository, executes the real new pytest quality checks through the unchanged pre-commit runner, and proves both commits fail before a corrected brief succeeds. Negative helper fixtures and historical audit preservation are separate regressions. To inspect current quality without Git mutation: `python scripts/planning/check_ticket_briefs.py`.
 
+CI's full pytest step also writes a temporary JUnit report. If an earlier step
+fails, a diagnostic step emits at most eight failed-test names/messages as GitHub
+annotations, bounded to 1,800 characters each and escaped for workflow commands.
+It does not print captured test output, upload the report, rerun cases, change
+dependencies or convert a failing suite to success. Missing, malformed or oversized reports
+produce a bounded diagnostic warning. This makes failure evidence inspectable
+when the normal job log requires sign-in; it does not establish the cause of a
+failure before the resulting annotation is reviewed.
+
 CI first installs Poetry dependencies, then installs the standalone research requirements with `poetry run python -m pip` into the same interpreter used for pytest. The standalone NumPy range is `>=1.26.4,<3`, retaining its tested NumPy 2 support. CI adds an explicit `numpy>=1.26.4,<2` constraint in that same install command, compatible with Poetry's `^1.26` and the NumPy 1.x environment for PyArrow 12; exchange-calendars 4.13.2 requires at least 1.26.4. No package migration to NumPy 2 is implied. CI runs `pip check`, asserts NumPy major version 1, and imports NumPy, Arrow/parquet, pandas, scikit-learn, exchange-calendars and openpyxl before collection. Offline subprocess import-blocking fixtures reproduce collection exit 2 when either missing research dependency is unavailable. Local isolated-stack checks do not establish the inaccessible original CI traceback or substitute for a new successful remote run.

@@ -36,6 +36,34 @@ jobs:
           poetry run python -m pip check
           poetry run python -c "import numpy, pyarrow, pyarrow.parquet, pandas, sklearn, exchange_calendars, openpyxl; assert numpy.__version__.split('.')[0] == '1'"
       - name: Run tests
+        env:
+          PYTEST_ADDOPTS: --junitxml=/tmp/praesagus-pytest.xml
         run: poetry run python -m pytest -q
+      - name: Summarize failed tests
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          report = Path('/tmp/praesagus-pytest.xml')
+          if not report.is_file():
+              print('::warning title=pytest diagnostics::No JUnit report was produced; inspect the earlier failed step.')
+          elif report.stat().st_size > 16 * 1024 * 1024:
+              print('::warning title=pytest diagnostics::JUnit report exceeded the diagnostic size limit.')
+          else:
+              try:
+                  cases = ET.parse(report)
+              except ET.ParseError:
+                  print('::warning title=pytest diagnostics::JUnit report was incomplete or malformed; inspect the original failed step.')
+              else:
+                  failures = [(case, result) for case in cases.iter('testcase')
+                              for result in case if result.tag in ('failure', 'error')]
+                  print(f'Failed pytest cases: {len(failures)}; showing at most 8 annotations.')
+                  for case, result in failures[:8]:
+                      message = (case.get('classname', '') + '.' + case.get('name', '')
+                                 + ': ' + result.get('message', result.tag))[:1800]
+                      message = message.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+                      print('::error title=pytest failure::' + message)
+          PY
       - name: Replay ticket verification safety cases
         run: poetry run python -m pytest -q tests/test_ticket_verification.py

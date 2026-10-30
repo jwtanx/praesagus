@@ -21,7 +21,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-30/PRSG-163-resumable-run-and-deliver.md",
   "objective": "Deliver the role-requested resumable Run and Deliver operator command over existing approved interfaces, with stage-aware at-most-once recovery and actionable output/blocker reporting.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead; AI Engineer/Trader review relevant boundaries",
   "scope_status": "accepted",
@@ -156,16 +156,17 @@
         "focused",
         "actual"
       ],
-      "status": "pending",
+      "status": "done",
       "evidence": [
-        "Code/docs and independent actual proof complete; mandatorycommit/push and remoteverification remain pending."
+        "Implementation committed/pushed as556749b502694b91e32468a6b93017ad99ae2341; remote main SHA independently matched. Mandatory precommit4051passed41warnings95.84s and prepush4051passed41warnings92.52s; no bypass. Independent actual implementation evidence remains asabove. User-runnable CLI/docs shipped; actualfinite161execution/recovery and retained155reconciliation alreadyindependentlyproven. No new155/currentforecast admission implied."
       ]
     }
   ],
   "review": {
     "status": "accepted",
     "evidence": [
-      "Lead independently66focusedtests passed3.83s; Engineer66passed3.78s. Frozen wrapper4f0eff1122be5ca6855a31aad6e350d54ecaddce1022e00455fa1365c82f3685; tests624e84eae3ee670cd40492351937bfb59a59f64ba3a51d5ecafa79d7125432f8. Finiteplan573b776626d3df1639d45f5dd5ebd861645d24b03b0759fdc7fc34434933591d and exactapproval908470b53c14e7d451cd824034686828203cc5d0c598fd39dde2c383c9a6bed0 produced real161evaluation once from/tmp, exit0,4acceptedartifacts byte-identical,38originalrefs unchanged. Observed0.6418s/95698944BsampledRSS/14samples/maxgap0.0518s,cleanupverified. Controlledoutersealwithholding preserved originalsealbytes; inspectchild-verified(no writes), recover/repeatrecover0nochild; consumedexecute2held,claim/intent/supervisor/childhashesunchanged. Retained155inspect/recover0forecastcomplete/nochild. Actualreviewbfe3e60424cdd159116aa763026152869ecfe386dfb2bcb6b48f5b0b84efec65. No new155inference/provider/source/fit/promotion; original155expiredrelease remainsconsumed. A stale descriptivecodepin inreviewtextwascorrected inpreservederrata; exactplanruntimehasheswereverifiedbeforeapproval andactual4fcodeused. D6deliverypending."
+      "Lead independently66focusedtests passed3.83s; Engineer66passed3.78s. Frozen wrapper4f0eff1122be5ca6855a31aad6e350d54ecaddce1022e00455fa1365c82f3685; tests624e84eae3ee670cd40492351937bfb59a59f64ba3a51d5ecafa79d7125432f8. Finiteplan573b776626d3df1639d45f5dd5ebd861645d24b03b0759fdc7fc34434933591d and exactapproval908470b53c14e7d451cd824034686828203cc5d0c598fd39dde2c383c9a6bed0 produced real161evaluation once from/tmp, exit0,4acceptedartifacts byte-identical,38originalrefs unchanged. Observed0.6418s/95698944BsampledRSS/14samples/maxgap0.0518s,cleanupverified. Controlledoutersealwithholding preserved originalsealbytes; inspectchild-verified(no writes), recover/repeatrecover0nochild; consumedexecute2held,claim/intent/supervisor/childhashesunchanged. Retained155inspect/recover0forecastcomplete/nochild. Actualreviewbfe3e60424cdd159116aa763026152869ecfe386dfb2bcb6b48f5b0b84efec65. No new155inference/provider/source/fit/promotion; original155expiredrelease remainsconsumed. A stale descriptivecodepin inreviewtextwascorrected inpreservederrata; exactplanruntimehasheswereverifiedbeforeapproval andactual4fcodeused. D6deliverypending.",
+      "Implementation committed/pushed as556749b502694b91e32468a6b93017ad99ae2341; remote main SHA independently matched. Mandatory precommit4051passed41warnings95.84s and prepush4051passed41warnings92.52s; no bypass. Independent actual implementation evidence remains asabove. User-runnable CLI/docs shipped; actualfinite161execution/recovery and retained155reconciliation alreadyindependentlyproven. No new155/currentforecast admission implied."
     ]
   }
 }

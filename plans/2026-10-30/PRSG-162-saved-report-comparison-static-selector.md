@@ -39,7 +39,7 @@ Allowed paths: plans/2026-10-30/PRSG-162-saved-report-comparison-static-selector
 - [x] PRSG-162-D3: Replace automatic ticker motion with a static local ticker/company/market search, native candidate selector and explicit Show chart action; keep active chart identity/context visible even when filtered out, and preserve curated mapping, fallback, timeout, date and lifecycle behavior.
 - [x] PRSG-162-D4: Focused DOM/contract regressions pass for invalid/missing/equal/reversed selection, bounded two-report reads, stale responses, unsafe content, missing groups, no-match search, keyboard exploration, date changes and immutable stored reports; old motion-specific assertions are replaced by the new static behavior contract.
 - [x] PRSG-162-D5: Lead and Designer independently inspect actual saved-report20/21October comparison plus 390/768/1440 layouts, keyboard/focus/chart error/selection states and no document overflow. Record native zoom/reader limitations honestly; no usability-study, calibration or model-quality claim.
-- [ ] PRSG-162-D6: Deliver reviewed code/docs and actual preview with unchanged original report/ledger/calendar/source/model files; commit/push and verify the exact resulting deployment when authorized.
+- [x] PRSG-162-D6: Deliver reviewed code/docs and actual preview with unchanged original report/ledger/calendar/source/model files; commit/push and verify the exact resulting deployment when authorized.
 
 ## Checks and Delivery
 
@@ -53,4 +53,8 @@ Lead independently accepted157 technical implementation after62focused tests and
 
 Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope.
 
-D6 remains pending until authorized commit/push and exact deployment verification.
+At implementation acceptance, D6 was pending. The verified delivery below closes it.
+
+## Verified Implementation Delivery
+
+Implementation committed/pushed as556749b502694b91e32468a6b93017ad99ae2341; remote main SHA independently matched. Mandatory precommit4051passed41warnings95.84s and prepush4051passed41warnings92.52s; no bypass. Independent actual implementation evidence remains asabove. Pagesrun41003275963/deployment7430763172success; canonical servedindexHTML2ff05849...,chartJS4c80ec19...,20/21OctJSON exactbytesmatch localcommit. Private deploymentbyte-reviewae0a1f9469147f3879541a9f7ed7fbebf7d94808840253dd9972c82c0f723989. https://jwtanx.github.io/praesagus/daily-market-brief/?date=2026-10-21. Nativezoom/readerstudy notclaimed.

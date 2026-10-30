@@ -42,3 +42,13 @@ Run the manifest focused command, independent runtime-boundary review and mandat
 Lead whole focused110passed7.00s; AI independent16targetedcasespassed0.48s,94deselected. Exactsource5b5625e29859b60d1ae9bfeb4df467fa98f1cbd8ebfb6564e5562cf4c7d72982; tests8571b2ec6126ca068b654c20108a2da187955a7a0e86b901c9d5f897912b7804. AIreceiptcf035d95d2b1141e66aaad7c316bf37a4493a918443023144c63f675820b2a0c. OriginalglobalPGID0rejection independentlyreproduced; realchild+authoredunrelatedrow succeeds; selectedzero/negative/malformed/signal errorsstillreject; original58+2/512MiB/1thread/0retryLIMITS ASTunchanged. OriginalCItracebackunavailable; remoteCIrepair notclaimed.
 
 Initial authored real-child fixture appended an extra empty ps line and failed; fixed the fixture newline only, then all13new cases and final110wholecases passed. No production gate was weakened. D4 stays pending until mandatory hooks and exact remote result.
+
+## CI Diagnosis Scope Addendum
+
+The exact556749bremoteCIrun41003275906 still failed Run tests after the reproduced portability repair; Pages deployment succeeded. Therefore no CI recovery is claimed and D4 remains open. Lead accepts two supporting paths, .github/workflows/ci.yml and docs/TEST_HOOKS.md, to emit a bounded failure-only JUnit annotation summary through the ordinary job. Preserve the exact Poetry pytest command, all dependency constraints, full suite, nonzero failure propagation and safety replay. No continue-on-error, skipped cases or relaxed assertions. Engineer independently reviews this diagnostic change before push. The trace remains unknown until the new run supplies evidence; any resulting implementation fix requires a frozen concrete reproduction/scope.
+
+### Diagnostic Acceptance
+
+ExistingCIdependency4passed0.50s. Leadexecuted exactembeddeddiagnostic code: missing/malformed/oversizedreportsboundedwarnings,12failures=>8annotations,percent/CR/LFescaping,collectionerrorhandling. Privatecheck65d8a01d9a1d94e3b4813bce7408274802a91bef7c25ad33e6101d5e48bced22; independentEngineerfinalreviewa2a852b6373602694f18af5b8501c4d230b30153b8c474675d09e5e26c220e5c. Workflow4f69061d9b88398249937f96be474ca5642c19f42accd5c1940e69cc0ebf7ab8. OriginalfullPoetrypytestcommand/dependencies/nonzeroexit/safetyreplay preserved; no skip,retry,continue-on-error orcapturedoutputpublication. 1800sourcecharactersmayencodeupto5400logcharacters,stillbounded.
+
+The prior failed-run record remains unchanged. D4 is not complete until the remaining actual CI failure is identified, fixed under accepted scope, and a new full remote run succeeds.

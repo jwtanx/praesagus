@@ -20,7 +20,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-10-30/PRSG-162-saved-report-comparison-static-selector.md",
   "objective": "Make recorded report changes easy to inspect and instrument selection stable: explicit two-report comparison plus static searchable chart selector, preserving financial meaning and provenance.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Engineer",
   "reviewer": "Lead; Designer visual/interaction review",
   "scope_status": "accepted",
@@ -165,16 +165,17 @@
         "selector",
         "review"
       ],
-      "status": "pending",
+      "status": "done",
       "evidence": [
-        "Reviewedcode/docs/preview complete; authorizedcommit/push/deployment verification remains."
+        "Implementation committed/pushed as556749b502694b91e32468a6b93017ad99ae2341; remote main SHA independently matched. Mandatory precommit4051passed41warnings95.84s and prepush4051passed41warnings92.52s; no bypass. Independent actual implementation evidence remains asabove. Pagesrun41003275963/deployment7430763172success; canonical servedindexHTML2ff05849...,chartJS4c80ec19...,20/21OctJSON exactbytesmatch localcommit. Private deploymentbyte-reviewae0a1f9469147f3879541a9f7ed7fbebf7d94808840253dd9972c82c0f723989. https://jwtanx.github.io/praesagus/daily-market-brief/?date=2026-10-21. Nativezoom/readerstudy notclaimed."
       ]
     }
   ],
   "review": {
     "status": "accepted",
     "evidence": [
-      "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope. Implementationaccepted; deliverygateD6remains pending."
+      "Lead independent focused comparison/staticselector/chart/compact/cache/date and nested fullviewer replays exit0; actual20/21savedpair50instrument+5textrecords, nativeexplicitkeyboardchartcommit and390/768/1440screenshots inspected. 42tracked publicJSON files byte-identical to frozenbase. IndependentLeadreceipt74191c3ebdf3fd79043d7db6ae3d295b699083055d5d403b13152006f48fbccd; Designerreview3c97322c064fb6d8e508859d9f7694ec7118143606d7dc6b5013cdb769ab88da. Native200%zoom/screenreader/usabilitystudy notperformed. Unchanged oldreport_navigation_checks null#nextfailure reproduced atbaselinecca89, not162regression; preservedoutside scope. Implementationaccepted; deliverygateD6remains pending.",
+      "Implementation committed/pushed as556749b502694b91e32468a6b93017ad99ae2341; remote main SHA independently matched. Mandatory precommit4051passed41warnings95.84s and prepush4051passed41warnings92.52s; no bypass. Independent actual implementation evidence remains asabove. Pagesrun41003275963/deployment7430763172success; canonical servedindexHTML2ff05849...,chartJS4c80ec19...,20/21OctJSON exactbytesmatch localcommit. Private deploymentbyte-reviewae0a1f9469147f3879541a9f7ed7fbebf7d94808840253dd9972c82c0f723989. https://jwtanx.github.io/praesagus/daily-market-brief/?date=2026-10-21. Nativezoom/readerstudy notclaimed."
     ]
   }
 }
