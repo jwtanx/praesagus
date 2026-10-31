@@ -37,6 +37,7 @@ This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATI
 | Ticket | Type | Modules | Owner | Priority | Effort | Impact |
 |---|---|---|---|---|---|---|
 | [PRSG-167](2026-10-31/PRSG-167-us-industry-seasonality.md) | feature | frontend, financial-data, market-research | Engineer | P1 | M: 3–6 days | high |
+| [PRSG-168](2026-11-01/PRSG-168-seasonality-mobile-and-current-year.md) | bug | frontend, financial-data | Engineer | P2 | XS: 0.5–1.5 days | medium-high |
 
 ## Ticket convention and harness
 

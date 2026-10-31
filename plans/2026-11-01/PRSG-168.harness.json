@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-168",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend",
+      "financial-data"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1.5
+    },
+    "impact": "medium-high",
+    "effort_rationale": "A responsive CSS correction and inclusive chart data selection with focused build and mobile interaction review."
+  },
+  "created_on": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-11-01/PRSG-168-seasonality-mobile-and-current-year.md",
+  "objective": "Fix mobile seasonality heatmap month alignment and expose a horizontally selectable partial 2026 chart line while preserving complete-year averages.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "110705678d33fd2b9d56e4b3f807aad4156eb0e7",
+  "allowed_paths": [
+    "frontend/src/pages/Seasonality.tsx",
+    "frontend/src/pages/Seasonality.css",
+    "plans/README.md",
+    "plans/2026-11-01/PRSG-168-seasonality-mobile-and-current-year.md",
+    "plans/2026-11-01/PRSG-168.harness.json"
+  ],
+  "protected_paths": [
+    ".github/",
+    "artifacts/",
+    "backend/",
+    "connectors/",
+    "docs/",
+    "frontend/src/data/",
+    "infra/",
+    "ingest/",
+    "scripts/",
+    "skills/",
+    "tests/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "standard-build",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "frontend",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: npm run build passed after the heatmap and year-selector layout changes. Vite emitted the existing bundle-size advisory only."
+      ]
+    },
+    {
+      "id": "pages-build",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build",
+        "--",
+        "--mode",
+        "pages"
+      ],
+      "cwd": "frontend",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: npm run build -- --mode pages passed and emitted the standalone explorer assets under artifacts/seasonality."
+      ]
+    },
+    {
+      "id": "mobile-interaction",
+      "kind": "manual",
+      "description": "At phone viewport, verify page width, contained month scrolling/alignment, 2026 partial series and year focus/toggle.",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: Headless Chrome emulated 390\u00d7844 CSS pixels. documentElement.scrollWidth=390; heatmap client/scroll widths=338/800; month header/data x positions both 208; year strip client/scroll widths=338/1758. The all-years chart rendered 369 month points (360 complete-year + 9 2026). Clicking 2026 set aria-pressed=true; caption identified September cutoff; clicking it again restored the all-years state."
+      ]
+    },
+    {
+      "id": "scope-validation",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-11-01/PRSG-168.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: scripts/planning/validate_ticket.py accepted the PRSG-168 manifest and all five scoped paths."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-168-D1",
+      "description": "Mobile heatmap scrolls within its panel, month headings remain aligned to cells and the selected series name remains visible without document-level horizontal overflow.",
+      "check_ids": [
+        "pages-build",
+        "mobile-interaction"
+      ],
+      "status": "done",
+      "evidence": [
+        "At 390 CSS px, page width matched viewport; month header and value grid shared the same x-position while the inner heatmap retained its own horizontal scroll range."
+      ]
+    },
+    {
+      "id": "PRSG-168-D2",
+      "description": "Year selector is horizontally scrollable; all-years chart exposes 2026 with nine months through September and the year focus/toggle works.",
+      "check_ids": [
+        "pages-build",
+        "mobile-interaction"
+      ],
+      "status": "done",
+      "evidence": [
+        "The year strip scroll width exceeded its client width; 2026 was selectable. The chart contained 369 points, representing 30 complete years plus the nine available 2026 months. Focus and restore were verified."
+      ]
+    },
+    {
+      "id": "PRSG-168-D3",
+      "description": "Standard and Pages production builds pass; historical heatmap averages remain based on complete years.",
+      "check_ids": [
+        "standard-build",
+        "pages-build",
+        "mobile-interaction"
+      ],
+      "status": "done",
+      "evidence": [
+        "Both production builds passed. Complete-year filtering remains in the all-years heatmap and month-average path; partial 2026 is included only as an available chart year.",
+        "Ticket manifest and supplied change paths passed scope validation."
+      ]
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

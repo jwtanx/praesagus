@@ -20,10 +20,11 @@
 .seasonality-section-heading h3 { margin: 0 0 5px; }
 .seasonality-section-heading p, .seasonality-chart-caption { margin: 0; color: #9fb0c7; font-size: .87rem; line-height: 1.5; }
 .seasonality-search input { width: min(270px, 100%); }
-.seasonality-heatmap { overflow-x: auto; }
-.seasonality-row { display: grid; grid-template-columns: 220px minmax(650px, 1fr); align-items: center; gap: 8px; width: 100%; }
+.seasonality-scroll-hint { display: none; margin: -8px 0 8px; color: #8294ab; font-size: .72rem; }
+.seasonality-heatmap { width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
+.seasonality-row { display: grid; grid-template-columns: 220px minmax(650px, 1fr); align-items: center; gap: 8px; width: max(100%, 878px); }
 .seasonality-month-header { min-height: 34px; color: #9fb0c7; font-size: .72rem; }
-.seasonality-name-column { display: grid; gap: 3px; text-align: left; min-width: 0; }
+.seasonality-name-column { position: sticky; left: 0; z-index: 1; display: grid; gap: 3px; text-align: left; min-width: 0; padding-right: 5px; background: #141d2d; }
 .seasonality-month-cells { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; }
 .seasonality-month-cells > span { text-align: center; }
 .seasonality-industry-row { min-height: 49px; padding: 5px 0; border: 0; border-bottom: 1px solid rgba(255,255,255,.055); background: transparent; color: #e6edf7; font: inherit; cursor: pointer; text-align: left; }
@@ -49,7 +50,9 @@
 .chart-gridline { stroke: rgba(255,255,255,.09); stroke-width: 1; }
 .chart-zero { stroke: rgba(255,255,255,.38); stroke-width: 1.2; }
 .chart-axis-label { fill: #91a2b9; font-size: 11px; }
-.seasonality-year-legend { display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 4px 0 0 52px; }
+.seasonality-year-legend { display: flex; flex-wrap: nowrap; gap: 4px 8px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; padding: 4px 4px 8px 52px; }
+.seasonality-year-legend button { flex: 0 0 auto; }
+.seasonality-year-scroll-hint { display: none; }
 .seasonality-year-legend button { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 3px 5px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: #9fb0c7; font: inherit; font-size: .68rem; font-variant-numeric: tabular-nums; cursor: pointer; transition: opacity .15s ease, background-color .15s ease, border-color .15s ease; }
 .seasonality-year-legend button:hover { background: rgba(138,182,255,.09); }
 .seasonality-year-legend button[aria-pressed="true"] { border-color: rgba(138,182,255,.35); background: rgba(60,130,255,.14); color: #eef4fb; }
@@ -78,15 +81,16 @@
   .seasonality-panel { padding: 13px; }
   .seasonality-section-heading { align-items: stretch; flex-direction: column; }
   .seasonality-search input { width: 100%; }
-  .seasonality-row { display: block; min-width: 0; }
-  .seasonality-month-header { display: grid; gap: 6px; padding: 4px 0 7px; }
-  .seasonality-name-column { margin-bottom: 7px; }
-  .seasonality-month-header .seasonality-name-column { margin-bottom: 0; }
-  .seasonality-month-cells { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
-  .seasonality-industry-row { padding: 10px 5px; }
+  .seasonality-scroll-hint { display: block; }
+  .seasonality-row { grid-template-columns: 176px minmax(0, 1fr); width: 800px; gap: 6px; }
+  .seasonality-month-header { min-height: 34px; padding: 4px 0 7px; }
+  .seasonality-name-column { margin-bottom: 0; }
+  .seasonality-month-cells { min-width: 618px; grid-template-columns: repeat(12, minmax(42px, 1fr)); gap: 3px; }
+  .seasonality-industry-row { padding: 10px 0; }
   .seasonality-industry-row.selected { box-shadow: inset 3px 0 #69a4ff; }
   .seasonality-cell { min-width: 0; padding: 6px 0; font-size: clamp(.48rem, 2.3vw, .68rem); }
-  .seasonality-year-legend { gap: 4px 4px; padding-left: 0; }
+  .seasonality-year-legend { gap: 4px; padding-left: 0; }
   .seasonality-year-legend button { min-height: 36px; padding: 4px 5px; }
+  .seasonality-year-scroll-hint { display: block; margin: 10px 0 0; color: #8294ab; font-size: .72rem; }
   .seasonality-chart { min-height: 190px; }
 }

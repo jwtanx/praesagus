@@ -113,7 +113,7 @@ function heatColor(value: number) {
 }
 
 function buildSeries(industry: Industry, yearFilter: number | 'all') {
-  const chosenRows = yearFilter === 'all' ? HISTORICAL_ROWS : rows.filter((row) => Math.floor(row[0] / 100) === yearFilter);
+  const chosenRows = yearFilter === 'all' ? rows : rows.filter((row) => Math.floor(row[0] / 100) === yearFilter);
   const annual = new Map<number, number[]>();
   chosenRows.forEach((row) => {
     const year = Math.floor(row[0] / 100);
@@ -126,7 +126,7 @@ function buildSeries(industry: Industry, yearFilter: number | 'all') {
     const theme = themeFor(industry.code);
     theme?.returns.forEach(({ period, value }) => {
       const year = Math.floor(period / 100);
-      if ((yearFilter === 'all' && year > industryData.completeCalendarYearsThrough) || (yearFilter !== 'all' && year !== yearFilter)) return;
+      if (yearFilter !== 'all' && year !== yearFilter) return;
       const month = (period % 100) - 1;
       const values = annual.get(year) ?? Array(12).fill(Number.NaN);
       values[month] = value;
@@ -227,13 +227,14 @@ function SeasonalityChart({
           );
         })}
       </svg>
+      <p className="seasonality-year-scroll-hint">Swipe the year strip to reach 2026; tap a year to focus or restore the chart.</p>
       <div className="seasonality-year-legend" aria-label="Chart year colors">
         {series.map((item, index) => (
           <button
             key={item.year}
             type="button"
             aria-pressed={focusedYear === item.year}
-            aria-label={focusedYear === item.year ? `Unfocus ${item.year}; show all years equally` : `Focus ${item.year}; fade the other years`}
+            aria-label={focusedYear === item.year ? `Unfocus ${item.year}; show all years equally` : `Focus ${item.year}${item.values.filter(Number.isFinite).length < 12 ? ', partial year through ' + MONTHS[item.values.reduce((last, value, month) => Number.isFinite(value) ? month : last, -1)] : ''}; fade the other years`}
             className={focusedYear !== null && focusedYear !== item.year ? 'seasonality-year-muted' : undefined}
             onClick={() => onToggleYear(item.year)}
           >
@@ -266,7 +267,10 @@ export default function Seasonality() {
   }, [yearFilter, query]);
 
   const chartSeries = useMemo(() => buildSeries(selected, yearFilter), [selected, yearFilter]);
-  const periodReturns = chartSeries.flatMap((item) => item.values).filter(Number.isFinite);
+  const periodReturns = chartSeries
+    .filter((item) => yearFilter !== 'all' || item.year <= industryData.completeCalendarYearsThrough)
+    .flatMap((item) => item.values)
+    .filter(Number.isFinite);
   const average = periodReturns.length ? periodReturns.reduce((sum, value) => sum + value, 0) / periodReturns.length : 0;
   const monthlyAverages = useMemo(() => MONTHS.map((_, month) => {
     const matching = HISTORICAL_ROWS.filter((row) => row[0] % 100 === month + 1);
@@ -294,7 +298,7 @@ export default function Seasonality() {
         <div>
           <p className="seasonality-kicker">Historical patterns · U.S. equities</p>
           <h2>Industry seasonality</h2>
-          <p>Compare 49 official U.S. industries and the broad market across 30 years, plus five shorter-history ETF proxies for newer themes.</p>
+          <p>Compare 49 official U.S. industries and the broad market across 30 complete years, plus 2026 year-to-date and five shorter-history ETF proxies.</p>
         </div>
         <div className="seasonality-period-control">
           <div className="seasonality-period-readout">
@@ -337,6 +341,7 @@ export default function Seasonality() {
             <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find industry, market, or company" />
           </label>
         </div>
+        <p className="seasonality-scroll-hint">Swipe the monthly table sideways to keep month headers and returns aligned.</p>
 
         <div className="seasonality-heatmap" role="group" aria-label="Select a return series to inspect its monthly chart">
           <div className="seasonality-row seasonality-month-header" aria-hidden="true">
@@ -387,14 +392,14 @@ export default function Seasonality() {
           </div>
           <div className="seasonality-average-badge">
             <strong>{formatReturn(focusedMean ?? average)}</strong>
-            <span>{focusedYear ? `${focusedYear} mean monthly return` : 'mean monthly return'}<br />{focusedTotal === null ? 'over selected period' : `compounded year return ${formatReturn(focusedTotal)}`}</span>
+          <span>{focusedYear ? `${focusedYear} mean monthly return` : 'mean monthly return'}<br />{focusedTotal === null ? 'over selected period' : focusedValues.length < 12 ? `compounded through ${MONTHS[focusedSeries?.values.reduce((last, value, month) => Number.isFinite(value) ? month : last, -1) ?? 0]} ${formatReturn(focusedTotal)}` : `compounded year return ${formatReturn(focusedTotal)}`}</span>
           </div>
         </div>
         <p className="seasonality-chart-caption">
           {yearFilter === 'all'
-            ? focusedYear
-              ? `${focusedYear} is highlighted; other years are faded. Click ${focusedYear} again to restore all years. Hover or focus a point for its monthly return and comparison with the ${monthlyAverageLabel} monthly average.`
-              : `Each line is one available calendar year. Click a year below to highlight it; click again to restore all lines. Hover or focus a point for its monthly return and ${monthlyAverageLabel} average.`
+              ? focusedYear
+              ? `${focusedYear} is highlighted; other years are faded. Click ${focusedYear} again to restore all years. The 2026 line shows available months through September. Hover or focus a point for its monthly return and comparison with the ${monthlyAverageLabel} monthly average.`
+              : `Each line is one available calendar year, including partial 2026 through September. Swipe the year selector below and tap a year to highlight it; tap again to restore all lines. Hover or focus a point for its monthly return and ${monthlyAverageLabel} average.`
             : yearFilter === 2026 && selected.proxy
               ? `SEC-filed monthly total returns for ${selected.name} through ${themeFor(selected.code)?.periodEnd ?? 'latest filing'}. October is not yet reported in public filings.`
               : yearFilter === 2026
