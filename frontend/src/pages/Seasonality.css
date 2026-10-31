@@ -27,8 +27,10 @@
 .seasonality-section-heading h3 { margin: 0 0 5px; }
 .seasonality-section-heading p, .seasonality-chart-caption { margin: 0; color: var(--season-muted); font-size: .87rem; line-height: 1.5; }
 .seasonality-search input { width: min(270px, 100%); }
-.seasonality-table-controls { display: flex; align-items: end; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
-.seasonality-search, .seasonality-sort-control { display: grid; gap: 5px; color: var(--season-muted); font-size: .72rem; }
+.seasonality-table-controls { display: flex; flex: 0 1 520px; align-items: end; justify-content: flex-end; gap: 10px; min-width: 0; flex-wrap: nowrap; }
+.seasonality-search, .seasonality-sort-control { display: grid; gap: 5px; min-width: 0; color: var(--season-muted); font-size: .72rem; }
+.seasonality-search { flex: 1 1 270px; }
+.seasonality-sort-control { flex: 0 0 220px; }
 .seasonality-sort-control select { min-height: 42px; padding: 8px 34px 8px 11px; border: 1px solid var(--season-line); border-radius: 10px; background: var(--season-panel); color: var(--season-ink); font: inherit; }
 .seasonality-sort-control select:focus-visible, .seasonality-month-button:focus-visible { outline: 2px solid var(--season-blue); outline-offset: 2px; }
 .seasonality-month-button { width: 100%; min-height: 34px; padding: 3px 1px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
@@ -48,8 +50,18 @@
 .seasonality-rank-name span { margin-right: 6px; }
 .seasonality-rank-track { display: block; height: 7px; overflow: hidden; border-radius: 999px; background: rgba(165,178,194,.1); }
 .seasonality-rank-track i { display: block; height: 100%; border-radius: inherit; transition: width .25s ease; }
-.seasonality-ranking-positive .seasonality-rank-track i { background: linear-gradient(90deg,#2b936d,#66d6a4,#9bf2c8); box-shadow: 0 0 12px rgba(102,214,164,.25); }
-.seasonality-ranking-negative .seasonality-rank-track i { background: linear-gradient(90deg,#9b4f59,#ff8e8e,#ffc0b2); box-shadow: 0 0 12px rgba(255,142,142,.2); }
+.seasonality-ranking-positive .seasonality-rank-track i { background: linear-gradient(90deg,#426e60,#759b8a,#aac4b9); box-shadow: 0 0 9px rgba(102,214,164,.13); }
+.seasonality-ranking-positive .seasonality-rank-1 .seasonality-rank-track i { background: linear-gradient(90deg,#13875e,#66d6a4,#b6f5d6); box-shadow: 0 0 12px rgba(102,214,164,.28); }
+.seasonality-ranking-positive .seasonality-rank-2 .seasonality-rank-track i { background: linear-gradient(90deg,#238568,#65c99f,#b4e8d1); box-shadow: 0 0 10px rgba(102,214,164,.23); }
+.seasonality-ranking-positive .seasonality-rank-3 .seasonality-rank-track i { background: linear-gradient(90deg,#347c69,#69b996,#b0dac6); box-shadow: 0 0 9px rgba(102,214,164,.18); }
+.seasonality-ranking-positive .seasonality-rank-4 .seasonality-rank-track i { background: linear-gradient(90deg,#3d7668,#70aa91,#aecfbe); box-shadow: 0 0 8px rgba(102,214,164,.15); }
+.seasonality-ranking-positive .seasonality-rank-5 .seasonality-rank-track i { background: linear-gradient(90deg,#496e63,#7b9f8f,#b1c9bd); box-shadow: 0 0 7px rgba(102,214,164,.12); }
+.seasonality-ranking-negative .seasonality-rank-track i { background: linear-gradient(90deg,#744b52,#b47a7e,#d1a9a3); box-shadow: 0 0 9px rgba(255,142,142,.13); }
+.seasonality-ranking-negative .seasonality-rank-1 .seasonality-rank-track i { background: linear-gradient(90deg,#a44651,#ff8e8e,#ffc0b2); box-shadow: 0 0 12px rgba(255,142,142,.26); }
+.seasonality-ranking-negative .seasonality-rank-2 .seasonality-rank-track i { background: linear-gradient(90deg,#9a4f58,#ea888c,#e9b4a9); box-shadow: 0 0 10px rgba(255,142,142,.22); }
+.seasonality-ranking-negative .seasonality-rank-3 .seasonality-rank-track i { background: linear-gradient(90deg,#8c535b,#d28285,#dfafa5); box-shadow: 0 0 9px rgba(255,142,142,.18); }
+.seasonality-ranking-negative .seasonality-rank-4 .seasonality-rank-track i { background: linear-gradient(90deg,#80555d,#c08083,#d9aaa2); box-shadow: 0 0 8px rgba(255,142,142,.15); }
+.seasonality-ranking-negative .seasonality-rank-5 .seasonality-rank-track i { background: linear-gradient(90deg,#744b52,#b47a7e,#d1a9a3); box-shadow: 0 0 7px rgba(255,142,142,.12); }
 .seasonality-ranking li strong { min-width: 54px; color: var(--season-ink); font-size: .78rem; font-variant-numeric: tabular-nums; text-align: right; }
 .seasonality-ranking-empty { margin: 0; color: var(--season-muted); font-size: .78rem; }
 .seasonality-scroll-hint { display: none; margin: -8px 0 8px; color: var(--season-muted); font-size: .72rem; }
@@ -59,10 +71,23 @@
 .seasonality-name-column { position: sticky; left: 0; z-index: 1; display: grid; gap: 3px; text-align: left; min-width: 0; padding-right: 5px; background: var(--season-panel); }
 .seasonality-month-cells { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; }
 .seasonality-month-cells > span, .seasonality-month-cells > button { text-align: center; }
-.seasonality-industry-row { min-height: 49px; padding: 5px 0; border: 0; border-bottom: 1px solid var(--season-line); background: transparent; color: var(--season-ink); font: inherit; cursor: pointer; text-align: left; }
+.seasonality-industry-row { min-height: 49px; padding: 5px 0; border: 1px solid transparent; border-bottom-color: var(--season-line); border-radius: 10px; background: transparent; color: var(--season-ink); font: inherit; cursor: pointer; text-align: left; }
 .seasonality-industry-row:hover, .seasonality-industry-row:focus-visible { background: rgba(137,191,255,.07); outline: none; }
-.seasonality-industry-row.selected { background: rgba(137,191,255,.12); box-shadow: inset 3px 0 var(--season-blue); }
-.seasonality-industry-name { display: flex; align-items: center; gap: 7px; font-weight: 650; font-size: .85rem; }
+.seasonality-industry-row.selected { border-color: rgba(137,191,255,.62); background: rgba(137,191,255,.035); box-shadow: none; }
+.seasonality-industry-row.selected .seasonality-name-column { background: linear-gradient(100deg,rgba(137,191,255,.15),rgba(137,191,255,.06)); }
+.seasonality-industry-row.rank-top-1 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.22),rgba(102,214,164,.06)); }
+.seasonality-industry-row.rank-top-2 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.18),rgba(102,214,164,.05)); }
+.seasonality-industry-row.rank-top-3 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.14),rgba(102,214,164,.04)); }
+.seasonality-industry-row.rank-top-4 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.11),rgba(102,214,164,.03)); }
+.seasonality-industry-row.rank-top-5 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.08),rgba(102,214,164,.02)); }
+.seasonality-industry-row.rank-bottom-1 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.22),rgba(255,142,142,.06)); }
+.seasonality-industry-row.rank-bottom-2 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.18),rgba(255,142,142,.05)); }
+.seasonality-industry-row.rank-bottom-3 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.14),rgba(255,142,142,.04)); }
+.seasonality-industry-row.rank-bottom-4 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.11),rgba(255,142,142,.03)); }
+.seasonality-industry-row.rank-bottom-5 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.08),rgba(255,142,142,.02)); }
+.seasonality-industry-name { display: flex; align-items: center; gap: 7px; min-width: 0; font-weight: 650; font-size: .85rem; }
+.seasonality-name-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seasonality-selected-check { display: inline-grid; flex: 0 0 17px; width: 17px; height: 17px; margin-left: auto; place-items: center; border: 1px solid rgba(137,191,255,.55); border-radius: 50%; background: var(--season-panel); color: var(--season-blue); font-size: .68rem; line-height: 1; }
 .seasonality-examples { padding-left: 27px; overflow: hidden; color: var(--season-muted); font-size: .68rem; text-overflow: ellipsis; white-space: nowrap; }
 .seasonality-cell { display: block; padding: 6px 1px; border-radius: 5px; text-align: center; font-size: .7rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .seasonality-scale { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 14px; color: var(--season-muted); font-size: .7rem; }
@@ -118,7 +143,7 @@
   .seasonality-panel { padding: 13px; }
   .seasonality-section-heading { align-items: stretch; flex-direction: column; }
   .seasonality-search input { width: 100%; }
-  .seasonality-table-controls { display: grid; width: 100%; grid-template-columns: minmax(0,1fr) minmax(150px,.75fr); align-items: end; }
+  .seasonality-table-controls { display: grid; width: 100%; grid-template-columns: minmax(0,1fr) minmax(125px,.9fr); align-items: end; gap: 8px; }
   .seasonality-sort-control select { width: 100%; }
   .seasonality-rankings { grid-template-columns: 1fr; }
   .seasonality-scroll-hint { display: block; }
@@ -127,7 +152,7 @@
   .seasonality-name-column { margin-bottom: 0; }
   .seasonality-month-cells { min-width: 618px; grid-template-columns: repeat(12, minmax(42px, 1fr)); gap: 3px; }
   .seasonality-industry-row { padding: 10px 0; }
-  .seasonality-industry-row.selected { box-shadow: inset 3px 0 var(--season-blue); }
+  .seasonality-industry-row.selected { box-shadow: none; }
   .seasonality-cell { min-width: 0; padding: 6px 0; font-size: clamp(.48rem, 2.3vw, .68rem); }
   .seasonality-year-legend { gap: 4px; padding-left: 0; }
   .seasonality-year-legend button { min-height: 36px; padding: 4px 5px; }

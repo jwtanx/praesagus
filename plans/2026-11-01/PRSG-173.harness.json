@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-173",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.25,
+      "high": 0.45
+    },
+    "impact": "medium-high",
+    "effort_rationale": "Small responsive-control, automatic-ordering, and selection styling refinements to the existing seasonality explorer."
+  },
+  "created_on": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-11-01/PRSG-173-seasonality-ranking-and-selection-ui.md",
+  "objective": "Keep seasonality search/sort controls horizontal, sort by selected month automatically, emphasize top/bottom five ranks, and improve selected-row styling.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "374f77b7e79942b77fcf879067c93e8d2145b882",
+  "allowed_paths": [
+    "frontend/src/pages/Seasonality.tsx",
+    "frontend/src/pages/Seasonality.css",
+    "plans/README.md",
+    "plans/2026-11-01/PRSG-173-seasonality-ranking-and-selection-ui.md",
+    "plans/2026-11-01/PRSG-173.harness.json"
+  ],
+  "protected_paths": [
+    ".github/",
+    "artifacts/",
+    "backend/",
+    "connectors/",
+    "frontend/src/data/",
+    "infra/",
+    "ingest/",
+    "scripts/",
+    "skills/",
+    "tests/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "pages-build",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build",
+        "--",
+        "--mode",
+        "pages"
+      ],
+      "cwd": "frontend",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: npm run build -- --mode pages passed and compiled the updated responsive controls, rank treatments, and selected-row styling."
+      ]
+    },
+    {
+      "id": "scope-validation",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-11-01/PRSG-173.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: scripts/planning/validate_ticket.py accepted the PRSG-173 manifest and all five scoped paths."
+      ]
+    },
+    {
+      "id": "diff-check",
+      "kind": "command",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: git diff --check reported no whitespace errors for the complete ticket change set."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-173-D1",
+      "description": "Search and sort controls stay on a horizontal row on desktop/tablet and use available mobile width in two columns.",
+      "check_ids": [
+        "pages-build"
+      ],
+      "status": "done",
+      "evidence": [
+        "Controls use a non-wrapping horizontal flex row on desktop/tablet and two grid columns at mobile widths."
+      ]
+    },
+    {
+      "id": "PRSG-173-D2",
+      "description": "Selecting a month defaults rows to selected-month descending; manual sorts remain and deselection returns to source order.",
+      "check_ids": [
+        "pages-build"
+      ],
+      "status": "done",
+      "evidence": [
+        "Month selection sets return-desc; alphabetical and opposite-return sorts remain; deselect resets a return sort to source order."
+      ]
+    },
+    {
+      "id": "PRSG-173-D3",
+      "description": "Top/bottom five use rank-specific green/red gradients in ranking bars and heatmap name cells.",
+      "check_ids": [
+        "pages-build"
+      ],
+      "status": "done",
+      "evidence": [
+        "Rank maps style each top/bottom official sector name cell by position, and both ranking panels give ranks one through five distinct green/red gradient shades."
+      ]
+    },
+    {
+      "id": "PRSG-173-D4",
+      "description": "Selected row has an outline, tinted name cell, check marker, and retained aria-pressed state.",
+      "check_ids": [
+        "pages-build"
+      ],
+      "status": "done",
+      "evidence": [
+        "The selected row uses an outline, name-cell tint, and visible decorative check marker; the button continues to expose aria-pressed."
+      ]
+    },
+    {
+      "id": "PRSG-173-D5",
+      "description": "Pages build, scope validation, and whitespace check pass.",
+      "check_ids": [
+        "pages-build",
+        "scope-validation",
+        "diff-check"
+      ],
+      "status": "done",
+      "evidence": [
+        "Pages build, scope validation for all five scoped paths, and git diff --check passed."
+      ]
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

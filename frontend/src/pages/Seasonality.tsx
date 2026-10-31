@@ -122,7 +122,7 @@ function MonthRanking({ title, entries, tone, maxAbs }: { title: string; entries
       {entries.length ? (
         <ol>
           {entries.map(({ industry, value }, index) => (
-            <li key={industry.code}>
+            <li className={`seasonality-rank-row seasonality-rank-${index + 1}`} key={industry.code}>
               <span className="seasonality-rank-index">{index + 1}</span>
               <span className="seasonality-rank-detail">
                 <span className="seasonality-rank-name"><span aria-hidden="true">{industry.emoji}</span>{industry.name}</span>
@@ -320,6 +320,8 @@ export default function Seasonality() {
   const topSectors = sectorRankings.slice(0, Math.min(5, Math.ceil(sectorRankings.length / 2)));
   const bottomSectors = [...sectorRankings].slice(Math.max(topSectors.length, sectorRankings.length - 5)).reverse();
   const sectorRankMaxAbs = Math.max(0.01, ...sectorRankings.map(({ value }) => Math.abs(value)));
+  const topSectorRanks = new Map(topSectors.map(({ industry }, index) => [industry.code, index + 1]));
+  const bottomSectorRanks = new Map(bottomSectors.map(({ industry }, index) => [industry.code, index + 1]));
 
   const chartSeries = useMemo(() => buildSeries(selected, yearFilter), [selected, yearFilter]);
   const periodReturns = chartSeries
@@ -353,6 +355,7 @@ export default function Seasonality() {
       if (sectorSort === 'return-asc' || sectorSort === 'return-desc') setSectorSort('source');
     } else {
       setSelectedMonth(month);
+      setSectorSort('return-desc');
     }
   }
 
@@ -471,33 +474,42 @@ export default function Seasonality() {
               >{month}</button>
             ))}</div>
           </div>
-          {sortedHeatmap.map(({ industry, values }) => (
-            <button
-              type="button"
-              className={`seasonality-row seasonality-industry-row ${industry.code === selectedCode ? 'selected' : ''}`}
-              key={industry.code}
-              aria-pressed={industry.code === selectedCode}
-              onClick={() => setSelectedCode(industry.code)}
-            >
-              <span className="seasonality-name-column">
-                <span className="seasonality-industry-name"><span aria-hidden="true">{industry.emoji}</span>{industry.name}</span>
-                <span className="seasonality-examples">{industry.examples}</span>
-              </span>
-              <span className="seasonality-month-cells">
-                {values.map((value, index) => (
-                  <span
-                    key={MONTHS[index]}
-                    className="seasonality-cell"
-                    style={Number.isFinite(value) ? { backgroundColor: heatColor(value) } : undefined}
-                    title={Number.isFinite(value) ? `${industry.name} · ${MONTHS[index]} · ${formatReturn(value)}${yearFilter === 'all' ? ' monthly average' : ` in ${yearFilter}`}${industry.proxy ? yearFilter === 'all' ? ' · SEC-filed available-history average' : ` · Form N-PORT filed ${themeObservation(industry.code, yearFilter * 100 + index + 1)?.filedOn ?? 'date unavailable'}` : ''}` : `${industry.name} · ${MONTHS[index]} · no publicly reported observation`}
-                    aria-label={`${MONTHS[index]} ${Number.isFinite(value) ? formatReturn(value) : 'no data'}`}
-                  >
-                    {Number.isFinite(value) ? Number(value.toFixed(1)).toFixed(1) : '—'}
+          {sortedHeatmap.map(({ industry, values }) => {
+            const topRank = topSectorRanks.get(industry.code);
+            const bottomRank = bottomSectorRanks.get(industry.code);
+            const rankClass = topRank ? `rank-top-${topRank}` : bottomRank ? `rank-bottom-${bottomRank}` : '';
+            return (
+              <button
+                type="button"
+                className={`seasonality-row seasonality-industry-row ${industry.code === selectedCode ? 'selected' : ''} ${rankClass}`}
+                key={industry.code}
+                aria-pressed={industry.code === selectedCode}
+                onClick={() => setSelectedCode(industry.code)}
+              >
+                <span className="seasonality-name-column">
+                  <span className="seasonality-industry-name">
+                    <span className="seasonality-industry-emoji" aria-hidden="true">{industry.emoji}</span>
+                    <span className="seasonality-name-text">{industry.name}</span>
+                    {industry.code === selectedCode && <span className="seasonality-selected-check" aria-hidden="true">✓</span>}
                   </span>
-                ))}
-              </span>
-            </button>
-          ))}
+                  <span className="seasonality-examples">{industry.examples}</span>
+                </span>
+                <span className="seasonality-month-cells">
+                  {values.map((value, index) => (
+                    <span
+                      key={MONTHS[index]}
+                      className="seasonality-cell"
+                      style={Number.isFinite(value) ? { backgroundColor: heatColor(value) } : undefined}
+                      title={Number.isFinite(value) ? `${industry.name} · ${MONTHS[index]} · ${formatReturn(value)}${yearFilter === 'all' ? ' monthly average' : ` in ${yearFilter}`}${industry.proxy ? yearFilter === 'all' ? ' · SEC-filed available-history average' : ` · Form N-PORT filed ${themeObservation(industry.code, yearFilter * 100 + index + 1)?.filedOn ?? 'date unavailable'}` : ''}` : `${industry.name} · ${MONTHS[index]} · no publicly reported observation`}
+                      aria-label={`${MONTHS[index]} ${Number.isFinite(value) ? formatReturn(value) : 'no data'}`}
+                    >
+                      {Number.isFinite(value) ? Number(value.toFixed(1)).toFixed(1) : '—'}
+                    </span>
+                  ))}
+                </span>
+              </button>
+            );
+          })}
           {heatmap.length === 0 && <p className="seasonality-empty">No industries match that search.</p>}
         </div>
 
