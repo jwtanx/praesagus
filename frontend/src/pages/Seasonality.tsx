@@ -5,6 +5,7 @@ import './Seasonality.css';
 
 type Industry = { code: string; name: string; emoji: string; examples: string; searchTerms?: string; proxy?: boolean };
 type MonthlyRow = [number, ...number[]];
+type SectorSortMode = 'source' | 'name-asc' | 'name-desc' | 'return-asc' | 'return-desc';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const INDUSTRIES: Industry[] = [
@@ -107,9 +108,33 @@ function formatReturn(value: number) {
 
 function heatColor(value: number) {
   const intensity = Math.min(Math.abs(value) / SCALE, 1);
-  if (value > 0) return `rgba(46, 204, 136, ${0.12 + intensity * 0.55})`;
-  if (value < 0) return `rgba(255, 91, 105, ${0.12 + intensity * 0.55})`;
-  return 'rgba(174, 191, 212, 0.09)';
+  if (value > 0) return `rgba(102, 214, 164, ${0.12 + intensity * 0.55})`;
+  if (value < 0) return `rgba(255, 142, 142, ${0.12 + intensity * 0.55})`;
+  return 'rgba(165, 178, 194, 0.09)';
+}
+
+type RankedIndustry = { industry: Industry; value: number };
+
+function MonthRanking({ title, entries, tone, maxAbs }: { title: string; entries: RankedIndustry[]; tone: 'positive' | 'negative'; maxAbs: number }) {
+  return (
+    <section className={`seasonality-ranking seasonality-ranking-${tone}`} aria-label={title}>
+      <h4>{title}</h4>
+      {entries.length ? (
+        <ol>
+          {entries.map(({ industry, value }, index) => (
+            <li key={industry.code}>
+              <span className="seasonality-rank-index">{index + 1}</span>
+              <span className="seasonality-rank-detail">
+                <span className="seasonality-rank-name"><span aria-hidden="true">{industry.emoji}</span>{industry.name}</span>
+                <span className="seasonality-rank-track" aria-hidden="true"><i style={{ width: `${Math.max(8, Math.abs(value) / maxAbs * 100)}%` }} /></span>
+              </span>
+              <strong>{formatReturn(value)}</strong>
+            </li>
+          ))}
+        </ol>
+      ) : <p className="seasonality-ranking-empty">No official sector returns are available for this month and filter.</p>}
+    </section>
+  );
 }
 
 function buildSeries(industry: Industry, yearFilter: number | 'all') {
@@ -251,6 +276,8 @@ export default function Seasonality() {
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [yearFilter, setYearFilter] = useState<number | 'all'>('all');
   const [focusedYear, setFocusedYear] = useState<number | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+  const [sectorSort, setSectorSort] = useState<SectorSortMode>('source');
   const [selectedCode, setSelectedCode] = useState(INDUSTRIES[0].code);
   const [query, setQuery] = useState('');
   const selected = SERIES.find((industry) => industry.code === selectedCode) ?? INDUSTRIES[0];
@@ -266,6 +293,33 @@ export default function Seasonality() {
       return { industry, values };
     }).filter(({ industry }) => `${industry.name} ${industry.examples} ${industry.searchTerms ?? ''}`.toLowerCase().includes(query.trim().toLowerCase()));
   }, [yearFilter, query]);
+
+  const sortedHeatmap = useMemo(() => {
+    if (sectorSort === 'source') return heatmap;
+    return [...heatmap].sort((a, b) => {
+      if (sectorSort === 'name-asc' || sectorSort === 'name-desc') {
+        const order = a.industry.name.localeCompare(b.industry.name);
+        return sectorSort === 'name-asc' ? order : -order;
+      }
+      if (selectedMonth === null) return 0;
+      const left = a.values[selectedMonth];
+      const right = b.values[selectedMonth];
+      if (!Number.isFinite(left)) return Number.isFinite(right) ? 1 : 0;
+      if (!Number.isFinite(right)) return -1;
+      return sectorSort === 'return-asc' ? left - right : right - left;
+    });
+  }, [heatmap, sectorSort, selectedMonth]);
+
+  const sectorRankings = useMemo(() => {
+    if (selectedMonth === null) return [];
+    return heatmap
+      .filter(({ industry, values }) => !industry.proxy && industry.code !== MARKET.code && Number.isFinite(values[selectedMonth]))
+      .map(({ industry, values }) => ({ industry, value: values[selectedMonth] }))
+      .sort((a, b) => b.value - a.value);
+  }, [heatmap, selectedMonth]);
+  const topSectors = sectorRankings.slice(0, Math.min(5, Math.ceil(sectorRankings.length / 2)));
+  const bottomSectors = [...sectorRankings].slice(Math.max(topSectors.length, sectorRankings.length - 5)).reverse();
+  const sectorRankMaxAbs = Math.max(0.01, ...sectorRankings.map(({ value }) => Math.abs(value)));
 
   const chartSeries = useMemo(() => buildSeries(selected, yearFilter), [selected, yearFilter]);
   const periodReturns = chartSeries
@@ -293,6 +347,15 @@ export default function Seasonality() {
     setFocusedYear((current) => current === year ? null : year);
   }
 
+  function toggleMonth(month: number) {
+    if (selectedMonth === month) {
+      setSelectedMonth(null);
+      if (sectorSort === 'return-asc' || sectorSort === 'return-desc') setSectorSort('source');
+    } else {
+      setSelectedMonth(month);
+    }
+  }
+
   return (
     <div className="seasonality-page">
       {import.meta.env.MODE === 'pages' && (
@@ -312,6 +375,7 @@ export default function Seasonality() {
             <a href="../daily-market-brief/">Reports</a>
             <a href="../daily-market-brief/?view=technical">Technical analysis</a>
             <a href="../daily-market-brief/?view=tickers">Ticker forecasts</a>
+            <a href="./" aria-current="page">Seasonality</a>
           </div>
         </nav>
       )}
@@ -357,19 +421,57 @@ export default function Seasonality() {
             <h3 id="seasonality-heatmap-title">Monthly return heatmap</h3>
             <p>{yearFilter === 'all' ? 'Official series average across 1996–2025; thematic ETF proxies use only their SEC-filed available history.' : yearFilter === 2026 ? 'Official industries and market run through September. Thematic proxy rows stop at their latest public SEC filing; blank cells are unavailable.' : `Monthly returns during ${yearFilter}; blank cells indicate no reported observation for that series.`}</p>
           </div>
-          <label className="seasonality-search">
-            <span className="sr-only">Search industries, market, or example companies</span>
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find industry, market, or company" />
-          </label>
+          <div className="seasonality-table-controls">
+            <label className="seasonality-search">
+              <span className="sr-only">Search industries, market, or example companies</span>
+              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find industry, market, or company" />
+            </label>
+            <label className="seasonality-sort-control">
+              <span>Sort sectors</span>
+              <select value={sectorSort} onChange={(event) => setSectorSort(event.target.value as SectorSortMode)}>
+                <option value="source">Original order</option>
+                <option value="name-asc">Name · A to Z</option>
+                <option value="name-desc">Name · Z to A</option>
+                <option value="return-desc" disabled={selectedMonth === null}>Month return · high to low</option>
+                <option value="return-asc" disabled={selectedMonth === null}>Month return · low to high</option>
+              </select>
+            </label>
+          </div>
         </div>
-        <p className="seasonality-scroll-hint">Swipe the monthly table sideways to keep month headers and returns aligned.</p>
+        <p className="seasonality-scroll-hint">Swipe the monthly table sideways to keep month headers and returns aligned; select a month to rank sectors.</p>
+
+        {selectedMonth !== null && (
+          <section className="seasonality-month-insights" aria-labelledby="seasonality-month-insights-title" aria-live="polite">
+            <div className="seasonality-month-insights-heading">
+              <div>
+                <p className="seasonality-kicker">{MONTHS[selectedMonth]} · {yearFilter === 'all' ? '1996–2025 monthly average' : yearFilter}</p>
+                <h4 id="seasonality-month-insights-title">Sector leaders and laggards</h4>
+                <p>Top and bottom five official industries among {heatmap.filter(({ industry }) => !industry.proxy && industry.code !== MARKET.code).length} sectors matching your search. Market and ETF proxy rows stay in the heatmap but are excluded from sector rankings.</p>
+              </div>
+            </div>
+            <div className="seasonality-rankings">
+              <MonthRanking title={`Top ${topSectors.length} sectors`} entries={topSectors} tone="positive" maxAbs={sectorRankMaxAbs} />
+              <MonthRanking title={`Bottom ${bottomSectors.length} sectors`} entries={bottomSectors} tone="negative" maxAbs={sectorRankMaxAbs} />
+            </div>
+          </section>
+        )}
 
         <div className="seasonality-heatmap" role="group" aria-label="Select a return series to inspect its monthly chart">
-          <div className="seasonality-row seasonality-month-header" aria-hidden="true">
+          <div className="seasonality-row seasonality-month-header">
             <span className="seasonality-name-column">Industry / market / ETF proxy · series source</span>
-            <div className="seasonality-month-cells">{MONTHS.map((month) => <span key={month} title={month}>{month}</span>)}</div>
+            <div className="seasonality-month-cells">{MONTHS.map((month, index) => (
+              <button
+                type="button"
+                key={month}
+                className={`seasonality-month-button ${selectedMonth === index ? 'selected' : ''}`}
+                aria-pressed={selectedMonth === index}
+                aria-label={`Show top and bottom sectors for ${month}`}
+                title={`Click to rank sectors for ${month}`}
+                onClick={() => toggleMonth(index)}
+              >{month}</button>
+            ))}</div>
           </div>
-          {heatmap.map(({ industry, values }) => (
+          {sortedHeatmap.map(({ industry, values }) => (
             <button
               type="button"
               className={`seasonality-row seasonality-industry-row ${industry.code === selectedCode ? 'selected' : ''}`}

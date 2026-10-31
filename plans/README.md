@@ -39,6 +39,7 @@ This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATI
 | [PRSG-167](2026-10-31/PRSG-167-us-industry-seasonality.md) | feature | frontend, financial-data, market-research | Engineer | P1 | M: 3–6 days | high |
 | [PRSG-168](2026-11-01/PRSG-168-seasonality-mobile-and-current-year.md) | bug | frontend, financial-data | Engineer | P2 | XS: 0.5–1.5 days | medium-high |
 | [PRSG-171](2026-11-01/PRSG-171-seasonality-site-navigation.md) | feature | frontend | Engineer | P2 | XS: 0.25–0.45 day | medium |
+| [PRSG-172](2026-11-01/PRSG-172-cross-page-seasonality-experience.md) | feature | frontend, market-research | Engineer | P2 | M: 1–2 days | high |
 
 ## Ticket convention and harness
 
