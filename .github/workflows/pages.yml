@@ -57,6 +57,17 @@ jobs:
             --publication-evidence-dir "$PUBLICATION_EVIDENCE_DIR"
       - name: Build committed ticket audit
         run: python3 scripts/planning/build_ticket_audit.py
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Build the static seasonality explorer
+        working-directory: frontend
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build -- --mode pages
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload reports and templates

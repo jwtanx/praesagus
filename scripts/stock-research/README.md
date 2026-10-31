@@ -17,6 +17,39 @@ The demo needs no credentials, provider, saved model or fitting. It uses authore
 
 Default output is `~/Documents/stock-research-data/YYYY-MM-DD_HHMMSS/`. `demo.py --output-dir /absolute/private/parent` selects another parent. A timestamp collision fails without overwriting. Store actual data outside Git. The optional repository-root `stock-research-data/` parent is entirely ignored; any other in-repository parent must also be entirely Git-ignored and outside code directories. Generated workbooks, data and models never belong in examples or commits.
 
+## Historical seasonality data sync
+
+The interactive seasonality page uses the official French 49-industry monthly returns and broad-market return (`Mkt-RF + RF`), plus five explicitly labeled thematic ETF proxies (AIQ, ROBO, QTUM, NLR and ICLN) from SEC Form N-PORT Item B.5. These are separate static frontend data files; they are not inputs to the stock-price prediction model or its generated CSVs. Run the sync only when you want to refresh the page's source data:
+
+```sh
+# Default incremental update: add newly published missing months through this month.
+python3 scripts/sector-seasonality/sync_seasonality.py
+
+# Only fill one missing calendar month, if the sources have published it.
+python3 scripts/sector-seasonality/sync_seasonality.py --month 2026-10
+
+# Re-sync the requested year forward, applying source revisions as well as additions.
+python3 scripts/sector-seasonality/sync_seasonality.py --start-year 2020
+
+# Re-sync a rolling window including this year and the previous four years.
+python3 scripts/sector-seasonality/sync_seasonality.py --back-years 5
+
+# From a chosen year, fill missing months without replacing data already stored.
+python3 scripts/sector-seasonality/sync_seasonality.py --start-year 2020 --missing-only
+```
+
+The default keeps existing monthly observations unchanged, adds only missing official industry/market months, and fetches SEC filing XML only for accessions not already recorded. `--month` narrows insertion to that month; for SEC it fetches only filings with report periods spanning that month (the filed return table carries up to three months). `--start-year` or `--back-years` re-syncs the selected window and can apply later filing/source revisions; adding `--missing-only` preserves existing values and fills gaps only. Months later than the current Asia/Kuala_Lumpur calendar month are excluded. A requested month with no new observation is reported as already stored or not yet published; the command never estimates or fills a return.
+
+Sources: [French 49 Industry Portfolios archive](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/49_Industry_Portfolios_CSV.zip), [French market factors archive](https://mba.tuck.dartmouth.edu/pages/faculty/Ken.French/ftp/F-F_Research_Data_Factors_CSV.zip), [SEC Form N-PORT dataset and documentation](https://www.sec.gov/data-research/sec-markets-data/form-n-port-data-sets). The proxy monthly values are fund returns filed with the SEC; the ETF tickers represent themes and are not official theme indexes.
+
+Both French ZIP endpoints provide `ETag` and `Last-Modified` validators. Normal runs send conditional requests, so unchanged archives return HTTP 304 and transfer no archive body. If the publisher changes an archive, its endpoint supplies a complete ZIP rather than a month-specific delta: that changed file must be downloaded, but the sync merges only the requested missing/re-sync window and preserves older stored months. SEC lookups scan filing-index metadata but skip previously downloaded filing XML in the default mode; explicit range re-sync downloads only filings whose report periods overlap that window. `--industry-json PATH` and `--etf-json PATH` can direct updates to another copy. The default paths are tracked frontend datasets; review the diff and rebuild the page before publishing:
+
+```sh
+cd frontend && npm run build -- --mode pages
+```
+
+Run `python3 scripts/sector-seasonality/sync_seasonality.py --help` for options. No credentials, paid data vendor, scheduler or model training is used. Keep the distinction between official industry/market indexes and shorter-history fund proxies when interpreting the seasonal patterns.
+
 ## Private setup and initial history
 
 Copy `config.example.toml` to your private configuration location. The provider request/page/row settings are local budgets, not verified entitlements or provider quotas. No paid-access or trading changes are made.

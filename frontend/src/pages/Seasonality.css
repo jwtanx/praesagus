@@ -1,0 +1,92 @@
+.seasonality-static { width: min(100%, 1680px); margin: 0 auto; padding: clamp(18px, 3vw, 40px); }
+.seasonality-page { display: grid; gap: 20px; min-width: 0; }
+.seasonality-header { display: flex; justify-content: space-between; align-items: end; gap: 20px; }
+.seasonality-header h2 { margin: 4px 0 8px; font-size: clamp(1.8rem, 4vw, 2.5rem); }
+.seasonality-header p { margin: 0; color: #aebdd1; line-height: 1.5; }
+.seasonality-kicker { color: #8ab6ff !important; font-size: .76rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.seasonality-period-control { display: grid; gap: 7px; width: min(350px, 100%); color: #b8c4d8; font-size: .8rem; }
+.seasonality-period-readout { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.seasonality-period-readout output { color: #eff5ff; font-weight: 650; text-align: right; }
+.seasonality-period-control input[type="range"] { width: 100%; accent-color: #6da8ff; cursor: pointer; }
+.seasonality-slider-labels { display: flex; justify-content: space-between; color: #788ba4; font-size: .65rem; }
+.seasonality-search input { min-height: 42px; border: 1px solid rgba(255,255,255,.14); border-radius: 11px; padding: 8px 12px; background: #111b2d; color: #eff5ff; }
+.seasonality-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.seasonality-stats > div, .seasonality-panel, .seasonality-method { border: 1px solid rgba(255,255,255,.09); border-radius: 16px; background: rgba(255,255,255,.035); }
+.seasonality-stats > div { display: grid; gap: 4px; padding: 14px 16px; }
+.seasonality-stats strong { font-size: 1.2rem; }
+.seasonality-stats span { color: #9fb0c7; font-size: .78rem; }
+.seasonality-panel { min-width: 0; padding: 18px; }
+.seasonality-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.seasonality-section-heading h3 { margin: 0 0 5px; }
+.seasonality-section-heading p, .seasonality-chart-caption { margin: 0; color: #9fb0c7; font-size: .87rem; line-height: 1.5; }
+.seasonality-search input { width: min(270px, 100%); }
+.seasonality-heatmap { overflow-x: auto; }
+.seasonality-row { display: grid; grid-template-columns: 220px minmax(650px, 1fr); align-items: center; gap: 8px; width: 100%; }
+.seasonality-month-header { min-height: 34px; color: #9fb0c7; font-size: .72rem; }
+.seasonality-name-column { display: grid; gap: 3px; text-align: left; min-width: 0; }
+.seasonality-month-cells { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; }
+.seasonality-month-cells > span { text-align: center; }
+.seasonality-industry-row { min-height: 49px; padding: 5px 0; border: 0; border-bottom: 1px solid rgba(255,255,255,.055); background: transparent; color: #e6edf7; font: inherit; cursor: pointer; text-align: left; }
+.seasonality-industry-row:hover, .seasonality-industry-row:focus-visible { background: rgba(138,182,255,.07); outline: none; }
+.seasonality-industry-row.selected { background: rgba(60,130,255,.12); box-shadow: inset 3px 0 #69a4ff; }
+.seasonality-industry-name { display: flex; align-items: center; gap: 7px; font-weight: 650; font-size: .85rem; }
+.seasonality-examples { padding-left: 27px; overflow: hidden; color: #8294ab; font-size: .68rem; text-overflow: ellipsis; white-space: nowrap; }
+.seasonality-cell { display: block; padding: 6px 1px; border-radius: 5px; text-align: center; font-size: .7rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.seasonality-scale { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 14px; color: #9fb0c7; font-size: .7rem; }
+.seasonality-scale i { width: 18px; height: 12px; border-radius: 3px; }
+.scale-negative { background: rgba(255,91,105,.67); }
+.scale-neutral { background: rgba(174,191,212,.09); }
+.scale-positive { background: rgba(46,204,136,.67); }
+.seasonality-empty { padding: 16px; color: #9fb0c7; }
+.seasonality-chart-panel { padding-bottom: 12px; }
+.seasonality-average-badge { display: flex; gap: 10px; align-items: center; padding: 9px 13px; border: 1px solid rgba(138,182,255,.18); border-radius: 12px; background: rgba(60,130,255,.08); }
+.seasonality-average-badge strong { font-size: 1.2rem; }
+.seasonality-average-badge span { color: #9fb0c7; font-size: .7rem; line-height: 1.4; }
+.seasonality-illustrative { color: #72849c; }
+.seasonality-chart-caption { margin: 4px 0 10px; }
+.seasonality-chart-wrap { min-width: 0; }
+.seasonality-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.chart-gridline { stroke: rgba(255,255,255,.09); stroke-width: 1; }
+.chart-zero { stroke: rgba(255,255,255,.38); stroke-width: 1.2; }
+.chart-axis-label { fill: #91a2b9; font-size: 11px; }
+.seasonality-year-legend { display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 4px 0 0 52px; }
+.seasonality-year-legend button { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 3px 5px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: #9fb0c7; font: inherit; font-size: .68rem; font-variant-numeric: tabular-nums; cursor: pointer; transition: opacity .15s ease, background-color .15s ease, border-color .15s ease; }
+.seasonality-year-legend button:hover { background: rgba(138,182,255,.09); }
+.seasonality-year-legend button[aria-pressed="true"] { border-color: rgba(138,182,255,.35); background: rgba(60,130,255,.14); color: #eef4fb; }
+.seasonality-year-legend button:focus-visible { outline: 2px solid #8ab6ff; outline-offset: 2px; }
+.seasonality-year-legend button.seasonality-year-muted { opacity: .38; }
+.seasonality-year-legend i { width: 9px; height: 3px; border-radius: 3px; }
+.chart-month-hit { fill: transparent; cursor: help; pointer-events: all; }
+.chart-month-hit:focus-visible { stroke: #fff; stroke-width: 2; }
+.seasonality-method { padding: 14px 16px; color: #9fb0c7; line-height: 1.65; }
+.seasonality-method summary { color: #e6edf7; cursor: pointer; font-weight: 650; }
+.seasonality-method p { margin: 12px 0 0; font-size: .82rem; }
+.seasonality-method a { color: #8ab6ff; text-decoration: underline; }
+.seasonality-source-note { color: #8294ab; }
+.seasonality-disclaimer { margin: -8px 0 4px; color: #8294ab; font-size: .75rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+@media (max-width: 1000px) {
+  .seasonality-row { grid-template-columns: 190px minmax(600px, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .seasonality-static { padding: 16px 12px; }
+  .seasonality-header { align-items: stretch; flex-direction: column; }
+  .seasonality-year-select { min-width: 0; }
+  .seasonality-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .seasonality-panel { padding: 13px; }
+  .seasonality-section-heading { align-items: stretch; flex-direction: column; }
+  .seasonality-search input { width: 100%; }
+  .seasonality-row { display: block; min-width: 0; }
+  .seasonality-month-header { display: grid; gap: 6px; padding: 4px 0 7px; }
+  .seasonality-name-column { margin-bottom: 7px; }
+  .seasonality-month-header .seasonality-name-column { margin-bottom: 0; }
+  .seasonality-month-cells { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
+  .seasonality-industry-row { padding: 10px 5px; }
+  .seasonality-industry-row.selected { box-shadow: inset 3px 0 #69a4ff; }
+  .seasonality-cell { min-width: 0; padding: 6px 0; font-size: clamp(.48rem, 2.3vw, .68rem); }
+  .seasonality-year-legend { gap: 4px 4px; padding-left: 0; }
+  .seasonality-year-legend button { min-height: 36px; padding: 4px 5px; }
+  .seasonality-chart { min-height: 190px; }
+}

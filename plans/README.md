@@ -32,7 +32,11 @@ New research/feasibility tickets use `spike` and Lead/Engineer ownership with te
 
 The inbox wins first because `backend/financial_services.py` and `frontend/src/pages/Financial.tsx` already expose the four datasets separately. New joins and presentation can be tested offline. Freshness instrumentation follows so users can judge dataset coverage. The forecast evaluator in `harness/forecast_review.py` is implemented separately; the broader answer harness YAML remains design-only.
 
-This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATION_ROADMAP.md). It does not supersede current implementation evidence or authorize all backlog items to run at once. Only PRSG-1 is assigned now. Keep provider integrations, persistent Moomoo collection, model-backed answers, and trade execution outside these MVPs.
+This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATION_ROADMAP.md). It does not supersede current implementation evidence or authorize all backlog items to run at once. PRSG-1 and user-requested PRSG-167 are active; the other backlog entries remain planned. Keep provider integrations, persistent Moomoo collection, model-backed answers, and trade execution outside these MVPs.
+
+| Ticket | Type | Modules | Owner | Priority | Effort | Impact |
+|---|---|---|---|---|---|---|
+| [PRSG-167](2026-10-31/PRSG-167-us-industry-seasonality.md) | feature | frontend, financial-data, market-research | Engineer | P1 | M: 3–6 days | high |
 
 ## Ticket convention and harness
 

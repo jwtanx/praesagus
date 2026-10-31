@@ -1,0 +1,381 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-167",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "frontend",
+      "financial-data",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "M",
+    "effort_person_days": {
+      "low": 3,
+      "high": 6
+    },
+    "impact": "high",
+    "effort_rationale": "Expanded to 49 official industries and the market, five SEC-filed thematic ETF proxies, and an incremental source sync with bounded range re-sync controls and user documentation."
+  },
+  "created_on": "2026-10-31",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-10-31/PRSG-167-us-industry-seasonality.md",
+  "objective": "Expand the responsive U.S. industry seasonality explorer to 49 official industry portfolios plus the market benchmark, add clearly sourced short-history thematic ETF/index proxies, include the latest available 2026 months, and publish through the GitHub Pages homepage. Add an on-demand incremental sync command for new/missing months and ranged re-syncs.",
+  "status": "in_progress",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "78b2b4915aca8ed8e68c71cb1f66af56d61d010d",
+  "allowed_paths": [
+    "frontend/src/App.tsx",
+    "frontend/src/components/Layout.tsx",
+    "frontend/src/index.css",
+    "frontend/src/pages/Seasonality.tsx",
+    "frontend/src/pages/Seasonality.css",
+    "frontend/src/data/industry-seasonality.json",
+    "scripts/sector-seasonality/build_dataset.py",
+    "tests/test_sector_seasonality_dataset.py",
+    "plans/README.md",
+    "plans/2026-10-31/PRSG-167-us-industry-seasonality.md",
+    "plans/2026-10-31/PRSG-167.harness.json",
+    "frontend/vite.config.ts",
+    "frontend/package-lock.json",
+    "artifacts/index.html",
+    ".github/workflows/pages.yml",
+    "frontend/index.html",
+    "frontend/src/data/etf-nport-returns.json",
+    "scripts/sector-seasonality/fetch_sec_etf_returns.py",
+    "tests/test_sec_etf_returns.py",
+    "scripts/sector-seasonality/sync_seasonality.py",
+    "tests/test_sector_seasonality_sync.py",
+    "scripts/stock-research/README.md"
+  ],
+  "protected_paths": [
+    "backend/",
+    "connectors/",
+    "ingest/",
+    "agent-operations/",
+    "skills/",
+    "infra/",
+    "artifacts/daily-market-brief/",
+    "artifacts/tickets/",
+    ".github/workflows/ci.yml"
+  ],
+  "checks": [
+    {
+      "id": "dataset",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "tests.test_sector_seasonality_dataset"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: Rebuilt the 49-industry panel from the official September 2026 archive (SHA-256 d1a3b0b9896e1e633ed2aa85e24ca144d7998f8ab2ff344e2379383ebeb7b836) plus the official monthly factor archive (SHA-256 b03d39e4bb253dda0f14893db3b78e64b40b8d6549a0fc0fd4111dae84c98618). Verified 369 contiguous month rows (1996-01 through 2026-09), 49 industry columns plus market, complete historical months and Mkt-RF + RF arithmetic. October is not present in the current official release.",
+        "2026-11-01: Rebuilt from the pinned official ZIP files and compared byte-for-byte with the committed source dataset; output matched exactly.",
+        "2026-11-01: Dynamic parser fixture extended the source archive beyond the pinned September 2026 endpoint and verified October ingestion and market return aggregation."
+      ]
+    },
+    {
+      "id": "frontend-build",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "frontend",
+      "status": "passed",
+      "evidence": [
+        "2026-10-31: npm run build (frontend/): Vite production build passed. Local browser inspection confirmed the /seasonality navigation item, all-years default and 30 year labels. Slider moved to 2025 and changed the page to the 2025 monthly rows and one chart line; selecting Beer & liquor updated the selected chart. Desktop screenshot showed all 12 months. Mobile-width screenshot review remains pending.",
+        "2026-11-01: npm ci --no-audit --no-fund succeeded; npm run build passed with Vite 5.4.21 after the market series and search behavior were added.",
+        "2026-11-01: Standard and Pages builds passed after expanding to the official 49-industry panel and adding the partial 2026 selector.",
+        "2026-11-01: Rebuilt the standard Vite app after adding the five SEC-backed proxies; production build passed (one existing chunk-size advisory, no build errors)."
+      ]
+    },
+    {
+      "id": "visual-review",
+      "kind": "manual",
+      "description": "Review desktop navigation, all-years/default and year-specific states, row selection, chart values and source/method labels.",
+      "status": "passed",
+      "evidence": [
+        "2026-10-31: Local browser inspection covered navigation, all-years heatmap, slider 2025 state, industry selection, 30/1 chart series and source/method labels. Desktop screenshot showed all 12 month columns."
+      ]
+    },
+    {
+      "id": "mobile-review",
+      "kind": "manual",
+      "description": "Inspect page and navigation at phone viewport widths, including full heatmap month values and chart usability.",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: At 390\u00d7844 the heatmap used its contained horizontal scroller and chart stayed within viewport; the full set of 55 rows remained available without page-level horizontal overflow."
+      ]
+    },
+    {
+      "id": "chart-interaction",
+      "kind": "manual",
+      "description": "Verify clicking a chart year fades other years, clicking it again restores all years, and month points expose the return and comparison metrics.",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: All-years chart rendered one line per available year and keyboard-focusable month points expose return and monthly-average comparison. The existing year legend buttons toggle focus and restore all lines; the same interaction was inspected after the current 49+market+proxy integration."
+      ]
+    },
+    {
+      "id": "thematic-sources",
+      "kind": "manual",
+      "description": "Use authoritative, reusable market total-return time series for AI, robotics, quantum, nuclear, and renewable proxies; preserve each proxy definition, source, start date, period, and data rights.",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: Added AIQ, ROBO, QTUM, NLR, and ICLN as explicitly labeled theme proxies using SEC EDGAR Form N-PORT Item B.5 fund-reported class total returns. Each series has its own start/end dates and links exact filings, accession IDs, reported fields/values, and source hashes; no inferred or Yahoo data is used. Issuer pages identify fund strategy; these are not uniform official industry classifications."
+      ]
+    },
+    {
+      "id": "2026-coverage",
+      "kind": "manual",
+      "description": "Include verified 2026 industry and market months through October, with later months absent and clearly labeled.",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: Official French industry and market histories are available through September 2026; SEC proxy histories end between June and August 2026. All October cells are blank because none of the checked public source records contains October return observations."
+      ]
+    },
+    {
+      "id": "human-review",
+      "kind": "manual",
+      "description": "Human reviews the full diff and decides whether to accept the feature before commit or publication.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "scope-validation",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-10-31/PRSG-167.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: scripts/planning/validate_ticket.py accepted the manifest and all 22 changed ticket paths. The stock-research guide is an explicit exact-file exception; unrelated schedule/skill and draft-ticket changes remain outside scope."
+      ]
+    },
+    {
+      "id": "pages-build",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build",
+        "--",
+        "--mode",
+        "pages"
+      ],
+      "cwd": "frontend",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: npm run build -- --mode pages succeeded and produced the standalone GitHub Pages app under artifacts/seasonality with the configured project asset path."
+      ]
+    },
+    {
+      "id": "desktop-review",
+      "kind": "manual",
+      "description": "Inspect the homepage tile and static seasonality page, select the market series, and verify the all-years chart.",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: Local browser inspection of /seasonality showed the all-years default, 49 industries + market + five sourced proxies, 12 monthly cells, official 369-month range and the selected-series chart. AI, robotics, quantum, nuclear and renewable rows display ETF tickers and their actual SEC coverage windows."
+      ]
+    },
+    {
+      "id": "pages-publish",
+      "kind": "manual",
+      "description": "After required human review and push, verify the Pages workflow succeeded and the public homepage tile and seasonality section load.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "sec-proxy-data",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "tests.test_sec_etf_returns"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: Two deterministic SEC extraction tests passed. Verified N-PORT rtn1/rtn2/rtn3 align to report month minus two/month minus one/report month, class/series validation, contiguous filing-linked monthly histories, exact SEC filing URLs, accession IDs, and SHA-256 metadata for AIQ (2019-09\u20132026-08), ROBO (2019-08\u20132026-07), QTUM (2020-01\u20132026-06), NLR (2019-07\u20132026-06), and ICLN (2019-07\u20132026-07).",
+        "2026-11-01: Incremental-fetch regression test confirms existing SEC accessions do not trigger filing XML downloads."
+      ]
+    },
+    {
+      "id": "seasonality-sync",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "tests.test_sector_seasonality_sync"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: Five deterministic sync tests passed for conditional HTTP 304 behavior, month filtering, default missing-only merges, range overwrite versus --missing-only, and calendar-month argument validation. A live source run against temporary JSON copies verified both official French archive downloads, SEC known-accession skips, no new values at the current source as-of date, and repeat-run HTTP 304 responses with no archive payload."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-167-D1",
+      "description": "Reproducibly extract the official 49 value-weighted industry portfolio series and market benchmark for 1996-01 through the latest available month, with provenance.",
+      "check_ids": [
+        "dataset"
+      ],
+      "status": "done",
+      "evidence": [
+        "Rebuilt and validated 369 contiguous official monthly observations across 49 industries through September 2026; source archives are pinned by SHA-256."
+      ]
+    },
+    {
+      "id": "PRSG-167-D2",
+      "description": "Reach the page through Praesagus navigation and inspect all-years aggregation and all year selections.",
+      "check_ids": [
+        "frontend-build",
+        "visual-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Production build passed; local browser showed the navigation route and default all-years heatmap. Slider moved to 2025 and displayed the single-year observations and chart."
+      ]
+    },
+    {
+      "id": "PRSG-167-D3",
+      "description": "Select an industry row and verify year-specific and all-years chart series.",
+      "check_ids": [
+        "visual-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Local browser selection changed the industry heading/series; all-years chart exposed 30 year labels and the 2025 chart one year label."
+      ]
+    },
+    {
+      "id": "PRSG-167-D4",
+      "description": "Show source, method, units, uncertainty and illustrative company examples accurately.",
+      "check_ids": [
+        "visual-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Inspected page copy for Fama/French source, SIC industries, total return method, monthly percent values, 1996\u20132025 mean, revision caveat, illustrative example limitation and no-signal disclaimer."
+      ]
+    },
+    {
+      "id": "PRSG-167-D5",
+      "description": "Extract and align the official market benchmark as Mkt-RF + RF; expose it as an interactive table row and chart series.",
+      "check_ids": [
+        "dataset",
+        "frontend-build",
+        "desktop-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "The pinned Fama/French monthly factor archive parsed to 360 complete market returns aligned by YYYYMM; exact endpoint values and Mkt-RF + RF arithmetic passed focused tests. Local interaction changed selection to Overall U.S. market and rendered 30 annual chart lines."
+      ]
+    },
+    {
+      "id": "PRSG-167-D6",
+      "description": "Create a Pages-mode standalone build and direct homepage tile, and include both in the existing Pages workflow.",
+      "check_ids": [
+        "pages-build",
+        "desktop-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "The Pages-mode static bundle was generated in artifacts/seasonality with project-path asset URLs. The homepage tile linked directly to it in a local static Pages-path preview. The public Pages workflow has not run yet."
+      ]
+    },
+    {
+      "id": "PRSG-167-D7",
+      "description": "Verify responsive layout and focused tests/builds in frontend and GitHub Pages modes.",
+      "check_ids": [
+        "dataset",
+        "frontend-build",
+        "pages-build",
+        "mobile-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Focused dataset and SEC proxy tests pass; standard and Pages Vite builds pass; local responsive and interaction review recorded."
+      ]
+    },
+    {
+      "id": "PRSG-167-D9",
+      "description": "Select a chart year to emphasize it and fade the rest, toggle it off by selecting it again, and inspect monthly point return statistics.",
+      "check_ids": [
+        "chart-interaction"
+      ],
+      "status": "done",
+      "evidence": [
+        "Local Pages preview verified focused and restored chart states and exact monthly return, 30-year average, and percentage-point difference in each point label/title."
+      ]
+    },
+    {
+      "id": "PRSG-167-D10",
+      "description": "Add official semiconductor and software industry series plus AI, robotics, quantum, nuclear, and renewable theme proxies, each with explicit source, method and coverage dates.",
+      "check_ids": [
+        "dataset",
+        "thematic-sources"
+      ],
+      "status": "done",
+      "evidence": [
+        "The French 49-industry series includes official Chips/Semiconductors and Softw/Software portfolios. AI, robotics, quantum, nuclear and renewable rows use the five source-linked SEC filing series described by the thematic-sources check.",
+        "Automated SEC proxy test validates the five source-linked series and exact coverage windows."
+      ]
+    },
+    {
+      "id": "PRSG-167-D11",
+      "description": "Show official and proxy 2026 observations only through each source\u2019s latest verified month; leave October onward blank until published by the source.",
+      "check_ids": [
+        "2026-coverage"
+      ],
+      "status": "done",
+      "evidence": [
+        "Industry/market data ends September 2026; SEC fund proxies end June\u2013August 2026. October is unavailable in all selected sources as of the retrieval date."
+      ]
+    },
+    {
+      "id": "PRSG-167-D8",
+      "description": "Complete independent human scope/visual review, then verify the public Pages deployment before accepting delivery.",
+      "check_ids": [
+        "scope-validation",
+        "human-review",
+        "pages-publish"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-167-D12",
+      "description": "Provide an on-demand seasonality sync for market, industry and five theme series; default to new missing months, support a selected month and start-year/rolling-year re-sync with missing-only behavior, retain source provenance, and document use beside the stock-research CSV generation guide.",
+      "check_ids": [
+        "dataset",
+        "sec-proxy-data",
+        "seasonality-sync",
+        "scope-validation"
+      ],
+      "status": "done",
+      "evidence": [
+        "The new sync command uses conditional HTTP requests for the two French monthly archives, skips already captured SEC filing XML by accession, filters one-month or range operations, and merges only the chosen missing/re-sync window. The stock-research README explains commands, cadence, source limitations and the separation from prediction CSV generation."
+      ]
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

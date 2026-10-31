@@ -333,7 +333,8 @@ a {
 
 @media (max-width: 640px) {
   .content-area { padding: 20px; }
-  .nav-menu, .financial-grid, .financial-stats, .moomoo-results { grid-template-columns: 1fr; }
+  .nav-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .financial-grid, .financial-stats, .moomoo-results { grid-template-columns: 1fr; }
   .financial-filters { flex-direction: column; }
   .moomoo-controls { align-items: stretch; flex-direction: column; }
   .moomoo-controls input { width: 100%; }
