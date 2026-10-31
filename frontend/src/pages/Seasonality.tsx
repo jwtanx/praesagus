@@ -248,6 +248,7 @@ function SeasonalityChart({
 }
 
 export default function Seasonality() {
+  const [navigationOpen, setNavigationOpen] = useState(false);
   const [yearFilter, setYearFilter] = useState<number | 'all'>('all');
   const [focusedYear, setFocusedYear] = useState<number | null>(null);
   const [selectedCode, setSelectedCode] = useState(INDUSTRIES[0].code);
@@ -294,6 +295,26 @@ export default function Seasonality() {
 
   return (
     <div className="seasonality-page">
+      {import.meta.env.MODE === 'pages' && (
+        <nav className="seasonality-site-nav" aria-label="Main navigation">
+          <a className="seasonality-site-brand" href="../">PRAESAGUS</a>
+          <button
+            className="seasonality-menu-toggle"
+            type="button"
+            aria-expanded={navigationOpen}
+            aria-controls="seasonality-nav-links"
+            onClick={() => setNavigationOpen((open) => !open)}
+          >
+            ☰ Menu
+          </button>
+          <div id="seasonality-nav-links" className={navigationOpen ? 'seasonality-nav-links open' : 'seasonality-nav-links'}>
+            <a href="../">Home</a>
+            <a href="../daily-market-brief/">Reports</a>
+            <a href="../daily-market-brief/?view=technical">Technical analysis</a>
+            <a href="../daily-market-brief/?view=tickers">Ticker forecasts</a>
+          </div>
+        </nav>
+      )}
       <header className="seasonality-header">
         <div>
           <p className="seasonality-kicker">Historical patterns · U.S. equities</p>

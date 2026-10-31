@@ -1,5 +1,11 @@
 .seasonality-static { width: min(100%, 1680px); margin: 0 auto; padding: clamp(18px, 3vw, 40px); }
 .seasonality-page { display: grid; gap: 20px; min-width: 0; }
+.seasonality-site-nav { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; background: rgba(12,17,24,.96); backdrop-filter: blur(14px); }
+.seasonality-site-brand { color: #e8eef5; font-size: 1.05rem; font-weight: 800; letter-spacing: .02em; text-decoration: none; }
+.seasonality-nav-links { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.seasonality-nav-links a { padding: 8px 10px; border-radius: 8px; color: #9bcaff; text-decoration: none; }
+.seasonality-nav-links a:hover, .seasonality-nav-links a:focus-visible { background: rgba(138,182,255,.1); color: #d7eaff; outline: none; }
+.seasonality-menu-toggle { display: none; min-height: 40px; padding: 7px 10px; border: 1px solid rgba(255,255,255,.15); border-radius: 8px; background: transparent; color: #dce6f3; font: inherit; cursor: pointer; }
 .seasonality-header { display: flex; justify-content: space-between; align-items: end; gap: 20px; }
 .seasonality-header h2 { margin: 4px 0 8px; font-size: clamp(1.8rem, 4vw, 2.5rem); }
 .seasonality-header p { margin: 0; color: #aebdd1; line-height: 1.5; }
@@ -75,6 +81,11 @@
 
 @media (max-width: 700px) {
   .seasonality-static { padding: 16px 12px; }
+  .seasonality-site-nav { position: sticky; flex-wrap: wrap; gap: 8px; margin: -4px -4px 0; padding: 8px 10px; }
+  .seasonality-menu-toggle { display: block; margin-left: auto; }
+  .seasonality-nav-links { display: none; order: 3; width: 100%; margin: 0; flex-direction: column; align-items: stretch; }
+  .seasonality-nav-links.open { display: flex; }
+  .seasonality-nav-links a { min-height: 42px; padding: 10px; }
   .seasonality-header { align-items: stretch; flex-direction: column; }
   .seasonality-year-select { min-width: 0; }
   .seasonality-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
