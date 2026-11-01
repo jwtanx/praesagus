@@ -39,7 +39,7 @@ The site already loads the latest stored calendar independently from a selected 
 - [x] PRSG-174-D1: November and December ledgers independently pass the monthly calendar schema validator.
 - [x] PRSG-174-D2: Trader reviews official schedules, event dates and MYT conversions; publication-time gaps stay explicit.
 - [x] PRSG-174-D3: Lead accepts the final ticket scope and records the publication disposition.
-- [ ] PRSG-174-D4: Published Pages calendar opens to November and month navigation loads December with event details and source links.
+- [x] PRSG-174-D4: Published Pages calendar opens to November and month navigation loads December with event details and source links.
 
 ## Current evidence and status
 
@@ -49,4 +49,6 @@ Trader review source links: [BLS](https://www.bls.gov/schedule/2026/), [BEA](htt
 
 The static report viewer already implements the shared calendar loader and previous/next controls. A local DOM replay confirmed the November latest schedule, December navigation, event details and official source links. Lead reviewed the exact calendar and ticket scope after Trader corrections. The final local viewer replay passed: the latest schedule opened November, navigation loaded December, and tested closure spans, the December FOMC period and DOSM release displayed their details and source links.
 
-Status: **review accepted; publication and live-page verification pending.**
+GitHub Pages deployment for commit `50d3f6c470034b34e16a929db96e1ed93a8515ef` succeeded in workflow run [41258319651](https://github.com/jwtanx/praesagus/actions/runs/41258319651). The hosted [November calendar JSON](https://jwtanx.github.io/praesagus/financial-calendar/2026-11.json), [December calendar JSON](https://jwtanx.github.io/praesagus/financial-calendar/2026-12.json), and [financial calendar page](https://jwtanx.github.io/praesagus/daily-market-brief/) returned HTTP 200. Public payload checks confirmed 33 active November IDs and 32 active December IDs, including the revised holiday ranges, December FOMC span, and DOSM release. The local calendar viewer replay confirmed dates, event details and source links.
+
+Status: **complete; source review, deployment and hosted-file verification accepted.**

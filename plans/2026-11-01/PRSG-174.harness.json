@@ -20,7 +20,7 @@
   "timezone": "Asia/Kuala_Lumpur",
   "spec_path": "plans/2026-11-01/PRSG-174-november-december-calendar-publication.md",
   "objective": "Review and publish source-backed November and December 2026 monthly calendars so visitors can view both months on the Praesagus site.",
-  "status": "in_progress",
+  "status": "complete",
   "owner": "Trader",
   "reviewer": "Lead",
   "scope_status": "accepted",
@@ -74,8 +74,10 @@
       "id": "pages-publication",
       "kind": "manual",
       "description": "Lead publishes the accepted calendar commit through the main Pages workflow and confirms the public site loads November and December calendar months, event details and source links.",
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "GitHub Pages workflow run 41258319651 for commit 50d3f6c470034b34e16a929db96e1ed93a8515ef completed successfully; daily report validation, publication gate, ticket audit build, static seasonality build and deploy steps all succeeded. On 2026-11-01, public URLs https://jwtanx.github.io/praesagus/financial-calendar/2026-11.json, https://jwtanx.github.io/praesagus/financial-calendar/2026-12.json, and https://jwtanx.github.io/praesagus/daily-market-brief/ returned HTTP 200. Payload readback confirmed revisions and additions. Local DOM replay confirmed month navigation and rendered event details/source links."
+      ]
     }
   ],
   "acceptance": [
@@ -119,14 +121,16 @@
       "check_ids": [
         "pages-publication"
       ],
-      "status": "pending",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        "Successful Pages run 41258319651 deployed commit 50d3f6c470034b34e16a929db96e1ed93a8515ef. Live November/December JSON and calendar viewer returned HTTP 200; public data readback confirmed revised event spans, FOMC, DOSM release and source links."
+      ]
     }
   ],
   "review": {
     "status": "accepted",
     "evidence": [
-      "Lead accepted exact ticket scope and reviewed the Trader financial disposition plus the local viewer replay. Public deployment and live-site confirmation remain pending."
+      "Lead accepted complete scope, source review, append-only data corrections, successful Pages deployment and public URL readback."
     ]
   }
 }
