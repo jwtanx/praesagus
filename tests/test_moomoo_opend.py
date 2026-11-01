@@ -102,6 +102,7 @@ def test_history_requests_one_bounded_adjusted_daily_close_page_and_closes():
     connector = MoomooOpenDConnector(
         context_factory=factory, ret_ok=0,
         history_ktype="DAY", history_autype="QFQ", history_close_field="CLOSE",
+        history_time_field="DATE_TIME",
     )
     result = connector.get_history("US.AAPL", "2026-09-05", "2026-10-05", max_count=100)
 
@@ -113,7 +114,7 @@ def test_history_requests_one_bounded_adjusted_daily_close_page_and_closes():
     assert call[0:2] == ("history", "US.AAPL")
     assert call[2] == {
         "start": "2026-09-05", "end": "2026-10-05", "ktype": "DAY", "autype": "QFQ",
-        "fields": ["CLOSE"], "max_count": 100, "page_req_key": None, "extended_time": False,
+        "fields": ["DATE_TIME", "CLOSE"], "max_count": 100, "page_req_key": None, "extended_time": False,
     }
     assert contexts[0].closed
 
@@ -126,6 +127,7 @@ def test_history_preserves_exchange_local_session_date_without_utc_conversion():
     connector = MoomooOpenDConnector(
         context_factory=lambda **kwargs: context, ret_ok=0,
         history_ktype="DAY", history_autype="QFQ", history_close_field="CLOSE",
+        history_time_field="DATE_TIME",
     )
     rows = connector.get_history("US.AAPL", "2026-10-05", "2026-10-05")
     assert rows == [{"date": "2026-10-05", "close": 201.5}]
@@ -149,7 +151,8 @@ def test_history_rejects_invalid_points_and_still_closes(history):
         contexts.append(context)
         return context
     connector = MoomooOpenDConnector(context_factory=factory, ret_ok=0,
-        history_ktype="DAY", history_autype="QFQ", history_close_field="CLOSE")
+        history_ktype="DAY", history_autype="QFQ", history_close_field="CLOSE",
+        history_time_field="DATE_TIME")
     with pytest.raises(OpenDAPIError):
         connector.get_history("US.AAPL", "2026-10-01", "2026-10-05")
     assert contexts[0].closed
@@ -175,7 +178,8 @@ def test_history_open_d_failure_still_closes_context():
         contexts.append(context)
         return context
     connector = MoomooOpenDConnector(context_factory=factory, ret_ok=0,
-        history_ktype="DAY", history_autype="QFQ", history_close_field="CLOSE")
+        history_ktype="DAY", history_autype="QFQ", history_close_field="CLOSE",
+        history_time_field="DATE_TIME")
     with pytest.raises(OpenDAPIError, match="historical k-line request failed"):
         connector.get_history("US.AAPL", "2026-10-01", "2026-10-05")
     assert contexts[0].closed

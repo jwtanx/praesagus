@@ -103,6 +103,7 @@ class MoomooOpenDConnector:
         history_ktype: Any = None,
         history_autype: Any = None,
         history_close_field: Any = None,
+        history_time_field: Any = None,
     ) -> None:
         self.host = host or os.getenv("MOOMOO_OPEND_HOST", "127.0.0.1")
         self.port = int(port or os.getenv("MOOMOO_OPEND_PORT", "11111"))
@@ -113,6 +114,7 @@ class MoomooOpenDConnector:
         self._history_ktype = history_ktype
         self._history_autype = history_autype
         self._history_close_field = history_close_field
+        self._history_time_field = history_time_field
 
     def _sdk(self) -> tuple[Callable[..., Any], int, Any]:
         if self._context_factory is not None:
@@ -198,7 +200,8 @@ class MoomooOpenDConnector:
             raise OpenDAPIError("Invalid historical request bounds")
 
         if any(value is None for value in (
-            self._history_ktype, self._history_autype, self._history_close_field
+            self._history_ktype, self._history_autype, self._history_close_field,
+            self._history_time_field,
         )):
             try:
                 from moomoo import AuType, KLType, KL_FIELD
@@ -209,9 +212,11 @@ class MoomooOpenDConnector:
             ktype = self._history_ktype if self._history_ktype is not None else KLType.K_DAY
             autype = self._history_autype if self._history_autype is not None else AuType.QFQ
             close_field = self._history_close_field if self._history_close_field is not None else KL_FIELD.CLOSE
+            time_field = self._history_time_field if self._history_time_field is not None else KL_FIELD.DATE_TIME
         else:
-            ktype, autype, close_field = (
-                self._history_ktype, self._history_autype, self._history_close_field
+            ktype, autype, close_field, time_field = (
+                self._history_ktype, self._history_autype, self._history_close_field,
+                self._history_time_field,
             )
 
         with self._connection() as (context, ret_ok, _):
@@ -222,7 +227,7 @@ class MoomooOpenDConnector:
                     end=end,
                     ktype=ktype,
                     autype=autype,
-                    fields=[close_field],
+                    fields=[time_field, close_field],
                     max_count=max_count,
                     page_req_key=None,
                     extended_time=False,

@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-180",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "connectors",
+      "market-research"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P1",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.25,
+      "high": 0.5
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-11-01/PRSG-180-opend-history-date-field.md",
+  "objective": "Request date/time and close together in the bounded OpenD history call so validated US session bars can be parsed.",
+  "status": "complete",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "1069ee1762d5f3257f42f7f7cea7256db668055e",
+  "allowed_paths": [
+    "connectors/moomoo_opend.py",
+    "tests/test_moomoo_opend.py",
+    "plans/2026-11-01/PRSG-180-opend-history-date-field.md",
+    "plans/2026-11-01/PRSG-180.harness.json"
+  ],
+  "protected_paths": [
+    "artifacts/",
+    "ingest/",
+    "scripts/",
+    "skills/",
+    "agent-operations/",
+    "credentials/"
+  ],
+  "checks": [
+    {
+      "id": "focused-opend-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_moomoo_opend.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "21 passed in 0.02s; 2026-11-01 MYT"
+      ]
+    },
+    {
+      "id": "ticket-scope",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-11-01/PRSG-180.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "PRSG-180 manifest and supplied paths valid; 2026-11-01 MYT"
+      ]
+    },
+    {
+      "id": "diff-check",
+      "kind": "command",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "git diff --check passed; 2026-11-01 MYT"
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-180-D1",
+      "description": "OpenD history requests both session date/time and close without widening the US-only boundary.",
+      "check_ids": [
+        "focused-opend-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Reviewed source change plus focused test coverage; exact allowed four-path scope."
+      ]
+    },
+    {
+      "id": "PRSG-180-D2",
+      "description": "Focused regressions prove the date field is requested and all existing date/value/order/cleanup guards remain intact.",
+      "check_ids": [
+        "focused-opend-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Reviewed source change plus focused test coverage; exact allowed four-path scope."
+      ]
+    },
+    {
+      "id": "PRSG-180-D3",
+      "description": "Lead accepts exact four-path scope and focused validation before delivery.",
+      "check_ids": [
+        "ticket-scope",
+        "diff-check"
+      ],
+      "status": "done",
+      "evidence": [
+        "Reviewed source change plus focused test coverage; exact allowed four-path scope."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead review: request includes DATE_TIME and CLOSE; US-only boundary, request bounds, adjustment, validation and cleanup retained. Focused tests 21 passed; exact ticket scope and whitespace checks passed. 2026-11-01 MYT."
+    ]
+  }
+}
