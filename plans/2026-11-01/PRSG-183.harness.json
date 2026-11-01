@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-183",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-11-01/PRSG-183-private-prospective-forecast-archive-score.md",
+  "objective": "Privately score immutable, source-bound, pre-target Praesagus 1d forecast vintages with completed outcomes through 2026-10-30; keep saved model generations separate and compare only each forecast's own matched baseline and zero-return.",
+  "status": "complete",
+  "owner": "AI Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "62a97b645cbc180412c0f807add1e743bef81b74",
+  "allowed_paths": [
+    "plans/2026-11-01/PRSG-183-private-prospective-forecast-archive-score.md",
+    "plans/2026-11-01/PRSG-183.harness.json"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "tests/",
+    "artifacts/",
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "models/"
+  ],
+  "dependencies": [
+    "PRSG-113",
+    "PRSG-147",
+    "PRSG-150",
+    "PRSG-155",
+    "PRSG-182"
+  ],
+  "checks": [
+    {
+      "id": "frozen-scope",
+      "kind": "manual",
+      "description": "Freeze exact pre-target forecast bundles, input/outcome vintages, selection rules, exclusions, metrics and private-only boundary before scoring.",
+      "status": "passed",
+      "evidence": [
+        "Lead directed PRSG-183 as a private 1d archive score; included bundles and hashes, target cutoff 2026-10-30, zero external reruns, per-model separation and exclusions frozen in the ticket before score calculation."
+      ]
+    },
+    {
+      "id": "vintage-integrity",
+      "kind": "manual",
+      "description": "Verify immutable output/input receipts and issue chronology; exact origin close, typed identity, currency, basis and completed outcome row for every included forecast.",
+      "status": "passed",
+      "evidence": [
+        "Deterministic verification: all 1,758 saved input rows were known by their bundle issue timestamps; 0 future-known inputs; all 33 eligible 1d rows matched exact origin close, typed security ID, USD, forward-excluding-dividends label and completed target close. Source receipts/pins were hash-verified for PRSG-147/150; PRSG-155 input hash matched its previously frozen PRSG-182 input. Score output records exact output, input, outcome and identity-map hashes; no excluded partial target was scored."
+      ]
+    },
+    {
+      "id": "private-deterministic-score",
+      "kind": "manual",
+      "description": "Score all eligible 1d forecasts against their saved matched baseline and zero return with model generations separate; retain private per-name receipts and limitations.",
+      "status": "passed",
+      "evidence": [
+        "Ran `python3 ~/.codex/lead-state/PRSG-183/score_archive.py`; script SHA-256 `77b6cce382241aad7689ecf4f69107ca5b8246e3ce2a8f96a007a4c06e9ba9bc`. Private result `~/.codex/lead-state/PRSG-183/multi-vintage-score.json` SHA-256 `9dc67aef3edec00e62a955fbe7db104635c007b20e2210f89d4b8b2a65f70bd0` contains 33 per-name scores from three model generations (n=1, n=2, n=30), each against its own saved baseline and zero return. It includes source hashes, actual rows, exclusions and limitations. No cross-version aggregate, challenger rerun, public metrics or confidence interval."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead reviews private score provenance and descriptive-only limitations before acceptance.",
+      "status": "passed",
+      "evidence": [
+        "Lead reran the deterministic private scorer and reproduced multi-vintage-score.json SHA-256 9dc67aef3edec00e62a955fbe7db104635c007b20e2210f89d4b8b2a65f70bd0; verified 33 eligible rows, 1,758 issue-known source rows and zero future-known rows; accepted separate-vintage limits."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-183-D1",
+      "description": "Freeze the bounded 1d source cohort, actual packet, checks, metrics and private boundary before scoring.",
+      "check_ids": [
+        "frozen-scope"
+      ],
+      "status": "done",
+      "evidence": [
+        "Frozen in PRSG-183 spec at base SHA 62a97b645cbc180412c0f807add1e743bef81b74."
+      ]
+    },
+    {
+      "id": "PRSG-183-D2",
+      "description": "Verify each included vintage's source lineage, issue chronology, exact origin/security/currency/basis linkage and completed target outcome.",
+      "check_ids": [
+        "vintage-integrity"
+      ],
+      "status": "done",
+      "evidence": [
+        "All 33 eligible 1d outcomes passed frozen identity/origin/source/basis/completion checks; all input rows were known by forecast issue time. See vintage-integrity evidence and private result provenance."
+      ]
+    },
+    {
+      "id": "PRSG-183-D3",
+      "description": "Score eligible forecasts against their own saved baseline and zero return, separated by immutable model generation, with private per-name results.",
+      "check_ids": [
+        "private-deterministic-score"
+      ],
+      "status": "done",
+      "evidence": [
+        "Deterministic private scorer ran on the frozen 1d set. 33 per-name rows are stored with model generations separated, alongside saved baseline and zero-return metrics. See private-deterministic-score evidence."
+      ]
+    },
+    {
+      "id": "PRSG-183-D4",
+      "description": "Lead reviews and accepts the private evidence with all limits retained; do not publish or promote.",
+      "check_ids": [
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reproduced the exact private score hash and accepted the preserved-vintage results as descriptive only; no cross-version validation claim."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reproduced the private result hash and reviewed scope, model-version separation, source/identity/basis checks and limitations. PRSG-113 D2 remains pending."
+    ]
+  }
+}
