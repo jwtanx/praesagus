@@ -68,23 +68,23 @@
 .seasonality-heatmap { width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
 .seasonality-row { display: grid; grid-template-columns: 220px minmax(650px, 1fr); align-items: center; gap: 8px; width: max(100%, 878px); }
 .seasonality-month-header { min-height: 34px; color: var(--season-muted); font-size: .72rem; }
-.seasonality-name-column { position: sticky; left: 0; z-index: 1; display: grid; gap: 3px; text-align: left; min-width: 0; padding-right: 5px; background: var(--season-panel); }
+.seasonality-name-column { position: sticky; left: 0; z-index: 1; display: grid; gap: 3px; text-align: left; min-width: 0; padding-right: 5px; background-color: var(--season-panel); }
 .seasonality-month-cells { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; }
 .seasonality-month-cells > span, .seasonality-month-cells > button { text-align: center; }
 .seasonality-industry-row { min-height: 49px; padding: 5px 0; border: 1px solid transparent; border-bottom-color: var(--season-line); border-radius: 10px; background: transparent; color: var(--season-ink); font: inherit; cursor: pointer; text-align: left; }
 .seasonality-industry-row:hover, .seasonality-industry-row:focus-visible { background: rgba(137,191,255,.07); outline: none; }
 .seasonality-industry-row.selected { border-color: rgba(137,191,255,.62); background: rgba(137,191,255,.035); box-shadow: none; }
-.seasonality-industry-row.selected .seasonality-name-column { background: linear-gradient(100deg,rgba(137,191,255,.15),rgba(137,191,255,.06)); }
-.seasonality-industry-row.rank-top-1 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.22),rgba(102,214,164,.06)); }
-.seasonality-industry-row.rank-top-2 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.18),rgba(102,214,164,.05)); }
-.seasonality-industry-row.rank-top-3 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.14),rgba(102,214,164,.04)); }
-.seasonality-industry-row.rank-top-4 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.11),rgba(102,214,164,.03)); }
-.seasonality-industry-row.rank-top-5 .seasonality-name-column { background: linear-gradient(100deg,rgba(102,214,164,.08),rgba(102,214,164,.02)); }
-.seasonality-industry-row.rank-bottom-1 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.22),rgba(255,142,142,.06)); }
-.seasonality-industry-row.rank-bottom-2 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.18),rgba(255,142,142,.05)); }
-.seasonality-industry-row.rank-bottom-3 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.14),rgba(255,142,142,.04)); }
-.seasonality-industry-row.rank-bottom-4 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.11),rgba(255,142,142,.03)); }
-.seasonality-industry-row.rank-bottom-5 .seasonality-name-column { background: linear-gradient(100deg,rgba(255,142,142,.08),rgba(255,142,142,.02)); }
+.seasonality-industry-row.selected .seasonality-name-column { background-image: linear-gradient(100deg,rgba(137,191,255,.15),rgba(137,191,255,.06)); }
+.seasonality-industry-row.rank-top-1 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(102,214,164,.22),rgba(102,214,164,.06)); }
+.seasonality-industry-row.rank-top-2 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(102,214,164,.18),rgba(102,214,164,.05)); }
+.seasonality-industry-row.rank-top-3 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(102,214,164,.14),rgba(102,214,164,.04)); }
+.seasonality-industry-row.rank-top-4 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(102,214,164,.11),rgba(102,214,164,.03)); }
+.seasonality-industry-row.rank-top-5 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(102,214,164,.08),rgba(102,214,164,.02)); }
+.seasonality-industry-row.rank-bottom-1 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(255,142,142,.22),rgba(255,142,142,.06)); }
+.seasonality-industry-row.rank-bottom-2 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(255,142,142,.18),rgba(255,142,142,.05)); }
+.seasonality-industry-row.rank-bottom-3 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(255,142,142,.14),rgba(255,142,142,.04)); }
+.seasonality-industry-row.rank-bottom-4 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(255,142,142,.11),rgba(255,142,142,.03)); }
+.seasonality-industry-row.rank-bottom-5 .seasonality-name-column { background-image: linear-gradient(100deg,rgba(255,142,142,.08),rgba(255,142,142,.02)); }
 .seasonality-industry-name { display: flex; align-items: center; gap: 7px; min-width: 0; font-weight: 650; font-size: .85rem; }
 .seasonality-name-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .seasonality-selected-check { display: inline-grid; flex: 0 0 17px; width: 17px; height: 17px; margin-left: auto; place-items: center; border: 1px solid rgba(137,191,255,.55); border-radius: 50%; background: var(--season-panel); color: var(--season-blue); font-size: .68rem; line-height: 1; }
