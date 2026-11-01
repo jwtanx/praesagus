@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-182",
+  "tags": {
+    "type": "spike",
+    "modules": [
+      "market-research",
+      "financial-data",
+      "harness"
+    ],
+    "owner_role": "AI Engineer",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 2
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-11-01/PRSG-182-private-retrospective-model-bakeoff.md",
+  "objective": "Replay TimesFM-2.5 and Chronos v1 zero-shot from the frozen pre-target PRSG-155 US30 input and score their one-session target against the saved Praesagus model and baselines; retain research-only limitations.",
+  "status": "complete",
+  "owner": "AI Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "fc626445d46212b577abc3029ee5b4af1d555352",
+  "allowed_paths": [
+    "plans/2026-11-01/PRSG-182-private-retrospective-model-bakeoff.md",
+    "plans/2026-11-01/PRSG-182.harness.json"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "tests/",
+    "artifacts/",
+    "ingest/",
+    "connectors/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    "models/"
+  ],
+  "dependencies": [
+    "PRSG-113",
+    "PRSG-153",
+    "PRSG-155",
+    "PRSG-181"
+  ],
+  "checks": [
+    {
+      "id": "frozen-plan-review",
+      "kind": "manual",
+      "description": "Lead accepts the exact immutable origin, cohort, target, candidate/license boundary, metrics and private output scope before candidate inference.",
+      "status": "passed",
+      "evidence": [
+        "Lead froze PRSG-182 at base fc626445d46212b577abc3029ee5b4af1d555352 on 2026-11-01 MYT; ticket defines the one-origin 30-name pre-target replay and forbids fit/tune/publish/promote."
+      ]
+    },
+    {
+      "id": "input-integrity-and-inference",
+      "kind": "manual",
+      "description": "Reproduce immutable input/forecast/outcome binding, run TimesFM-2.5 and Chronos v1 zero-shot only from the pre-target input, and verify no post-origin data or fitting.",
+      "status": "passed",
+      "evidence": [
+        "Input CSV SHA-256 47d740a77473c6ecbcdf935fb8b10631c1a57776d5a4fdee6b0eb1cbf5a23c18; 1,530 rows, 30 symbols, 51 sessions/name, 2026-08-18..2026-10-28; no later origin. Forecast JSON SHA-256 8d8776c4a95f1404b6c7c6e9efd0b5bc7a62ce8cbdb599a94eebb5d5a25ef5c7; actual outcome CSV SHA-256 27c2e2f845c9310119aecf6a0360c26e5f4f49a52b67821e7e81f63afa3067be. Exact origin close, typed current ID, currency/basis, and 29-Oct target checks each passed 30/30.",
+        "TimesFM-2.5 pinned revision 1d952420fba87f3c6dee4f240de0f1a0fbc790e3, weights SHA-256 2f776efe6245e42b24bc4153ffdf61810140210e4bd3b01fb21f7aa779ab6ce8, Apache-2.0; 30/30 outputs, zero fit/tune. Chronos v1 pinned revision a971ba21945c4f1796b17a91fe69214b5f4ad472, weights SHA-256 9c8b6fde5300f72b01c173153bf9288fa0a200614275bf0585071ad71a6a3d43, Apache-2.0; 30/30 outputs, zero fit/tune. Exact versions/settings/input hashes are in private runtime/prediction receipts.",
+        "Private receipts: input-freeze.json=1426e5e7a9823f510f35d53d8200ffb45bbf6654ae17ee02551bb1b7f573f24b; chronos-predictions.json=c2cad45868240dfe57d89aa9a0cfa8f2082c725698e1b1ba5f4e27946b9ea665; timesfm-predictions.json=19d97cc335a3818bbc029762e7385ebdab4b82c89655d936a3d96ad73a52c42e; runtime-summary.json=d47b3343e1dacdc3dd877812e6674cbc350133e0139429ac0c8e377d7190ecdc; pip-freeze.txt=8c46e11fbdec7ab474d339e0a1a0a41f669b808a6df2c320a2cb40f357fe3be6."
+      ]
+    },
+    {
+      "id": "private-score-review",
+      "kind": "manual",
+      "description": "Score every eligible challenger and saved Praesagus output against the same target; inspect private result and preserve all qualifications.",
+      "status": "passed",
+      "evidence": [
+        "All five methods scored on the identical 30-name 2026-10-29 close-to-close target; source/outcome/forecast bindings reproduced. Full per-name results, metrics, hashes and limitations remain in the private bundle at ~/.codex/lead-state/PRSG-182/.",
+        "Lead independently reran the deterministic scorer; score.json SHA-256 reproduced exactly as 67a02db88cf0e74076924beefe0bd8b13209761c67c861750a17ba6796a60fa2. This is a one-vintage descriptive comparison, not PRSG-113 D2 validation."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-182-D1",
+      "description": "Freeze the immutable origin, cohort, target, candidates, license boundary, metrics and private-only result path before challenger inference.",
+      "check_ids": [
+        "frozen-plan-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Reviewed and frozen in PRSG-182 spec and manifest at base fc626445d46212b577abc3029ee5b4af1d555352."
+      ]
+    },
+    {
+      "id": "PRSG-182-D2",
+      "description": "Run and integrity-check only TimesFM-2.5 and Chronos v1 zero-shot forecasts from the frozen pre-target input.",
+      "check_ids": [
+        "input-integrity-and-inference"
+      ],
+      "status": "done",
+      "evidence": [
+        "Both authorized zero-shot candidates reproduced from exact frozen pre-target input; 30 outputs each, immutable input/outcome/source hashes bound, no training/tuning/post-origin inputs. See passed input-integrity-and-inference evidence and private artifacts."
+      ]
+    },
+    {
+      "id": "PRSG-182-D3",
+      "description": "Score all eligible outputs against the saved current model, matched baseline and zero-return, retaining hashes, counts and per-name diagnostics privately.",
+      "check_ids": [
+        "private-score-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "All 30 eligible rows scored for candidate, current model, matched baseline and zero-return comparator; same actual target vintage; per-name scores/private hashes retained. Descriptive one-vintage only; metrics and limits recorded in private-results.md."
+      ]
+    },
+    {
+      "id": "PRSG-182-D4",
+      "description": "Lead reviews one-vintage limitations; do not promote models, publish candidate output or infer trading utility.",
+      "check_ids": [
+        "private-score-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead independently reproduced the score artifact hash and accepted the private result strictly as a one-vintage diagnostic. No promotion, publication or trading inference; PRSG-113 D2 remains pending."
+      ]
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead independently reran the deterministic private scorer and reviewed scope, candidate provenance, runtime and limitations. This small single-session cross-section does not establish a general winner; keep all candidates research-only/NO TRADE."
+    ]
+  }
+}
