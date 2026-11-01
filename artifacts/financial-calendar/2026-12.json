@@ -1,0 +1,680 @@
+{
+  "schema_version": 1,
+  "month": "2026-12",
+  "timezone": "Asia/Kuala_Lumpur",
+  "notes": [
+    {
+      "text": "Initial entries reviewed against linked official schedules on 1 November 2026. DOSM advance-calendar entries do not provide publication times; those remain explicitly unconfirmed.",
+      "sources": []
+    },
+    {
+      "text": "Dates are displayed in Asia/Kuala_Lumpur; source local dates and timezones are retained in each time/detail field. These are publication schedules, not market predictions. Corrections or cancellations must be appended as revisions; absence from a later source is not a cancellation.",
+      "sources": []
+    }
+  ],
+  "entries": [
+    {
+      "event_id": "job-openings-and-labor-turnover-survey-october-2026",
+      "title": "Job Openings and Labor Turnover Survey, October",
+      "time": "11:00 p.m. MYT / 10:00 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-01",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "county-employment-and-wages-q2-2026-2026",
+      "title": "County Employment and Wages, Q2 2026",
+      "time": "11:00 p.m. MYT / 10:00 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-02",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "metropolitan-area-employment-and-unemployment-october-2026",
+      "title": "Metropolitan Area Employment and Unemployment, October",
+      "time": "11:00 p.m. MYT / 10:00 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-02",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "employment-situation-november-2026",
+      "title": "Employment Situation, November",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-04",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "productivity-and-costs-revised-q3-2026",
+      "title": "Productivity and Costs, revised Q3",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-08",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "consumer-price-index-and-real-earnings-november-2026",
+      "title": "Consumer Price Index and Real Earnings, November",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-10",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "producer-price-index-november-2026",
+      "title": "Producer Price Index, November",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-15",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "fatal-occupational-injuries-2025-and-employment-cost-index-september-2026",
+      "title": "Fatal Occupational Injuries, 2025 and Employment Cost Index, September",
+      "time": "11:00 p.m. MYT / 10:00 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-16",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "import-and-export-price-indexes-november-2026",
+      "title": "Import and Export Price Indexes, November",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-17",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "state-employment-and-unemployment-november-2026",
+      "title": "State Employment and Unemployment, November",
+      "time": "11:00 p.m. MYT / 10:00 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-18",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "metropolitan-area-employment-and-unemployment-november-2026",
+      "title": "Metropolitan Area Employment and Unemployment, November",
+      "time": "11:00 p.m. MYT / 10:00 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-30",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "nyse-markets-closed-christmas-day-2026",
+      "title": "NYSE markets closed: Christmas Day",
+      "time": "U.S. session Fri Dec 25; no regular session.",
+      "summary": "NYSE lists Christmas as a 2026 market holiday.",
+      "details": "NYSE lists Christmas as a 2026 market holiday.",
+      "country": "US",
+      "kind": "market-closure",
+      "date": "2026-12-26",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "NYSE holidays and trading hours",
+          "url": "https://www.nyse.com/trade/hours-calendars"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "nyse-early-close-on-christmas-eve-u-s-session-thu-dec-24-2026",
+      "title": "NYSE early close on Christmas Eve (U.S. session Thu Dec 24)",
+      "time": "2:00 a.m. MYT Dec 25 / 1:00 p.m. ET Dec 24",
+      "summary": "NYSE lists a 1:00 p.m. ET early close on Dec 24.",
+      "details": "NYSE lists a 1:00 p.m. ET early close on Dec 24.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-25",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "NYSE holidays and trading hours",
+          "url": "https://www.nyse.com/trade/hours-calendars"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "gdp-by-county-and-personal-income-by-county-2025-2026",
+      "title": "GDP by County and Personal Income by County, 2025",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-02",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Economic Analysis",
+          "url": "https://www.bea.gov/news/schedule"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "u-s-international-trade-in-goods-and-services-october-2026",
+      "title": "U.S. International Trade in Goods and Services, October",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-08",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Economic Analysis",
+          "url": "https://www.bea.gov/news/schedule"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "real-pce-and-real-personal-income-by-state-2025-2026",
+      "title": "Real PCE and Real Personal Income by State, 2025",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-10",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Economic Analysis",
+          "url": "https://www.bea.gov/news/schedule"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "u-s-international-transactions-and-investment-position-q3-2026",
+      "title": "U.S. International Transactions and Investment Position, Q3",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-18",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Economic Analysis",
+          "url": "https://www.bea.gov/news/schedule"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "gdp-third-estimate-industries-corporate-profits-and-state-gdp-q3-2026",
+      "title": "GDP third estimate, industries, corporate profits and state GDP, Q3",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-23",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Economic Analysis",
+          "url": "https://www.bea.gov/news/schedule"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "personal-income-and-outlays-november-2026",
+      "title": "Personal Income and Outlays, November",
+      "time": "9:30 p.m. MYT / 8:30 a.m. ET",
+      "summary": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "details": "Scheduled official BEA release; source Eastern Time shown alongside Malaysia time.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-23",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Economic Analysis",
+          "url": "https://www.bea.gov/news/schedule"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "g-19-consumer-credit-2026",
+      "title": "G.19 Consumer Credit",
+      "time": "4:00 a.m. MYT Dec 8 / 3:00 p.m. ET Dec 7",
+      "summary": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "details": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-08",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Federal Reserve December 2026 calendar",
+          "url": "https://www.federalreserve.gov/newsevents/2026-december.htm"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "fomc-decision-and-press-conference-meeting-dec-8-9-2026",
+      "title": "FOMC decision and press conference, meeting Dec 8–9",
+      "time": "Decision 3:00 a.m. MYT Dec 10 / 2:00 p.m. ET Dec 9; press conference 3:30 a.m. MYT / 2:30 p.m. ET",
+      "summary": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "details": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-10",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Federal Reserve December 2026 calendar",
+          "url": "https://www.federalreserve.gov/newsevents/2026-december.htm"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "g-17-industrial-production-and-capacity-utilization-2026",
+      "title": "G.17 Industrial Production and Capacity Utilization",
+      "time": "10:15 p.m. MYT / 9:15 a.m. ET Dec 16",
+      "summary": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "details": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-16",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Federal Reserve December 2026 calendar",
+          "url": "https://www.federalreserve.gov/newsevents/2026-december.htm"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "senior-credit-officer-opinion-survey-on-dealer-financing-terms-2026",
+      "title": "Senior Credit Officer Opinion Survey on Dealer Financing Terms",
+      "time": "3:00 a.m. MYT Dec 18 / 2:00 p.m. ET Dec 17",
+      "summary": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "details": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-18",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Federal Reserve December 2026 calendar",
+          "url": "https://www.federalreserve.gov/newsevents/2026-december.htm"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "fomc-minutes-december-8-9-meeting-2026",
+      "title": "FOMC minutes, December 8–9 meeting",
+      "time": "3:00 a.m. MYT Dec 31 / 2:00 p.m. ET Dec 30",
+      "summary": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "details": "Federal Reserve calendar lists this release; MYT date may differ from source ET date.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-31",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Federal Reserve December 2026 calendar",
+          "url": "https://www.federalreserve.gov/newsevents/2026-december.htm"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "construction-cost-special-releases-and-monthly-rubber-statistics-november-october-2026",
+      "title": "Construction Cost Special Releases and Monthly Rubber Statistics, November/October",
+      "time": "Malaysia date; publication time not stated",
+      "summary": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "details": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "country": "MY",
+      "kind": "event",
+      "date": "2026-12-10",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Department of Statistics Malaysia December advance release calendar",
+          "url": "https://www.dosm.gov.my/portal-main/arc?search_month=12&search_year=2026"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "labour-force-wholesale-retail-trade-manufacturing-and-industrial-production-october-2026",
+      "title": "Labour Force, Wholesale/Retail Trade, Manufacturing and Industrial Production, October",
+      "time": "Malaysia date; publication time not stated",
+      "summary": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "details": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "country": "MY",
+      "kind": "event",
+      "date": "2026-12-11",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Department of Statistics Malaysia December advance release calendar",
+          "url": "https://www.dosm.gov.my/portal-main/arc?search_month=12&search_year=2026"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "consumer-price-index-and-monthly-external-trade-statistics-november-2026",
+      "title": "Consumer Price Index and Monthly External Trade Statistics, November",
+      "time": "Malaysia date; publication time not stated",
+      "summary": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "details": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "country": "MY",
+      "kind": "event",
+      "date": "2026-12-18",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Department of Statistics Malaysia December advance release calendar",
+          "url": "https://www.dosm.gov.my/portal-main/arc?search_month=12&search_year=2026"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "leading-coincident-and-lagging-indexes-october-2026",
+      "title": "Leading, Coincident and Lagging Indexes, October",
+      "time": "Malaysia date; publication time not stated",
+      "summary": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "details": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "country": "MY",
+      "kind": "event",
+      "date": "2026-12-24",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Department of Statistics Malaysia December advance release calendar",
+          "url": "https://www.dosm.gov.my/portal-main/arc?search_month=12&search_year=2026"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "event_id": "producer-price-index-and-external-trade-indices-november-2026",
+      "title": "Producer Price Index and external trade indices, November",
+      "time": "Malaysia date; publication time not stated",
+      "summary": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "details": "DOSM lists the date but leaves Published time blank; exact time unconfirmed.",
+      "country": "MY",
+      "kind": "event",
+      "date": "2026-12-28",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "Department of Statistics Malaysia December advance release calendar",
+          "url": "https://www.dosm.gov.my/portal-main/arc?search_month=12&search_year=2026"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:18+08:00"
+    },
+    {
+      "date": "2026-12-18",
+      "event_id": "work-experience-of-the-population-2025-2026",
+      "title": "Work Experience of the Population, 2025",
+      "time": "11:00 p.m. MYT / 10:00 a.m. ET",
+      "summary": "Scheduled official U.S. statistical release; source Eastern Time shown alongside Malaysia time.",
+      "details": "BLS lists this release for Dec 18 at 10:00 a.m. ET.",
+      "country": "US",
+      "kind": "event",
+      "status": "scheduled",
+      "source_verification": "Verified against the linked official schedule on 2026-11-01.",
+      "sources": [
+        {
+          "label": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T07:10:43+08:00"
+    },
+    {
+      "event_id": "nyse-markets-closed-christmas-day-2026",
+      "title": "NYSE markets closed: Christmas Day (U.S. session Fri Dec 25)",
+      "time": "U.S. session Fri Dec 25; MYT calendar spans Dec 25–26 while the U.S. session window passes midnight MYT.",
+      "summary": "NYSE lists Christmas as a 2026 market holiday. The MYT calendar display spans the corresponding overnight session window.",
+      "details": "NYSE identifies Friday Dec 25 as the venue holiday. The venue's normal session window, expressed in MYT, crosses into Dec 26.",
+      "country": "US",
+      "kind": "market-closure",
+      "date": "2026-12-25",
+      "date_end": "2026-12-26",
+      "status": "scheduled",
+      "source_verification": "NYSE holiday and regular session hours reviewed 2026-11-01.",
+      "sources": [
+        {
+          "label": "NYSE holidays and trading hours",
+          "url": "https://www.nyse.com/trade/hours-calendars"
+        }
+      ],
+      "change_reason": "Corrected the event to the official U.S. venue date and display it over both dates intersecting the NYSE session window in MYT.",
+      "revision": 2,
+      "recorded_at": "2026-11-01T08:41:04+08:00"
+    },
+    {
+      "event_id": "fomc-meeting-december-8-9-2026",
+      "title": "Federal Open Market Committee meeting (Dec 8–9 U.S. dates)",
+      "time": "Meeting spans Dec 8–9 ET / Dec 8–10 MYT; decision and press conference are listed separately.",
+      "summary": "The Federal Reserve lists a two-day FOMC meeting on Dec 8–9, 2026.",
+      "details": "Meeting span for context. The separately scheduled policy decision and press conference remain listed on their own event date.",
+      "country": "US",
+      "kind": "event",
+      "date": "2026-12-08",
+      "date_end": "2026-12-10",
+      "status": "scheduled",
+      "source_verification": "Federal Reserve December 2026 calendar reviewed 2026-11-01.",
+      "sources": [
+        {
+          "label": "Federal Reserve December 2026 calendar",
+          "url": "https://www.federalreserve.gov/newsevents/2026-december.htm"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T08:41:04+08:00"
+    },
+    {
+      "event_id": "mining-of-petroleum-and-natural-gas-statistics-q3-2026",
+      "title": "Mining of Petroleum and Natural Gas Statistics, Q3 2026",
+      "time": "Publication time not stated by DOSM.",
+      "summary": "DOSM lists the third-quarter mining of petroleum and natural gas statistics release for Dec 3.",
+      "details": "Malaysia's official advance release calendar lists this release on Dec 3, 2026. DOSM does not state a publication time on the calendar.",
+      "country": "MY",
+      "kind": "event",
+      "date": "2026-12-03",
+      "status": "scheduled",
+      "source_verification": "DOSM December 2026 advance release calendar reviewed 2026-11-01; no publication time shown.",
+      "sources": [
+        {
+          "label": "Department of Statistics Malaysia December advance release calendar",
+          "url": "https://www.dosm.gov.my/portal-main/arc?search_month=12&search_year=2026"
+        }
+      ],
+      "revision": 1,
+      "recorded_at": "2026-11-01T08:41:04+08:00"
+    }
+  ]
+}

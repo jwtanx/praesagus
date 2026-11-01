@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-174",
+  "tags": {
+    "type": "chore",
+    "modules": [
+      "financial-data",
+      "docs"
+    ],
+    "owner_role": "Trader",
+    "priority": "P2",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.5,
+      "high": 1
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-11-01/PRSG-174-november-december-calendar-publication.md",
+  "objective": "Review and publish source-backed November and December 2026 monthly calendars so visitors can view both months on the Praesagus site.",
+  "status": "in_progress",
+  "owner": "Trader",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "898de0b4ec063e9db2b27973578591c5486b5cd4",
+  "allowed_paths": [
+    "artifacts/financial-calendar/2026-11.json",
+    "artifacts/financial-calendar/2026-12.json",
+    "plans/README.md",
+    "plans/2026-11-01/PRSG-174-november-december-calendar-publication.md",
+    "plans/2026-11-01/PRSG-174.harness.json"
+  ],
+  "protected_paths": [
+    "scripts/",
+    "tests/",
+    "connectors/",
+    "ingest/",
+    "backend/",
+    "frontend/",
+    "skills/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "calendar-schema",
+      "kind": "manual",
+      "description": "Validate each monthly calendar using monthly_calendar.validate_calendar.",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: after appended updates, monthly_calendar.validate_calendar accepted November (35 revision rows; 33 active IDs) and December (33 revision rows; 32 active IDs) independently."
+      ]
+    },
+    {
+      "id": "trader-source-review",
+      "kind": "manual",
+      "description": "Trader verifies relevant official source schedules, event dates and timezone conversions; unknown release times remain unconfirmed.",
+      "status": "passed",
+      "evidence": [
+        "Trader reviewed the committed ledgers at HEAD 6120df9 on 2026-11-01 08:39 MYT, confirmed checked BLS/BEA event times and dates, BNM's Nov 5 3:00 p.m. MYT decision, and NVIDIA's Nov 17 PT event converted to Nov 18 MYT. No listed cancellation/rescheduling notice found. DOSM Nov/Dec times remain unspecified. Requested and applied append-only NYSE MYT date-span corrections, separate Dec 8\u20139 ET FOMC span, and Dec 3 DOSM petroleum/natural-gas release. Official sources: https://www.bls.gov/schedule/2026/ ; https://www.bea.gov/news/schedule ; https://www.bnm.gov.my/monetary-stability/mpc-meetings ; https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Sets-Conference-Call-for-Third-Quarter-Financial-Results/default.aspx ; https://www.nyse.com/trade/hours-calendars ; https://www.federalreserve.gov/newsevents/2026-december.htm ; https://www.dosm.gov.my/portal-main/arc?search_month=11&search_year=2026 ; https://www.dosm.gov.my/portal-main/arc?search_month=12&search_year=2026. Source review timestamp is 2026-11-01 08:39 MYT; artifact recorded_at values are ingestion times, not source retrieval times."
+      ]
+    },
+    {
+      "id": "lead-review",
+      "kind": "manual",
+      "description": "Lead independently reviews the Trader disposition, append-only corrections, source/time provenance, site viewer contract and complete supplied-path scope.",
+      "status": "passed",
+      "evidence": [
+        "Lead accepted the exact PRSG-174 scope after reviewing the Trader source disposition and all append-only changes. A local DOM replay using actual November/December ledgers confirmed current-month display, next-month navigation, overnight holiday date ranges, December FOMC and DOSM event details, HTTPS source links, and no runtime errors."
+      ]
+    },
+    {
+      "id": "pages-publication",
+      "kind": "manual",
+      "description": "Lead publishes the accepted calendar commit through the main Pages workflow and confirms the public site loads November and December calendar months, event details and source links.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-174-D1",
+      "description": "Both monthly ledgers pass the calendar schema validator.",
+      "check_ids": [
+        "calendar-schema"
+      ],
+      "status": "done",
+      "evidence": [
+        "After append-only corrections, independent per-ledger monthly_calendar.validate_calendar accepted both monthly ledgers."
+      ]
+    },
+    {
+      "id": "PRSG-174-D2",
+      "description": "Trader reviews official schedules and MYT conversions, preserving unknown publication times.",
+      "check_ids": [
+        "trader-source-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Trader review completed with official schedule sources and as-of timestamp recorded in the trader-source-review check. Ledger corrections/additions were appended at actual discovery time; uncertainty retained."
+      ]
+    },
+    {
+      "id": "PRSG-174-D3",
+      "description": "Lead accepts the final ticket scope and publication readiness after source and viewer review.",
+      "check_ids": [
+        "trader-source-review",
+        "lead-review"
+      ],
+      "status": "done",
+      "evidence": [
+        "Lead reviewed the source-backed calendar changes, provenance, exact scope and local rendering replay; publication workflow remains pending as a separate acceptance item."
+      ]
+    },
+    {
+      "id": "PRSG-174-D4",
+      "description": "Published Pages calendar opens November and month navigation loads December with event details and source links.",
+      "check_ids": [
+        "pages-publication"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "accepted",
+    "evidence": [
+      "Lead accepted exact ticket scope and reviewed the Trader financial disposition plus the local viewer replay. Public deployment and live-site confirmation remain pending."
+    ]
+  }
+}
