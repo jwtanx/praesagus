@@ -2,7 +2,7 @@
 
 Public pages should use the shared `<praesagus-site-nav>` web component and its stylesheet from `artifacts/shared/`. This keeps the brand position and 16px type, 64px minimum bar height, 1680px maximum width, links, active state, and responsive menu consistent.
 
-Use the shared `.praesagus-page-content` class on each page's primary content container. It aligns content to the navigation's 1680px maximum width and gives it a 24px desktop / 12px compact-screen outer gutter. Keep page-specific vertical spacing on the container or its sections; do not reintroduce custom horizontal gutters for the main page shell.
+Use the shared `.praesagus-page-content` class on each page's primary content container. It aligns content to the navigation's 1680px maximum width and gives it a 40px desktop / 20px compact-screen outer gutter. The `.wrap.praesagus-page-content` selector takes precedence over page-specific `.wrap` width rules so the homepage stays aligned. Keep page-specific vertical spacing on the container or its sections; do not reintroduce custom horizontal gutters for the main page shell.
 
 ## Static pages
 

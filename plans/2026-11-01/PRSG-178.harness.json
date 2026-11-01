@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-178",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.5
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-11-01/PRSG-178-increase-shared-page-gutters.md",
+  "objective": "Fix homepage width cascade and increase one consistent responsive gutter across all public pages and navigation.",
+  "status": "review",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "4bd7f955350557a6e53f7f46d9db31e79553baaf",
+  "allowed_paths": [
+    "artifacts/shared/site-navigation.css",
+    "docs/PUBLIC_SITE_NAVIGATION.md",
+    "plans/README.md",
+    "plans/2026-11-01/PRSG-178-increase-shared-page-gutters.md",
+    "plans/2026-11-01/PRSG-178.harness.json"
+  ],
+  "protected_paths": [
+    ".github/",
+    "artifacts/financial-calendar/",
+    "backend/",
+    "connectors/",
+    "frontend/src/data/",
+    "infra/",
+    "ingest/",
+    "scripts/",
+    "tests/",
+    "skills/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "pages-build",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build",
+        "--",
+        "--mode",
+        "pages"
+      ],
+      "cwd": "frontend",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: npm run build -- --mode pages from frontend/ passed (Vite 5.4.21; 52 modules transformed)."
+      ]
+    },
+    {
+      "id": "ticket-scope",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-11-01/PRSG-178.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: validate_ticket.py accepted the exact five scoped paths; git diff --check passed."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-178-D1",
+      "description": "The homepage container keeps the shared width despite the .wrap style rules.",
+      "check_ids": [
+        "pages-build"
+      ],
+      "status": "done",
+      "evidence": [
+        "Confirmed `.wrap` width declaration has lower specificity than `.wrap.praesagus-page-content`, so the shared container width now wins on the homepage and footer."
+      ]
+    },
+    {
+      "id": "PRSG-178-D2",
+      "description": "All public pages and navigation use matching 40px desktop / 20px compact-screen gutters.",
+      "check_ids": [
+        "pages-build"
+      ],
+      "status": "done",
+      "evidence": [
+        "The shared content class and navigation now use identical widths: 40px per side on desktop and 20px at the responsive breakpoint; maximum width remains 1680px."
+      ]
+    },
+    {
+      "id": "PRSG-178-D3",
+      "description": "Pages build; exact-path scope and whitespace checks pass.",
+      "check_ids": [
+        "pages-build",
+        "ticket-scope"
+      ],
+      "status": "done",
+      "evidence": [
+        "Pages build, exact-path ticket validation, and git diff --check all passed."
+      ]
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}

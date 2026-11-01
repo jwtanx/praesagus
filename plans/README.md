@@ -45,6 +45,7 @@ This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATI
 | [PRSG-175](2026-11-01/PRSG-175-seasonality-overflow-and-ticket-navigation.md) | bug | frontend, docs | Engineer | P2 | S: 0.5–2 days | medium |
 | [PRSG-176](2026-11-01/PRSG-176-shared-public-site-navigation.md) | feature | frontend | Engineer | P2 | S: 0.5–2 days | medium-high |
 | [PRSG-177](2026-11-01/PRSG-177-standardize-public-page-gutters.md) | bug | frontend | Engineer | P2 | XS: <0.5 day | medium: prevents edge-clipped content and aligns all public pages |
+| [PRSG-178](2026-11-01/PRSG-178-increase-shared-page-gutters.md) | bug | frontend | Engineer | P2 | XS: <0.5 day | medium: keeps home and section layouts aligned with navigation |
 
 ## Ticket convention and harness
 
