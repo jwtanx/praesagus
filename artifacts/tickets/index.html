@@ -3,24 +3,9 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Praesagus · Ticket audit</title>
-<meta name="theme-color" content="#0c1118"><link rel="icon" type="image/svg+xml" href="../daily-market-brief/favicon.svg">
-<style>.site-navigation{position:sticky;top:0;z-index:20;background:#0c1118;border-bottom:1px solid #354456}.site-navigation nav{max-width:1160px;margin:auto;padding:16px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}.site-navigation a{min-height:44px;display:inline-flex;align-items:center;text-decoration:none}.site-navigation .brand{font-size:16px;line-height:1.6;font-weight:750;letter-spacing:normal;color:#e8eef5}.site-navigation .brand{margin-right:auto}@media(max-width:720px){.site-navigation nav{padding-inline:16px;gap:12px}}.pagination{justify-content:space-between;column-gap:24px;row-gap:12px}.page-controls{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center}.page-controls button{display:inline-flex;gap:7px;align-items:center;justify-content:center;min-width:44px}.page-position{white-space:nowrap;text-align:center;color:var(--muted);border-radius:4px}.page-position:focus{outline:3px solid var(--blue);outline-offset:4px}.page-jump{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0}.page-jump label{color:var(--muted)}.page-jump input{width:76px}.page-jump button{min-width:44px}.page-error{flex-basis:100%;color:#ffb3b3;font-size:.9rem}@media(max-width:650px){.pagination{display:grid;grid-template-columns:minmax(0,1fr)}.page-controls{width:100%}.page-controls .page-word{display:inline}.page-controls button>span:first-child{display:none}.page-position{white-space:normal}.page-jump{justify-content:center}.page-error{text-align:center}}
-</style>
-<style>
-.site-navigation .brand{margin-right:0}
-.site-navigation .nav-links{display:flex;align-items:center;gap:8px;margin-left:auto}
-.site-navigation .nav-links a{padding:8px 10px;border:1px solid transparent;border-radius:8px;color:#9bcaff}
-.site-navigation .nav-links a:hover,.site-navigation .nav-links a:focus-visible{background:rgba(137,191,255,.1);color:#e8eef5}
-.site-navigation .nav-links a[aria-current="page"]{background:#192432;border-color:#354456;color:#e8eef5}
-.site-navigation .menu-toggle{display:none;min-height:44px;padding:8px 12px;border:1px solid #354456;border-radius:9px;background:#141c26;color:#e8eef5;font:inherit;cursor:pointer}
-@media(max-width:720px){
- .site-navigation nav{gap:8px;padding-block:8px}
- .site-navigation .menu-toggle{display:block;margin-left:auto}
- .site-navigation .nav-links{display:none;order:3;width:100%;margin:0;flex-direction:column;align-items:stretch;gap:3px}
- .site-navigation .nav-links.open{display:flex}
- .site-navigation .nav-links a{justify-content:flex-start;padding:10px}
-}
-</style>
+<meta name="theme-color" content="#0c1118"><link rel="icon" type="image/svg+xml" href="../daily-market-brief/favicon.svg"><link rel="stylesheet" href="../shared/site-navigation.css"><script src="../shared/site-navigation.js"></script>
+
+
 <style>
 #main,#detail{scroll-margin-top:var(--navigation-offset,100px)!important}
 :root{color-scheme:dark;--bg:#0c1118;--panel:#141e2b;--ink:#e8eef5;--muted:#acbbcd;--line:#354456;--blue:#9bcaff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}header,main,footer{max-width:1160px;margin:auto;padding:24px}h1{font-size:clamp(1.8rem,5vw,2.8rem);margin:8px 0}h2,h3{margin:8px 0}p{margin:8px 0}a{color:var(--blue);overflow-wrap:anywhere}button,input,select{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:44px}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}summary:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}.skip{position:absolute;top:-100px;left:12px}.skip:focus{position:fixed;top:12px;background:var(--panel);padding:10px;z-index:30}.muted,small{color:var(--muted)}.notice,.empty{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--panel)}.filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-block:20px}.filters label{display:flex;flex-direction:column;gap:5px;font-size:.9rem}.filters .search{grid-column:span 2}input,select{width:100%;min-width:0}.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:16px 0}.actions p{margin:0;margin-right:auto}.actions a{display:inline-flex;align-items:center;min-height:44px;padding:10px}.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:860px}caption{padding:12px;text-align:left;color:var(--muted)}th,td{text-align:left;padding:12px;vertical-align:top;border-bottom:1px solid var(--line)}th{font-size:.8rem;color:var(--muted)}td{max-width:360px;overflow-wrap:anywhere}.ticket-button{text-align:left;color:var(--blue);white-space:nowrap;font-weight:700}.ticket-title{min-width:210px;font-weight:650}.status-badge{display:inline-flex;gap:7px;align-items:center;padding:5px 10px;border-radius:8px;font-weight:700;white-space:nowrap;border:1px solid currentColor}.status-complete{color:#8ee6b5;background:#123125}.status-progress{color:#a8d5ff;background:#17344f}.status-planned{color:#ffda8a;background:#392c15}.status-error{color:#ffb3b3;background:#402129}.status-review{color:#dfbaff;background:#302341}.status-neutral{color:#c2ccd9;background:#24303d}tbody tr:hover{background:#172334}.status{font-size:.85rem;display:block;color:var(--muted)}#detail{scroll-margin-top:16px;margin-top:30px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow-wrap:anywhere}dl{display:grid;grid-template-columns:160px minmax(0,1fr);gap:8px}dt{color:var(--muted)}dd{margin:0}.timeline{list-style:none;padding:0;border-left:2px solid var(--line);margin-left:8px}.timeline>li{margin:20px 0;padding:0 16px}.sha{font: .82rem/1.6 ui-monospace,monospace;overflow-wrap:anywhere}.evidence{white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0}.check-list{padding-left:20px}.check-list>li{margin:10px 0}.technical-details{border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}.decision-text{white-space:pre-wrap;overflow-wrap:anywhere}.decision-references h4{margin-bottom:4px}.pagination{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}.pagination [aria-current="page"]{border-color:var(--blue);font-weight:700}details{margin:10px 0}summary{cursor:pointer;min-height:44px;padding:8px 0}.hidden,[hidden]{display:none!important}footer{color:var(--muted);font-size:.85rem}@media(max-width:650px){header,main,footer{padding:16px}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.filters .search{grid-column:1/-1}dl{grid-template-columns:1fr;gap:4px}dd{margin-bottom:10px}.actions button{flex:1}#detail{padding:12px}}
@@ -29,13 +14,7 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to ticket audit</a>
-<div class="site-navigation"><nav aria-label="Main navigation">
-<a class="brand" href="../">PRAESAGUS</a>
-<button class="menu-toggle" id="site-menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav-links">☰ Menu</button>
-<div class="nav-links" id="site-nav-links">
-<a href="../">Home</a><a href="../daily-market-brief/">Reports</a><a href="../daily-market-brief/?view=technical">Technical analysis</a><a href="../daily-market-brief/?view=tickers">Ticker forecasts</a><a href="../seasonality/">Seasonality</a><a href="./" aria-current="page">Tickets</a>
-</div>
-</nav></div>
+<praesagus-site-nav root="../" current="tickets"></praesagus-site-nav>
 <header><h1>Ticket audit</h1><p class="muted">Search delivery plans and inspect their committed progress.</p><p class="notice">Read-only audit of committed Git history. Uncommitted work is excluded. Commit associations and recorded check results are audit evidence, not independent proof that tests passed or acceptance was completed. PRSG-0 prefix-only history is labelled activity-only.</p><p id="provenance" class="muted"></p></header>
 <main id="main">
 <div id="load-status" role="status">Loading committed ticket audit…</div>
@@ -60,19 +39,12 @@
 <footer>Markdown specs and harness manifests committed to Git are the source of truth. CSV is a flat convenience export; the timeline retains the recorded snapshots.</footer>
 <script>
 // Keep anchor/focus destinations below the sticky menu, including wrapped layouts.
-const siteNavigation = document.querySelector('.site-navigation');
-const siteMenuToggle = document.querySelector('#site-menu-toggle');
-const siteNavLinks = document.querySelector('#site-nav-links');
+const siteNavigation = document.querySelector('praesagus-site-nav');
 function updateNavigationOffset(){
   const height = siteNavigation.getBoundingClientRect().height;
   document.documentElement.style.setProperty('--navigation-offset', `${Math.ceil(height)+16}px`);
 }
 updateNavigationOffset();
-siteMenuToggle.addEventListener('click',()=>{
-  const open=siteNavLinks.classList.toggle('open');
-  siteMenuToggle.setAttribute('aria-expanded',String(open));
-  updateNavigationOffset();
-});
 window.addEventListener('resize', updateNavigationOffset);
 if(typeof ResizeObserver !== 'undefined')new ResizeObserver(updateNavigationOffset).observe(siteNavigation);
 const $=selector=>document.querySelector(selector);

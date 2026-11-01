@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import '../../artifacts/shared/site-navigation.js';
+import '../../artifacts/shared/site-navigation.css';
 import App from './App';
 import './index.css';
 

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ElementType } from 'react';
 import industryData from '../data/industry-seasonality.json';
 import etfReturnData from '../data/etf-nport-returns.json';
 import './Seasonality.css';
@@ -77,6 +77,7 @@ const rows = industryData.rows as MonthlyRow[];
 const HISTORICAL_ROWS = rows.filter((row) => Math.floor(row[0] / 100) <= industryData.completeCalendarYearsThrough);
 const years = Array.from(new Set(rows.map((row) => Math.floor(row[0] / 100))));
 const SCALE = 4;
+const PublicSiteNavigation = 'praesagus-site-nav' as ElementType<{ root?: string; current?: string }>;
 
 function themeFor(code: string) {
   return etfReturnData.series.find((series) => series.code === code);
@@ -273,7 +274,6 @@ function SeasonalityChart({
 }
 
 export default function Seasonality() {
-  const [navigationOpen, setNavigationOpen] = useState(false);
   const [yearFilter, setYearFilter] = useState<number | 'all'>('all');
   const [focusedYear, setFocusedYear] = useState<number | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
@@ -360,28 +360,9 @@ export default function Seasonality() {
   }
 
   return (
-    <div className="seasonality-page">
-      {import.meta.env.MODE === 'pages' && (
-        <nav className="seasonality-site-nav" aria-label="Main navigation">
-          <a className="seasonality-site-brand" href="../">PRAESAGUS</a>
-          <button
-            className="seasonality-menu-toggle"
-            type="button"
-            aria-expanded={navigationOpen}
-            aria-controls="seasonality-nav-links"
-            onClick={() => setNavigationOpen((open) => !open)}
-          >
-            ☰ Menu
-          </button>
-          <div id="seasonality-nav-links" className={navigationOpen ? 'seasonality-nav-links open' : 'seasonality-nav-links'}>
-            <a href="../">Home</a>
-            <a href="../daily-market-brief/">Reports</a>
-            <a href="../daily-market-brief/?view=technical">Technical analysis</a>
-            <a href="../daily-market-brief/?view=tickers">Ticker forecasts</a>
-            <a href="./" aria-current="page">Seasonality</a>
-          </div>
-        </nav>
-      )}
+    <>
+      {import.meta.env.MODE === 'pages' && <PublicSiteNavigation root="../" current="seasonality" />}
+      <div className="seasonality-page">
       <header className="seasonality-header">
         <div>
           <p className="seasonality-kicker">Historical patterns · U.S. equities</p>
@@ -555,6 +536,7 @@ export default function Seasonality() {
         </ul>
       </details>
       <p className="seasonality-disclaimer">Historical seasonality is descriptive and may not persist. It is not a forecast, trading signal, or investment recommendation.</p>
-    </div>
+      </div>
+    </>
   );
 }

@@ -43,6 +43,7 @@ This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATI
 | [PRSG-173](2026-11-01/PRSG-173-seasonality-ranking-and-selection-ui.md) | feature | frontend | Engineer | P2 | XS: 0.25–0.45 day | medium-high |
 | [PRSG-174](2026-11-01/PRSG-174-november-december-calendar-publication.md) | chore | financial-data, docs | Trader | P2 | XS: 0.5–1 day | medium |
 | [PRSG-175](2026-11-01/PRSG-175-seasonality-overflow-and-ticket-navigation.md) | bug | frontend, docs | Engineer | P2 | S: 0.5–2 days | medium |
+| [PRSG-176](2026-11-01/PRSG-176-shared-public-site-navigation.md) | feature | frontend | Engineer | P2 | S: 0.5–2 days | medium-high |
 
 ## Ticket convention and harness
 
