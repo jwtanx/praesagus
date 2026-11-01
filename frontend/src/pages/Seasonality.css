@@ -1,6 +1,6 @@
 .seasonality-static { --season-bg: #0c1118; --season-panel: #141c26; --season-panel-2: #192432; --season-ink: #e8eef5; --season-muted: #a5b2c2; --season-line: #2b3949; --season-blue: #89bfff; --season-green: #66d6a4; --season-red: #ff8e8e; width: 100%; min-height: 100vh; margin: 0; padding: 0; background: radial-gradient(ellipse at 20% -20%, #1d3145, transparent 48%), var(--season-bg); color: var(--season-ink); }
 .seasonality-page { display: grid; gap: 20px; min-width: 0; }
-.seasonality-static > .seasonality-page { width: min(100%, 1680px); margin: 0 auto; padding: clamp(18px, 3vw, 40px); }
+.seasonality-static > .seasonality-page { padding-block: clamp(18px, 3vw, 40px); }
 .seasonality-header { display: flex; justify-content: space-between; align-items: end; gap: 20px; }
 .seasonality-header h2 { margin: 4px 0 8px; font-size: clamp(1.8rem, 4vw, 2.5rem); }
 .seasonality-header p { margin: 0; color: var(--season-muted); line-height: 1.5; }

@@ -362,7 +362,7 @@ export default function Seasonality() {
   return (
     <>
       {import.meta.env.MODE === 'pages' && <PublicSiteNavigation root="../" current="seasonality" />}
-      <div className="seasonality-page">
+      <div className="seasonality-page praesagus-page-content">
       <header className="seasonality-header">
         <div>
           <p className="seasonality-kicker">Historical patterns · U.S. equities</p>

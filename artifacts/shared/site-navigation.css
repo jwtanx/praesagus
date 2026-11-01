@@ -1,4 +1,17 @@
 /* Shared public navigation used by the static pages and the seasonality app. */
+/* Shared content gutter aligned with the public navigation container. */
+.praesagus-page-content {
+  box-sizing: border-box;
+  width: min(calc(100% - 48px), 1680px);
+  margin-inline: auto;
+}
+
+@media (max-width: 980px) {
+  .praesagus-page-content {
+    width: calc(100% - 24px);
+  }
+}
+
 praesagus-site-nav {
   position: sticky;
   top: 0;

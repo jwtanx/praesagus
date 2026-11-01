@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-177",
+  "tags": {
+    "type": "bug",
+    "modules": [
+      "frontend"
+    ],
+    "owner_role": "Engineer",
+    "priority": "P2",
+    "effort_size": "XS",
+    "effort_person_days": {
+      "low": 0.1,
+      "high": 0.5
+    },
+    "impact": "medium"
+  },
+  "created_on": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-11-01/PRSG-177-standardize-public-page-gutters.md",
+  "objective": "Repair the missing Daily Market Brief content gutter and standardize reusable responsive content gutters across all four public pages.",
+  "status": "review",
+  "owner": "Engineer",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "a0c6651dad4f571178e562bf36d82e615e2aebf3",
+  "allowed_paths": [
+    "artifacts/shared/site-navigation.css",
+    "artifacts/index.html",
+    "artifacts/daily-market-brief/index.html",
+    "artifacts/tickets/index.html",
+    "frontend/src/pages/Seasonality.tsx",
+    "frontend/src/pages/Seasonality.css",
+    "docs/PUBLIC_SITE_NAVIGATION.md",
+    "plans/README.md",
+    "plans/2026-11-01/PRSG-177-standardize-public-page-gutters.md",
+    "plans/2026-11-01/PRSG-177.harness.json"
+  ],
+  "protected_paths": [
+    ".github/",
+    "artifacts/financial-calendar/",
+    "backend/",
+    "connectors/",
+    "frontend/src/data/",
+    "infra/",
+    "ingest/",
+    "scripts/",
+    "tests/",
+    "skills/",
+    "agent-operations/"
+  ],
+  "checks": [
+    {
+      "id": "pages-build",
+      "kind": "command",
+      "argv": [
+        "npm",
+        "run",
+        "build",
+        "--",
+        "--mode",
+        "pages"
+      ],
+      "cwd": "frontend",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: npm run build -- --mode pages from frontend/ passed (Vite 5.4.21; 52 modules transformed). Local Daily Market Brief page loaded from the static artifacts preview with the shared nav and report content."
+      ]
+    },
+    {
+      "id": "ticket-scope",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-11-01/PRSG-177.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "2026-11-01: validate_ticket.py accepted all 10 exact changed paths; git diff --check passed."
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-177-D1",
+      "description": "Daily Market Brief has a valid content container and no longer renders flush to the viewport edge.",
+      "check_ids": [
+        "pages-build"
+      ],
+      "status": "done",
+      "evidence": [
+        "Repaired the malformed Daily Brief container selector and applied the shared page-content width/gutter to its header and main content shell."
+      ]
+    },
+    {
+      "id": "PRSG-177-D2",
+      "description": "All four public pages use the shared reusable max-width and responsive horizontal gutter aligned with the navigation.",
+      "check_ids": [
+        "pages-build"
+      ],
+      "status": "done",
+      "evidence": [
+        "Homepage, Daily Brief, Tickets, and Seasonality content shells all use .praesagus-page-content from artifacts/shared/site-navigation.css; responsive width rules align them with the shared navigation container."
+      ]
+    },
+    {
+      "id": "PRSG-177-D3",
+      "description": "Pages build and the exact changed-path scope validates without whitespace errors.",
+      "check_ids": [
+        "pages-build",
+        "ticket-scope"
+      ],
+      "status": "done",
+      "evidence": [
+        "Pages build succeeded; manifest/path validation and git diff --check succeeded."
+      ]
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": []
+  }
+}
