@@ -46,6 +46,7 @@ This sequence refines the existing [implementation roadmap](../docs/IMPLEMENTATI
 | [PRSG-176](2026-11-01/PRSG-176-shared-public-site-navigation.md) | feature | frontend | Engineer | P2 | S: 0.5–2 days | medium-high |
 | [PRSG-177](2026-11-01/PRSG-177-standardize-public-page-gutters.md) | bug | frontend | Engineer | P2 | XS: <0.5 day | medium: prevents edge-clipped content and aligns all public pages |
 | [PRSG-178](2026-11-01/PRSG-178-increase-shared-page-gutters.md) | bug | frontend | Engineer | P2 | XS: <0.5 day | medium: keeps home and section layouts aligned with navigation |
+| [PRSG-179](2026-11-01/PRSG-179-learning-from-paper-forecast-failures.md) | docs | docs, market-research, harness | Lead | P1 | XS: 0.25–0.5 day | medium-high: promotes bounded forecast attempts and auditable learning without forced ratings |
 
 ## Ticket convention and harness
 
