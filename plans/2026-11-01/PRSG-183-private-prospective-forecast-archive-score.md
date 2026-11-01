@@ -50,16 +50,20 @@ Private output path: `~/.codex/lead-state/PRSG-183/`. Keep only derived scores a
 - [x] PRSG-183-D1: Lead freezes exact source bundle hashes, inclusion/exclusion rules, outcome vintage and metrics before scoring.
 - [x] PRSG-183-D2: Reproduce issue-time/source lineage, origin identity/close, currency/basis and matured-target compatibility for every included row; retain excluded rows with reasons.
 - [x] PRSG-183-D3: Score deterministic one-day outcomes against each forecast's own model, saved baseline and zero-return; retain private per-name evidence and model-version-separated summary.
-- [x] PRSG-183-D4: Lead independently reran the deterministic scorer, reproduced the exact private result hash, and accepted the source bindings and limitations; no public metrics or model promotion.
+- [x] PRSG-183-D4: Lead corrected a simple-return/log-return quantile mismatch, rescored all 33 rows, and independently reproduced the corrected private result hash; source bindings and limitations remain accepted. No public metrics or model promotion.
+
+## Scoring correction
+
+Lead review found the original scorer paired realized log returns with the saved simple-return quantiles. The private scorer was corrected to use `relative_quantiles[2]` for both model and baseline, and all 33 forecasts were rescored. Direction counts are unchanged; error, pinball and coverage metrics now use consistent log-return units. The corrected private results supersede the original score hash.
 
 ## Execution record
 
 - [x] PRSG-183-D1: Scope and source hashes frozen before scoring.
 - [x] PRSG-183-D2: 1,758 saved input rows were all known by issue time; 0 were future-known. All 33 eligible 1d rows passed exact origin close, typed ID, USD, adjustment-label, and completed target checks. Source/admission receipts were hash-verified where present; PRSG-155 uses the exact input already frozen under PRSG-182.
 - [x] PRSG-183-D3: Deterministic private scoring completed; 33 per-name rows across three model generations remain separated, each against its own saved baseline and zero-return. Exact metric values remain in the private score bundle.
-- [x] PRSG-183-D4: Lead independently reproduced private result SHA-256 `9dc67aef3edec00e62a955fbe7db104635c007b20e2210f89d4b8b2a65f70bd0`, confirmed 33 eligible rows, 1,758 inputs known by issue time and zero future-known, and accepted the three separately identified model vintages as descriptive only. No pooled cross-version score or validation claim.
+- [x] PRSG-183-D4: Lead corrected the quantile units, independently reproduced private result SHA-256 `4a5673fd7623b8afadfd7178aaffdbd5ee71fbf8e41f08e524011bc060997cc4`, confirmed 33 eligible rows, 1,758 inputs known by issue time and zero future-known, and accepted the three separately identified model vintages as descriptive only. No pooled cross-version score or validation claim.
 
-Private score: `~/.codex/lead-state/PRSG-183/multi-vintage-score.json` (SHA-256 `9dc67aef3edec00e62a955fbe7db104635c007b20e2210f89d4b8b2a65f70bd0`). Reproduce with `python3 ~/.codex/lead-state/PRSG-183/score_archive.py` (script SHA-256 `77b6cce382241aad7689ecf4f69107ca5b8246e3ce2a8f96a007a4c06e9ba9bc).
+Private score: `~/.codex/lead-state/PRSG-183/multi-vintage-score.json` (SHA-256 `4a5673fd7623b8afadfd7178aaffdbd5ee71fbf8e41f08e524011bc060997cc4`). Reproduce with `python3 ~/.codex/lead-state/PRSG-183/score_archive.py` (script SHA-256 `ec1bafe610880e81e4f192f92cd8a76990896a80f36b460c532763cc1a506690).
 
 ## Duplication review
 

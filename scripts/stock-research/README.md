@@ -116,6 +116,42 @@ Use `--costs /absolute/private/costs.json` for explicit per-code nonnegative rou
 
 Default `--sentiment auto` is explicitly unavailable/not configured until the later sentiment extension exists. `--sentiment off` records off. Neither mode performs a fake connection check, reads subscription tokens, invokes an LLM or changes numerical features. `--offline` prohibits all provider and LLM calls.
 
+## Reusable private forecast archive benchmark
+
+`score_forecast_archive.py` scores previously saved one-session forecast JSON bundles against later actual OHLC CSV rows. It does not collect data, fit models, rerun challengers, publish results or overwrite an existing report. Each bundle needs the prediction JSON and exact input-history CSV used at issuance; the archive config also points to the completed actual-history CSV and typed instrument map. The CSVs must retain `known_at_ms`, code, session date, currency and adjustment fields. Actual rows need `completion_status`.
+
+Create a private config outside Git, for example `~/Documents/stock-research-data/benchmark-config.json`:
+
+```json
+{
+  "schema_version": 1,
+  "actual_history_csv": "/absolute/private/actual-history.csv",
+  "instrument_map_json": "/absolute/private/instruments.json",
+  "bundles": [
+    {
+      "name": "model-vintage-1",
+      "predictions_json": "/absolute/private/run-1/predictions.json",
+      "input_history_csv": "/absolute/private/run-1/history.csv"
+    },
+    {
+      "name": "model-vintage-2",
+      "predictions_json": "/absolute/private/run-2/predictions.json",
+      "input_history_csv": "/absolute/private/run-2/history.csv"
+    }
+  ]
+}
+```
+
+Run from the repository root, choosing a new output directory for each immutable result:
+
+```sh
+python3.11 scripts/stock-research/score_forecast_archive.py \
+  --config "$HOME/Documents/stock-research-data/benchmark-config.json" \
+  --output-dir "$HOME/Documents/stock-research-data/benchmark-2026-11-01"
+```
+
+The output directory must be new or empty and outside the repository. The script writes `benchmark.json` (source hashes, exclusions, per-forecast scores and summaries grouped by model SHA) plus a readable `benchmark.md`. It admits only `1d` rows issued before the target session, requires the full input bundle to be known by issue time, and checks exact origin close, typed security ID, currency/basis, later actual availability and session completion. Review source receipts, provider finality and historical membership separately; matching CSV values alone do not prove those facts. A single-date or correlated cross-section is descriptive, not model validation or a trading signal.
+
 ## Reviewed batch command
 
 `run_reviewed_batch.py` consumes an explicit private reviewed bundle and an existing trusted model. It produces one 120-key research CSV for the fixed 30-name cohort, or a structured failure explaining the missing prerequisite. It never collects sources, fits, selects a latest model, rolls the reference date forward, or places trades. Every run supplies an explicit reference and time window in a newly reviewed bundle; the command verifies them against XNYS sessions and the actual clock. Source finality is midnight in America/New_York immediately after the reference date, including daylight-saving rules; the deadline is the next XNYS session’s first open. Both source and compatibility reviews and the finite release review must bind those same explicit date/window fields.

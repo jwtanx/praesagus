@@ -72,7 +72,7 @@
       "description": "Score all eligible 1d forecasts against their saved matched baseline and zero return with model generations separate; retain private per-name receipts and limitations.",
       "status": "passed",
       "evidence": [
-        "Ran `python3 ~/.codex/lead-state/PRSG-183/score_archive.py`; script SHA-256 `77b6cce382241aad7689ecf4f69107ca5b8246e3ce2a8f96a007a4c06e9ba9bc`. Private result `~/.codex/lead-state/PRSG-183/multi-vintage-score.json` SHA-256 `9dc67aef3edec00e62a955fbe7db104635c007b20e2210f89d4b8b2a65f70bd0` contains 33 per-name scores from three model generations (n=1, n=2, n=30), each against its own saved baseline and zero return. It includes source hashes, actual rows, exclusions and limitations. No cross-version aggregate, challenger rerun, public metrics or confidence interval."
+        "Corrected deterministic private score uses model and baseline relative_quantiles[2] (terminal log-return), matching realized log returns. Private result ~/.codex/lead-state/PRSG-183/multi-vintage-score.json SHA-256 4a5673fd7623b8afadfd7178aaffdbd5ee71fbf8e41f08e524011bc060997cc4; corrected scorer SHA-256 ec1bafe610880e81e4f192f92cd8a76990896a80f36b460c532763cc1a506690. It contains 33 rows across three distinct generations, with source hashes and exclusions. Earlier simple-return/log-return mixed score is superseded."
       ]
     },
     {
@@ -81,7 +81,7 @@
       "description": "Lead reviews private score provenance and descriptive-only limitations before acceptance.",
       "status": "passed",
       "evidence": [
-        "Lead reran the deterministic private scorer and reproduced multi-vintage-score.json SHA-256 9dc67aef3edec00e62a955fbe7db104635c007b20e2210f89d4b8b2a65f70bd0; verified 33 eligible rows, 1,758 issue-known source rows and zero future-known rows; accepted separate-vintage limits."
+        "Lead independently reran corrected scorer and reproduced score hash 4a5673fd7623b8afadfd7178aaffdbd5ee71fbf8e41f08e524011bc060997cc4; reviewed 33 rows, 1,758 issue-known input rows, zero future-known rows, consistent terminal log-return units and descriptive-only limitations."
       ]
     }
   ],
@@ -116,7 +116,7 @@
       ],
       "status": "done",
       "evidence": [
-        "Deterministic private scorer ran on the frozen 1d set. 33 per-name rows are stored with model generations separated, alongside saved baseline and zero-return metrics. See private-deterministic-score evidence."
+        "Corrected deterministic private scorer compared terminal log-return actuals with model and saved-baseline relative_quantiles[2]. 33 per-name rows remain separated by model generation; prior mixed-unit score is superseded."
       ]
     },
     {
@@ -127,14 +127,14 @@
       ],
       "status": "done",
       "evidence": [
-        "Lead independently reproduced the exact private score hash and accepted the preserved-vintage results as descriptive only; no cross-version validation claim."
+        "Lead independently reproduced corrected private score hash 4a5673fd7623b8afadfd7178aaffdbd5ee71fbf8e41f08e524011bc060997cc4 and reviewed source lineage, consistent units and limitations. No cross-version validation claim."
       ]
     }
   ],
   "review": {
     "status": "accepted",
     "evidence": [
-      "Lead independently reproduced the private result hash and reviewed scope, model-version separation, source/identity/basis checks and limitations. PRSG-113 D2 remains pending."
+      "Lead corrected and independently reproduced the private result hash, reviewed consistent log-return units, model-generation separation, source/identity/basis checks and limitations. PRSG-113 D2 remains pending."
     ]
   }
 }
