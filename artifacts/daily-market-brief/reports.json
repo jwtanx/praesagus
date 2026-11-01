@@ -1,7 +1,11 @@
 {
   "schema_version": 1,
-  "latest": "2026-10-21",
+  "latest": "2026-11-01",
   "reports": [
+    {
+      "date": "2026-11-01",
+      "label": "1 November 2026 \u00b7 Research model"
+    },
     {
       "date": "2026-10-21",
       "label": "21 October 2026"

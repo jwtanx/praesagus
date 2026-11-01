@@ -101,6 +101,24 @@ this gate never promotes it to an admitted numeric price. Tests of the 35/34
 aggregation boundary use fictional eligibility sets only. The actual rights
 validator tests establish the 30-US ceiling, not a real 35-row public success.
 
+## User-Authorized Partial Research Edition
+
+The 1 November 2026 saved-model research edition uses a separately versioned
+evidence projection shipped beside the report. It binds exact report bytes to
+30 US one-day estimates and retains all 50 fixed identities; the 20 unsupported
+MY rows must remain Unrated with null prices and targets. This edition alone may
+pass with at least one complete evidence-backed pair under the user's direct
+instruction to publish supported low-confidence research. Older editions
+continue to require the existing 35/50 scenario gate.
+
+The public evidence contains only displayed US reference closes, one-day model
+medians/ranges, source/timing qualifications, model/run digests and the account
+holder's stated public-use confirmation. It contains no historical bars, raw
+provider responses, private paths, account identifiers or credentials. Every US
+row remains LOW / UNCALIBRATED and NO TRADE; the 30/30 bullish result is called
+out as a potential model-bias warning. It is not an execution signal or model
+promotion. Outcomes should be retained and scored after the target session.
+
 ## CI And Pages Selection
 
 Both workflows retain full archive structural validation. CI uses the complete
@@ -129,3 +147,21 @@ Passing this numerical gate does not establish rendered-chip/detail correctness,
 forecast performance, calibration, source authenticity, deployed operation or
 trading authority. The existing compact validation, human review and relevant
 rendered UI review remain separate delivery gates.
+
+## User-Authorized Partial Research Edition
+
+The 1 November 2026 saved-model research edition uses a separately versioned
+evidence projection shipped beside the report. It binds exact report bytes to
+30 US one-day estimates and retains all 50 fixed identities; the 20 unsupported
+MY rows remain Unrated with null prices and targets. This edition alone may pass
+with at least one complete evidence-backed pair under the user's direct
+instruction to publish supported low-confidence research. Older editions
+continue to require the existing 35/50 scenario gate.
+
+The public evidence contains only displayed US reference closes, one-day model
+medians/ranges, source/timing qualifications, model/run digests and the account
+holder's stated public-use confirmation. It contains no historical bars, raw
+provider responses, private paths, account identifiers or credentials. Every US
+row remains LOW / UNCALIBRATED and NO TRADE; the 30/30 bullish result is called
+out as a potential model-bias warning. It is not an execution signal or model
+promotion. Outcomes should be retained and scored after the target session.

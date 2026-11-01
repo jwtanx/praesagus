@@ -285,12 +285,76 @@ def test_cli_cannot_launder_expired_targets_using_old_metadata():
     assert 'Traceback' not in result.stderr
 
 
-def test_actual_archive_structural_validation_stays_separate_from_missing_publication_evidence():
+def test_actual_partial_model_report_uses_its_tracked_public_safe_evidence():
     latest = json.loads((ROOT / gate.REPORTS / 'reports.json').read_text())['latest']
     result = subprocess.run([sys.executable, str(SCRIPTS / 'publication_gate.py'), '--date', latest,
         '--publication-at', datetime.now(timezone.utc).isoformat()], capture_output=True, text=True)
-    assert result.returncode == 1 and 'publication evidence directory is required' in result.stderr
-    assert 'Traceback' not in result.stderr
+    assert result.returncode == 0 and 'OK publication 2026-11-01: 30/50 eligible pairs' in result.stdout
+    assert result.stderr == ''
+
+
+def partial_model_packet():
+    published = gate.publication_time('2026-11-01T12:00:00Z')
+    rows = []
+    evidence_rows = []
+    for market, ticker, currency in sorted(gate.FIXED):
+        if market == 'US' and len(evidence_rows) < 30:
+            item = dict(market=market, ticker=ticker, currency=currency, current_price_value=100.0,
+                        price_as_of='2026-10-30T20:00:00Z', direction='up', estimated_mid_case_value=101.0,
+                        range_low_value=99.0, range_high_value=103.0, forecast_as_of='2026-11-01T11:50:00Z',
+                        target_date='2026-11-02', confidence='low', action='NO TRADE', horizon='1d',
+                        reference_session='2026-10-30')
+            evidence_rows.append(item)
+            rows.append(dict(item, quote_status='observed', forecast_status='available',
+                             forecast_model='Praesagus saved model (uncalibrated)',
+                             sources=[{'label':'Moomoo OpenAPI','url':'https://open.moomoo.com/api/overview/api-reference'}]))
+        else:
+            rows.append(dict(market=market, ticker=ticker, currency=currency, current_price_value=None,
+                             estimated_mid_case_value=None, range_low_value=None, range_high_value=None,
+                             quote_status='missing', forecast_status='unavailable', direction='unknown', confidence='unavailable'))
+    report = {'metadata': {'date':'2026-11-01','as_of':'2026-11-01T19:51:23.641+08:00',
+                           'publication_mode':'partial-research-model'}, 'forecasts':rows}
+    model = dict(reference_session='2026-10-30',
+                 forecast_status='120 available; 0 withheld; 0 qualified; all action NO TRADE',
+                 quality='LOW / UNCALIBRATED; not probability; no predictive-performance claim',
+                 refit=False,promotion=False,output_csv_sha256='a'*64,
+                 display_name='Praesagus saved model (uncalibrated)',target_close_at='2026-11-02T21:00:00Z',
+                 target_date='2026-11-02')
+    source = dict(provider='Moomoo OpenD',connector='read-only OpenQuoteContext request_history_kline',
+                  source_field='daily QFQ OHLCV',source_url='https://open.moomoo.com/api/overview/api-reference',
+                  reference_session='2026-10-30',retrieved_at='2026-11-01T11:39:58Z',
+                  rights_confirmation='Account holder confirmed public quote display and derived-forecast rights for US and MY; only US rows are included.')
+    evidence = {'schema_version':1,'kind':'partial-saved-model-research-publication','report_sha256':'',
+                'policy':'user-authorized partial research coverage; fixed 50 universe; unsupported rows remain Unrated',
+                'source':source,'model':model,
+                'coverage':{'fixed_universe':50,'supported_us':30,'unrated_my':20,'eligible_pairs':30,'required_pairs':1},
+                'rows':evidence_rows}
+    raw = json.dumps(report,separators=(',',':')).encode()
+    evidence['report_sha256']=hashlib.sha256(raw).hexdigest()
+    return report,raw,evidence,published
+
+
+def test_partial_model_publication_accepts_bound_low_confidence_no_trade_rows():
+    report,raw,evidence,published=partial_model_packet()
+    assert gate.validate_publication(report,raw,evidence,published)=={
+        'eligible_pairs':30,'denominator':50,'required_pairs':1,'passed':True}
+
+
+@pytest.mark.parametrize('change', ['report_hash','duplicate','wrong_direction','trade_action','my_rated','old_target','missing_rights','private_path'])
+def test_partial_model_publication_rejects_unbound_or_overstated_evidence(change):
+    report,raw,evidence,published=partial_model_packet()
+    if change=='report_hash': evidence['report_sha256']='0'*64
+    elif change=='duplicate': evidence['rows'][1]=dict(evidence['rows'][0])
+    elif change=='wrong_direction': evidence['rows'][0]['direction']='down'
+    elif change=='trade_action': evidence['rows'][0]['action']='BUY'
+    elif change=='my_rated':
+        row=next(r for r in report['forecasts'] if r['market']=='MY')
+        row.update(forecast_status='available',direction='up',confidence='low',current_price_value=1.0)
+    elif change=='old_target': published=gate.publication_time('2026-11-03T12:00:00Z')
+    elif change=='private_path': evidence['source']['private_path']='/Users/private/raw-bars.csv'
+    else: evidence['source']['rights_confirmation']='not confirmed'
+    with pytest.raises(gate.PublicationError):
+        gate.validate_publication(report,raw,evidence,published)
 
 
 def test_main_uses_deployment_base_and_manual_revalidates_latest(monkeypatch, history):

@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
-from ingest.daily_report_projection import validate_market_rights
+from ingest.daily_report_projection import validate_market_rights, validate_public_report_boundary
 from ingest.forecast_scenario import build_forecast_scenario, apply_scenario_to_row
 from ingest.private_market_store import parse_aware
 
@@ -176,6 +176,8 @@ def row_eligibility(row, item, report_cutoff, published_at):
 
 def validate_publication(report, report_bytes, evidence, published_at):
     """Structural validation remains a separate caller gate; evidence is never returned."""
+    if type(evidence) is dict and evidence.get('kind') == 'partial-saved-model-research-publication':
+        return validate_partial_model_publication(report, report_bytes, evidence, published_at)
     try:
         rows = report['forecasts']
         aggregate_pairs(rows, set(), set())
@@ -198,6 +200,102 @@ def validate_publication(report, report_bytes, evidence, published_at):
         raise
     except (ValueError, TypeError, KeyError, OverflowError, AttributeError):
         raise PublicationError('publication evidence contract invalid') from None
+
+
+def validate_partial_model_publication(report, report_bytes, evidence, published_at):
+    """Recheck the user-authorized partial research edition without exposing raw bars."""
+    try:
+        require(report['metadata'].get('publication_mode') == 'partial-research-model'
+                and report['metadata']['date'] == '2026-11-01', 'partial model publication mode mismatch')
+        require(set(evidence) == {'schema_version','kind','report_sha256','policy','source','model','coverage','rows'}
+                and type(evidence['schema_version']) is int and evidence['schema_version'] == 1
+                and evidence['report_sha256'] == hashlib.sha256(report_bytes).hexdigest(),
+                'partial model evidence must bind exact report bytes')
+        validate_public_report_boundary(evidence)
+        require(evidence['policy'] == 'user-authorized partial research coverage; fixed 50 universe; unsupported rows remain Unrated',
+                'partial model policy mismatch')
+        source = evidence['source']
+        require(type(source) is dict and source.get('provider') == 'Moomoo OpenD'
+                and source.get('connector') == 'read-only OpenQuoteContext request_history_kline'
+                and source.get('source_field') == 'daily QFQ OHLCV'
+                and source.get('source_url') == 'https://open.moomoo.com/api/overview/api-reference'
+                and source.get('reference_session') == '2026-10-30'
+                and 'Account holder confirmed public quote display and derived-forecast rights' in source.get('rights_confirmation',''),
+                'partial model source/rights evidence invalid')
+        model = evidence['model']
+        require(type(model) is dict and model.get('reference_session') == '2026-10-30'
+                and model.get('forecast_status') == '120 available; 0 withheld; 0 qualified; all action NO TRADE'
+                and model.get('quality') == 'LOW / UNCALIBRATED; not probability; no predictive-performance claim'
+                and model.get('refit') is False and model.get('promotion') is False
+                and re.fullmatch(r'[0-9a-f]{64}', model.get('output_csv_sha256','')) is not None,
+                'partial model run evidence invalid')
+        coverage = evidence['coverage']
+        require(type(coverage) is dict and all(type(v) is int for v in coverage.values()),
+                'partial model coverage types invalid')
+        require(coverage == {'fixed_universe':50,'supported_us':30,'unrated_my':20,'eligible_pairs':30,'required_pairs':1},
+                'partial model coverage mismatch')
+        rows = report['forecasts']
+        require(type(rows) is list and len(rows) == 50 and type(evidence['rows']) is list
+                and len(evidence['rows']) == 30, 'partial model rows invalid')
+        by_id = {}
+        for item in evidence['rows']:
+            key = identity(item)
+            require(key in FIXED and key[0] == 'US' and key not in by_id, 'duplicate or non-US model row')
+            by_id[key] = item
+        reported = {identity(row): row for row in rows}
+        require(len(reported) == 50 and set(reported) == FIXED, 'fixed 50 identity set changed')
+        cutoff = parse_aware(report['metadata']['as_of'])
+        require(cutoff <= published_at, 'partial model report cutoff is after publication')
+        retrieved = parse_aware(source['retrieved_at'])
+        require(retrieved <= cutoff and published_at < parse_aware(model['target_close_at']),
+                'partial model source availability or target window invalid')
+        for key, row in reported.items():
+            if key not in by_id:
+                require(key[0] == 'MY' and row.get('forecast_status') == 'unavailable'
+                        and row.get('direction') == 'unknown' and row.get('confidence') == 'unavailable'
+                        and all(row.get(k) is None for k in ('current_price_value','estimated_mid_case_value','range_low_value','range_high_value')),
+                        'unsupported rows must stay Unrated')
+                continue
+            item = by_id[key]
+            fields = ('market','ticker','currency','price_as_of','direction','target_date','forecast_as_of','confidence')
+            require(all(row.get(k) == item.get(k) for k in fields), 'partial model report/evidence binding mismatch')
+            for k in ('current_price_value','estimated_mid_case_value','range_low_value','range_high_value'):
+                require(type(row.get(k)) in (int,float) and type(item.get(k)) in (int,float)
+                        and math.isfinite(row[k]) and row[k] == item[k], 'partial model numeric mismatch')
+            sign = 'up' if row['estimated_mid_case_value'] > row['current_price_value'] else ('down' if row['estimated_mid_case_value'] < row['current_price_value'] else 'flat')
+            require(row.get('quote_status') == 'observed' and row.get('forecast_status') == 'available'
+                    and row.get('confidence') == 'low' and row.get('forecast_model') == model.get('display_name')
+                    and row.get('direction') == sign
+                    and row['range_low_value'] <= row['estimated_mid_case_value'] <= row['range_high_value'],
+                    'partial model row eligibility invalid')
+            require(item.get('action') == 'NO TRADE' and item.get('horizon') == '1d'
+                    and item.get('reference_session') == '2026-10-30', 'partial model action/horizon invalid')
+            require(parse_aware(row['forecast_as_of']) <= cutoff and row['target_date'] == model['target_date'],
+                    'partial model issue/target dates invalid')
+            require(any(s.get('url') == source['source_url'] for s in row.get('sources',[]) if type(s) is dict),
+                    'partial model source link missing')
+        return {'eligible_pairs':len(by_id),'denominator':50,'required_pairs':1,'passed':bool(by_id)}
+    except PublicationError:
+        raise
+    except (ValueError, TypeError, KeyError, OverflowError, AttributeError):
+        raise PublicationError('partial model publication evidence invalid') from None
+
+
+def read_model_evidence(day):
+    """Read the public-safe, derived-only evidence shipped with its report."""
+    require(re.fullmatch(r'\d{4}-\d{2}-\d{2}', day) is not None, 'invalid evidence date')
+    path = REPO / REPORTS / 'evidence' / f'{day}-model-inference.json'
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(fd, 'rb') as stream:
+            info = os.fstat(stream.fileno())
+            require(stat.S_ISREG(info.st_mode) and info.st_size <= MAX_EVIDENCE, 'invalid model evidence file')
+            raw = stream.read(MAX_EVIDENCE + 1)
+        require(0 < len(raw) <= MAX_EVIDENCE, 'model evidence size limit exceeded')
+        return json.loads(raw, object_pairs_hook=_no_duplicates,
+                          parse_constant=lambda _: (_ for _ in ()).throw(ValueError()))
+    except (OSError, ValueError, TypeError, RecursionError):
+        raise PublicationError('model publication evidence unavailable or invalid') from None
 
 
 def git(repo, *argv):
@@ -288,7 +386,8 @@ def main(argv=None):
         raw = path.read_bytes()
         report = json.loads(raw)
         validator.validate_report(path, report, u, public=True, compact=True)
-        summary = validate_publication(report, raw, read_evidence(args.publication_evidence_dir, day), published)
+        evidence = read_model_evidence(day) if report['metadata'].get('publication_mode') == 'partial-research-model' else read_evidence(args.publication_evidence_dir, day)
+        summary = validate_publication(report, raw, evidence, published)
         print(f'OK publication {day}: {summary["eligible_pairs"]}/50 eligible pairs')
     if not days:
         print('OK publication: no changed editions or index advances; archives retain structural validation')

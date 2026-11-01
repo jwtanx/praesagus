@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "ticket_key": "PRSG-181",
+  "tags": {
+    "type": "feature",
+    "modules": [
+      "market-research",
+      "frontend",
+      "harness",
+      "docs"
+    ],
+    "owner_role": "Lead",
+    "priority": "P1",
+    "effort_size": "S",
+    "effort_person_days": {
+      "low": 1,
+      "high": 2
+    },
+    "impact": "high"
+  },
+  "created_on": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "spec_path": "plans/2026-11-01/PRSG-181-partial-model-report-publication.md",
+  "objective": "Publish a partial one-day saved-model research edition for 1 November, retaining the fixed 50-name universe and explicit Unrated rows wherever evidence is unavailable.",
+  "status": "in_progress",
+  "owner": "Lead",
+  "reviewer": "Lead",
+  "scope_status": "accepted",
+  "base_sha": "8f0a1e77249052501fbea222774ac5189b32a259",
+  "allowed_paths": [
+    "scripts/daily-market-brief/publication_gate.py",
+    "tests/test_daily_report_publication.py",
+    "docs/DAILY_REPORT_PUBLICATION.md",
+    "artifacts/daily-market-brief/2026-11-01.json",
+    "artifacts/daily-market-brief/reports.json",
+    "artifacts/daily-market-brief/evidence/2026-11-01-model-inference.json",
+    "plans/2026-11-01/PRSG-181-partial-model-report-publication.md",
+    "plans/2026-11-01/PRSG-181.harness.json"
+  ],
+  "protected_paths": [
+    "connectors/",
+    "ingest/",
+    "scripts/stock-research/",
+    "credentials/",
+    "models/"
+  ],
+  "checks": [
+    {
+      "id": "publication-tests",
+      "kind": "command",
+      "argv": [
+        "/Users/jwtan/.codex/venvs/praesagus-tests-311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_daily_report_publication.py"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "65 passed; valid and tampered partial model publication fixtures; 2026-11-01 MYT"
+      ]
+    },
+    {
+      "id": "report-validation",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/daily-market-brief/validate_report_json.py",
+        "--date",
+        "2026-11-01",
+        "--public",
+        "--compact"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "50 fixed names; 30 rated US/20 Unrated MY; 35 calendar events; public compact validation passed; 2026-11-01 MYT"
+      ]
+    },
+    {
+      "id": "ticket-scope",
+      "kind": "command",
+      "argv": [
+        "python3",
+        "scripts/planning/validate_ticket.py",
+        "plans/2026-11-01/PRSG-181.harness.json"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "PRSG-181 manifest and all supplied changed paths valid; 2026-11-01 MYT"
+      ]
+    },
+    {
+      "id": "diff-check",
+      "kind": "command",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": ".",
+      "status": "passed",
+      "evidence": [
+        "git diff --check passed; 2026-11-01 MYT"
+      ]
+    },
+    {
+      "id": "outcome-tracking",
+      "kind": "manual",
+      "description": "After the target session closes, record realized outcome and score the exact immutable forecast row.",
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "PRSG-181-D1",
+      "description": "Report and public-safe evidence projection preserve all 50 fixed identities, with supported US rows and missing MY rows explicitly Unrated.",
+      "check_ids": [
+        "report-validation"
+      ],
+      "status": "done",
+      "evidence": [
+        "Exact report/evidence binding and 30 supported US rows; 20 MY rows remain null/Unrated. LOW / UNCALIBRATED and NO TRADE enforced. Focused suite 65 passed."
+      ]
+    },
+    {
+      "id": "PRSG-181-D2",
+      "description": "Gate binds model-derived rows to exact report/evidence bytes and keeps older report checks unchanged.",
+      "check_ids": [
+        "publication-tests"
+      ],
+      "status": "done",
+      "evidence": [
+        "Exact report/evidence binding and 30 supported US rows; 20 MY rows remain null/Unrated. LOW / UNCALIBRATED and NO TRADE enforced. Focused suite 65 passed."
+      ]
+    },
+    {
+      "id": "PRSG-181-D3",
+      "description": "Lead reviews focused tests, report rendering, scope and live deployment.",
+      "check_ids": [
+        "ticket-scope",
+        "diff-check"
+      ],
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PRSG-181-D4",
+      "description": "Retain the next-session outcome for later scoring without claiming model skill before it matures.",
+      "check_ids": [
+        "outcome-tracking"
+      ],
+      "status": "pending",
+      "evidence": []
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "evidence": [
+      "Local rendered page verified: 30 forecast chips show directional research estimates and LOW / UNCALIBRATED / NO TRADE; 20 MY rows show Unrated and explicit OpenD permission gap. Live Pages deployment remains pending."
+    ]
+  }
+}
