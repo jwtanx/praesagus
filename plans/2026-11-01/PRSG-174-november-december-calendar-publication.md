@@ -6,6 +6,22 @@ Type: chore · Modules: financial-data, docs · Owner: Trader · Priority: P2 ·
 
 Review the source-backed November and December 2026 monthly calendars and publish them so visitors can view both months in Praesagus Financial Calendar.
 
+## Approach
+
+Reuse the committed monthly ledgers and existing shared calendar viewer. Trader verifies official schedules and timezone mappings; Lead appends any supported corrections with actual discovery time, then validates local rendering and publishes through GitHub Pages. Keep the two monthly ledgers independent and preserve their revision history.
+
+## Choices
+
+Use the current month as the latest stored schedule, with the existing previous/next controls for month navigation. Keep new public calendar events in the shared monthly JSON ledgers; do not insert calendar-only pseudo-reports into `reports.json` or rewrite old report snapshots. Represent MYT overnight boundaries with date spans and retain U.S. venue dates in the event detail.
+
+## Findings
+
+The report viewer already loads `../financial-calendar/YYYY-MM.json` independently of a report's own saved date and supports month navigation. The original ledgers had a Thanksgiving MYT range omission, a Christmas U.S.-date offset, no separate December FOMC meeting span, and lacked DOSM's December petroleum and natural gas release. Trader reviewed primary schedules and found no listed cancellation/rescheduling notice. The corrections and new event were appended at `2026-11-01T08:41:04+08:00`; DOSM publication time remains unspecified. The local DOM replay renders November, December, date-spanning holidays, the FOMC span, DOSM event details, and HTTPS source links.
+
+## Tradeoffs
+
+The monthly ledgers may include superseded revisions, so consumers must use the latest revision per event ID; the viewer already does this. MYT date spans can make an overnight U.S. market closure appear on two local dates, while titles/details preserve the one official U.S. session date. Publication remains incomplete until the main Pages workflow succeeds and the hosted page is checked.
+
 ## Scope
 
 Allowed paths:
